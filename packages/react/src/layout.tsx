@@ -8,7 +8,7 @@ import {
   type GridColumns,
   type StackGap,
 } from '@white-plumeria/core';
-import { useRef, useState, type ReactNode } from 'react';
+import { useId, useRef, useState, type ReactNode } from 'react';
 import { IconButton } from './button.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
@@ -106,7 +106,7 @@ export function Navbar({
   items: NavItem[];
 }) {
   const [open, setOpen] = useState(false);
-  const menuId = 'wpl-navbar-menu';
+  const menuId = useId();
   const { t } = useWhitePlumeria();
   return (
     <header className="wpl-navbar" data-open={open || undefined}>
@@ -115,7 +115,7 @@ export function Navbar({
       </a>
       <IconButton
         className="wpl-navbar-toggle"
-        label={t('openMenu')}
+        label={open ? t('closeMenu') : t('openMenu')}
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((value) => !value)}
@@ -125,7 +125,12 @@ export function Navbar({
       <ul id={menuId} className="wpl-nav-menu">
         {items.map((item) => (
           <li key={item.href}>
-            <a className="wpl-nav-link" href={item.href} aria-current={item.current ? 'page' : undefined}>
+            <a
+              className="wpl-nav-link"
+              href={item.href}
+              aria-current={item.current ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
               {item.label}
             </a>
           </li>

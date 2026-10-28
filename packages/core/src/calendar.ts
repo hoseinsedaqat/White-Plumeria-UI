@@ -208,6 +208,59 @@ export function addMonths(date: Date, amount: number, calendar: CalendarSystem):
   return toDate({ year, month, day }, calendar);
 }
 
+export function toIsoDate(date: Date): string {
+  const day = startOfDay(date);
+  const month = String(day.getMonth() + 1).padStart(2, '0');
+  const dateNumber = String(day.getDate()).padStart(2, '0');
+  return `${day.getFullYear()}-${month}-${dateNumber}`;
+}
+
+export function compareDays(left: Date, right: Date): number {
+  return startOfDay(left).getTime() - startOfDay(right).getTime();
+}
+
+export function isWithinRange(date: Date, start: Date | null | undefined, end: Date | null | undefined): boolean {
+  if (!start || !end) return false;
+  const time = startOfDay(date).getTime();
+  const from = Math.min(startOfDay(start).getTime(), startOfDay(end).getTime());
+  const to = Math.max(startOfDay(start).getTime(), startOfDay(end).getTime());
+  return time >= from && time <= to;
+}
+
+export interface DateRangeValue {
+  start: string;
+  end: string;
+}
+
+export function orderDateRange(start: string, end: string): DateRangeValue {
+  const left = parseIsoDate(start);
+  const right = parseIsoDate(end);
+  if (!left || !right) return { start, end };
+  return compareDays(left, right) <= 0
+    ? { start: toIsoDate(left), end: toIsoDate(right) }
+    : { start: toIsoDate(right), end: toIsoDate(left) };
+}
+
+export function calendarDayClass(options: {
+  inMonth: boolean;
+  date: Date;
+  rangeStart?: Date | null;
+  rangeEnd?: Date | null;
+}): string {
+  const classes = ['wpl-day'];
+  if (!options.inMonth) classes.push('wpl-day-outside');
+  if (
+    options.rangeStart &&
+    options.rangeEnd &&
+    isWithinRange(options.date, options.rangeStart, options.rangeEnd) &&
+    !sameDay(options.date, options.rangeStart) &&
+    !sameDay(options.date, options.rangeEnd)
+  ) {
+    classes.push('wpl-day-range');
+  }
+  return classes.join(' ');
+}
+
 export function parseIsoDate(value: string): Date | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
   if (!match) return null;

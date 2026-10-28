@@ -6,7 +6,10 @@ import {
   ButtonGroup,
   Card,
   Checkbox,
+  DatePicker,
+  DateRangePicker,
   Input,
+  Navbar,
   Progress,
   Select,
   Switch,
@@ -55,6 +58,19 @@ function ButtonLab() {
           Save changes
         </Button>
       </div>
+    </Preview>
+  );
+}
+
+function DateRangeLab() {
+  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18' });
+  return (
+    <Preview
+      title="Start and end"
+      open
+      code={`<DateRangePicker label="Stay" start="${range.start}" end="${range.end}" />`}
+    >
+      <DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={setRange} />
     </Preview>
   );
 }
@@ -190,6 +206,34 @@ const sections: Record<string, ReactNode> = {
       <Progress label="Upload" value={64} />
     </Preview>
   ),
+  'data-table': (
+    <Preview title="Sort, filter, and page" open>
+      {renderDemo('data-table')}
+    </Preview>
+  ),
+  navbar: (
+    <Preview
+      title="Collapsible header"
+      open
+      code={`<Navbar brand="White Plumeria" items={[{ href: '#docs', label: 'Docs', current: true }]} />`}
+    >
+      <Navbar
+        brand="White Plumeria"
+        items={[
+          { href: '#docs', label: 'Docs', current: true },
+          { href: '#themes', label: 'Themes' },
+          { href: '#components', label: 'Components' },
+          { href: '#ai', label: 'AI' },
+        ]}
+      />
+    </Preview>
+  ),
+  'date-picker': (
+    <Preview title="ISO date" open code={`<DatePicker label="From" value="2026-10-27" />`}>
+      <DatePicker label="From" value="2026-10-27" />
+    </Preview>
+  ),
+  'date-range-picker': <DateRangeLab />,
 };
 
 export function Showcase({ slug }: { slug: string }) {

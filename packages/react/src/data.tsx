@@ -43,12 +43,14 @@ export function DataTable<T>({
   rows,
   pageSize = 8,
   filterable = true,
+  onSortChange,
 }: {
   caption: string;
   columns: DataColumn<T>[];
   rows: T[];
   pageSize?: number;
   filterable?: boolean;
+  onSortChange?: (sort: { sortId?: string; sortDirection: 'asc' | 'desc' }) => void;
 }) {
   const { t, locale } = useWhitePlumeria();
   const [filter, setFilter] = useState('');
@@ -66,8 +68,14 @@ export function DataTable<T>({
     [columns, filter, page, pageSize, rows, sortDirection, sortId, specs],
   );
 
+  function applySort(next: { sortId?: string; sortDirection: 'asc' | 'desc' }) {
+    setSortId(next.sortId);
+    setSortDirection(next.sortDirection);
+    onSortChange?.(next);
+  }
+
   return (
-    <div>
+    <div className="wpl-data-table">
       {filterable ? (
         <div className="wpl-table-toolbar">
           <SearchInput
@@ -78,6 +86,21 @@ export function DataTable<T>({
               setPage(1);
             }}
           />
+          <label className="wpl-sort-field">
+            <span className="wpl-sr-only">{t('sort')}</span>
+            <select
+              className="wpl-select"
+              value={sortId ?? ''}
+              onChange={(event) => applySort({ sortId: event.currentTarget.value || undefined, sortDirection: 'asc' })}
+            >
+              <option value="">{t('sort')}</option>
+              {columns.map((column) => (
+                <option key={column.id} value={column.id}>
+                  {column.header}
+                </option>
+              ))}
+            </select>
+          </label>
           <span className="wpl-muted">
             {formatNumber(result.total, locale)} {t('rows')}
           </span>
@@ -95,13 +118,10 @@ export function DataTable<T>({
                     <button
                       type="button"
                       className="wpl-sort"
-                      onClick={() => {
-                        const next = toggleSort({ sortId, sortDirection }, column.id);
-                        setSortId(next.sortId);
-                        setSortDirection(next.sortDirection);
-                      }}
+                      onClick={() => applySort(toggleSort({ sortId, sortDirection }, column.id))}
                     >
                       {column.header}
+                      {active ? <span className="wpl-sort-mark">{sortDirection === 'asc' ? '↑' : '↓'}</span> : null}
                       <span className="wpl-sr-only">{t('sort')}</span>
                     </button>
                   </th>
@@ -120,7 +140,9 @@ export function DataTable<T>({
               result.rows.map((row, index) => (
                 <tr key={index}>
                   {columns.map((column) => (
-                    <td key={column.id}>{column.accessor(row)}</td>
+                    <td key={column.id} data-label={column.header}>
+                      {column.accessor(row)}
+                    </td>
                   ))}
                 </tr>
               ))

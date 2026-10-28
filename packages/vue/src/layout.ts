@@ -7,7 +7,7 @@ import {
   type GridColumns,
   type StackGap,
 } from '@white-plumeria/core';
-import { defineComponent, h, ref, type PropType } from 'vue';
+import { defineComponent, h, ref, useId, type PropType } from 'vue';
 import { IconButton } from './button.ts';
 import { useWhitePlumeria } from './provider.ts';
 
@@ -91,12 +91,40 @@ export const Navbar = defineComponent({
   },
   setup(props) {
     const open = ref(false);
+    const menuId = useId();
     const { t } = useWhitePlumeria();
     return () =>
       h('header', { class: 'wpl-navbar', 'data-open': open.value || undefined }, [
         h('a', { class: 'wpl-navbar-brand', href: props.href }, props.brand),
-        h(IconButton, { class: 'wpl-navbar-toggle', label: t('openMenu'), onClick: () => (open.value = !open.value) }),
-        h(NavigationMenu, { label: props.brand, items: props.items }),
+        h(
+          IconButton,
+          {
+            class: 'wpl-navbar-toggle',
+            label: open.value ? t('closeMenu') : t('openMenu'),
+            'aria-expanded': open.value,
+            'aria-controls': menuId,
+            onClick: () => (open.value = !open.value),
+          },
+          () => '☰',
+        ),
+        h(
+          'ul',
+          { id: menuId, class: 'wpl-nav-menu' },
+          props.items.map((item) =>
+            h('li', { key: item.href }, [
+              h(
+                'a',
+                {
+                  class: 'wpl-nav-link',
+                  href: item.href,
+                  'aria-current': item.current ? 'page' : undefined,
+                  onClick: () => (open.value = false),
+                },
+                item.label,
+              ),
+            ]),
+          ),
+        ),
       ]);
   },
 });

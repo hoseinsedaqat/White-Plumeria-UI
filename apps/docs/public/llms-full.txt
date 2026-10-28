@@ -21,8 +21,9 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - CommandPalette (command-palette): Keyboard-first command list inside a dialog.
 - Container (container): Centered content width.
 - ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10.
-- DataTable (data-table): Client-side sort, filter, and pagination over the rows you pass.
+- DataTable (data-table): Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.
 - DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
+- DateRangePicker (date-range-picker): Start and end dates, ordered even if the later day is chosen first.
 - Dialog (dialog): Modal dialog with focus management and escape to close.
 - Divider (divider): Horizontal rule, optionally with a label.
 - Drawer (drawer): Side dialog for navigation or filters.
@@ -90,7 +91,8 @@ AI tools may only name components from this list.
 - CommandPalette: Filters the provided list only. No fuzzy scoring beyond substring and keywords.
 - ContextMenu: Does not replace the browser menu for assistive tech that does not emit contextmenu.
 - DataTable: Client-side only. No virtualization and no server cursor mode in 0.1.0.
-- DatePicker: Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. No date range.
+- DatePicker: Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. Use DateRangePicker for a start and end date.
+- DateRangePicker: No time of day. Values are Gregorian ISO dates, not Jalali strings. The first open selection sets the start; the next sets the end.
 - Dialog: Open dialogs are activated after mount. SSR HTML does not call showModal.
 - DropdownMenu: No nested submenus in 0.1.0.
 - FileUpload: Does not upload to a server. Rejected files are reported in the error list and are not executed.
@@ -98,7 +100,7 @@ AI tools may only name components from this list.
 - Grid: Collapses to one column below 48rem. Not a masonry layout.
 - Kbd: Visual only. Pair it with a real keydown listener in your application if the shortcut must work.
 - Modal: This is a Dialog preset, not a second focus system.
-- Navbar: The collapse breakpoint is 48rem and is CSS, not a JS resize observer.
+- Navbar: The menu collapses at a 48rem viewport or a 36rem container. It is CSS, not a resize observer.
 - NavigationMenu: No mega-menu panels in 0.1.0.
 - Notification: Not a push-notification service.
 - OtpField: Does not send or verify a code.

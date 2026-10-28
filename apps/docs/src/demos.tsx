@@ -18,6 +18,7 @@ import {
   ContextMenu,
   DataTable,
   DatePicker,
+  DateRangePicker,
   Dialog,
   Divider,
   Drawer,
@@ -322,6 +323,8 @@ export function renderDemo(slug: string): ReactNode {
       return <Calendar />;
     case 'date-picker':
       return <DatePicker label="From" value="2026-10-27" />;
+    case 'date-range-picker':
+      return <DateRangeDemo />;
     case 'chart-container':
       return <ChartContainer title="Sample volume" data={[{ label: 'Mon', value: 12 }, { label: 'Tue', value: 18 }, { label: 'Wed', value: 9 }]} />;
     case 'container':
@@ -349,7 +352,17 @@ export function renderDemo(slug: string): ReactNode {
         </Flex>
       );
     case 'navbar':
-      return <Navbar brand="White Plumeria" items={[{ href: '#docs', label: 'Docs', current: true }, { href: '#ai', label: 'AI' }]} />;
+      return (
+        <Navbar
+          brand="White Plumeria"
+          items={[
+            { href: '#docs', label: 'Docs', current: true },
+            { href: '#themes', label: 'Themes' },
+            { href: '#components', label: 'Components' },
+            { href: '#ai', label: 'AI' },
+          ]}
+        />
+      );
     case 'sidebar':
       return <Sidebar label="Docs" items={[{ href: '#button', label: 'Button', current: true }, { href: '#card', label: 'Card' }]} />;
     case 'navigation-menu':
@@ -382,6 +395,11 @@ export function renderDemo(slug: string): ReactNode {
     default:
       return <p>No live demo is registered for this slug.</p>;
   }
+}
+
+function DateRangeDemo() {
+  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18' });
+  return <DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={setRange} />;
 }
 
 function DrawerDemo() {

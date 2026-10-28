@@ -24,7 +24,7 @@
 }
 
 .wpl-drawer {
-  inline-size: min(22rem, 100vw);
+  inline-size: min(22rem, calc(100vw - 1.25rem));
   block-size: 100dvh;
   max-block-size: 100dvh;
   margin: 0;
@@ -84,7 +84,7 @@
 }
 
 .wpl-drawer-panel {
-  inline-size: min(22rem, 100vw);
+  inline-size: min(22rem, calc(100vw - 1.25rem));
   block-size: 100dvh;
   border-inline-start: 1px solid var(--wpl-color-border);
 }

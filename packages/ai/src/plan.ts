@@ -49,6 +49,7 @@ function detectIntent(prompt: string): string {
   if (/(settings|تنظیمات)/i.test(prompt)) return 'settings';
   if (/(empty|خالی)/i.test(prompt)) return 'empty';
   if (/(dialog|modal|گفتگو)/i.test(prompt)) return 'dialog';
+  if (/(range|بازه|start and end|from and to)/i.test(prompt)) return 'date-range';
   if (/(calendar|date|تاریخ|تقویم)/i.test(prompt)) return 'calendar';
   return 'general';
 }
@@ -130,6 +131,9 @@ const layouts: Record<string, PreviewNode[]> = {
   calendar: [
     { component: 'DatePicker', props: { label: 'From', value: '2026-10-27' } },
     { component: 'Calendar', props: { calendar: 'gregory' } },
+  ],
+  'date-range': [
+    { component: 'DateRangePicker', props: { label: 'Stay', start: '2026-10-12', end: '2026-10-18' } },
   ],
   general: [
     { component: 'PageHeader', props: { title: 'Composer', description: 'A small composition from the real catalog.' } },

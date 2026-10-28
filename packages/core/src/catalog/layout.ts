@@ -104,7 +104,7 @@ export const layoutCatalog: ComponentDoc[] = [
     events: [],
     a11y: ['header and nav. Toggle exposes aria-expanded and aria-controls. Current link uses aria-current.'],
     rtl: ['Menu collapses without flipping the page.'],
-    limitations: ['The collapse breakpoint is 48rem and is CSS, not a JS resize observer.'],
+    limitations: ['The menu collapses at a 48rem viewport or a 36rem container. It is CSS, not a resize observer.'],
     element: false,
     examples: examples('Navbar', {
       react: '<Navbar brand="White Plumeria" items={[{ href: "#docs", label: "Docs", current: true }]} />',
