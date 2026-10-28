@@ -1,0 +1,43 @@
+{
+  "name": "@white-plumeria/ai",
+  "version": "0.1.0",
+  "description": "Deterministic UI planning, theme generation, and code validation for White Plumeria. No API keys.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/ai"
+  },
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "ai", "design-system"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*",
+    "@white-plumeria/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "tsdown": "0.23.2",
+    "typescript": "catalog:"
+  }
+}

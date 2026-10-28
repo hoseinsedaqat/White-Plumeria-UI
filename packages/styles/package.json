@@ -1,0 +1,33 @@
+{
+  "name": "@white-plumeria/styles",
+  "version": "0.1.0",
+  "description": "Framework-agnostic CSS for White Plumeria. No Tailwind required.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/styles"
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/styles#readme",
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "css", "design-system", "rtl"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["src", "README.md"],
+  "exports": {
+    ".": "./src/index.css",
+    "./tokens": "./src/generated/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "style": "./src/index.css",
+  "scripts": {
+    "build": "node --experimental-strip-types ../../scripts/generate-tokens-css.mjs",
+    "typecheck": "node --experimental-strip-types ../../scripts/generate-tokens-css.mjs"
+  }
+}

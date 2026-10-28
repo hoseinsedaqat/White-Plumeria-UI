@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "types": ["vite/client", "react", "react-dom"],
+    "baseUrl": ".",
+    "paths": {
+      "@white-plumeria/ai": ["../../packages/ai/src/index.ts"],
+      "@white-plumeria/core": ["../../packages/core/src/index.ts"],
+      "@white-plumeria/react": ["../../packages/react/src/index.ts"],
+      "@white-plumeria/tokens": ["../../packages/tokens/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,30 @@
+import { describe, expect, it } from 'vitest';
+import { run } from './cli.ts';
+
+describe('wpl cli', () => {
+  it('prints help and rejects an unknown command', () => {
+    expect(run(['--help']).code).toBe(0);
+    expect(run(['--help']).stdout).toContain('wpl add');
+    const unknown = run(['explode']);
+    expect(unknown.code).toBe(2);
+    expect(unknown.stderr).toContain('Unknown command');
+  });
+
+  it('refuses an unknown component and does not copy source by default', () => {
+    const writes: string[] = [];
+    const missing = run(['add', 'MysteryWidget'], { write: (path) => writes.push(path) });
+    expect(missing.code).toBe(1);
+    expect(writes).toEqual([]);
+    const added = run(['add', 'button', '--framework', 'vue']);
+    expect(added.code).toBe(0);
+    expect(added.stdout).toContain('@white-plumeria/vue');
+    expect(added.stdout).toContain('does not copy');
+  });
+
+  it('doctor fails on an old Node and theme rejects an unknown name', () => {
+    expect(run(['doctor'], { nodeVersion: '18.0.0' }).code).toBe(1);
+    expect(run(['doctor'], { nodeVersion: '22.22.3' }).code).toBe(0);
+    expect(run(['theme', 'nope']).code).toBe(1);
+    expect(run(['theme', 'ivory']).stdout).toContain('--wpl-color-bg');
+  });
+});

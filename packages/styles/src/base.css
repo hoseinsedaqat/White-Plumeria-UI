@@ -1,0 +1,95 @@
+/*
+  White Plumeria base.
+  Nothing here styles bare elements such as button, input, or a.
+  Opt into the scoped reset with .wpl-reset. Opt into token inheritance with .wpl-root.
+*/
+
+.wpl-root {
+  color: var(--wpl-color-text);
+  background: var(--wpl-color-bg);
+  font-family: var(--wpl-font-sans);
+  font-size: var(--wpl-font-size-md);
+  line-height: var(--wpl-line-height-normal);
+  text-rendering: optimizeLegibility;
+}
+
+:lang(fa) {
+  --wpl-font-sans: "Vazirmatn", "Segoe UI", "Noto Sans Arabic", "Noto Naskh Arabic", sans-serif;
+  --wpl-font-display: "Vazirmatn", "Iowan Old Style", Palatino, Georgia, serif;
+  --wpl-line-height-normal: 1.8;
+  --wpl-line-height-relaxed: 1.95;
+}
+
+.wpl-reset {
+  box-sizing: border-box;
+}
+
+.wpl-reset *,
+.wpl-reset *::before,
+.wpl-reset *::after {
+  box-sizing: border-box;
+}
+
+.wpl-sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wpl-icon {
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  flex: none;
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
+.wpl-icon-dir {
+  transform: scaleX(1);
+}
+
+[dir="rtl"] .wpl-icon-dir {
+  transform: scaleX(-1);
+}
+
+:where(
+  .wpl-btn,
+  .wpl-icon-btn,
+  .wpl-input,
+  .wpl-textarea,
+  .wpl-select,
+  .wpl-check input,
+  .wpl-radio input,
+  .wpl-switch,
+  .wpl-slider,
+  .wpl-tab,
+  .wpl-accordion-trigger,
+  .wpl-menu-item,
+  .wpl-day,
+  .wpl-page,
+  .wpl-link
+):focus-visible {
+  outline: 2px solid var(--wpl-color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([class^="wpl-"], [class*=" wpl-"]) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[data-wpl-motion="reduce"] :where([class^="wpl-"], [class*=" wpl-"]) {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

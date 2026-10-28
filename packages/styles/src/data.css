@@ -1,0 +1,203 @@
+.wpl-table-wrap {
+  inline-size: 100%;
+  overflow: auto;
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
+}
+
+.wpl-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--wpl-font-size-sm);
+}
+
+.wpl-table caption {
+  caption-side: top;
+  padding: var(--wpl-space-3);
+  text-align: start;
+  font-weight: var(--wpl-font-weight-semibold);
+}
+
+.wpl-table th,
+.wpl-table td {
+  padding: var(--wpl-space-3);
+  text-align: start;
+  vertical-align: middle;
+  border-block-end: 1px solid var(--wpl-color-border);
+}
+
+.wpl-table th {
+  background: var(--wpl-color-bg-subtle);
+  font-size: var(--wpl-font-size-xs);
+  font-weight: var(--wpl-font-weight-semibold);
+  color: var(--wpl-color-text-muted);
+  white-space: nowrap;
+}
+
+.wpl-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.wpl-table tbody tr:hover {
+  background: var(--wpl-color-bg-subtle);
+}
+
+.wpl-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wpl-space-3);
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--wpl-space-3);
+}
+
+.wpl-sort {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wpl-space-1);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.wpl-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wpl-tree-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.wpl-tree-row {
+  display: flex;
+  align-items: center;
+  gap: var(--wpl-space-2);
+  min-block-size: 2.25rem;
+  padding-inline: var(--wpl-space-2);
+  border-radius: var(--wpl-radius-sm);
+  background: transparent;
+  color: var(--wpl-color-text);
+  border: 0;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.wpl-tree-row[aria-selected="true"] {
+  background: var(--wpl-color-primary-subtle);
+}
+
+.wpl-tree-children {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--wpl-space-4);
+  list-style: none;
+}
+
+.wpl-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpl-space-3);
+  inline-size: min(20rem, 100%);
+  padding: var(--wpl-space-3);
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
+}
+
+.wpl-calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wpl-space-2);
+}
+
+.wpl-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.wpl-calendar-weekday,
+.wpl-day {
+  display: grid;
+  place-items: center;
+  min-block-size: 2.25rem;
+  font-size: var(--wpl-font-size-xs);
+}
+
+.wpl-calendar-weekday {
+  color: var(--wpl-color-text-muted);
+  font-weight: var(--wpl-font-weight-semibold);
+}
+
+.wpl-day {
+  border: 0;
+  border-radius: var(--wpl-radius-sm);
+  background: transparent;
+  color: var(--wpl-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.wpl-day:hover:not(:disabled) {
+  background: var(--wpl-color-bg-muted);
+}
+
+.wpl-day[aria-selected="true"] {
+  background: var(--wpl-color-primary);
+  color: var(--wpl-color-primary-fg);
+}
+
+.wpl-day[aria-current="date"] {
+  box-shadow: inset 0 0 0 1px var(--wpl-color-accent);
+}
+
+.wpl-day:disabled {
+  color: var(--wpl-color-disabled-fg);
+  cursor: not-allowed;
+}
+
+.wpl-day-outside {
+  color: var(--wpl-color-text-subtle);
+}
+
+.wpl-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpl-space-3);
+}
+
+.wpl-chart-bar {
+  display: grid;
+  grid-template-columns: minmax(5rem, 8rem) 1fr auto;
+  gap: var(--wpl-space-3);
+  align-items: center;
+  font-size: var(--wpl-font-size-sm);
+}
+
+.wpl-chart-track {
+  block-size: 0.5rem;
+  border-radius: var(--wpl-radius-full);
+  background: var(--wpl-color-bg-muted);
+  overflow: hidden;
+}
+
+.wpl-chart-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--wpl-color-primary);
+}
+
+.wpl-chart-table {
+  inline-size: 100%;
+}

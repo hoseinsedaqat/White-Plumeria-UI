@@ -1,0 +1,215 @@
+import { planFromPrompt, type PlanResult, type PreviewNode } from '@white-plumeria/ai';
+import {
+  Alert,
+  Badge,
+  Button,
+  Calendar,
+  Card,
+  ChartContainer,
+  DatePicker,
+  EmptyState,
+  Input,
+  PageHeader,
+  Select,
+  StatCard,
+  Switch,
+  useWhitePlumeria,
+} from '@white-plumeria/react';
+import { useState } from 'react';
+import { CodeBlock } from '../copy.tsx';
+import { A, useRoute } from '../router.tsx';
+
+const starter = 'یک داشبورد مدیریت مالی با تم تاریک، کارت‌های آماری و جدول تراکنش‌ها بساز.';
+
+export function AiPage() {
+  const { locale, setPreferences } = useWhitePlumeria();
+  const { navigate } = useRoute();
+  const [prompt, setPrompt] = useState(starter);
+  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'html'>('react');
+  const [error, setError] = useState('');
+  const [plan, setPlan] = useState<PlanResult | null>(null);
+
+  function run() {
+    try {
+      const next = planFromPrompt({ prompt, locale });
+      setPlan(next);
+      setError('');
+      if (next.analysis.theme) setPreferences({ theme: next.analysis.theme });
+      if (next.analysis.appearance) setPreferences({ appearance: next.analysis.appearance });
+      if (next.analysis.locale === 'fa') setPreferences({ locale: 'fa', direction: 'rtl' });
+    } catch (caught) {
+      setPlan(null);
+      setError(caught instanceof Error ? caught.message : 'Planning failed.');
+    }
+  }
+
+  return (
+    <article>
+      <p className="docs-kicker">Local planner</p>
+      <h1 className="docs-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)' }}>
+        {locale === 'fa' ? 'کارگاه، بدون کلید' : 'Studio without a key'}
+      </h1>
+      <p className="docs-lede">
+        {locale === 'fa'
+          ? 'این صفحه مدل ابری صدا نمی‌زند. طرح را از کاتالوگ واقعی می‌سازد و کد را اجرا نمی‌کند.'
+          : 'This page does not call a cloud model. It plans from the real catalog and does not execute generated code.'}
+      </p>
+      <label className="wpl-label" htmlFor="ai-prompt">
+        Prompt
+      </label>
+      <textarea id="ai-prompt" className="wpl-textarea" rows={4} value={prompt} onChange={(event) => setPrompt(event.currentTarget.value)} />
+      <div className="wpl-cluster" style={{ marginBlock: '0.8rem' }}>
+        <Button onClick={run}>{locale === 'fa' ? 'تحلیل کن' : 'Plan'}</Button>
+        <span className="wpl-muted">LocalDeterministicProvider</span>
+      </div>
+      {error ? (
+        <Alert variant="danger" title="Planner error">
+          {error}
+        </Alert>
+      ) : null}
+      {plan ? (
+        <div className="docs-section">
+          <h2>{locale === 'fa' ? 'پیشنهادها' : 'Recommendations'}</h2>
+          <ul>
+            {plan.analysis.recommendations.map((item) => (
+              <li key={item.slug}>
+                <A href={`/components/${item.slug}`} onNavigate={navigate}>
+                  {item.component}
+                </A>{' '}
+                — {locale === 'fa' ? item.reasonFa : item.reason}
+              </li>
+            ))}
+          </ul>
+          <h2>{locale === 'fa' ? 'پیش‌نمایش امن' : 'Safe preview'}</h2>
+          <div className="docs-stage">
+            <Preview nodes={plan.layout.nodes} />
+          </div>
+          <div className="docs-tabs">
+            {(['react', 'vue', 'svelte', 'html'] as const).map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={framework === item ? 'wpl-btn wpl-btn-primary wpl-btn-sm' : 'wpl-btn wpl-btn-ghost wpl-btn-sm'}
+                onClick={() => setFramework(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          <CodeBlock code={plan.code[framework].files[0]?.contents ?? ''} />
+          <p>
+            Validation:{' '}
+            {plan.validation[framework].ok ? (
+              <Badge variant="success">passed</Badge>
+            ) : (
+              <Badge variant="danger">failed</Badge>
+            )}
+          </p>
+          {plan.validation[framework].errors.map((item) => (
+            <p key={item} className="wpl-field-error" role="alert">
+              {item}
+            </p>
+          ))}
+          <h2>Limitations</h2>
+          <ul>
+            {plan.analysis.limitations.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
+function Preview({ nodes }: { nodes: PreviewNode[] }) {
+  return (
+    <div className="wpl-stack">
+      {nodes.map((node, index) => (
+        <PreviewNodeView key={`${node.component}-${index}`} node={node} />
+      ))}
+    </div>
+  );
+}
+
+function textProp(node: PreviewNode, key: string, fallback = ''): string {
+  const value = node.props?.[key];
+  return value === undefined ? fallback : String(value);
+}
+
+function PreviewNodeView({ node }: { node: PreviewNode }) {
+  if (node.component === 'PageHeader') {
+    return <PageHeader title={textProp(node, 'title', 'Untitled')} description={textProp(node, 'description')} />;
+  }
+  if (node.component === 'StatCard') {
+    return <StatCard label={textProp(node, 'label')} value={textProp(node, 'value')} hint={textProp(node, 'hint')} />;
+  }
+  if (node.component === 'Grid') {
+    return (
+      <div className="wpl-grid wpl-grid-3">
+        {node.children?.map((child, index) => (
+          <PreviewNodeView key={index} node={child} />
+        ))}
+      </div>
+    );
+  }
+  if (node.component === 'Alert') {
+    return (
+      <Alert variant="info" title={textProp(node, 'title', 'Note')}>
+        {node.text}
+      </Alert>
+    );
+  }
+  if (node.component === 'Card') {
+    return (
+      <Card title={textProp(node, 'title')} description={textProp(node, 'description')}>
+        {node.text}
+        {node.children?.map((child, index) => (
+          <PreviewNodeView key={index} node={child} />
+        ))}
+      </Card>
+    );
+  }
+  if (node.component === 'Button') return <Button>{node.text ?? 'Action'}</Button>;
+  if (node.component === 'Badge') return <Badge>{node.text ?? 'Sample'}</Badge>;
+  if (node.component === 'Input') return <Input placeholder={textProp(node, 'placeholder', 'Sample')} />;
+  if (node.component === 'Switch') return <Switch label={textProp(node, 'label', 'Setting')} />;
+  if (node.component === 'Select') {
+    return <Select aria-label={textProp(node, 'label', 'Select')} options={[{ value: 'ivory', label: 'Ivory' }]} />;
+  }
+  if (node.component === 'FormField') {
+    return (
+      <p className="wpl-muted">
+        FormField “{textProp(node, 'label', 'Field')}” is planned. The input beside it is the real control.
+      </p>
+    );
+  }
+  if (node.component === 'EmptyState') {
+    return (
+      <EmptyState title={textProp(node, 'title', 'Empty')} description={textProp(node, 'description')}>
+        {node.children?.map((child, index) => (
+          <PreviewNodeView key={index} node={child} />
+        ))}
+      </EmptyState>
+    );
+  }
+  if (node.component === 'ChartContainer') {
+    return (
+      <ChartContainer
+        title={textProp(node, 'title', 'Sample volume')}
+        description="Fixture values for the preview, not live metrics."
+        data={[
+          { label: 'Mon', value: 12 },
+          { label: 'Tue', value: 18 },
+          { label: 'Wed', value: 9 },
+        ]}
+      />
+    );
+  }
+  if (node.component === 'DatePicker') return <DatePicker label={textProp(node, 'label', 'Date')} value={textProp(node, 'value')} />;
+  if (node.component === 'Calendar') return <Calendar />;
+  if (node.component === 'Dialog') {
+    return <Alert title={textProp(node, 'title', 'Dialog')}>{node.text} Open the Dialog catalog page to trap focus.</Alert>;
+  }
+  return <p className="wpl-muted">{node.component} is in the plan. Open its catalog page for the interactive demo.</p>;
+}
