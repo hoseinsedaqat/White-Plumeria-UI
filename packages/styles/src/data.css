@@ -51,7 +51,27 @@
   gap: var(--wpl-space-3);
   align-items: center;
   justify-content: space-between;
+  min-inline-size: 0;
   margin-block-end: var(--wpl-space-3);
+}
+
+.wpl-data-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpl-space-3);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  container-type: inline-size;
+}
+
+.wpl-data-table .wpl-input {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.wpl-sort-mark {
+  color: var(--wpl-color-primary);
+  font-size: 0.75em;
 }
 
 .wpl-sort {
@@ -172,6 +192,36 @@
   color: var(--wpl-color-text-subtle);
 }
 
+.wpl-day-range {
+  background: var(--wpl-color-primary-subtle);
+  color: var(--wpl-color-primary);
+}
+
+.wpl-date {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpl-space-2);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.wpl-date-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wpl-space-2);
+  min-inline-size: 0;
+}
+
+.wpl-date-row > .wpl-field {
+  flex: 1 1 9rem;
+  min-inline-size: 0;
+}
+
+.wpl-date .wpl-calendar {
+  inline-size: min(20rem, 100%);
+  max-inline-size: 100%;
+}
+
 .wpl-chart {
   display: flex;
   flex-direction: column;
@@ -202,4 +252,53 @@
 
 .wpl-chart-table {
   inline-size: 100%;
+}
+
+.wpl-sort-field {
+  display: none;
+  min-inline-size: 0;
+}
+
+.wpl-sort-field .wpl-select {
+  min-inline-size: 8rem;
+}
+
+@container (max-width: 36rem) {
+  .wpl-sort-field {
+    display: block;
+  }
+
+  .wpl-data-table .wpl-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .wpl-data-table .wpl-table,
+  .wpl-data-table .wpl-table tbody,
+  .wpl-data-table .wpl-table tr,
+  .wpl-data-table .wpl-table td {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .wpl-data-table .wpl-table tr {
+    padding-block: var(--wpl-space-2);
+    border-block-end: 1px solid var(--wpl-color-border);
+  }
+
+  .wpl-data-table .wpl-table td {
+    border-block-end: 0;
+  }
+
+  .wpl-data-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-block-end: 0.15rem;
+    color: var(--wpl-color-text-muted);
+    font-size: var(--wpl-font-size-xs);
+    font-weight: var(--wpl-font-weight-semibold);
+  }
 }

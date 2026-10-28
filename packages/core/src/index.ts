@@ -105,14 +105,19 @@ export {
   gregorianToJalali,
   isJalaliLeap,
   jalaliToGregorian,
+  calendarDayClass,
+  compareDays,
+  isWithinRange,
+  orderDateRange,
   parseIsoDate,
   sameDay,
   startOfDay,
   toDate,
+  toIsoDate,
   toParts,
   weekdayLabels,
 } from './calendar.ts';
-export type { CalendarCell, CalendarSystem, DateParts, MonthGrid } from './calendar.ts';
+export type { CalendarCell, CalendarSystem, DateParts, DateRangeValue, MonthGrid } from './calendar.ts';
 export { queryTable, toggleSort } from './table.ts';
 export type { ColumnSpec, TableQuery, TableResult } from './table.ts';
 export { directionalIcons, iconPaths } from './icons.ts';

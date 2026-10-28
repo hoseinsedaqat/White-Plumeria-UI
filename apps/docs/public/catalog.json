@@ -134,7 +134,7 @@
   {
     "name": "DataTable",
     "slug": "data-table",
-    "summary": "Client-side sort, filter, and pagination over the rows you pass.",
+    "summary": "Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.",
     "summaryFa": "مرتب‌سازی، فیلتر و صفحه‌بندی سمت کاربر روی ردیف‌هایی که می‌دهید.",
     "limitations": [
       "Client-side only. No virtualization and no server cursor mode in 0.1.0."
@@ -146,7 +146,16 @@
     "summary": "Text field plus calendar popover. Accepts ISO dates.",
     "summaryFa": "فیلد متن به‌علاوهٔ تقویم. تاریخ ISO را می‌پذیرد.",
     "limitations": [
-      "Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. No date range."
+      "Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. Use DateRangePicker for a start and end date."
+    ]
+  },
+  {
+    "name": "DateRangePicker",
+    "slug": "date-range-picker",
+    "summary": "Start and end dates, ordered even if the later day is chosen first.",
+    "summaryFa": "تاریخ شروع و پایان. اگر روز بعدی اول انتخاب شود هم مرتب می‌شود.",
+    "limitations": [
+      "No time of day. Values are Gregorian ISO dates, not Jalali strings. The first open selection sets the start; the next sets the end."
     ]
   },
   {
@@ -295,7 +304,7 @@
     "summary": "Sticky header with a collapsible menu.",
     "summaryFa": "سربرگ چسبان با منوی جمع‌شو.",
     "limitations": [
-      "The collapse breakpoint is 48rem and is CSS, not a JS resize observer."
+      "The menu collapses at a 48rem viewport or a 36rem container. It is CSS, not a resize observer."
     ]
   },
   {

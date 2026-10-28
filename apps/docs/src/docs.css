@@ -316,9 +316,11 @@ body {
 
 .docs-home {
   width: 100%;
-  max-width: none;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   padding: 0 0 4rem;
+  overflow-x: clip;
 }
 
 .docs-kicker {
@@ -662,9 +664,13 @@ body {
 }
 
 .docs-canvas > .wpl-carousel,
-.docs-tile-preview > .wpl-carousel {
+.docs-tile-preview > .wpl-carousel,
+.docs-canvas > .wpl-navbar,
+.docs-canvas > .wpl-data-table,
+.docs-canvas > .wpl-date {
   flex: 1 1 100%;
   width: 100%;
+  min-width: 0;
 }
 
 .docs-tile-preview .wpl-carousel-caption span {

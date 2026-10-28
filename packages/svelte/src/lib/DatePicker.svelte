@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatDate, parseIsoDate, type CalendarSystem } from '@white-plumeria/core';
+  import { formatDate, parseIsoDate, toIsoDate, type CalendarSystem } from '@white-plumeria/core';
   import Calendar from './Calendar.svelte';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
@@ -27,7 +27,7 @@
   let picked = $state<Date | null>(null);
 
   function iso(date: Date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return toIsoDate(date);
   }
 
   $effect(() => {
@@ -47,7 +47,7 @@
       return;
     }
     if (!parseIsoDate(next)) {
-      error = wpl.preferences.locale === 'fa' ? 'تاریخ باید به شکل YYYY-MM-DD باشد.' : 'Use an ISO date: YYYY-MM-DD.';
+      error = wpl.t('invalidDate');
       return;
     }
     error = '';
@@ -55,7 +55,7 @@
   }
 </script>
 
-<div class="wpl-field">
+<div class="wpl-date">
   <label class="wpl-label" for={id}>{label}</label>
   <div class="wpl-flex">
     <input

@@ -21,8 +21,9 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - CommandPalette (command-palette): Keyboard-first command list inside a dialog.
 - Container (container): Centered content width.
 - ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10.
-- DataTable (data-table): Client-side sort, filter, and pagination over the rows you pass.
+- DataTable (data-table): Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.
 - DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
+- DateRangePicker (date-range-picker): Start and end dates, ordered even if the later day is chosen first.
 - Dialog (dialog): Modal dialog with focus management and escape to close.
 - Divider (divider): Horizontal rule, optionally with a label.
 - Drawer (drawer): Side dialog for navigation or filters.

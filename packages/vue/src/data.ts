@@ -30,7 +30,8 @@ export const DataTable = defineComponent({
     pageSize: { type: Number, default: 8 },
     filterable: { type: Boolean, default: true },
   },
-  setup(props) {
+  emits: ['sort-change'],
+  setup(props, { emit }) {
     const { t, locale } = useWhitePlumeria();
     const filter = ref('');
     const sortId = ref<string | undefined>();
@@ -51,8 +52,13 @@ export const DataTable = defineComponent({
         pageSize: props.pageSize,
       });
     });
+    function applySort(next: { sortId?: string; sortDirection: 'asc' | 'desc' }) {
+      sortId.value = next.sortId;
+      sortDirection.value = next.sortDirection;
+      emit('sort-change', next);
+    }
     return () =>
-      h('div', [
+      h('div', { class: 'wpl-data-table' }, [
         props.filterable
           ? h('div', { class: 'wpl-table-toolbar' }, [
               h(SearchInput, {
@@ -63,6 +69,22 @@ export const DataTable = defineComponent({
                   page.value = 1;
                 },
               }),
+              h('label', { class: 'wpl-sort-field' }, [
+                h('span', { class: 'wpl-sr-only' }, t('sort')),
+                h(
+                  'select',
+                  {
+                    class: 'wpl-select',
+                    value: sortId.value ?? '',
+                    onChange: (event: Event) =>
+                      applySort({ sortId: (event.target as HTMLSelectElement).value || undefined, sortDirection: 'asc' }),
+                  },
+                  [
+                    h('option', { value: '' }, t('sort')),
+                    ...props.columns.map((column) => h('option', { key: column.id, value: column.id }, column.header)),
+                  ],
+                ),
+              ]),
               h('span', { class: 'wpl-muted' }, `${formatNumber(result.value.total, locale.value)} ${t('rows')}`),
             ])
           : null,
@@ -80,13 +102,13 @@ export const DataTable = defineComponent({
                       {
                         type: 'button',
                         class: 'wpl-sort',
-                        onClick: () => {
-                          const next = toggleSort({ sortId: sortId.value, sortDirection: sortDirection.value }, column.id);
-                          sortId.value = next.sortId;
-                          sortDirection.value = next.sortDirection;
-                        },
+                        onClick: () => applySort(toggleSort({ sortId: sortId.value, sortDirection: sortDirection.value }, column.id)),
                       },
-                      [column.header, h('span', { class: 'wpl-sr-only' }, t('sort'))],
+                      [
+                        column.header,
+                        active ? h('span', { class: 'wpl-sort-mark' }, sortDirection.value === 'asc' ? '↑' : '↓') : null,
+                        h('span', { class: 'wpl-sr-only' }, t('sort')),
+                      ],
                     ),
                   ]);
                 }),
@@ -100,7 +122,7 @@ export const DataTable = defineComponent({
                     h(
                       'tr',
                       { key: index },
-                      props.columns.map((column) => h('td', { key: column.id }, column.accessor(row))),
+                      props.columns.map((column) => h('td', { key: column.id, 'data-label': column.header }, column.accessor(row))),
                     ),
                   ),
             ),

@@ -18,11 +18,13 @@
     columns,
     rows,
     pageSize = 8,
+    onsortchange,
   }: {
     caption: string;
     columns: Column[];
     rows: Record<string, unknown>[];
     pageSize?: number;
+    onsortchange?: (sort: { sortId?: string; sortDirection: 'asc' | 'desc' }) => void;
   } = $props();
 
   const wpl = useWhitePlumeria();
@@ -41,9 +43,26 @@
   });
 </script>
 
-<div>
+<div class="wpl-data-table">
   <div class="wpl-table-toolbar">
     <SearchInput label={wpl.t('search')} bind:value={filter} />
+    <label class="wpl-sort-field">
+      <span class="wpl-sr-only">{wpl.t('sort')}</span>
+      <select
+        class="wpl-select"
+        value={sortId ?? ''}
+        onchange={(event) => {
+          sortId = (event.currentTarget as HTMLSelectElement).value || undefined;
+          sortDirection = 'asc';
+          onsortchange?.({ sortId, sortDirection });
+        }}
+      >
+        <option value="">{wpl.t('sort')}</option>
+        {#each columns as column (column.id)}
+          <option value={column.id}>{column.header}</option>
+        {/each}
+      </select>
+    </label>
     <span class="wpl-muted">{formatNumber(result.total, wpl.preferences.locale)} {wpl.t('rows')}</span>
   </div>
   <div class="wpl-table-wrap">
@@ -60,9 +79,11 @@
                   const next = toggleSort({ sortId, sortDirection }, column.id);
                   sortId = next.sortId;
                   sortDirection = next.sortDirection;
+                  onsortchange?.(next);
                 }}
               >
                 {column.header}
+                {#if sortId === column.id}<span class="wpl-sort-mark">{sortDirection === 'asc' ? '↑' : '↓'}</span>{/if}
               </button>
             </th>
           {/each}
@@ -75,7 +96,7 @@
           {#each result.rows as row, index (index)}
             <tr>
               {#each columns as column (column.id)}
-                <td>{column.accessor(row)}</td>
+                <td data-label={column.header}>{column.accessor(row)}</td>
               {/each}
             </tr>
           {/each}

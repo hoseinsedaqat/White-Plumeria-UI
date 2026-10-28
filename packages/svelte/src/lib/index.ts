@@ -16,6 +16,7 @@ export { default as Container } from './Container.svelte';
 export { default as ContextMenu } from './ContextMenu.svelte';
 export { default as DataTable } from './DataTable.svelte';
 export { default as DatePicker } from './DatePicker.svelte';
+export { default as DateRangePicker } from './DateRangePicker.svelte';
 export { default as Dialog } from './Dialog.svelte';
 export { default as Divider } from './Divider.svelte';
 export { default as Drawer } from './Drawer.svelte';

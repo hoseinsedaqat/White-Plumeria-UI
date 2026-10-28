@@ -1,9 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { Carousel } from './carousel.tsx';
+import { DataTable } from './data.tsx';
 import { OtpField, PasswordField, Rating } from './fields.tsx';
 import { Kbd } from './kbd.tsx';
+import { Navbar } from './layout.tsx';
 import { Steps } from './steps.tsx';
 
 const steps = [
@@ -13,6 +16,53 @@ const steps = [
 ];
 
 describe('new controls', () => {
+  it('orders a date range and rejects a non-ISO day in English', async () => {
+    const user = userEvent.setup();
+    let range = { start: '', end: '' };
+    const view = render(<DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={(next) => (range = next)} />);
+    await user.click(screen.getByRole('button', { name: 'Choose date' }));
+    await user.click(screen.getByRole('gridcell', { name: /October 20, 2026/ }));
+    await user.click(screen.getByRole('gridcell', { name: /October 12, 2026/ }));
+    expect(range).toEqual({ start: '2026-10-12', end: '2026-10-20' });
+    view.rerender(<DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={(next) => (range = next)} />);
+    await user.clear(screen.getByLabelText('Start'));
+    await user.type(screen.getByLabelText('Start'), '2026-13-01');
+    expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+  });
+
+  it('rejects an invalid single date in English', async () => {
+    const user = userEvent.setup();
+    render(<DatePicker label="From" />);
+    await user.type(screen.getByLabelText('From'), 'nope');
+    expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+  });
+
+  it('opens the navbar menu and names the toggle', async () => {
+    const user = userEvent.setup();
+    render(<Navbar brand="White Plumeria" items={[{ href: '#docs', label: 'Docs', current: true }]} />);
+    const toggle = screen.getByRole('button', { name: 'Open menu' });
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    await user.click(toggle);
+    expect(screen.getByRole('button', { name: 'Close menu' }).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('labels data table cells and sorts from the header', async () => {
+    const user = userEvent.setup();
+    render(
+      <DataTable
+        caption="Sample transactions"
+        rows={[{ id: 'b', merchant: 'Beta' }, { id: 'a', merchant: 'Alpha' }]}
+        columns={[
+          { id: 'id', header: 'ID', accessor: (row) => row.id, text: (row) => row.id },
+          { id: 'merchant', header: 'Merchant', accessor: (row) => row.merchant, text: (row) => row.merchant },
+        ]}
+      />,
+    );
+    expect(screen.getAllByRole('cell')[1]?.getAttribute('data-label')).toBe('Merchant');
+    await user.click(screen.getByRole('button', { name: /Merchant/ }));
+    expect(screen.getAllByRole('cell')[1]?.textContent).toContain('Alpha');
+  });
+
   it('blocks a future step until the current value moves', async () => {
     const user = userEvent.setup();
     let value = 'account';

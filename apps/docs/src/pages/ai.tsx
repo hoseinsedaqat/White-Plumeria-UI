@@ -7,6 +7,7 @@ import {
   Card,
   ChartContainer,
   DatePicker,
+  DateRangePicker,
   EmptyState,
   Input,
   PageHeader,
@@ -203,6 +204,15 @@ function PreviewNodeView({ node }: { node: PreviewNode }) {
     );
   }
   if (node.component === 'DatePicker') return <DatePicker label={textProp(node, 'label', 'Date')} value={textProp(node, 'value')} />;
+  if (node.component === 'DateRangePicker') {
+    return (
+      <DateRangePicker
+        label={textProp(node, 'label', 'Stay')}
+        start={textProp(node, 'start', '2026-10-12')}
+        end={textProp(node, 'end', '2026-10-18')}
+      />
+    );
+  }
   if (node.component === 'Calendar') return <Calendar />;
   if (node.component === 'Dialog') {
     return <Alert title={textProp(node, 'title', 'Dialog')}>{node.text} Open the Dialog catalog page to trap focus.</Alert>;

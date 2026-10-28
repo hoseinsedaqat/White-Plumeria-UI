@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { addMonths, buildMonthGrid, formatNumber, sameDay, toParts, type CalendarSystem } from '@white-plumeria/core';
+  import { addMonths, buildMonthGrid, calendarDayClass, formatNumber, sameDay, toParts, type CalendarSystem } from '@white-plumeria/core';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
 
@@ -9,12 +9,16 @@
     locale = '',
     min = null,
     max = null,
+    rangeStart = null,
+    rangeEnd = null,
   }: {
     value?: Date | null;
     calendar?: CalendarSystem;
     locale?: '' | 'en' | 'fa';
     min?: Date | null;
     max?: Date | null;
+    rangeStart?: Date | null;
+    rangeEnd?: Date | null;
   } = $props();
 
   const wpl = useWhitePlumeria();
@@ -46,9 +50,9 @@
       <button
         type="button"
         role="gridcell"
-        class={cell.inMonth ? 'wpl-day' : 'wpl-day wpl-day-outside'}
+        class={calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart, rangeEnd })}
         disabled={cell.disabled}
-        aria-selected={value ? sameDay(value, cell.date) : undefined}
+        aria-selected={(value && sameDay(value, cell.date)) || (rangeStart && sameDay(rangeStart, cell.date)) || (rangeEnd && sameDay(rangeEnd, cell.date)) ? true : undefined}
         aria-current={sameDay(today, cell.date) ? 'date' : undefined}
         aria-label={cell.label}
         onclick={() => (value = cell.date)}
