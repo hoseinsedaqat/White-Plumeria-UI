@@ -8,6 +8,7 @@ import {
   Button,
   ButtonGroup,
   Calendar,
+  Carousel,
   Card,
   ChartContainer,
   Checkbox,
@@ -29,6 +30,7 @@ import {
   FormMessage,
   Grid,
   IconButton,
+  Kbd,
   Input,
   Label,
   Link,
@@ -37,10 +39,13 @@ import {
   NavigationMenu,
   Notification,
   PageHeader,
+  OtpField,
   Pagination,
+  PasswordField,
   Popover,
   Progress,
   RadioGroup,
+  Rating,
   SearchInput,
   Select,
   Separator,
@@ -49,6 +54,7 @@ import {
   Slider,
   Spinner,
   SplitPane,
+  Steps,
   Stack,
   StatCard,
   Switch,
@@ -294,6 +300,27 @@ export function renderDemo(slug: string): ReactNode {
       );
     case 'split-pane':
       return <SplitPane label="Resize editor" start={<p>Notes</p>} end={<p>Preview</p>} />;
+    case 'steps':
+      return <StepsDemo />;
+    case 'carousel':
+      return (
+        <Carousel
+          label="Product tour"
+          slides={[
+            { id: 'themes', label: 'Themes', content: 'White, Ivory, Ink, Saffron, Lagoon, and Blush. Each has light and dark.' },
+            { id: 'frameworks', label: 'Frameworks', content: 'React, Vue, and Svelte share one catalog and one set of class names.' },
+            { id: 'css', label: 'CSS', content: 'Prefixed CSS. Tailwind is not required.' },
+          ]}
+        />
+      );
+    case 'password-field':
+      return <PasswordField label="Password" name="password" />;
+    case 'otp-field':
+      return <OtpField label="Verification code" name="code" length={6} />;
+    case 'rating':
+      return <Rating label="Workspace quality" name="quality" defaultValue={4} />;
+    case 'kbd':
+      return <Kbd keys={['Ctrl', 'K']} />;
     default:
       return <p>No live demo is registered for this slug.</p>;
   }
@@ -329,6 +356,32 @@ function CommandDemo() {
         ]}
       />
     </>
+  );
+}
+
+const checkoutSteps = [
+  { id: 'account', title: 'Account', description: 'Email and name' },
+  { id: 'billing', title: 'Billing', description: 'Payment method' },
+  { id: 'review', title: 'Review', description: 'Confirm the sample' },
+];
+
+function StepsDemo() {
+  const [value, setValue] = useState('account');
+  const index = checkoutSteps.findIndex((item) => item.id === value);
+  const next = checkoutSteps[index + 1];
+  const previous = checkoutSteps[index - 1];
+  return (
+    <div className="wpl-stack" style={{ width: '100%' }}>
+      <Steps label="Checkout" items={checkoutSteps} value={value} onValueChange={setValue} />
+      <div className="wpl-flex">
+        <Button variant="outline" size="sm" disabled={!previous} onClick={() => previous && setValue(previous.id)}>
+          Back
+        </Button>
+        <Button size="sm" disabled={!next} onClick={() => next && setValue(next.id)}>
+          Next
+        </Button>
+      </div>
+    </div>
   );
 }
 

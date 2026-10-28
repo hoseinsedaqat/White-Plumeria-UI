@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Button, Switch, WhitePlumeriaProvider } from './index.ts';
+import { Button, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
   it('does not activate a loading button', async () => {
@@ -48,5 +48,26 @@ describe('vue adapter', () => {
     await user.click(control);
     expect(checked.value).toBe(true);
     expect(control).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('renders steps and disables a future step', () => {
+    render(
+      defineComponent({
+        setup() {
+          return () =>
+            h(WhitePlumeriaProvider, () =>
+              h(Steps, {
+                label: 'Checkout',
+                items: [
+                  { id: 'account', title: 'Account' },
+                  { id: 'billing', title: 'Billing' },
+                ],
+                modelValue: 'account',
+              }),
+            );
+        },
+      }),
+    );
+    expect(screen.getByRole('button', { name: /Billing/ }).hasAttribute('disabled')).toBe(true);
   });
 });

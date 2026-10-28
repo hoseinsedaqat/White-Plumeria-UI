@@ -1,6 +1,8 @@
 export { Accordion, Tabs } from './disclosure.ts';
 export type { AccordionItem, TabItem } from './disclosure.ts';
 export { Button, ButtonGroup, IconButton } from './button.ts';
+export { Carousel } from './carousel.ts';
+export type { CarouselSlide } from './carousel.ts';
 export { Calendar, DatePicker } from './calendar.ts';
 export { Combobox } from './combobox.ts';
 export type { ComboOption } from './combobox.ts';
@@ -39,8 +41,10 @@ export {
   Textarea,
   ValidationMessage,
 } from './form.ts';
+export { OtpField, PasswordField, Rating } from './fields.ts';
 export type { SelectOption } from './form.ts';
 export { Icon, Mark } from './icon.ts';
+export { Kbd } from './kbd.ts';
 export {
   Container,
   Flex,
@@ -59,4 +63,6 @@ export { ContextMenu, DropdownMenu, Popover, Tooltip } from './menu.ts';
 export type { MenuItem } from './menu.ts';
 export { useWhitePlumeria, WhitePlumeriaProvider } from './provider.ts';
 export type { ToastInput, ToastRecord } from './provider.ts';
+export { Steps } from './steps.ts';
+export type { StepItem } from './steps.ts';
 export { Notification } from './toast.ts';

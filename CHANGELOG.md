@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Button sizes `xs` and `xl`, appearances `soft` and `dash`, and status variants `success`, `warning`, and `info`
+- Steps, Carousel (content slider, distinct from the range Slider), PasswordField, OtpField, Rating, and Kbd
+- These are in the catalog and the React, Vue, and Svelte adapters. They are not published to npm.
+
 ## 0.1.0
 
 First implementation in this repository. Not published to npm.

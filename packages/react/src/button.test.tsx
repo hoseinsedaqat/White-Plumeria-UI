@@ -21,4 +21,19 @@ describe('react button', () => {
     await user.click(button);
     expect(clicks).toBe(0);
   });
+
+  it('applies soft, dash, and the extra sizes', () => {
+    render(
+      <WhitePlumeriaProvider>
+        <Button appearance="soft" size="xs">
+          Soft
+        </Button>
+        <Button appearance="dash" size="xl" variant="danger">
+          Dash
+        </Button>
+      </WhitePlumeriaProvider>,
+    );
+    expect(screen.getByRole('button', { name: 'Soft' })).toHaveClass('wpl-btn-soft', 'wpl-btn-xs');
+    expect(screen.getByRole('button', { name: 'Dash' })).toHaveClass('wpl-btn-dash', 'wpl-btn-xl', 'wpl-btn-danger');
+  });
 });

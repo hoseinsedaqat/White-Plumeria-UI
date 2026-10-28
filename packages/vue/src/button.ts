@@ -1,4 +1,4 @@
-import { buttonClassName, buttonGroupClassName, iconButtonClassName, type ButtonVariant, type ControlSize } from '@white-plumeria/core';
+import { buttonClassName, buttonGroupClassName, iconButtonClassName, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
 import { defineComponent, h, type PropType } from 'vue';
 import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
@@ -9,7 +9,8 @@ export const Button = defineComponent({
   inheritAttrs: false,
   props: {
     variant: { type: String as PropType<ButtonVariant>, default: 'primary' },
-    size: { type: String as PropType<ControlSize>, default: 'md' },
+    size: { type: String as PropType<ButtonSize>, default: 'md' },
+    appearance: { type: String as PropType<ButtonAppearance>, default: 'solid' },
     loading: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
@@ -28,6 +29,7 @@ export const Button = defineComponent({
             buttonClassName({
               variant: props.variant,
               size: props.size,
+              appearance: props.appearance,
               loading: props.loading,
               block: props.block,
             }),
@@ -59,7 +61,8 @@ export const IconButton = defineComponent({
   props: {
     label: { type: String, required: true },
     variant: { type: String as PropType<ButtonVariant>, default: 'ghost' },
-    size: { type: String as PropType<ControlSize>, default: 'md' },
+    size: { type: String as PropType<ButtonSize>, default: 'md' },
+    appearance: { type: String as PropType<ButtonAppearance>, default: 'solid' },
   },
   setup(props, { slots, attrs }) {
     return () =>
@@ -68,7 +71,7 @@ export const IconButton = defineComponent({
         {
           ...attrs,
           type: 'button',
-          class: mergeClass(iconButtonClassName({ variant: props.variant, size: props.size }), attrs.class),
+          class: mergeClass(iconButtonClassName({ variant: props.variant, size: props.size, appearance: props.appearance }), attrs.class),
           'aria-label': props.label,
           onClick: (event: MouseEvent) => callListener(attrs.onClick, event),
         },

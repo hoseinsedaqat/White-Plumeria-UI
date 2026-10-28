@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { buttonClassName, type ButtonVariant, type ControlSize } from '@white-plumeria/core';
+  import { buttonClassName, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
   import type { Snippet } from 'svelte';
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import { useWhitePlumeria } from './context.svelte.ts';
 
   interface Props extends Omit<HTMLButtonAttributes, 'class'> {
     variant?: ButtonVariant;
-    size?: ControlSize;
+    size?: ButtonSize;
+    appearance?: ButtonAppearance;
     loading?: boolean;
     block?: boolean;
     class?: string;
@@ -16,6 +17,7 @@
   let {
     variant = 'primary',
     size = 'md',
+    appearance = 'solid',
     loading = false,
     block = false,
     disabled = false,
@@ -33,7 +35,7 @@
 <button
   {...rest}
   {type}
-  class={buttonClassName({ variant, size, loading, block, className })}
+  class={buttonClassName({ variant, size, appearance, loading, block, className })}
   disabled={inactive}
   aria-busy={loading || undefined}
   onclick={(event) => {

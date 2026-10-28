@@ -3,6 +3,8 @@ import type {
   AlertVariant,
   AvatarSize,
   BadgeVariant,
+  ButtonAppearance,
+  ButtonSize,
   ButtonVariant,
   ContainerSize,
   ControlSize,
@@ -14,7 +16,8 @@ import type {
 export function buttonClassName(
   options: {
     variant?: ButtonVariant;
-    size?: ControlSize;
+    size?: ButtonSize;
+    appearance?: ButtonAppearance;
     loading?: boolean;
     block?: boolean;
     className?: string;
@@ -22,10 +25,12 @@ export function buttonClassName(
 ): string {
   const variant = options.variant ?? 'primary';
   const size = options.size ?? 'md';
+  const appearance = variant === 'link' ? 'solid' : (options.appearance ?? 'solid');
   return cx(
     'wpl-btn',
     `wpl-btn-${variant}`,
     size !== 'md' && `wpl-btn-${size}`,
+    appearance !== 'solid' && `wpl-btn-${appearance}`,
     options.loading && 'wpl-btn-loading',
     options.block && 'wpl-btn-block',
     options.className,
@@ -33,14 +38,21 @@ export function buttonClassName(
 }
 
 export function iconButtonClassName(
-  options: { variant?: ButtonVariant; size?: ControlSize; className?: string } = {},
+  options: {
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+    appearance?: ButtonAppearance;
+    className?: string;
+  } = {},
 ): string {
   const variant = options.variant ?? 'ghost';
   const size = options.size ?? 'md';
+  const appearance = options.appearance ?? 'solid';
   return cx(
     'wpl-icon-btn',
     `wpl-btn-${variant}`,
     size !== 'md' && `wpl-icon-btn-${size}`,
+    appearance !== 'solid' && `wpl-btn-${appearance}`,
     options.className,
   );
 }

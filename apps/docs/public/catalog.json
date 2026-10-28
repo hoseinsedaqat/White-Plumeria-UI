@@ -39,9 +39,12 @@
   {
     "name": "Button",
     "slug": "button",
-    "summary": "Action control with variant, size, and loading state.",
+    "summary": "Action control with variant, appearance, size, and loading state.",
     "summaryFa": "کنترل عمل با گونه، اندازه و حالت بارگذاری.",
-    "limitations": []
+    "limitations": [
+      "xs is 1.75rem and is for dense toolbars, not the only target of a primary action.",
+      "appearance is ignored when variant is link."
+    ]
   },
   {
     "name": "ButtonGroup",
@@ -65,6 +68,18 @@
     "summary": "Surface for a title, description, body, and actions.",
     "summaryFa": "سطح برای عنوان، توضیح، بدنه و عمل‌ها.",
     "limitations": []
+  },
+  {
+    "name": "Carousel",
+    "slug": "carousel",
+    "summary": "Content slider with previous, next, and slide tabs. This is not the range Slider.",
+    "summaryFa": "اسلایدر محتوا با قبلی، بعدی و زبانه‌های اسلاید. این Slider بازه‌ای نیست.",
+    "limitations": [
+      "Does not autoplay.",
+      "Does not fetch remote images.",
+      "A pointer drag moves one slide. It is not a physics scroller.",
+      "The HTML class snapshot does not include the behavior."
+    ]
   },
   {
     "name": "ChartContainer",
@@ -236,6 +251,15 @@
     "limitations": []
   },
   {
+    "name": "Kbd",
+    "slug": "kbd",
+    "summary": "Visual keyboard key. It does not register a shortcut.",
+    "summaryFa": "کلید صفحه‌کلید بصری. میانبر ثبت نمی‌کند.",
+    "limitations": [
+      "Visual only. Pair it with a real keydown listener in your application if the shortcut must work."
+    ]
+  },
+  {
     "name": "Label",
     "slug": "label",
     "summary": "Form label associated by htmlFor.",
@@ -293,6 +317,16 @@
     ]
   },
   {
+    "name": "OtpField",
+    "slug": "otp-field",
+    "summary": "One-time-code field. It does not send or verify a code.",
+    "summaryFa": "فیلد رمز یک‌بارمصرف. کد را ارسال یا بررسی نمی‌کند.",
+    "limitations": [
+      "Does not send or verify a code.",
+      "The value is left-packed. Typing past the current end appends."
+    ]
+  },
+  {
     "name": "PageHeader",
     "slug": "page-header",
     "summary": "Title, description, and action row.",
@@ -305,6 +339,16 @@
     "summary": "Page controls with a current page.",
     "summaryFa": "کنترل صفحه‌ها با صفحهٔ جاری.",
     "limitations": []
+  },
+  {
+    "name": "PasswordField",
+    "slug": "password-field",
+    "summary": "Password field with a visible label and a reveal toggle. It does not score strength.",
+    "summaryFa": "فیلد رمز با برچسب نمایان و دکمهٔ نمایش. قدرت رمز را نمره نمی‌دهد.",
+    "limitations": [
+      "Does not score strength or talk to an identity provider.",
+      "Reveal shows the value on screen."
+    ]
   },
   {
     "name": "Popover",
@@ -328,6 +372,16 @@
     "summary": "Named native radios with a legend.",
     "summaryFa": "رادیوهای بومی هم‌نام با legend.",
     "limitations": []
+  },
+  {
+    "name": "Rating",
+    "slug": "rating",
+    "summary": "Star rating as a radio group. It does not submit a review by itself.",
+    "summaryFa": "امتیاز ستاره‌ای به‌صورت گروه رادیویی. خودش بازبینی را ارسال نمی‌کند.",
+    "limitations": [
+      "Does not submit a review by itself. Read the value from your form.",
+      "max is clamped from 1 to 10."
+    ]
   },
   {
     "name": "ResponsiveLayout",
@@ -416,6 +470,15 @@
     "summaryFa": "برچسب، مقدار و راهنما. عدد نمی‌سازد.",
     "limitations": [
       "No sparkline and no live data source."
+    ]
+  },
+  {
+    "name": "Steps",
+    "slug": "steps",
+    "summary": "Checkout or setup progress. Linear mode blocks future steps until the value moves forward.",
+    "summaryFa": "پیشرفت پرداخت یا راه‌اندازی. حالت خطی مرحله‌های آینده را تا جلو رفتن مقدار می‌بندد.",
+    "limitations": [
+      "Does not validate a form or persist progress. Move the value from your own Next control."
     ]
   },
   {

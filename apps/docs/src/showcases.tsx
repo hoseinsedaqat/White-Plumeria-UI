@@ -1,4 +1,4 @@
-import { buttonVariants, controlSizes, type ButtonVariant, type ControlSize } from '@white-plumeria/core';
+import { buttonAppearances, buttonSizes, buttonVariants, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
 import {
   Alert,
   Badge,
@@ -40,16 +40,18 @@ function Choice<T extends string>({
 
 function ButtonLab() {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
-  const [size, setSize] = useState<ControlSize>('md');
+  const [size, setSize] = useState<ButtonSize>('md');
+  const [appearance, setAppearance] = useState<ButtonAppearance>('solid');
   const [loading, setLoading] = useState(false);
-  const code = `<Button variant="${variant}" size="${size}"${loading ? ' loading' : ''}>\n  Save changes\n</Button>`;
+  const code = `<Button variant="${variant}" size="${size}"${appearance === 'solid' ? '' : ` appearance="${appearance}"`}${loading ? ' loading' : ''}>\n  Save changes\n</Button>`;
   return (
     <Preview title="Interactive button" code={code} open>
       <div className="docs-builder">
         <Choice label="Variant" value={variant} options={buttonVariants} onChange={setVariant} />
-        <Choice label="Size" value={size} options={controlSizes} onChange={setSize} />
+        <Choice label="Appearance" value={appearance} options={buttonAppearances} onChange={setAppearance} />
+        <Choice label="Size" value={size} options={buttonSizes} onChange={setSize} />
         <Switch label="Loading" checked={loading} onCheckedChange={setLoading} />
-        <Button variant={variant} size={size} loading={loading}>
+        <Button variant={variant} size={size} appearance={appearance} loading={loading}>
           Save changes
         </Button>
       </div>
@@ -57,7 +59,7 @@ function ButtonLab() {
   );
 }
 
-function buttonCode(variant: ButtonVariant, size?: ControlSize) {
+function buttonCode(variant: ButtonVariant, size?: ButtonSize) {
   const sizeAttr = size && size !== 'md' ? ` size="${size}"` : '';
   return `<Button variant="${variant}"${sizeAttr}>Save changes</Button>`;
 }
@@ -76,12 +78,18 @@ const sections: Record<string, ReactNode> = {
           </Button>
         ))}
       </Preview>
-      <Preview title="Sizes" code={controlSizes.map((size) => buttonCode('primary', size)).join('\n')}>
-        {controlSizes.map((size) => (
+      <Preview title="Sizes" code={buttonSizes.map((size) => buttonCode('primary', size)).join('\n')}>
+        {buttonSizes.map((size) => (
           <Button key={size} size={size}>
             {size}
           </Button>
         ))}
+      </Preview>
+      <Preview title="Soft and dash">
+        <Button appearance="soft">Soft</Button>
+        <Button appearance="dash">Dash</Button>
+        <Button variant="danger" appearance="soft">Soft danger</Button>
+        <Button variant="success" appearance="dash">Dash success</Button>
       </Preview>
       <Preview title="States" code={`<Button disabled>Disabled</Button>\n<Button loading>Loading</Button>\n<Button block>Full width</Button>`}>
         <Button disabled>Disabled</Button>
