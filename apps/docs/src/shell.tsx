@@ -116,7 +116,7 @@ export function DocsApp() {
           type="button"
           className="wpl-icon-btn wpl-btn-ghost docs-menu-btn"
           aria-expanded={navOpen}
-          aria-label="Open menu"
+          aria-label={navOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setNavOpen((value) => !value)}
         >
           <MenuIcon />
@@ -229,6 +229,32 @@ export function DocsApp() {
           className={`docs-side${showSide ? ' is-docked' : ''}${navOpen ? ' is-open' : ''}`}
           hidden={narrow ? !navOpen : !showSide}
         >
+          <div className="docs-side-search">
+            <label className="wpl-sr-only" htmlFor="docs-search-mobile">
+              Search components
+            </label>
+            <input
+              id="docs-search-mobile"
+              className="wpl-input wpl-input-sm"
+              placeholder="Search components"
+              value={query}
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
+              }}
+            />
+            {query.trim() ? (
+              <div className="docs-side-results">
+                {results.length === 0 ? <p>No components match.</p> : null}
+                {results.map((item) => (
+                  <A key={item.slug} href={`/components/${item.slug}`} onNavigate={go}>
+                    <strong>{item.name}</strong>
+                    <small>{item.summary}</small>
+                  </A>
+                ))}
+              </div>
+            ) : null}
+          </div>
           <h2>Start</h2>
           {startLinks.map(([href, label]) => (
             <A key={href} href={href} onNavigate={go} current={path === href}>
