@@ -296,6 +296,9 @@ importers:
       '@fontsource-variable/fraunces':
         specifier: 5.3.0
         version: 5.3.0
+      '@fontsource-variable/outfit':
+        specifier: 5.3.0
+        version: 5.3.0
       '@fontsource/vazirmatn':
         specifier: 5.3.0
         version: 5.3.0
@@ -636,6 +639,9 @@ packages:
 
   '@fontsource-variable/fraunces@5.3.0':
     resolution: {integrity: sha512-9BYGySn4AHEJdgp9Z28tQ3X+laJMEOITXkQarZXeloWQZDq5oOvXJ3kDA8c7MGIfpogIaZfjrQBqmda8POOCKA==}
+
+  '@fontsource-variable/outfit@5.3.0':
+    resolution: {integrity: sha512-fPb5XnYK0k7SbR++HEmm4+ZqDszmLKQ+sPRUr8oQ/KNC0vy6r6hazJFe8iYozv4cqlHbvJ/JECkJWrfDodUMVQ==}
 
   '@fontsource/vazirmatn@5.3.0':
     resolution: {integrity: sha512-XC/2yN2r5gwhFT3klSuWaqncODX2DOfRYfNmbyzgtWYxHxMC+tcoaX+tgggrm6hSkEgpR1TuSDEf1PiI91G7qg==}
@@ -2411,6 +2417,8 @@ snapshots:
   '@fontsource-variable/figtree@5.3.0': {}
 
   '@fontsource-variable/fraunces@5.3.0': {}
+
+  '@fontsource-variable/outfit@5.3.0': {}
 
   '@fontsource/vazirmatn@5.3.0': {}
 

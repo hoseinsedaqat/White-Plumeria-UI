@@ -429,8 +429,8 @@ export const themes: readonly ThemeDefinition[] = [
 ];
 
 export const sharedTokens = {
-  fontSans: '"Segoe UI", "Vazirmatn", "Noto Sans Arabic", "Noto Naskh Arabic", sans-serif',
-  fontDisplay: '"Iowan Old Style", "Palatino Linotype", Palatino, "Vazirmatn", Georgia, serif',
+  fontSans: '"Figtree Variable", Figtree, "Segoe UI", sans-serif',
+  fontDisplay: '"Fraunces Variable", "Iowan Old Style", Palatino, Georgia, serif',
   fontMono: 'ui-monospace, "Cascadia Code", "Segoe UI Mono", "SFMono-Regular", monospace',
   fontSize: {
     xs: '0.75rem',

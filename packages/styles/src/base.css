@@ -13,13 +13,6 @@
   text-rendering: optimizeLegibility;
 }
 
-:lang(fa) {
-  --wpl-font-sans: "Vazirmatn", "Segoe UI", "Noto Sans Arabic", "Noto Naskh Arabic", sans-serif;
-  --wpl-font-display: "Vazirmatn", "Iowan Old Style", Palatino, Georgia, serif;
-  --wpl-line-height-normal: 1.8;
-  --wpl-line-height-relaxed: 1.95;
-}
-
 .wpl-reset {
   box-sizing: border-box;
 }

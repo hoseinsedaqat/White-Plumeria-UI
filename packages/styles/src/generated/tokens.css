@@ -2,8 +2,8 @@
 
 :root,
 [data-wpl-theme="ivory"] {
-  --wpl-font-sans: "Segoe UI", "Vazirmatn", "Noto Sans Arabic", "Noto Naskh Arabic", sans-serif;
-  --wpl-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Vazirmatn", Georgia, serif;
+  --wpl-font-sans: "Figtree Variable", Figtree, "Segoe UI", sans-serif;
+  --wpl-font-display: "Fraunces Variable", "Iowan Old Style", Palatino, Georgia, serif;
   --wpl-font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", "SFMono-Regular", monospace;
   --wpl-font-size-xs: 0.75rem;
   --wpl-font-size-sm: 0.875rem;

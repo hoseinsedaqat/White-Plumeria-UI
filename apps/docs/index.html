@@ -17,15 +17,13 @@
           var prefs = raw ? JSON.parse(raw) : {};
           var theme = prefs.theme || "ivory";
           var appearance = prefs.appearance || "system";
-          var locale = prefs.locale === "fa" ? "fa" : "en";
-          var dir = prefs.direction === "rtl" || prefs.direction === "ltr" ? prefs.direction : locale === "fa" ? "rtl" : "ltr";
           var root = document.documentElement;
           root.setAttribute("data-wpl-theme", theme);
           root.setAttribute("data-wpl-appearance", appearance);
           if (appearance === "system") root.removeAttribute("data-wpl-scheme");
           else root.setAttribute("data-wpl-scheme", appearance);
-          root.lang = locale;
-          root.dir = dir;
+          root.lang = "en";
+          root.dir = "ltr";
         } catch (error) {}
       })();
     </script>

@@ -17,12 +17,13 @@ import {
 } from '@white-plumeria/react';
 import { useState } from 'react';
 import { CodeBlock } from '../copy.tsx';
+import { ThemedFrame } from '../preview.tsx';
 import { A, useRoute } from '../router.tsx';
 
-const starter = 'یک داشبورد مدیریت مالی با تم تاریک، کارت‌های آماری و جدول تراکنش‌ها بساز.';
+const starter = 'Build a finance dashboard with a dark theme, stat cards, and an alert.';
 
 export function AiPage() {
-  const { locale, setPreferences } = useWhitePlumeria();
+  const { setPreferences } = useWhitePlumeria();
   const { navigate } = useRoute();
   const [prompt, setPrompt] = useState(starter);
   const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'html'>('react');
@@ -31,12 +32,11 @@ export function AiPage() {
 
   function run() {
     try {
-      const next = planFromPrompt({ prompt, locale });
+      const next = planFromPrompt({ prompt, locale: 'en' });
       setPlan(next);
       setError('');
       if (next.analysis.theme) setPreferences({ theme: next.analysis.theme });
       if (next.analysis.appearance) setPreferences({ appearance: next.analysis.appearance });
-      if (next.analysis.locale === 'fa') setPreferences({ locale: 'fa', direction: 'rtl' });
     } catch (caught) {
       setPlan(null);
       setError(caught instanceof Error ? caught.message : 'Planning failed.');
@@ -44,22 +44,18 @@ export function AiPage() {
   }
 
   return (
-    <article>
+    <article className="docs-article">
       <p className="docs-kicker">Local planner</p>
-      <h1 className="docs-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)' }}>
-        {locale === 'fa' ? 'کارگاه، بدون کلید' : 'Studio without a key'}
-      </h1>
+      <h1 className="docs-title">Studio without a key</h1>
       <p className="docs-lede">
-        {locale === 'fa'
-          ? 'این صفحه مدل ابری صدا نمی‌زند. طرح را از کاتالوگ واقعی می‌سازد و کد را اجرا نمی‌کند.'
-          : 'This page does not call a cloud model. It plans from the real catalog and does not execute generated code.'}
+        This page does not call a cloud model. It plans from the real catalog and does not execute generated code.
       </p>
       <label className="wpl-label" htmlFor="ai-prompt">
         Prompt
       </label>
       <textarea id="ai-prompt" className="wpl-textarea" rows={4} value={prompt} onChange={(event) => setPrompt(event.currentTarget.value)} />
       <div className="wpl-cluster" style={{ marginBlock: '0.8rem' }}>
-        <Button onClick={run}>{locale === 'fa' ? 'تحلیل کن' : 'Plan'}</Button>
+        <Button onClick={run}>Plan</Button>
         <span className="wpl-muted">LocalDeterministicProvider</span>
       </div>
       {error ? (
@@ -69,21 +65,21 @@ export function AiPage() {
       ) : null}
       {plan ? (
         <div className="docs-section">
-          <h2>{locale === 'fa' ? 'پیشنهادها' : 'Recommendations'}</h2>
+          <h2>Recommendations</h2>
           <ul>
             {plan.analysis.recommendations.map((item) => (
               <li key={item.slug}>
                 <A href={`/components/${item.slug}`} onNavigate={navigate}>
                   {item.component}
                 </A>{' '}
-                — {locale === 'fa' ? item.reasonFa : item.reason}
+                — {item.reason}
               </li>
             ))}
           </ul>
-          <h2>{locale === 'fa' ? 'پیش‌نمایش امن' : 'Safe preview'}</h2>
-          <div className="docs-stage">
+          <h2>Safe preview</h2>
+          <ThemedFrame className="docs-stage">
             <Preview nodes={plan.layout.nodes} />
-          </div>
+          </ThemedFrame>
           <div className="docs-tabs">
             {(['react', 'vue', 'svelte', 'html'] as const).map((item) => (
               <button
