@@ -1,31 +1,26 @@
 import { generateTheme, themeAsConfig } from '@white-plumeria/ai';
-import { Button, useWhitePlumeria } from '@white-plumeria/react';
+import { Button } from '@white-plumeria/react';
 import { useMemo, useState, type CSSProperties } from 'react';
 import { CodeBlock } from '../copy.tsx';
 
 export function ThemeLabPage() {
-  const { locale } = useWhitePlumeria();
   const [description, setDescription] = useState('A formal high-contrast finance dashboard');
   const [draft, setDraft] = useState(description);
   const theme = useMemo(() => generateTheme(draft), [draft]);
 
   return (
-    <article>
+    <article className="docs-article">
       <p className="docs-kicker">Theme lab</p>
-      <h1 className="docs-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)' }}>
-        {locale === 'fa' ? 'توکن، با گزارش کنتراست' : 'Tokens, with a contrast report'}
-      </h1>
+      <h1 className="docs-title">Tokens, with a contrast report</h1>
       <p className="docs-lede">
-        {locale === 'fa'
-          ? 'خروجی متغیرهای CSS همین کتابخانه است. اگر جفتی به AA نرسد، در گزارش می‌ماند و پنهان نمی‌شود.'
-          : 'Output uses this library’s CSS variables. Pairs that miss AA stay in the report.'}
+        Output uses this library’s CSS variables. Pairs that miss WCAG AA stay in the report. They are not hidden.
       </p>
       <label className="wpl-label" htmlFor="theme-prompt">
         Description
       </label>
       <input id="theme-prompt" className="wpl-input" value={description} onChange={(event) => setDescription(event.currentTarget.value)} />
-      <div className="wpl-cluster" style={{ marginBlock: '0.8rem' }}>
-        <Button onClick={() => setDraft(description)}>{locale === 'fa' ? 'بساز' : 'Generate'}</Button>
+      <div className="docs-actions">
+        <Button onClick={() => setDraft(description)}>Generate</Button>
       </div>
       <div className="docs-stage" style={inlineStyle(theme.css)}>
         <p className="docs-kicker">{theme.name}</p>
@@ -38,6 +33,7 @@ export function ThemeLabPage() {
         </button>
       </div>
       <h2>Contrast</h2>
+      <div className="docs-table-wrap">
       <table className="docs-table">
         <thead>
           <tr>
@@ -56,6 +52,7 @@ export function ThemeLabPage() {
           ))}
         </tbody>
       </table>
+      </div>
       {theme.adjustments.map((item) => (
         <p key={item}>{item}</p>
       ))}

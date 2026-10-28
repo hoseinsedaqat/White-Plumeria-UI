@@ -26,7 +26,7 @@ pnpm install
 pnpm dev
 ```
 
-The docs app listens on `0.0.0.0:5173`. In this sandbox the base path is `/`. GitHub Pages uses `/White-Plumeria-UI/`.
+The docs app listens on `0.0.0.0:5173`. In this sandbox the base path is `/`. GitHub Pages uses `/White-Plumeria-UI/`. The documentation site is English only.
 
 ```bash
 pnpm test

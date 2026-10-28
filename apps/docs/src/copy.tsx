@@ -18,16 +18,19 @@ export function CopyButton({ text }: { text: string }) {
 
   const label = state === 'copied' ? t('copied') : state === 'failed' ? t('copyFailed') : t('copy');
   return (
-    <button type="button" className="wpl-btn wpl-btn-ghost wpl-btn-sm" onClick={() => void copy()}>
+    <button type="button" className="wpl-btn wpl-btn-secondary wpl-btn-sm" onClick={() => void copy()}>
       {label}
     </button>
   );
 }
 
-export function CodeBlock({ code }: { code: string }) {
+export function CodeBlock({ code, label = 'Code' }: { code: string; label?: string }) {
   return (
     <div className="docs-code-wrap">
-      <CopyButton text={code} />
+      <div className="docs-code-bar">
+        <span>{label}</span>
+        <CopyButton text={code} />
+      </div>
       <pre className="docs-code">
         <code>{code}</code>
       </pre>

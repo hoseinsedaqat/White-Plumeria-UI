@@ -1,8 +1,6 @@
 import '@fontsource-variable/figtree';
 import '@fontsource-variable/fraunces';
-import '@fontsource/vazirmatn/400.css';
-import '@fontsource/vazirmatn/500.css';
-import '@fontsource/vazirmatn/700.css';
+import '@fontsource-variable/outfit';
 import '@white-plumeria/styles';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

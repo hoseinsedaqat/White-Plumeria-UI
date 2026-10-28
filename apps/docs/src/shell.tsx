@@ -1,9 +1,11 @@
-import { brand, catalog, categoryLabels, searchComponents } from '@white-plumeria/core';
+import { brand, catalog, categoryLabels, isThemeName, searchComponents } from '@white-plumeria/core';
 import { Mark, useWhitePlumeria } from '@white-plumeria/react';
-import { useEffect, useMemo, useState } from 'react';
-import { copy } from './i18n.ts';
+import { themes } from '@white-plumeria/tokens';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AiPage } from './pages/ai.tsx';
+import { BlocksPage } from './pages/blocks.tsx';
 import { ComponentPage } from './pages/component.tsx';
+import { GalleryPage } from './pages/gallery.tsx';
 import { GuidePage } from './pages/guides.tsx';
 import { HomePage } from './pages/home.tsx';
 import { NotFoundPage } from './pages/not-found.tsx';
@@ -11,155 +13,258 @@ import { PlaygroundPage } from './pages/playground.tsx';
 import { ThemeLabPage } from './pages/theme-lab.tsx';
 import { A, useRoute } from './router.tsx';
 
+const startLinks = [
+  ['/start', 'Quick start'],
+  ['/install', 'Install'],
+  ['/theming', 'Theming'],
+  ['/direction', 'Direction'],
+  ['/accessibility', 'Accessibility'],
+  ['/components', 'All components'],
+  ['/blocks', 'Blocks'],
+  ['/playground', 'Playground'],
+  ['/ai', 'AI studio'],
+  ['/themes', 'Theme lab'],
+  ['/changelog', 'Changelog'],
+  ['/contributing', 'Contributing'],
+  ['/security', 'Security'],
+] as const;
+
+const guidePaths = ['/start', '/install', '/theming', '/direction', '/rtl', '/accessibility', '/changelog', '/contributing', '/security'];
+
 export function DocsApp() {
   const { path, navigate } = useRoute();
-  const { preferences, setPreferences, locale } = useWhitePlumeria();
-  const t = copy[locale];
+  const { preferences, setPreferences } = useWhitePlumeria();
   const [query, setQuery] = useState('');
   const [navOpen, setNavOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+  const themeRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => (query.trim() ? searchComponents(query).slice(0, 8) : []), [query]);
   const componentSlug = path.match(/^\/components\/([a-z0-9-]+)$/)?.[1];
   const showSide = path !== '/';
+  const theme = themes.find((item) => item.name === preferences.theme) ?? themes[0];
 
   useEffect(() => {
     document.title = componentSlug ? `${componentSlug} · ${brand.productName}` : brand.productName;
-  }, [componentSlug, path]);
+  }, [componentSlug]);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const queryList = window.matchMedia('(max-width: 960px)');
+    const apply = () => setNarrow(queryList.matches);
+    apply();
+    queryList.addEventListener('change', apply);
+    return () => queryList.removeEventListener('change', apply);
+  }, []);
+
+  useEffect(() => {
+    if (preferences.locale !== 'en' || preferences.direction !== 'ltr') {
+      setPreferences({ locale: 'en', direction: 'ltr' });
+    }
+  }, [preferences.locale, preferences.direction, setPreferences]);
+
+  useEffect(() => {
+    function onPointer(event: PointerEvent) {
+      if (!themeRef.current?.contains(event.target as Node)) setThemeOpen(false);
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setThemeOpen(false);
+        setQuery('');
+        setNavOpen(false);
+      }
+    }
+    document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
 
   function go(href: string) {
     setNavOpen(false);
     setQuery('');
+    setThemeOpen(false);
     navigate(href);
   }
 
   let page = <NotFoundPage onNavigate={go} />;
   if (path === '/') page = <HomePage onNavigate={go} />;
+  else if (path === '/components') page = <GalleryPage onNavigate={go} />;
+  else if (path === '/blocks') page = <BlocksPage />;
   else if (path === '/playground') page = <PlaygroundPage />;
   else if (path === '/ai') page = <AiPage />;
   else if (path === '/themes') page = <ThemeLabPage />;
-  else if (componentSlug) page = <ComponentPage slug={componentSlug} />;
-  else if (
-    ['/start', '/install', '/theming', '/rtl', '/accessibility', '/changelog', '/contributing', '/security'].includes(path)
-  ) {
-    page = <GuidePage path={path} />;
-  }
+  else if (componentSlug) page = <ComponentPage slug={componentSlug} onNavigate={go} />;
+  else if (path === '/rtl') page = <GuidePage path="/direction" />;
+  else if (guidePaths.includes(path)) page = <GuidePage path={path} />;
 
   return (
-    <div className="docs-shell wpl-root wpl-reset">
+    <div className="docs-app wpl-root wpl-reset" data-home={showSide ? 'false' : 'true'}>
       <a className="docs-skip wpl-btn wpl-btn-primary" href="#content">
-        {t.skip}
+        Skip to content
       </a>
+      <A href="/blocks" className="home-banner" onNavigate={go}>
+        <span>
+          {catalog.length} free components. Patterns other libraries sell are included.
+        </span>
+        <span aria-hidden="true">→</span>
+      </A>
       <header className="docs-top">
+        <button
+          type="button"
+          className="wpl-icon-btn wpl-btn-ghost docs-menu-btn"
+          aria-expanded={navOpen}
+          aria-label="Open menu"
+          onClick={() => setNavOpen((value) => !value)}
+        >
+          <MenuIcon />
+        </button>
         <A href="/" className="docs-brand" onNavigate={go}>
           <Mark />
           <span>
-            {t.product}
-            <small>{t.tag} · {brand.version}</small>
+            White Plumeria
+            <small>Design system · {brand.version}</small>
           </span>
         </A>
-        <button type="button" className="wpl-icon-btn wpl-btn-ghost docs-menu-btn" aria-expanded={navOpen} onClick={() => setNavOpen((value) => !value)}>
-          <span className="wpl-sr-only">{t.menu}</span>
-          ☰
-        </button>
         <div className="docs-search">
           <label className="wpl-sr-only" htmlFor="docs-search">
-            {t.search}
+            Search docs
           </label>
           <input
             id="docs-search"
             className="wpl-input wpl-input-sm"
-            placeholder={t.search}
+            placeholder="Search components"
             value={query}
             onChange={(event) => setQuery(event.currentTarget.value)}
             onKeyDown={(event) => {
               if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
-              if (event.key === 'Escape') setQuery('');
             }}
           />
-          {results.length ? (
+          {query.trim() ? (
             <div className="docs-search-results" role="listbox">
+              {results.length === 0 ? <p className="docs-search-empty">No components match.</p> : null}
               {results.map((item) => (
                 <A key={item.slug} href={`/components/${item.slug}`} onNavigate={go}>
                   <strong>{item.name}</strong>
-                  <div className="wpl-muted">{locale === 'fa' ? item.summaryFa : item.summary}</div>
+                  <small>{item.summary}</small>
                 </A>
               ))}
             </div>
           ) : null}
         </div>
-        <nav className="docs-nav" aria-label="Primary">
+        <nav className="docs-links" aria-label="Primary">
           <A href="/start" onNavigate={go} current={path === '/start'}>
-            {t.docs}
+            Docs
+          </A>
+          <A href="/components" onNavigate={go} current={path === '/components' || Boolean(componentSlug)}>
+            Components
           </A>
           <A href="/playground" onNavigate={go} current={path === '/playground'}>
-            {t.playground}
+            Playground
           </A>
           <A href="/ai" onNavigate={go} current={path === '/ai'}>
-            {t.ai}
+            AI
           </A>
-          <a className="docs-keep" href={brand.repository}>
-            {t.github}
-          </a>
-          <button
-            type="button"
-            className="docs-text-btn"
-            onClick={() =>
-              setPreferences({
-                locale: locale === 'fa' ? 'en' : 'fa',
-                direction: locale === 'fa' ? 'ltr' : 'rtl',
-              })
-            }
-          >
-            {locale === 'fa' ? 'EN' : 'فا'}
-          </button>
-          <button
-            type="button"
-            className="docs-text-btn"
-            onClick={() =>
-              setPreferences({
-                appearance: preferences.appearance === 'dark' ? 'light' : preferences.appearance === 'light' ? 'system' : 'dark',
-              })
-            }
-          >
-            {preferences.appearance}
-          </button>
         </nav>
-      </header>
-      <div className="docs-body" data-nav={navOpen ? 'open' : 'closed'}>
-        {showSide ? (
-          <aside className="docs-side">
-            <h2>{t.start}</h2>
-            {[
-              ['/start', locale === 'fa' ? 'شروع سریع' : 'Quick start'],
-              ['/install', t.install],
-              ['/theming', locale === 'fa' ? 'تم' : 'Theming'],
-              ['/rtl', 'RTL'],
-              ['/accessibility', locale === 'fa' ? 'دسترس‌پذیری' : 'Accessibility'],
-              ['/playground', t.playground],
-              ['/ai', t.ai],
-              ['/themes', t.themes],
-            ].map(([href, label]) => (
-              <A key={href} href={href!} onNavigate={go} current={path === href}>
-                {label}
-              </A>
-            ))}
-            {(Object.keys(categoryLabels) as Array<keyof typeof categoryLabels>).map((category) => (
-              <div key={category}>
-                <h2>{locale === 'fa' ? categoryLabels[category].fa : categoryLabels[category].en}</h2>
-                {catalog
-                  .filter((item) => item.category === category)
-                  .map((item) => (
-                    <A key={item.slug} href={`/components/${item.slug}`} onNavigate={go} current={path === `/components/${item.slug}`}>
-                      {item.name}
-                    </A>
+        <div className="docs-tools">
+          <div className="docs-pop" ref={themeRef}>
+            <button
+              type="button"
+              className="docs-tool"
+              aria-expanded={themeOpen}
+              aria-haspopup="dialog"
+              onClick={() => setThemeOpen((value) => !value)}
+            >
+              <i className="docs-dot" style={{ background: theme?.light.primary }} />
+              {theme?.label}
+            </button>
+            {themeOpen ? (
+              <div className="docs-pop-panel" role="dialog" aria-label="Theme">
+                <p className="docs-note-line">Previews use this theme. The documentation chrome stays white.</p>
+                <h2>Appearance</h2>
+                <div className="docs-segment" role="group" aria-label="Appearance">
+                  {(['light', 'dark', 'system'] as const).map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      aria-pressed={preferences.appearance === item}
+                      onClick={() => setPreferences({ appearance: item })}
+                    >
+                      {item}
+                    </button>
                   ))}
+                </div>
+                <h2>Theme</h2>
+                {themes.map((item) => (
+                  <button
+                    key={item.name}
+                    type="button"
+                    className="docs-theme-row"
+                    aria-pressed={preferences.theme === item.name}
+                    onClick={() => {
+                      if (isThemeName(item.name)) setPreferences({ theme: item.name });
+                    }}
+                  >
+                    <span className="docs-dots" aria-hidden="true">
+                      <i style={{ background: item.light.primary }} />
+                      <i style={{ background: item.light.accent }} />
+                      <i style={{ background: item.light.success }} />
+                    </span>
+                    {item.label}
+                  </button>
+                ))}
               </div>
-            ))}
-          </aside>
-        ) : null}
-        <main id="content" className="docs-main">
+            ) : null}
+          </div>
+          <a className="docs-tool" href={brand.repository}>
+            GitHub
+          </a>
+        </div>
+      </header>
+      <div className="docs-frame" data-nav={navOpen ? 'open' : 'closed'} data-home={showSide ? 'false' : 'true'}>
+        <button type="button" className="docs-backdrop" aria-label="Close menu" onClick={() => setNavOpen(false)} />
+        <aside
+          className={`docs-side${showSide ? ' is-docked' : ''}${navOpen ? ' is-open' : ''}`}
+          hidden={narrow ? !navOpen : !showSide}
+        >
+          <h2>Start</h2>
+          {startLinks.map(([href, label]) => (
+            <A key={href} href={href} onNavigate={go} current={path === href}>
+              {label}
+            </A>
+          ))}
+          {(Object.keys(categoryLabels) as Array<keyof typeof categoryLabels>).map((category) => (
+            <div key={category}>
+              <h2>{categoryLabels[category].en}</h2>
+              {catalog
+                .filter((item) => item.category === category)
+                .map((item) => (
+                  <A
+                    key={item.slug}
+                    href={`/components/${item.slug}`}
+                    onNavigate={go}
+                    current={path === `/components/${item.slug}`}
+                  >
+                    {item.name}
+                  </A>
+                ))}
+            </div>
+          ))}
+        </aside>
+        <main id="content" className={showSide ? 'docs-main' : 'docs-home'}>
           {page}
         </main>
       </div>
     </div>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path d="M3 5h12M3 9h12M3 13h12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
   );
 }

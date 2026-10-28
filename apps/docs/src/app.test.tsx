@@ -7,17 +7,26 @@ describe('docs app', () => {
   it('renders the home page and opens a real component page', async () => {
     const user = userEvent.setup();
     render(<App />);
-    expect(screen.getByRole('heading', { level: 1, name: /white plumeria/i })).toBeInTheDocument();
-    await user.click(screen.getByRole('link', { name: 'Button' }));
+    expect(screen.getByRole('heading', { level: 1, name: /faster, cleaner, easier/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('link', { name: /^Button\b/ }));
     expect(await screen.findByRole('heading', { level: 1, name: 'Button' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
+  });
+
+  it('opens the component gallery without dropping a catalog entry', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('link', { name: 'Components' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /^DatePicker/ }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /^Dialog/ }).length).toBeGreaterThan(0);
   });
 
   it('searches the catalog without inventing a component', async () => {
     const user = userEvent.setup();
     render(<App />);
     await user.type(screen.getByLabelText('Search docs'), 'datepicker');
-    expect(screen.getByRole('link', { name: /DatePicker/ })).toBeInTheDocument();
+    expect(screen.getByRole('listbox').querySelector('a')).toHaveTextContent('DatePicker');
     expect(screen.queryByText(/MysteryWidget/)).not.toBeInTheDocument();
   });
 });
