@@ -69,6 +69,8 @@
   .wpl-link,
   .wpl-step-trigger,
   .wpl-carousel-dot,
+  .wpl-carousel-thumb,
+  .wpl-carousel-control,
   .wpl-otp-cell,
   .wpl-password .wpl-icon-btn
 ):focus-visible {

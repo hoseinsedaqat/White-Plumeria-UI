@@ -118,10 +118,12 @@ div.wpl-step-trigger {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  inline-size: 100%;
   min-inline-size: 0;
 }
 
 .wpl-carousel-viewport {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--wpl-color-border);
   border-radius: var(--wpl-radius-lg);
@@ -141,11 +143,156 @@ div.wpl-step-trigger {
 }
 
 .wpl-carousel-slide {
+  display: flex;
+  flex-direction: column;
   flex: 0 0 calc(100% / var(--wpl-carousel-count, 1));
   min-inline-size: 0;
   box-sizing: border-box;
   padding: 1.25rem;
   min-block-size: 8rem;
+}
+
+.wpl-carousel-copy {
+  margin: 0;
+}
+
+.wpl-carousel-media .wpl-carousel-viewport {
+  background: #121614;
+}
+
+.wpl-carousel-media .wpl-carousel-slide {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  padding: 0;
+  min-block-size: 0;
+}
+
+.wpl-carousel-figure {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  background: #121614;
+}
+
+.wpl-carousel-image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.wpl-carousel-caption {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 3.4rem 1.15rem 1rem;
+  color: #fff;
+  text-align: start;
+  background: linear-gradient(to top, rgb(8 12 10 / 0.82) 0%, rgb(8 12 10 / 0.34) 58%, transparent 100%);
+}
+
+.wpl-carousel-caption strong {
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.wpl-carousel-caption span {
+  max-inline-size: 38rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.wpl-carousel-count {
+  position: absolute;
+  z-index: 1;
+  top: 0.75rem;
+  inset-inline-end: 0.75rem;
+  margin: 0;
+  padding: 0.28rem 0.6rem;
+  border-radius: var(--wpl-radius-full);
+  background: rgb(8 12 10 / 0.58);
+  color: #fff;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wpl-carousel-nav {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0.75rem;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.wpl-carousel-control {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wpl-radius-full);
+  background: rgb(255 255 255 / 0.94);
+  color: #17211c;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.22);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.wpl-carousel-control:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.wpl-carousel-control .wpl-icon {
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+}
+
+.wpl-carousel-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-block-end: 0.15rem;
+}
+
+.wpl-carousel-thumb {
+  flex: 0 0 5.25rem;
+  aspect-ratio: 3 / 2;
+  margin: 0;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--wpl-radius-md);
+  overflow: hidden;
+  background: var(--wpl-color-surface);
+  color: var(--wpl-color-text);
+  cursor: pointer;
+}
+
+.wpl-carousel-thumb[aria-selected='true'] {
+  border-color: var(--wpl-color-primary);
+}
+
+.wpl-carousel-thumb img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
 
 .wpl-carousel-slide:focus {

@@ -97,6 +97,73 @@ function DialogDemo() {
   );
 }
 
+export const themeSlides = [
+  {
+    id: 'white',
+    label: 'White',
+    src: '/carousel/white.jpg',
+    alt: 'White plumeria flowers with yellow centers resting on pale stone',
+    caption: 'Neutral white and ink. The default palette, in light and dark.',
+  },
+  {
+    id: 'ivory',
+    label: 'Ivory',
+    src: '/carousel/ivory.jpg',
+    alt: 'A cream ceramic cup of tea and dried grass on ivory linen',
+    caption: 'Warm paper, brass, and ink.',
+  },
+  {
+    id: 'ink',
+    label: 'Ink',
+    src: '/carousel/ink.jpg',
+    alt: 'A brass lamp glowing against deep blue linen',
+    caption: 'Letterpress contrast: near-black type and strong rules.',
+  },
+  {
+    id: 'saffron',
+    label: 'Saffron',
+    src: '/carousel/saffron.jpg',
+    alt: 'Saffron threads and a halved blood orange on a walnut table',
+    caption: 'Editorial saffron for dense dashboards.',
+  },
+  {
+    id: 'lagoon',
+    label: 'Lagoon',
+    src: '/carousel/lagoon.jpg',
+    alt: 'Clear turquoise water over pale sand and smooth stones',
+    caption: 'Cool sand and deep teal.',
+  },
+  {
+    id: 'blush',
+    label: 'Blush',
+    src: '/carousel/blush.jpg',
+    alt: 'A coral-pink flower and blush linen on pale stone',
+    caption: 'Stone and coral, still formal.',
+  },
+];
+
+export const themeCarouselCode = `<Carousel
+  label="Theme stills"
+  loop
+  slides={[
+${themeSlides
+  .map(
+    (slide) => `    {
+      id: "${slide.id}",
+      label: "${slide.label}",
+      src: "${slide.src}",
+      alt: "${slide.alt}",
+      caption: "${slide.caption}",
+    },`,
+  )
+  .join('\n')}
+  ]}
+/>`;
+
+export function ThemeCarousel() {
+  return <Carousel label="Theme stills" loop slides={themeSlides} />;
+}
+
 export function renderDemo(slug: string): ReactNode {
   switch (slug) {
     case 'button':
@@ -303,16 +370,7 @@ export function renderDemo(slug: string): ReactNode {
     case 'steps':
       return <StepsDemo />;
     case 'carousel':
-      return (
-        <Carousel
-          label="Product tour"
-          slides={[
-            { id: 'themes', label: 'Themes', content: 'White, Ivory, Ink, Saffron, Lagoon, and Blush. Each has light and dark.' },
-            { id: 'frameworks', label: 'Frameworks', content: 'React, Vue, and Svelte share one catalog and one set of class names.' },
-            { id: 'css', label: 'CSS', content: 'Prefixed CSS. Tailwind is not required.' },
-          ]}
-        />
-      );
+      return <ThemeCarousel />;
     case 'password-field':
       return <PasswordField label="Password" name="password" />;
     case 'otp-field':

@@ -72,11 +72,11 @@
   {
     "name": "Carousel",
     "slug": "carousel",
-    "summary": "Content slider with previous, next, and slide tabs. This is not the range Slider.",
-    "summaryFa": "اسلایدر محتوا با قبلی، بعدی و زبانه‌های اسلاید. این Slider بازه‌ای نیست.",
+    "summary": "Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.",
+    "summaryFa": "اسلایدر تصویر و محتوا با قبلی، بعدی، توضیح و زبانه‌های اسلاید. این Slider بازه‌ای نیست.",
     "limitations": [
       "Does not autoplay.",
-      "Does not fetch remote images.",
+      "Does not download or optimize images. Pass a src your app already serves.",
       "A pointer drag moves one slide. It is not a physics scroller.",
       "The HTML class snapshot does not include the behavior."
     ]

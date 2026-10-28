@@ -2,17 +2,22 @@ import {
   canMove,
   carouselIndexFromKey,
   clampIndex,
+  cx,
+  formatNumber,
   moveIndex,
   readingDirection,
 } from '@white-plumeria/core';
-import { useId, useRef, useState, type PointerEvent, type ReactNode } from 'react';
+import { useId, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export interface CarouselSlide {
   id: string;
   label: string;
-  content: ReactNode;
+  content?: ReactNode;
+  src?: string;
+  alt?: string;
+  caption?: string;
 }
 
 export function Carousel({
@@ -30,13 +35,14 @@ export function Carousel({
   onIndexChange?: (index: number) => void;
   loop?: boolean;
 }) {
-  const { t } = useWhitePlumeria();
+  const { t, locale } = useWhitePlumeria();
   const uid = useId();
   const viewport = useRef<HTMLDivElement>(null);
   const startX = useRef<number | null>(null);
   const [internal, setInternal] = useState(defaultIndex);
   const count = slides.length;
   const current = clampIndex(index ?? internal, count);
+  const media = slides.some((slide) => Boolean(slide.src));
 
   function commit(next: number) {
     const clamped = clampIndex(next, count);
@@ -55,6 +61,17 @@ export function Carousel({
   function go(delta: number) {
     if (!canMove(current, delta, count, loop)) return;
     commit(moveIndex(current, delta, count, loop));
+  }
+
+  function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    const next = carouselIndexFromKey(current, count, event.key, readingDirection(event.currentTarget), loop);
+    if (next === null) return;
+    event.preventDefault();
+    commit(next);
+    queueMicrotask(() => {
+      const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+      tabs?.[next]?.focus();
+    });
   }
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
@@ -76,8 +93,14 @@ export function Carousel({
     return <p className="wpl-muted">{t('empty')}</p>;
   }
 
+  const position = `${formatNumber(current + 1, locale)} / ${formatNumber(count, locale)}`;
+
   return (
-    <section className="wpl-carousel" aria-roledescription="carousel" aria-label={label || t('carousel')}>
+    <section
+      className={cx('wpl-carousel', media && 'wpl-carousel-media')}
+      aria-roledescription="carousel"
+      aria-label={label || t('carousel')}
+    >
       <div
         ref={viewport}
         className="wpl-carousel-viewport"
@@ -110,64 +133,127 @@ export function Carousel({
                 data-current={active ? 'true' : undefined}
                 data-slide-index={slideIndex}
               >
-                {slide.content}
+                <SlideBody slide={slide} active={active} />
               </div>
             );
           })}
         </div>
+        {media ? (
+          <>
+            <p className="wpl-carousel-count" aria-hidden="true">
+              {position}
+            </p>
+            <div className="wpl-carousel-nav">
+              <Control label={t('previous')} disabled={!canMove(current, -1, count, loop)} onClick={() => go(-1)}>
+                <Icon name="chevronLeft" />
+              </Control>
+              <Control label={t('next')} disabled={!canMove(current, 1, count, loop)} onClick={() => go(1)}>
+                <Icon name="chevronRight" />
+              </Control>
+            </div>
+          </>
+        ) : null}
       </div>
-      <div className="wpl-carousel-bar">
-        <button
-          type="button"
-          className="wpl-btn wpl-btn-outline wpl-btn-sm"
-          disabled={!canMove(current, -1, count, loop)}
-          onClick={() => go(-1)}
-        >
-          <Icon name="chevronLeft" />
-          <span className="wpl-sr-only">{t('previous')}</span>
-        </button>
-        <div className="wpl-carousel-dots" role="tablist" aria-label={label || t('carousel')}>
+      {media ? (
+        <div className="wpl-carousel-thumbs" role="tablist" aria-label={label || t('carousel')}>
           {slides.map((slide, slideIndex) => (
             <button
               key={slide.id}
               type="button"
               role="tab"
-              className="wpl-carousel-dot"
+              className="wpl-carousel-thumb"
               aria-selected={slideIndex === current}
               aria-controls={`${uid}-panel-${slide.id}`}
               tabIndex={slideIndex === current ? 0 : -1}
               onClick={() => commit(slideIndex)}
-              onKeyDown={(event) => {
-                const next = carouselIndexFromKey(
-                  current,
-                  count,
-                  event.key,
-                  readingDirection(event.currentTarget),
-                  loop,
-                );
-                if (next === null) return;
-                event.preventDefault();
-                commit(next);
-                queueMicrotask(() => {
-                  const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
-                  tabs?.[next]?.focus();
-                });
-              }}
+              onKeyDown={onTabKeyDown}
             >
+              {slide.src ? <img src={slide.src} alt="" draggable={false} /> : <span aria-hidden="true">{slideIndex + 1}</span>}
               <span className="wpl-sr-only">{slide.label}</span>
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className="wpl-btn wpl-btn-outline wpl-btn-sm"
-          disabled={!canMove(current, 1, count, loop)}
-          onClick={() => go(1)}
-        >
-          <Icon name="chevronRight" />
-          <span className="wpl-sr-only">{t('next')}</span>
-        </button>
-      </div>
+      ) : (
+        <div className="wpl-carousel-bar">
+          <button
+            type="button"
+            className="wpl-btn wpl-btn-outline wpl-btn-sm"
+            disabled={!canMove(current, -1, count, loop)}
+            onClick={() => go(-1)}
+          >
+            <Icon name="chevronLeft" />
+            <span className="wpl-sr-only">{t('previous')}</span>
+          </button>
+          <div className="wpl-carousel-dots" role="tablist" aria-label={label || t('carousel')}>
+            {slides.map((slide, slideIndex) => (
+              <button
+                key={slide.id}
+                type="button"
+                role="tab"
+                className="wpl-carousel-dot"
+                aria-selected={slideIndex === current}
+                aria-controls={`${uid}-panel-${slide.id}`}
+                tabIndex={slideIndex === current ? 0 : -1}
+                onClick={() => commit(slideIndex)}
+                onKeyDown={onTabKeyDown}
+              >
+                <span className="wpl-sr-only">{slide.label}</span>
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="wpl-btn wpl-btn-outline wpl-btn-sm"
+            disabled={!canMove(current, 1, count, loop)}
+            onClick={() => go(1)}
+          >
+            <Icon name="chevronRight" />
+            <span className="wpl-sr-only">{t('next')}</span>
+          </button>
+        </div>
+      )}
     </section>
+  );
+}
+
+function SlideBody({ slide, active }: { slide: CarouselSlide; active: boolean }) {
+  return (
+    <>
+      {slide.src ? (
+        <figure className="wpl-carousel-figure">
+          <img
+            className="wpl-carousel-image"
+            src={slide.src}
+            alt={slide.alt ?? ''}
+            draggable={false}
+            loading={active ? 'eager' : 'lazy'}
+          />
+          <figcaption className="wpl-carousel-caption">
+            <strong>{slide.label}</strong>
+            {slide.caption ? <span>{slide.caption}</span> : null}
+          </figcaption>
+        </figure>
+      ) : null}
+      {slide.content ? <div className="wpl-carousel-copy">{slide.content}</div> : null}
+      {!slide.src && !slide.content ? <p className="wpl-carousel-copy">{slide.label}</p> : null}
+    </>
+  );
+}
+
+function Control({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button type="button" className="wpl-carousel-control" aria-label={label} disabled={disabled} onClick={onClick}>
+      {children}
+    </button>
   );
 }

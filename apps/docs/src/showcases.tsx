@@ -13,7 +13,7 @@ import {
   Tabs,
 } from '@white-plumeria/react';
 import { useState, type ReactNode } from 'react';
-import { renderDemo } from './demos.tsx';
+import { renderDemo, ThemeCarousel, themeCarouselCode } from './demos.tsx';
 import { Preview } from './preview.tsx';
 
 function Choice<T extends string>({
@@ -178,6 +178,11 @@ const sections: Record<string, ReactNode> = {
           { id: 'notes', label: 'Notes', panel: 'Notes stay in this panel.' },
         ]}
       />
+    </Preview>
+  ),
+  carousel: (
+    <Preview title="Image slider" open code={themeCarouselCode}>
+      <ThemeCarousel />
     </Preview>
   ),
   progress: (

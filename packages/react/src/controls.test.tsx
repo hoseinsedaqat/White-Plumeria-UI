@@ -44,6 +44,37 @@ describe('new controls', () => {
     expect(screen.getByRole('tab', { name: 'Frameworks' })).toHaveAttribute('aria-selected', 'true');
   });
 
+  it('shows a picture, its alt text, and a caption', async () => {
+    const user = userEvent.setup();
+    render(
+      <Carousel
+        label="Theme stills"
+        slides={[
+          {
+            id: 'white',
+            label: 'White',
+            src: '/carousel/white.jpg',
+            alt: 'White plumeria on pale stone',
+            caption: 'The default palette.',
+          },
+          {
+            id: 'ink',
+            label: 'Ink',
+            src: '/carousel/ink.jpg',
+            alt: 'A brass lamp on deep blue linen',
+            caption: 'Dark contrast.',
+          },
+        ]}
+      />,
+    );
+    const picture = screen.getByRole('img', { name: 'White plumeria on pale stone' });
+    expect(picture).toHaveAttribute('src', '/carousel/white.jpg');
+    expect(screen.getByText('The default palette.')).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Ink' }));
+    expect(screen.getByRole('img', { name: 'A brass lamp on deep blue linen' })).toHaveAttribute('src', '/carousel/ink.jpg');
+    expect(screen.getByRole('tab', { name: 'Ink' })).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('reveals a password, accepts a pasted code, and selects a rating', async () => {
     const user = userEvent.setup();
     render(

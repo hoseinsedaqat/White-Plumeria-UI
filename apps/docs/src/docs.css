@@ -652,6 +652,26 @@ body {
   max-width: 100%;
 }
 
+.docs-canvas:has(.wpl-carousel) {
+  display: block;
+}
+
+.docs-tile-preview:has(.wpl-carousel) {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.docs-canvas > .wpl-carousel,
+.docs-tile-preview > .wpl-carousel {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.docs-tile-preview .wpl-carousel-thumbs,
+.docs-tile-preview .wpl-carousel-caption span {
+  display: none;
+}
+
 .docs-canvas > .wpl-input,
 .docs-canvas > .wpl-select,
 .docs-canvas > .wpl-textarea,

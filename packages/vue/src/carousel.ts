@@ -1,4 +1,12 @@
-import { canMove, carouselIndexFromKey, clampIndex, moveIndex, readingDirection } from '@white-plumeria/core';
+import {
+  canMove,
+  carouselIndexFromKey,
+  clampIndex,
+  cx,
+  formatNumber,
+  moveIndex,
+  readingDirection,
+} from '@white-plumeria/core';
 import { defineComponent, h, ref, type PropType } from 'vue';
 import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
@@ -6,7 +14,10 @@ import { useWhitePlumeria } from './provider.ts';
 export interface CarouselSlide {
   id: string;
   label: string;
-  content: string;
+  content?: string;
+  src?: string;
+  alt?: string;
+  caption?: string;
 }
 
 export const Carousel = defineComponent({
@@ -19,7 +30,7 @@ export const Carousel = defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const { t } = useWhitePlumeria();
+    const { t, locale } = useWhitePlumeria();
     const uid = `wpl-carousel-${Math.random().toString(36).slice(2, 8)}`;
     const internal = ref(0);
     const startX = ref<number | null>(null);
@@ -27,6 +38,7 @@ export const Carousel = defineComponent({
       const count = props.slides.length;
       if (count === 0) return h('p', { class: 'wpl-muted' }, t('empty'));
       const current = clampIndex(props.modelValue ?? internal.value, count);
+      const media = props.slides.some((slide) => Boolean(slide.src));
       const commit = (next: number) => {
         const clamped = clampIndex(next, count);
         if (props.modelValue === undefined) internal.value = clamped;
@@ -36,7 +48,47 @@ export const Carousel = defineComponent({
         if (!canMove(current, delta, count, props.loop)) return;
         commit(moveIndex(current, delta, count, props.loop));
       };
-      return h('section', { class: 'wpl-carousel', 'aria-roledescription': 'carousel', 'aria-label': props.label || t('carousel') }, [
+      const onTabKeyDown = (event: KeyboardEvent) => {
+        const next = carouselIndexFromKey(current, count, event.key, readingDirection(event.currentTarget as HTMLElement), props.loop);
+        if (next === null) return;
+        event.preventDefault();
+        commit(next);
+      };
+      const tabs = props.slides.map((slide, slideIndex) =>
+        h(
+          'button',
+          {
+            key: slide.id,
+            type: 'button',
+            role: 'tab',
+            class: media ? 'wpl-carousel-thumb' : 'wpl-carousel-dot',
+            'aria-selected': slideIndex === current ? 'true' : 'false',
+            'aria-controls': `${uid}-panel-${slide.id}`,
+            tabindex: slideIndex === current ? 0 : -1,
+            onClick: () => commit(slideIndex),
+            onKeydown: onTabKeyDown,
+          },
+          media
+            ? [
+                slide.src ? h('img', { src: slide.src, alt: '', draggable: false }) : String(slideIndex + 1),
+                h('span', { class: 'wpl-sr-only' }, slide.label),
+              ]
+            : [h('span', { class: 'wpl-sr-only' }, slide.label)],
+        ),
+      );
+      const control = (name: 'previous' | 'next', delta: number) =>
+        h(
+          'button',
+          {
+            type: 'button',
+            class: media ? 'wpl-carousel-control' : 'wpl-btn wpl-btn-outline wpl-btn-sm',
+            'aria-label': media ? t(name) : undefined,
+            disabled: !canMove(current, delta, count, props.loop),
+            onClick: () => go(delta),
+          },
+          [h(Icon, { name: delta < 0 ? 'chevronLeft' : 'chevronRight' }), media ? null : h('span', { class: 'wpl-sr-only' }, t(name))],
+        );
+      return h('section', { class: cx('wpl-carousel', media && 'wpl-carousel-media'), 'aria-roledescription': 'carousel', 'aria-label': props.label || t('carousel') }, [
         h(
           'div',
           {
@@ -76,51 +128,46 @@ export const Carousel = defineComponent({
                     inert: active ? undefined : true,
                     tabindex: active ? -1 : undefined,
                   },
-                  slide.content,
+                  slideBody(slide, active),
                 );
               }),
             ),
+            media
+              ? h('p', { class: 'wpl-carousel-count', 'aria-hidden': 'true' }, `${formatNumber(current + 1, locale.value)} / ${formatNumber(count, locale.value)}`)
+              : null,
+            media ? h('div', { class: 'wpl-carousel-nav' }, [control('previous', -1), control('next', 1)]) : null,
           ],
         ),
-        h('div', { class: 'wpl-carousel-bar' }, [
-          h(
-            'button',
-            { type: 'button', class: 'wpl-btn wpl-btn-outline wpl-btn-sm', disabled: !canMove(current, -1, count, props.loop), onClick: () => go(-1) },
-            [h(Icon, { name: 'chevronLeft' }), h('span', { class: 'wpl-sr-only' }, t('previous'))],
-          ),
-          h(
-            'div',
-            { class: 'wpl-carousel-dots', role: 'tablist', 'aria-label': props.label || t('carousel') },
-            props.slides.map((slide, slideIndex) =>
-              h(
-                'button',
-                {
-                  key: slide.id,
-                  type: 'button',
-                  role: 'tab',
-                  class: 'wpl-carousel-dot',
-                  'aria-selected': slideIndex === current ? 'true' : 'false',
-                  'aria-controls': `${uid}-panel-${slide.id}`,
-                  tabindex: slideIndex === current ? 0 : -1,
-                  onClick: () => commit(slideIndex),
-                  onKeydown: (event: KeyboardEvent) => {
-                    const next = carouselIndexFromKey(current, count, event.key, readingDirection(event.currentTarget as HTMLElement), props.loop);
-                    if (next === null) return;
-                    event.preventDefault();
-                    commit(next);
-                  },
-                },
-                [h('span', { class: 'wpl-sr-only' }, slide.label)],
-              ),
-            ),
-          ),
-          h(
-            'button',
-            { type: 'button', class: 'wpl-btn wpl-btn-outline wpl-btn-sm', disabled: !canMove(current, 1, count, props.loop), onClick: () => go(1) },
-            [h(Icon, { name: 'chevronRight' }), h('span', { class: 'wpl-sr-only' }, t('next'))],
-          ),
-        ]),
+        media
+          ? h('div', { class: 'wpl-carousel-thumbs', role: 'tablist', 'aria-label': props.label || t('carousel') }, tabs)
+          : h('div', { class: 'wpl-carousel-bar' }, [
+              control('previous', -1),
+              h('div', { class: 'wpl-carousel-dots', role: 'tablist', 'aria-label': props.label || t('carousel') }, tabs),
+              control('next', 1),
+            ]),
       ]);
     };
   },
 });
+
+function slideBody(slide: CarouselSlide, active: boolean) {
+  return [
+    slide.src
+      ? h('figure', { class: 'wpl-carousel-figure' }, [
+          h('img', {
+            class: 'wpl-carousel-image',
+            src: slide.src,
+            alt: slide.alt ?? '',
+            draggable: false,
+            loading: active ? 'eager' : 'lazy',
+          }),
+          h('figcaption', { class: 'wpl-carousel-caption' }, [
+            h('strong', slide.label),
+            slide.caption ? h('span', slide.caption) : null,
+          ]),
+        ])
+      : null,
+    slide.content ? h('div', { class: 'wpl-carousel-copy' }, slide.content) : null,
+    !slide.src && !slide.content ? h('p', { class: 'wpl-carousel-copy' }, slide.label) : null,
+  ];
+}

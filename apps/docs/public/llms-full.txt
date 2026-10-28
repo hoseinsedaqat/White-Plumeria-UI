@@ -14,7 +14,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - ButtonGroup (button-group): Groups related buttons. Joined mode shares borders.
 - Calendar (calendar): Month grid for Gregorian or Persian calendars.
 - Card (card): Surface for a title, description, body, and actions.
-- Carousel (carousel): Content slider with previous, next, and slide tabs. This is not the range Slider.
+- Carousel (carousel): Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.
 - ChartContainer (chart-container): Accessible bar summary plus a data table. Not a charting engine.
 - Checkbox (checkbox): Native checkbox with a visible label.
 - Combobox (combobox): Filterable single-select listbox.
@@ -82,7 +82,7 @@ AI tools may only name components from this list.
 - Button: appearance is ignored when variant is link.
 - Calendar: Local timezone only. No time of day. Persian conversion is tested against Intl.
 - Carousel: Does not autoplay.
-- Carousel: Does not fetch remote images.
+- Carousel: Does not download or optimize images. Pass a src your app already serves.
 - Carousel: A pointer drag moves one slide. It is not a physics scroller.
 - Carousel: The HTML class snapshot does not include the behavior.
 - ChartContainer: No line, pie, zoom, or canvas chart. Children can replace the bar view, but the table remains.
