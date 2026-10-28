@@ -73,7 +73,7 @@ function init(io: CliIo): CliResult {
   if (!io.exists(path)) {
     io.write(
       path,
-      `${JSON.stringify({ product: brand.productName, version: brand.version, cssPrefix: brand.cssPrefix, theme: 'ivory' }, null, 2)}\n`,
+      `${JSON.stringify({ product: brand.productName, version: brand.version, cssPrefix: brand.cssPrefix, theme: 'white' }, null, 2)}\n`,
     );
   }
   return ok(

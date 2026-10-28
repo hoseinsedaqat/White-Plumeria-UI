@@ -6,7 +6,7 @@ First implementation in this repository. Not published to npm.
 
 Shipped:
 
-- Tokens and five themes (ivory, ink, saffron, lagoon, blush), light and dark
+- Tokens and six themes (white, ivory, ink, saffron, lagoon, blush), light and dark. `white` is the default.
 - Prefixed CSS and a scoped reset
 - Catalog and React, Vue, and Svelte adapters
 - Light-DOM custom elements for a documented subset

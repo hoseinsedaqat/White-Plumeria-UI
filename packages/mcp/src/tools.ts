@@ -57,7 +57,7 @@ export function getUsageExampleTool(name: string, framework?: string): ToolResul
   return { text: component.examples[target] };
 }
 
-export function getDesignTokensTool(theme = 'ivory'): ToolResult {
+export function getDesignTokensTool(theme = 'white'): ToolResult {
   if (!(themeNames as readonly string[]).includes(theme)) {
     return { isError: true, text: `Unknown theme: ${theme}. Known themes: ${themeNames.join(', ')}` };
   }

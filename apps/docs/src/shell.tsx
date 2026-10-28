@@ -182,7 +182,7 @@ export function DocsApp() {
             </button>
             {themeOpen ? (
               <div className="docs-pop-panel" role="dialog" aria-label="Theme">
-                <p className="docs-note-line">Previews use this theme. The documentation chrome stays white.</p>
+                <p className="docs-note-line">This theme colors the whole site, including previews.</p>
                 <h2>Appearance</h2>
                 <div className="docs-segment" role="group" aria-label="Appearance">
                   {(['light', 'dark', 'system'] as const).map((item) => (

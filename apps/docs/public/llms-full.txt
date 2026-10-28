@@ -2,6 +2,8 @@
 
 Framework-agnostic design system. No Tailwind requirement. No model key in the static site.
 
+Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: white, ivory, ink, saffron, lagoon, blush. white is the default. Each theme has light and dark color tokens named --wpl-color-*.
+
 ## Components
 - Accordion (accordion): Disclosure stack, single or multiple.
 - Alert (alert): Inline status message that is part of the page.

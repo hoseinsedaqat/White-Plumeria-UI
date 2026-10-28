@@ -49,7 +49,7 @@ export interface ThemeDefinition {
   dark: ColorTokens;
 }
 
-export const themeNames = ['ivory', 'ink', 'saffron', 'lagoon', 'blush'] as const;
+export const themeNames = ['white', 'ivory', 'ink', 'saffron', 'lagoon', 'blush'] as const;
 export type ThemeName = (typeof themeNames)[number];
 
 export interface SharedTokens {

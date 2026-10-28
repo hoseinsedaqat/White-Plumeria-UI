@@ -21,10 +21,19 @@ components.sort((left, right) => left.name.localeCompare(right.name));
 if (components.length < 50) {
   throw new Error(`Expected the catalog parser to find the component set, found ${components.length}.`);
 }
+const themeSource = readFileSync('packages/tokens/src/themes.ts', 'utf8');
+const themeNames = [...themeSource.matchAll(/name: '([a-z]+)'/g)].map((match) => match[1]);
+if (!themeNames.includes('white')) {
+  throw new Error('Expected the white theme to be registered.');
+}
 const lines = [
   '# White Plumeria',
   '',
   'Framework-agnostic design system. No Tailwind requirement. No model key in the static site.',
+  '',
+  'Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: ' +
+    themeNames.join(', ') +
+    '. white is the default. Each theme has light and dark color tokens named --wpl-color-*.',
   '',
   '## Components',
   ...components.map((item) => `- ${item.name} (${item.slug}): ${item.summary}`),
