@@ -1,0 +1,69 @@
+# White Plumeria
+
+Framework-agnostic design system. No Tailwind requirement. No model key in the static site.
+
+## Components
+- Accordion (accordion): Disclosure stack, single or multiple.
+- Alert (alert): Inline status message that is part of the page.
+- Avatar (avatar): Image or initials, with an optional status dot.
+- Badge (badge): Compact status label.
+- Breadcrumb (breadcrumb): Hierarchical location.
+- Button (button): Action control with variant, size, and loading state.
+- ButtonGroup (button-group): Groups related buttons. Joined mode shares borders.
+- Calendar (calendar): Month grid for Gregorian or Persian calendars.
+- Card (card): Surface for a title, description, body, and actions.
+- ChartContainer (chart-container): Accessible bar summary plus a data table. Not a charting engine.
+- Checkbox (checkbox): Native checkbox with a visible label.
+- Combobox (combobox): Filterable single-select listbox.
+- CommandPalette (command-palette): Keyboard-first command list inside a dialog.
+- Container (container): Centered content width.
+- ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10.
+- DataTable (data-table): Client-side sort, filter, and pagination over the rows you pass.
+- DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
+- Dialog (dialog): Modal dialog with focus management and escape to close.
+- Divider (divider): Horizontal rule, optionally with a label.
+- Drawer (drawer): Side dialog for navigation or filters.
+- DropdownMenu (dropdown-menu): Menu button with keyboard navigation.
+- EmptyState (empty-state): Explains an empty collection and offers the next action.
+- FileUpload (file-upload): Local file selection with type and size checks. It does not upload.
+- Flex (flex): Inline row with wrap and alignment options.
+- Footer (footer): Content info landmark.
+- FormField (form-field): Connects label, control, hint, and error by id.
+- FormMessage (form-message): Hint or error text with the correct role.
+- Grid (grid): Responsive 1 to 4 column grid.
+- IconButton (icon-button): Square button that requires an accessible name.
+- Input (input): Single-line text field.
+- Label (label): Form label associated by htmlFor.
+- Link (link): Text link. External links receive safe rel and target.
+- List (list): Stacked list of title, description, and optional trailing action.
+- Modal (modal): Dialog preset that is always modal.
+- Navbar (navbar): Sticky header with a collapsible menu.
+- NavigationMenu (navigation-menu): Horizontal list of links.
+- Notification (notification): Persistent inline notice with an optional dismiss action.
+- PageHeader (page-header): Title, description, and action row.
+- Pagination (pagination): Page controls with a current page.
+- Popover (popover): Anchored non-modal panel.
+- Progress (progress): Determinate or indeterminate progress.
+- RadioGroup (radio-group): Named native radios with a legend.
+- ResponsiveLayout (responsive-layout): Sidebar plus main. Sidebar stacks below 64rem.
+- SearchInput (search-input): Search field with a clear button.
+- Select (select): Styled native select. Use Combobox for a custom listbox.
+- Separator (separator): Orientation-aware non-text separator.
+- Sidebar (sidebar): Vertical navigation landmark.
+- Skeleton (skeleton): Placeholder block while content loads.
+- Slider (slider): Native range input with a visible value.
+- Spinner (spinner): Indeterminate progress indicator.
+- SplitPane (split-pane): Two panes with a keyboard-resizable separator.
+- Stack (stack): Vertical stack with a gap token.
+- StatCard (stat-card): Label, value, and hint. It does not invent numbers.
+- Switch (switch): Boolean switch with role="switch".
+- Table (table): Semantic table wrapper with a caption.
+- Tabs (tabs): Automatic-activation tabs.
+- Textarea (textarea): Multi-line text field.
+- Timeline (timeline): Ordered events with time elements.
+- Toast (toast): Transient message in a live region.
+- Tooltip (tooltip): Supplemental hint on hover and keyboard focus.
+- TreeView (tree-view): Expandable tree with arrow-key navigation.
+- ValidationMessage (validation-message): Alias of FormMessage with tone="error".
+
+AI tools may only name components from this list.

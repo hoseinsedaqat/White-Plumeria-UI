@@ -1,0 +1,21 @@
+{
+  "name": "@white-plumeria/example-svelte",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5176",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4176"
+  },
+  "dependencies": {
+    "@white-plumeria/styles": "workspace:*",
+    "@white-plumeria/svelte": "workspace:*",
+    "svelte": "catalog:"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

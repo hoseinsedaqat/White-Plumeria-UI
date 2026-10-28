@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>White Plumeria</title>
+    <meta
+      name="description"
+      content="White Plumeria is a framework-agnostic design system for HTML, React, Vue, and Svelte. No Tailwind required."
+    />
+    <meta name="theme-color" content="#F6F1E8" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem("wpl.preferences");
+          var prefs = raw ? JSON.parse(raw) : {};
+          var theme = prefs.theme || "ivory";
+          var appearance = prefs.appearance || "system";
+          var locale = prefs.locale === "fa" ? "fa" : "en";
+          var dir = prefs.direction === "rtl" || prefs.direction === "ltr" ? prefs.direction : locale === "fa" ? "rtl" : "ltr";
+          var root = document.documentElement;
+          root.setAttribute("data-wpl-theme", theme);
+          root.setAttribute("data-wpl-appearance", appearance);
+          if (appearance === "system") root.removeAttribute("data-wpl-scheme");
+          else root.setAttribute("data-wpl-scheme", appearance);
+          root.lang = locale;
+          root.dir = dir;
+        } catch (error) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

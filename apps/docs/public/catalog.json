@@ -1,0 +1,494 @@
+[
+  {
+    "name": "Accordion",
+    "slug": "accordion",
+    "summary": "Disclosure stack, single or multiple.",
+    "summaryFa": "پشتهٔ بازشو، تکی یا چندتایی.",
+    "limitations": []
+  },
+  {
+    "name": "Alert",
+    "slug": "alert",
+    "summary": "Inline status message that is part of the page.",
+    "summaryFa": "پیام وضعیت درون صفحه.",
+    "limitations": []
+  },
+  {
+    "name": "Avatar",
+    "slug": "avatar",
+    "summary": "Image or initials, with an optional status dot.",
+    "summaryFa": "تصویر یا حروف آغازین، با نقطهٔ وضعیت اختیاری.",
+    "limitations": [
+      "Broken images fall back to initials on the error event. There is no remote presence service."
+    ]
+  },
+  {
+    "name": "Badge",
+    "slug": "badge",
+    "summary": "Compact status label.",
+    "summaryFa": "برچسب وضعیت فشرده.",
+    "limitations": []
+  },
+  {
+    "name": "Breadcrumb",
+    "slug": "breadcrumb",
+    "summary": "Hierarchical location.",
+    "summaryFa": "جایگاه سلسله‌مراتبی.",
+    "limitations": []
+  },
+  {
+    "name": "Button",
+    "slug": "button",
+    "summary": "Action control with variant, size, and loading state.",
+    "summaryFa": "کنترل عمل با گونه، اندازه و حالت بارگذاری.",
+    "limitations": []
+  },
+  {
+    "name": "ButtonGroup",
+    "slug": "button-group",
+    "summary": "Groups related buttons. Joined mode shares borders.",
+    "summaryFa": "دکمه‌های مرتبط را گروه می‌کند.",
+    "limitations": []
+  },
+  {
+    "name": "Calendar",
+    "slug": "calendar",
+    "summary": "Month grid for Gregorian or Persian calendars.",
+    "summaryFa": "شبکهٔ ماه برای تقویم میلادی یا خورشیدی.",
+    "limitations": [
+      "Local timezone only. No time of day. Persian conversion is tested against Intl."
+    ]
+  },
+  {
+    "name": "Card",
+    "slug": "card",
+    "summary": "Surface for a title, description, body, and actions.",
+    "summaryFa": "سطح برای عنوان، توضیح، بدنه و عمل‌ها.",
+    "limitations": []
+  },
+  {
+    "name": "ChartContainer",
+    "slug": "chart-container",
+    "summary": "Accessible bar summary plus a data table. Not a charting engine.",
+    "summaryFa": "خلاصهٔ میله‌ای دسترس‌پذیر به‌علاوهٔ جدول. موتور نمودار نیست.",
+    "limitations": [
+      "No line, pie, zoom, or canvas chart. Children can replace the bar view, but the table remains."
+    ]
+  },
+  {
+    "name": "Checkbox",
+    "slug": "checkbox",
+    "summary": "Native checkbox with a visible label.",
+    "summaryFa": "چک‌باکس بومی با برچسب نمایان.",
+    "limitations": []
+  },
+  {
+    "name": "Combobox",
+    "slug": "combobox",
+    "summary": "Filterable single-select listbox.",
+    "summaryFa": "فهرست تک‌انتخابی قابل فیلتر.",
+    "limitations": [
+      "Single select. Options are local. No virtualization and no async loader."
+    ]
+  },
+  {
+    "name": "CommandPalette",
+    "slug": "command-palette",
+    "summary": "Keyboard-first command list inside a dialog.",
+    "summaryFa": "فهرست فرمان با اولویت صفحه‌کلید داخل گفتگو.",
+    "limitations": [
+      "Filters the provided list only. No fuzzy scoring beyond substring and keywords."
+    ]
+  },
+  {
+    "name": "Container",
+    "slug": "container",
+    "summary": "Centered content width.",
+    "summaryFa": "عرض محتوای وسط‌چین.",
+    "limitations": []
+  },
+  {
+    "name": "ContextMenu",
+    "slug": "context-menu",
+    "summary": "Menu opened from contextmenu or Shift+F10.",
+    "summaryFa": "منویی که با contextmenu یا Shift+F10 باز می‌شود.",
+    "limitations": [
+      "Does not replace the browser menu for assistive tech that does not emit contextmenu."
+    ]
+  },
+  {
+    "name": "DataTable",
+    "slug": "data-table",
+    "summary": "Client-side sort, filter, and pagination over the rows you pass.",
+    "summaryFa": "مرتب‌سازی، فیلتر و صفحه‌بندی سمت کاربر روی ردیف‌هایی که می‌دهید.",
+    "limitations": [
+      "Client-side only. No virtualization and no server cursor mode in 0.1.0."
+    ]
+  },
+  {
+    "name": "DatePicker",
+    "slug": "date-picker",
+    "summary": "Text field plus calendar popover. Accepts ISO dates.",
+    "summaryFa": "فیلد متن به‌علاوهٔ تقویم. تاریخ ISO را می‌پذیرد.",
+    "limitations": [
+      "Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. No date range."
+    ]
+  },
+  {
+    "name": "Dialog",
+    "slug": "dialog",
+    "summary": "Modal dialog with focus management and escape to close.",
+    "summaryFa": "گفتگوی مودال با مدیریت فوکوس و بستن با Escape.",
+    "limitations": [
+      "Open dialogs are activated after mount. SSR HTML does not call showModal."
+    ]
+  },
+  {
+    "name": "Divider",
+    "slug": "divider",
+    "summary": "Horizontal rule, optionally with a label.",
+    "summaryFa": "خط افقی، اختیاری با برچسب.",
+    "limitations": []
+  },
+  {
+    "name": "Drawer",
+    "slug": "drawer",
+    "summary": "Side dialog for navigation or filters.",
+    "summaryFa": "گفتگوی کناری برای ناوبری یا فیلتر.",
+    "limitations": []
+  },
+  {
+    "name": "DropdownMenu",
+    "slug": "dropdown-menu",
+    "summary": "Menu button with keyboard navigation.",
+    "summaryFa": "دکمهٔ منو با ناوبری صفحه‌کلید.",
+    "limitations": [
+      "No nested submenus in 0.1.0."
+    ]
+  },
+  {
+    "name": "EmptyState",
+    "slug": "empty-state",
+    "summary": "Explains an empty collection and offers the next action.",
+    "summaryFa": "مجموعهٔ خالی را توضیح می‌دهد و عمل بعدی را پیشنهاد می‌کند.",
+    "limitations": []
+  },
+  {
+    "name": "FileUpload",
+    "slug": "file-upload",
+    "summary": "Local file selection with type and size checks. It does not upload.",
+    "summaryFa": "انتخاب محلی پرونده با بررسی نوع و اندازه. بارگذاری نمی‌کند.",
+    "limitations": [
+      "Does not upload to a server. Rejected files are reported in the error list and are not executed."
+    ]
+  },
+  {
+    "name": "Flex",
+    "slug": "flex",
+    "summary": "Inline row with wrap and alignment options.",
+    "summaryFa": "ردیف با شکست و تراز.",
+    "limitations": []
+  },
+  {
+    "name": "Footer",
+    "slug": "footer",
+    "summary": "Content info landmark.",
+    "summaryFa": "ناحیهٔ اطلاعات صفحه.",
+    "limitations": []
+  },
+  {
+    "name": "FormField",
+    "slug": "form-field",
+    "summary": "Connects label, control, hint, and error by id.",
+    "summaryFa": "برچسب، کنترل، راهنما و خطا را با شناسه وصل می‌کند.",
+    "limitations": [
+      "Context wiring is implemented in React, Vue, and Svelte. HTML users set ids manually."
+    ]
+  },
+  {
+    "name": "FormMessage",
+    "slug": "form-message",
+    "summary": "Hint or error text with the correct role.",
+    "summaryFa": "متن راهنما یا خطا با نقش درست.",
+    "limitations": []
+  },
+  {
+    "name": "Grid",
+    "slug": "grid",
+    "summary": "Responsive 1 to 4 column grid.",
+    "summaryFa": "شبکهٔ واکنش‌گرا از ۱ تا ۴ ستون.",
+    "limitations": [
+      "Collapses to one column below 48rem. Not a masonry layout."
+    ]
+  },
+  {
+    "name": "IconButton",
+    "slug": "icon-button",
+    "summary": "Square button that requires an accessible name.",
+    "summaryFa": "دکمهٔ مربعی که نام دسترس‌پذیر لازم دارد.",
+    "limitations": []
+  },
+  {
+    "name": "Input",
+    "slug": "input",
+    "summary": "Single-line text field.",
+    "summaryFa": "فیلد متن تک‌خطی.",
+    "limitations": []
+  },
+  {
+    "name": "Label",
+    "slug": "label",
+    "summary": "Form label associated by htmlFor.",
+    "summaryFa": "برچسب فرم با htmlFor.",
+    "limitations": []
+  },
+  {
+    "name": "Link",
+    "slug": "link",
+    "summary": "Text link. External links receive safe rel and target.",
+    "summaryFa": "پیوند متنی. پیوند بیرونی rel امن می‌گیرد.",
+    "limitations": []
+  },
+  {
+    "name": "List",
+    "slug": "list",
+    "summary": "Stacked list of title, description, and optional trailing action.",
+    "summaryFa": "فهرست پشته‌ای با عنوان، توضیح و عمل انتهایی اختیاری.",
+    "limitations": []
+  },
+  {
+    "name": "Modal",
+    "slug": "modal",
+    "summary": "Dialog preset that is always modal.",
+    "summaryFa": "پیش‌تنظیم Dialog که همیشه مودال است.",
+    "limitations": [
+      "This is a Dialog preset, not a second focus system."
+    ]
+  },
+  {
+    "name": "Navbar",
+    "slug": "navbar",
+    "summary": "Sticky header with a collapsible menu.",
+    "summaryFa": "سربرگ چسبان با منوی جمع‌شو.",
+    "limitations": [
+      "The collapse breakpoint is 48rem and is CSS, not a JS resize observer."
+    ]
+  },
+  {
+    "name": "NavigationMenu",
+    "slug": "navigation-menu",
+    "summary": "Horizontal list of links.",
+    "summaryFa": "فهرست افقی پیوندها.",
+    "limitations": [
+      "No mega-menu panels in 0.1.0."
+    ]
+  },
+  {
+    "name": "Notification",
+    "slug": "notification",
+    "summary": "Persistent inline notice with an optional dismiss action.",
+    "summaryFa": "اعلان ماندگار درون صفحه با بستن اختیاری.",
+    "limitations": [
+      "Not a push-notification service."
+    ]
+  },
+  {
+    "name": "PageHeader",
+    "slug": "page-header",
+    "summary": "Title, description, and action row.",
+    "summaryFa": "عنوان، توضیح و ردیف عمل.",
+    "limitations": []
+  },
+  {
+    "name": "Pagination",
+    "slug": "pagination",
+    "summary": "Page controls with a current page.",
+    "summaryFa": "کنترل صفحه‌ها با صفحهٔ جاری.",
+    "limitations": []
+  },
+  {
+    "name": "Popover",
+    "slug": "popover",
+    "summary": "Anchored non-modal panel.",
+    "summaryFa": "پنل غیرمودال متصل به یک لنگر.",
+    "limitations": [
+      "No hover-open mode. Use Tooltip for hover hints."
+    ]
+  },
+  {
+    "name": "Progress",
+    "slug": "progress",
+    "summary": "Determinate or indeterminate progress.",
+    "summaryFa": "پیشرفت مشخص یا نامشخص.",
+    "limitations": []
+  },
+  {
+    "name": "RadioGroup",
+    "slug": "radio-group",
+    "summary": "Named native radios with a legend.",
+    "summaryFa": "رادیوهای بومی هم‌نام با legend.",
+    "limitations": []
+  },
+  {
+    "name": "ResponsiveLayout",
+    "slug": "responsive-layout",
+    "summary": "Sidebar plus main. Sidebar stacks below 64rem.",
+    "summaryFa": "نوار کناری به‌علاوهٔ بدنه. زیر ۶۴rem پشته می‌شود.",
+    "limitations": [
+      "The 64rem collapse is CSS. The open flag only matters in that collapsed state."
+    ]
+  },
+  {
+    "name": "SearchInput",
+    "slug": "search-input",
+    "summary": "Search field with a clear button.",
+    "summaryFa": "فیلد جستجو با دکمهٔ پاک‌کردن.",
+    "limitations": []
+  },
+  {
+    "name": "Select",
+    "slug": "select",
+    "summary": "Styled native select. Use Combobox for a custom listbox.",
+    "summaryFa": "سلکت بومی استایل‌شده. برای فهرست سفارشی از Combobox استفاده کنید.",
+    "limitations": [
+      "Not a custom-styled popup. That is Combobox."
+    ]
+  },
+  {
+    "name": "Separator",
+    "slug": "separator",
+    "summary": "Orientation-aware non-text separator.",
+    "summaryFa": "جداکنندهٔ بدون متن با جهت.",
+    "limitations": []
+  },
+  {
+    "name": "Sidebar",
+    "slug": "sidebar",
+    "summary": "Vertical navigation landmark.",
+    "summaryFa": "ناوبری عمودی.",
+    "limitations": []
+  },
+  {
+    "name": "Skeleton",
+    "slug": "skeleton",
+    "summary": "Placeholder block while content loads.",
+    "summaryFa": "بلوک جایگزین هنگام بارگذاری.",
+    "limitations": [
+      "Not a content layout detector. You size each placeholder."
+    ]
+  },
+  {
+    "name": "Slider",
+    "slug": "slider",
+    "summary": "Native range input with a visible value.",
+    "summaryFa": "ورودی بازهٔ بومی با مقدار نمایان.",
+    "limitations": [
+      "Single thumb only. No range with two thumbs."
+    ]
+  },
+  {
+    "name": "Spinner",
+    "slug": "spinner",
+    "summary": "Indeterminate progress indicator.",
+    "summaryFa": "نشانگر پیشرفت نامشخص.",
+    "limitations": []
+  },
+  {
+    "name": "SplitPane",
+    "slug": "split-pane",
+    "summary": "Two panes with a keyboard-resizable separator.",
+    "summaryFa": "دو قاب با جداکنندهٔ قابل تغییر از صفحه‌کلید.",
+    "limitations": [
+      "Horizontal split only. No nested persistence."
+    ]
+  },
+  {
+    "name": "Stack",
+    "slug": "stack",
+    "summary": "Vertical stack with a gap token.",
+    "summaryFa": "پشتهٔ عمودی با توکن فاصله.",
+    "limitations": []
+  },
+  {
+    "name": "StatCard",
+    "slug": "stat-card",
+    "summary": "Label, value, and hint. It does not invent numbers.",
+    "summaryFa": "برچسب، مقدار و راهنما. عدد نمی‌سازد.",
+    "limitations": [
+      "No sparkline and no live data source."
+    ]
+  },
+  {
+    "name": "Switch",
+    "slug": "switch",
+    "summary": "Boolean switch with role=\"switch\".",
+    "summaryFa": "کلید بولی با role=\"switch\".",
+    "limitations": []
+  },
+  {
+    "name": "Table",
+    "slug": "table",
+    "summary": "Semantic table wrapper with a caption.",
+    "summaryFa": "پوشش جدول معنایی با caption.",
+    "limitations": [
+      "Static markup. Sorting and filtering are DataTable."
+    ]
+  },
+  {
+    "name": "Tabs",
+    "slug": "tabs",
+    "summary": "Automatic-activation tabs.",
+    "summaryFa": "زبانه‌ها با فعال‌سازی خودکار.",
+    "limitations": []
+  },
+  {
+    "name": "Textarea",
+    "slug": "textarea",
+    "summary": "Multi-line text field.",
+    "summaryFa": "فیلد متن چندخطی.",
+    "limitations": []
+  },
+  {
+    "name": "Timeline",
+    "slug": "timeline",
+    "summary": "Ordered events with time elements.",
+    "summaryFa": "رویدادهای مرتب با عنصر time.",
+    "limitations": []
+  },
+  {
+    "name": "Toast",
+    "slug": "toast",
+    "summary": "Transient message in a live region.",
+    "summaryFa": "پیام گذرا در ناحیهٔ زنده.",
+    "limitations": [
+      "Requires WhitePlumeriaProvider or ToastProvider. Auto-dismiss default is 5 seconds and is cancelled under reduced motion."
+    ]
+  },
+  {
+    "name": "Tooltip",
+    "slug": "tooltip",
+    "summary": "Supplemental hint on hover and keyboard focus.",
+    "summaryFa": "راهنمای تکمیلی با هاور و فوکوس صفحه‌کلید.",
+    "limitations": [
+      "Not shown as the only path on touch. Delay is 400ms. Escape dismisses."
+    ]
+  },
+  {
+    "name": "TreeView",
+    "slug": "tree-view",
+    "summary": "Expandable tree with arrow-key navigation.",
+    "summaryFa": "درخت بازشو با ناوبری کلیدهای جهت.",
+    "limitations": [
+      "No drag and drop. No virtualization."
+    ]
+  },
+  {
+    "name": "ValidationMessage",
+    "slug": "validation-message",
+    "summary": "Alias of FormMessage with tone=\"error\".",
+    "summaryFa": "معادل FormMessage با tone=\"error\".",
+    "limitations": [
+      "Preset of FormMessage, not a second validation engine."
+    ]
+  }
+]

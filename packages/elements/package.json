@@ -1,0 +1,44 @@
+{
+  "name": "@white-plumeria/elements",
+  "version": "0.1.0",
+  "description": "Light-DOM custom elements for a documented subset of White Plumeria. No Shadow DOM.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/elements"
+  },
+  "bugs": { "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues" },
+  "keywords": ["white-plumeria", "custom-elements", "web-components"],
+  "publishConfig": { "access": "public" },
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@white-plumeria/styles": { "optional": true }
+  },
+  "devDependencies": {
+    "tsdown": "0.23.2",
+    "typescript": "catalog:"
+  }
+}

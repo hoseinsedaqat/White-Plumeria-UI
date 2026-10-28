@@ -1,0 +1,22 @@
+{
+  "name": "@white-plumeria/example-react",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5174",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4174"
+  },
+  "dependencies": {
+    "@white-plumeria/react": "workspace:*",
+    "@white-plumeria/styles": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
