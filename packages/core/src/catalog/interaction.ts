@@ -326,7 +326,7 @@ export const interactionCatalog: ComponentDoc[] = [
     summary: 'Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.',
     summaryFa: 'اسلایدر تصویر و محتوا با قبلی، بعدی، توضیح و زبانه‌های اسلاید. این Slider بازه‌ای نیست.',
     tags: ['carousel', 'slider', 'slides', 'gallery'],
-    classes: ['wpl-carousel', 'wpl-carousel-media', 'wpl-carousel-image', 'wpl-carousel-caption', 'wpl-carousel-thumb'],
+    classes: ['wpl-carousel', 'wpl-carousel-media', 'wpl-carousel-image', 'wpl-carousel-caption', 'wpl-carousel-dot'],
     props: [
       { name: 'label', type: 'string', description: 'Accessible name of the region.', descriptionFa: 'نام دسترس‌پذیر ناحیه.' },
       { name: 'slides', type: 'Array<{ id: string; label: string; content?: string; src?: string; alt?: string; caption?: string }>', description: 'Slides you provide. Set src and alt for a picture. React content may also be a node.', descriptionFa: 'اسلایدهایی که خودتان می‌دهید. برای تصویر src و alt بدهید.' },
@@ -334,7 +334,7 @@ export const interactionCatalog: ComponentDoc[] = [
       { name: 'loop', type: 'boolean', defaultValue: 'false', description: 'Wrap from the last slide to the first.', descriptionFa: 'از اسلاید آخر به اول برمی‌گردد.' },
     ],
     events: [{ name: 'change', react: 'onIndexChange', vue: '@update:modelValue', svelte: 'bind:index', description: 'Slide index changed.' }],
-    a11y: ['The region is a carousel. Thumbnails or dots are tabs and the visible slide is a tabpanel. Inactive slides are inert. Every picture needs alt. Arrow keys follow reading direction.'],
+    a11y: ['The region is a carousel. One slide is visible. Dots are tabs and the visible slide is a tabpanel. Inactive slides are inert. Every picture needs alt. Arrow keys follow reading direction.'],
     rtl: ['The track translates on the opposite axis in RTL. Previous and next icons flip with direction. Captions use logical padding.'],
     limitations: ['Does not autoplay.', 'Does not download or optimize images. Pass a src your app already serves.', 'A pointer drag moves one slide. It is not a physics scroller.', 'The HTML class snapshot does not include the behavior.'],
     element: false,

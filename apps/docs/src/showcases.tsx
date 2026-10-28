@@ -181,7 +181,7 @@ const sections: Record<string, ReactNode> = {
     </Preview>
   ),
   carousel: (
-    <Preview title="Image slider" open code={themeCarouselCode}>
+    <Preview title="Slider" open code={themeCarouselCode}>
       <ThemeCarousel />
     </Preview>
   ),

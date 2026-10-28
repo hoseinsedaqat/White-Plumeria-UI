@@ -67,6 +67,7 @@ describe('new controls', () => {
         ]}
       />,
     );
+    expect(document.querySelector('.wpl-carousel-thumb')).toBeNull();
     const picture = screen.getByRole('img', { name: 'White plumeria on pale stone' });
     expect(picture).toHaveAttribute('src', '/carousel/white.jpg');
     expect(screen.getByText('The default palette.')).toBeInTheDocument();

@@ -75,7 +75,7 @@
         go(direction === 'rtl' ? (delta > 0 ? 1 : -1) : delta < 0 ? 1 : -1);
       }}
     >
-      <div class="wpl-carousel-track" style:--wpl-carousel-index={current} style:--wpl-carousel-count={count}>
+      <div class="wpl-carousel-track" style:--wpl-carousel-index={current}>
         {#each slides as slide, slideIndex (slide.id)}
           <div
             id="{uid}-panel-{slide.id}"
@@ -117,27 +117,25 @@
             <Icon name="chevronRight" />
           </button>
         </div>
+        <div class="wpl-carousel-dots" role="tablist" aria-label={label || wpl.t('carousel')}>
+          {#each slides as slide, slideIndex (slide.id)}
+            <button
+              type="button"
+              role="tab"
+              class="wpl-carousel-dot"
+              aria-selected={slideIndex === current}
+              aria-controls="{uid}-panel-{slide.id}"
+              tabindex={slideIndex === current ? 0 : -1}
+              onclick={() => commit(slideIndex)}
+              onkeydown={onTabKeyDown}
+            >
+              <span class="wpl-sr-only">{slide.label}</span>
+            </button>
+          {/each}
+        </div>
       {/if}
     </div>
-    {#if media}
-      <div class="wpl-carousel-thumbs" role="tablist" aria-label={label || wpl.t('carousel')}>
-        {#each slides as slide, slideIndex (slide.id)}
-          <button
-            type="button"
-            role="tab"
-            class="wpl-carousel-thumb"
-            aria-selected={slideIndex === current}
-            aria-controls="{uid}-panel-{slide.id}"
-            tabindex={slideIndex === current ? 0 : -1}
-            onclick={() => commit(slideIndex)}
-            onkeydown={onTabKeyDown}
-          >
-            {#if slide.src}<img src={slide.src} alt="" draggable="false" />{:else}{slideIndex + 1}{/if}
-            <span class="wpl-sr-only">{slide.label}</span>
-          </button>
-        {/each}
-      </div>
-    {:else}
+    {#if !media}
       <div class="wpl-carousel-bar">
         <button type="button" class="wpl-btn wpl-btn-outline wpl-btn-sm" disabled={!canMove(current, -1, count, loop)} onclick={() => go(-1)}>
           <Icon name="chevronLeft" />

@@ -61,19 +61,14 @@ export const Carousel = defineComponent({
             key: slide.id,
             type: 'button',
             role: 'tab',
-            class: media ? 'wpl-carousel-thumb' : 'wpl-carousel-dot',
+            class: 'wpl-carousel-dot',
             'aria-selected': slideIndex === current ? 'true' : 'false',
             'aria-controls': `${uid}-panel-${slide.id}`,
             tabindex: slideIndex === current ? 0 : -1,
             onClick: () => commit(slideIndex),
             onKeydown: onTabKeyDown,
           },
-          media
-            ? [
-                slide.src ? h('img', { src: slide.src, alt: '', draggable: false }) : String(slideIndex + 1),
-                h('span', { class: 'wpl-sr-only' }, slide.label),
-              ]
-            : [h('span', { class: 'wpl-sr-only' }, slide.label)],
+          [h('span', { class: 'wpl-sr-only' }, slide.label)],
         ),
       );
       const control = (name: 'previous' | 'next', delta: number) =>
@@ -111,7 +106,7 @@ export const Carousel = defineComponent({
               'div',
               {
                 class: 'wpl-carousel-track',
-                style: { '--wpl-carousel-index': String(current), '--wpl-carousel-count': String(count) },
+                style: { '--wpl-carousel-index': String(current) },
               },
               props.slides.map((slide, slideIndex) => {
                 const active = slideIndex === current;
@@ -136,10 +131,11 @@ export const Carousel = defineComponent({
               ? h('p', { class: 'wpl-carousel-count', 'aria-hidden': 'true' }, `${formatNumber(current + 1, locale.value)} / ${formatNumber(count, locale.value)}`)
               : null,
             media ? h('div', { class: 'wpl-carousel-nav' }, [control('previous', -1), control('next', 1)]) : null,
+            media ? h('div', { class: 'wpl-carousel-dots', role: 'tablist', 'aria-label': props.label || t('carousel') }, tabs) : null,
           ],
         ),
         media
-          ? h('div', { class: 'wpl-carousel-thumbs', role: 'tablist', 'aria-label': props.label || t('carousel') }, tabs)
+          ? null
           : h('div', { class: 'wpl-carousel-bar' }, [
               control('previous', -1),
               h('div', { class: 'wpl-carousel-dots', role: 'tablist', 'aria-label': props.label || t('carousel') }, tabs),

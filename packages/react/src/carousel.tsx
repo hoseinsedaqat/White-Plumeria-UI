@@ -112,10 +112,7 @@ export function Carousel({
       >
         <div
           className="wpl-carousel-track"
-          style={{
-            ['--wpl-carousel-index' as string]: String(current),
-            ['--wpl-carousel-count' as string]: String(count),
-          }}
+          style={{ ['--wpl-carousel-index' as string]: String(current) }}
         >
           {slides.map((slide, slideIndex) => {
             const active = slideIndex === current;
@@ -151,29 +148,27 @@ export function Carousel({
                 <Icon name="chevronRight" />
               </Control>
             </div>
+            <div className="wpl-carousel-dots" role="tablist" aria-label={label || t('carousel')}>
+              {slides.map((slide, slideIndex) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  role="tab"
+                  className="wpl-carousel-dot"
+                  aria-selected={slideIndex === current}
+                  aria-controls={`${uid}-panel-${slide.id}`}
+                  tabIndex={slideIndex === current ? 0 : -1}
+                  onClick={() => commit(slideIndex)}
+                  onKeyDown={onTabKeyDown}
+                >
+                  <span className="wpl-sr-only">{slide.label}</span>
+                </button>
+              ))}
+            </div>
           </>
         ) : null}
       </div>
-      {media ? (
-        <div className="wpl-carousel-thumbs" role="tablist" aria-label={label || t('carousel')}>
-          {slides.map((slide, slideIndex) => (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              className="wpl-carousel-thumb"
-              aria-selected={slideIndex === current}
-              aria-controls={`${uid}-panel-${slide.id}`}
-              tabIndex={slideIndex === current ? 0 : -1}
-              onClick={() => commit(slideIndex)}
-              onKeyDown={onTabKeyDown}
-            >
-              {slide.src ? <img src={slide.src} alt="" draggable={false} /> : <span aria-hidden="true">{slideIndex + 1}</span>}
-              <span className="wpl-sr-only">{slide.label}</span>
-            </button>
-          ))}
-        </div>
-      ) : (
+      {!media ? (
         <div className="wpl-carousel-bar">
           <button
             type="button"
@@ -211,7 +206,7 @@ export function Carousel({
             <span className="wpl-sr-only">{t('next')}</span>
           </button>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }
