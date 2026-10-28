@@ -4,6 +4,7 @@ import { recommendComponents } from './recommend.ts';
 import type { Analysis, FrameworkId, LayoutPlan, PreviewNode } from './types.ts';
 
 const themeWords: Array<{ theme: ThemeName; words: string[] }> = [
+  { theme: 'white', words: ['white', 'neutral', 'plain'] },
   { theme: 'ivory', words: ['ivory', 'paper', 'عاج', 'warm'] },
   { theme: 'ink', words: ['ink', 'letterpress', 'مرکب', 'formal', 'رسمی'] },
   { theme: 'saffron', words: ['saffron', 'finance', 'زعفران', 'مالی', 'gold'] },

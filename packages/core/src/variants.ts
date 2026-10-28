@@ -1,5 +1,11 @@
-export const buttonVariants = ['primary', 'secondary', 'outline', 'ghost', 'danger', 'link'] as const;
+export const buttonVariants = ['primary', 'secondary', 'outline', 'ghost', 'danger', 'success', 'warning', 'info', 'link'] as const;
 export type ButtonVariant = (typeof buttonVariants)[number];
+
+export const buttonAppearances = ['solid', 'soft', 'dash'] as const;
+export type ButtonAppearance = (typeof buttonAppearances)[number];
+
+export const buttonSizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+export type ButtonSize = (typeof buttonSizes)[number];
 
 export const controlSizes = ['sm', 'md', 'lg'] as const;
 export type ControlSize = (typeof controlSizes)[number];
@@ -31,4 +37,12 @@ export function isButtonVariant(value: string): value is ButtonVariant {
 
 export function isControlSize(value: string): value is ControlSize {
   return (controlSizes as readonly string[]).includes(value);
+}
+
+export function isButtonAppearance(value: string): value is ButtonAppearance {
+  return (buttonAppearances as readonly string[]).includes(value);
+}
+
+export function isButtonSize(value: string): value is ButtonSize {
+  return (buttonSizes as readonly string[]).includes(value);
 }

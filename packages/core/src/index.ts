@@ -23,10 +23,14 @@ export {
   alertVariants,
   avatarSizes,
   badgeVariants,
+  buttonAppearances,
+  buttonSizes,
   buttonVariants,
   containerSizes,
   controlSizes,
   gridColumns,
+  isButtonAppearance,
+  isButtonSize,
   isButtonVariant,
   isControlSize,
   stackGaps,
@@ -36,6 +40,8 @@ export type {
   AlertVariant,
   AvatarSize,
   BadgeVariant,
+  ButtonAppearance,
+  ButtonSize,
   ButtonVariant,
   ContainerSize,
   ControlSize,
@@ -55,6 +61,21 @@ export {
 } from './dom.ts';
 export type { FocusTrap } from './dom.ts';
 export { nextIndex, readingDirection } from './keyboard.ts';
+export {
+  canMove,
+  carouselIndexFromKey,
+  clampIndex,
+  clampInteger,
+  moveIndex,
+  otpApply,
+  otpCells,
+  otpDelete,
+  otpLength,
+  otpNormalize,
+  stepIndex,
+  stepState,
+} from './sequence.ts';
+export type { StepState } from './sequence.ts';
 export type { Direction, Orientation } from './keyboard.ts';
 export { placeOverlay } from './overlay.ts';
 export type { Placement, PlacedOverlay, RectLike } from './overlay.ts';

@@ -41,9 +41,11 @@ function sharedDeclarations(): string {
   return lines.map((line) => `  ${line}`).join('\n');
 }
 
+const defaultThemeName = 'white' satisfies ThemeName;
+
 function themeSelector(name: ThemeName, scheme: 'light' | 'dark'): string {
   if (scheme === 'light') {
-    return name === 'ivory'
+    return name === defaultThemeName
       ? `:root,\n[data-wpl-theme="${name}"]`
       : `[data-wpl-theme="${name}"]`;
   }
@@ -51,13 +53,15 @@ function themeSelector(name: ThemeName, scheme: 'light' | 'dark'): string {
 }
 
 export function renderTokensCss(): string {
+  const fallback = themes.find((theme) => theme.name === defaultThemeName);
+  if (!fallback) throw new Error(`Missing default theme: ${defaultThemeName}`);
   const chunks: string[] = [
     '/* Generated from packages/tokens. Do not edit by hand. */',
-    `${themeSelector('ivory', 'light')} {\n${sharedDeclarations()}\n${colorDeclarations(themes[0]!.light)}\n}`,
+    `${themeSelector(defaultThemeName, 'light')} {\n${sharedDeclarations()}\n${colorDeclarations(fallback.light)}\n}`,
   ];
 
   for (const theme of themes) {
-    if (theme.name !== 'ivory') {
+    if (theme.name !== defaultThemeName) {
       chunks.push(
         `${themeSelector(theme.name, 'light')} {\n${colorDeclarations(theme.light)}\n}`,
       );
@@ -68,8 +72,8 @@ export function renderTokensCss(): string {
   const darkMedia = themes
     .map((theme) => {
       const selector =
-        theme.name === 'ivory'
-          ? `:root:not([data-wpl-scheme="light"]),\n  [data-wpl-theme="ivory"]:not([data-wpl-scheme="light"])`
+        theme.name === defaultThemeName
+          ? `:root:not([data-wpl-scheme="light"]),\n  [data-wpl-theme="${defaultThemeName}"]:not([data-wpl-scheme="light"])`
           : `[data-wpl-theme="${theme.name}"]:not([data-wpl-scheme="light"])`;
       return `  ${selector} {\n${colorDeclarations(theme.dark, '    ')}\n  }`;
     })

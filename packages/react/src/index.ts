@@ -2,6 +2,8 @@ export { Accordion, Tabs } from './disclosure.tsx';
 export type { AccordionItem, TabItem } from './disclosure.tsx';
 export { Button, ButtonGroup, IconButton } from './button.tsx';
 export type { ButtonProps, IconButtonProps } from './button.tsx';
+export { Carousel } from './carousel.tsx';
+export type { CarouselSlide } from './carousel.tsx';
 export { Calendar, DatePicker } from './calendar.tsx';
 export { Combobox } from './combobox.tsx';
 export type { ComboOption } from './combobox.tsx';
@@ -50,8 +52,10 @@ export {
   Textarea,
   ValidationMessage,
 } from './form.tsx';
+export { OtpField, PasswordField, Rating } from './fields.tsx';
 export type { SelectOption } from './form.tsx';
 export { Icon, Mark } from './icon.tsx';
+export { Kbd } from './kbd.tsx';
 export {
   Container,
   Flex,
@@ -70,4 +74,6 @@ export { ContextMenu, DropdownMenu, Popover, Tooltip } from './menu.tsx';
 export type { MenuItem } from './menu.tsx';
 export { useLocale, useToast, useWhitePlumeria, WhitePlumeriaProvider } from './provider.tsx';
 export type { ToastInput, ToastRecord } from './provider.tsx';
+export { Steps } from './steps.tsx';
+export type { StepItem } from './steps.tsx';
 export { Notification } from './toast.tsx';

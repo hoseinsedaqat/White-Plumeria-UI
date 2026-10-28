@@ -1,12 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Button sizes `xs` and `xl`, appearances `soft` and `dash`, and status variants `success`, `warning`, and `info`
+- Steps, Carousel (image and content slider, distinct from the range Slider), PasswordField, OtpField, Rating, and Kbd
+- Carousel slides accept `src`, `alt`, and `caption`. The docs slider shows one picture at a time.
+- These are in the catalog and the React, Vue, and Svelte adapters. They are not published to npm.
+
 ## 0.1.0
 
 First implementation in this repository. Not published to npm.
 
 Shipped:
 
-- Tokens and five themes (ivory, ink, saffron, lagoon, blush), light and dark
+- Tokens and six themes (white, ivory, ink, saffron, lagoon, blush), light and dark. `white` is the default.
 - Prefixed CSS and a scoped reset
 - Catalog and React, Vue, and Svelte adapters
 - Light-DOM custom elements for a documented subset

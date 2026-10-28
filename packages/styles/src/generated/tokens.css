@@ -1,7 +1,7 @@
 /* Generated from packages/tokens. Do not edit by hand. */
 
 :root,
-[data-wpl-theme="ivory"] {
+[data-wpl-theme="white"] {
   --wpl-font-sans: "Figtree Variable", Figtree, "Segoe UI", sans-serif;
   --wpl-font-display: "Fraunces Variable", "Iowan Old Style", Palatino, Georgia, serif;
   --wpl-font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", "SFMono-Regular", monospace;
@@ -57,6 +57,82 @@
   --wpl-content-md: 48rem;
   --wpl-content-lg: 64rem;
   --wpl-content-xl: 76rem;
+  --wpl-color-bg: #FFFFFF;
+  --wpl-color-bg-muted: #F4F4F5;
+  --wpl-color-bg-subtle: #F8F8F9;
+  --wpl-color-surface: #FFFFFF;
+  --wpl-color-surface-raised: #FFFFFF;
+  --wpl-color-text: #18181B;
+  --wpl-color-text-muted: #3F3F46;
+  --wpl-color-text-subtle: #52525B;
+  --wpl-color-text-inverse: #FFFFFF;
+  --wpl-color-border: #E4E4E7;
+  --wpl-color-border-strong: #71717A;
+  --wpl-color-focus: #18181B;
+  --wpl-color-primary: #18181B;
+  --wpl-color-primary-hover: #09090B;
+  --wpl-color-primary-active: #000000;
+  --wpl-color-primary-fg: #FFFFFF;
+  --wpl-color-primary-subtle: #F4F4F5;
+  --wpl-color-accent: #3F3F46;
+  --wpl-color-success: #166534;
+  --wpl-color-success-fg: #FFFFFF;
+  --wpl-color-success-subtle: #DCFCE7;
+  --wpl-color-warning: #854D0E;
+  --wpl-color-warning-fg: #FFFFFF;
+  --wpl-color-warning-subtle: #FEF3C7;
+  --wpl-color-danger: #B91C1C;
+  --wpl-color-danger-fg: #FFFFFF;
+  --wpl-color-danger-subtle: #FEE2E2;
+  --wpl-color-info: #1E40AF;
+  --wpl-color-info-fg: #FFFFFF;
+  --wpl-color-info-subtle: #DBEAFE;
+  --wpl-color-disabled-bg: #F4F4F5;
+  --wpl-color-disabled-fg: #A1A1AA;
+  --wpl-color-overlay: rgba(9, 9, 11, 0.45);
+  --wpl-color-shadow: rgba(9, 9, 11, 0.08);
+  --wpl-color-ring: rgba(24, 24, 27, 0.35);
+}
+
+[data-wpl-theme="white"][data-wpl-scheme="dark"] {
+  --wpl-color-bg: #09090B;
+  --wpl-color-bg-muted: #18181B;
+  --wpl-color-bg-subtle: #1F1F23;
+  --wpl-color-surface: #111113;
+  --wpl-color-surface-raised: #1C1C1F;
+  --wpl-color-text: #FAFAFA;
+  --wpl-color-text-muted: #D4D4D8;
+  --wpl-color-text-subtle: #A1A1AA;
+  --wpl-color-text-inverse: #09090B;
+  --wpl-color-border: #3F3F46;
+  --wpl-color-border-strong: #A1A1AA;
+  --wpl-color-focus: #FAFAFA;
+  --wpl-color-primary: #FAFAFA;
+  --wpl-color-primary-hover: #FFFFFF;
+  --wpl-color-primary-active: #E4E4E7;
+  --wpl-color-primary-fg: #09090B;
+  --wpl-color-primary-subtle: #27272A;
+  --wpl-color-accent: #D4D4D8;
+  --wpl-color-success: #86EFAC;
+  --wpl-color-success-fg: #052E16;
+  --wpl-color-success-subtle: #14532D;
+  --wpl-color-warning: #FDE047;
+  --wpl-color-warning-fg: #1C1915;
+  --wpl-color-warning-subtle: #3F3A12;
+  --wpl-color-danger: #FCA5A5;
+  --wpl-color-danger-fg: #450A0A;
+  --wpl-color-danger-subtle: #3F1D1D;
+  --wpl-color-info: #93C5FD;
+  --wpl-color-info-fg: #0C1A2E;
+  --wpl-color-info-subtle: #1E3A5F;
+  --wpl-color-disabled-bg: #27272A;
+  --wpl-color-disabled-fg: #71717A;
+  --wpl-color-overlay: rgba(0, 0, 0, 0.72);
+  --wpl-color-shadow: rgba(0, 0, 0, 0.50);
+  --wpl-color-ring: rgba(250, 250, 250, 0.45);
+}
+
+[data-wpl-theme="ivory"] {
   --wpl-color-bg: #F6F1E8;
   --wpl-color-bg-muted: #EBE4D8;
   --wpl-color-bg-subtle: #F3EEE6;
@@ -438,6 +514,44 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-wpl-scheme="light"]),
+  [data-wpl-theme="white"]:not([data-wpl-scheme="light"]) {
+    --wpl-color-bg: #09090B;
+    --wpl-color-bg-muted: #18181B;
+    --wpl-color-bg-subtle: #1F1F23;
+    --wpl-color-surface: #111113;
+    --wpl-color-surface-raised: #1C1C1F;
+    --wpl-color-text: #FAFAFA;
+    --wpl-color-text-muted: #D4D4D8;
+    --wpl-color-text-subtle: #A1A1AA;
+    --wpl-color-text-inverse: #09090B;
+    --wpl-color-border: #3F3F46;
+    --wpl-color-border-strong: #A1A1AA;
+    --wpl-color-focus: #FAFAFA;
+    --wpl-color-primary: #FAFAFA;
+    --wpl-color-primary-hover: #FFFFFF;
+    --wpl-color-primary-active: #E4E4E7;
+    --wpl-color-primary-fg: #09090B;
+    --wpl-color-primary-subtle: #27272A;
+    --wpl-color-accent: #D4D4D8;
+    --wpl-color-success: #86EFAC;
+    --wpl-color-success-fg: #052E16;
+    --wpl-color-success-subtle: #14532D;
+    --wpl-color-warning: #FDE047;
+    --wpl-color-warning-fg: #1C1915;
+    --wpl-color-warning-subtle: #3F3A12;
+    --wpl-color-danger: #FCA5A5;
+    --wpl-color-danger-fg: #450A0A;
+    --wpl-color-danger-subtle: #3F1D1D;
+    --wpl-color-info: #93C5FD;
+    --wpl-color-info-fg: #0C1A2E;
+    --wpl-color-info-subtle: #1E3A5F;
+    --wpl-color-disabled-bg: #27272A;
+    --wpl-color-disabled-fg: #71717A;
+    --wpl-color-overlay: rgba(0, 0, 0, 0.72);
+    --wpl-color-shadow: rgba(0, 0, 0, 0.50);
+    --wpl-color-ring: rgba(250, 250, 250, 0.45);
+  }
+
   [data-wpl-theme="ivory"]:not([data-wpl-scheme="light"]) {
     --wpl-color-bg: #141210;
     --wpl-color-bg-muted: #1C1916;

@@ -21,7 +21,7 @@ const pages: Record<string, { title: string; body: string; code?: string }> = {
   },
   '/theming': {
     title: 'Theming',
-    body: 'Set data-wpl-theme and data-wpl-scheme on an ancestor. Omit the scheme to follow the system. Themes: ivory, ink, saffron, lagoon, and blush. Custom themes override the --wpl-color-* variables.',
+    body: 'Set data-wpl-theme and data-wpl-scheme on an ancestor. Omit the scheme to follow the system. Themes: white, ivory, ink, saffron, lagoon, and blush. Custom themes override the --wpl-color-* variables. The same attributes color the documentation site and the component previews.',
     code: `<html data-wpl-theme="saffron" data-wpl-scheme="dark" lang="en" dir="ltr">\n\n${themeFlashScript}`,
   },
   '/direction': {

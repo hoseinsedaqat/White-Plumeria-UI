@@ -32,6 +32,17 @@
   padding-inline: 0.95rem;
 }
 
+.wpl-btn,
+.wpl-icon-btn {
+  --wpl-btn-tone: var(--wpl-color-primary);
+}
+
+.wpl-btn-xs {
+  min-block-size: 1.75rem;
+  padding-inline: 0.55rem;
+  font-size: var(--wpl-font-size-xs);
+}
+
 .wpl-btn-sm {
   min-block-size: 2rem;
   padding-inline: 0.7rem;
@@ -41,6 +52,12 @@
 .wpl-btn-lg {
   min-block-size: 3rem;
   padding-inline: 1.15rem;
+  font-size: var(--wpl-font-size-md);
+}
+
+.wpl-btn-xl {
+  min-block-size: 3.25rem;
+  padding-inline: 1.35rem;
   font-size: var(--wpl-font-size-md);
 }
 
@@ -82,13 +99,71 @@
   background: var(--wpl-color-bg-muted);
 }
 
+.wpl-btn-secondary,
+.wpl-btn-outline,
+.wpl-btn-ghost {
+  --wpl-btn-tone: var(--wpl-color-text);
+}
+
 .wpl-btn-danger {
+  --wpl-btn-tone: var(--wpl-color-danger);
   background: var(--wpl-color-danger);
   color: var(--wpl-color-danger-fg);
 }
 
 .wpl-btn-danger:hover:not(:disabled) {
   filter: brightness(0.96);
+}
+
+.wpl-btn-success {
+  --wpl-btn-tone: var(--wpl-color-success);
+  background: var(--wpl-color-success);
+  color: var(--wpl-color-success-fg);
+}
+
+.wpl-btn-success:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.wpl-btn-warning {
+  --wpl-btn-tone: var(--wpl-color-warning);
+  background: var(--wpl-color-warning);
+  color: var(--wpl-color-warning-fg);
+}
+
+.wpl-btn-warning:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.wpl-btn-info {
+  --wpl-btn-tone: var(--wpl-color-info);
+  background: var(--wpl-color-info);
+  color: var(--wpl-color-info-fg);
+}
+
+.wpl-btn-info:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.wpl-btn-soft {
+  background: color-mix(in srgb, var(--wpl-btn-tone) 16%, var(--wpl-color-bg));
+  color: var(--wpl-btn-tone);
+  border-color: transparent;
+}
+
+.wpl-btn-soft:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--wpl-btn-tone) 24%, var(--wpl-color-bg));
+}
+
+.wpl-btn-dash {
+  background: transparent;
+  color: var(--wpl-btn-tone);
+  border-style: dashed;
+  border-color: var(--wpl-btn-tone);
+}
+
+.wpl-btn-dash:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--wpl-btn-tone) 10%, transparent);
 }
 
 .wpl-btn-link {
@@ -159,6 +234,11 @@
   padding: 0;
 }
 
+.wpl-icon-btn-xs {
+  min-inline-size: 1.75rem;
+  min-block-size: 1.75rem;
+}
+
 .wpl-icon-btn-sm {
   min-inline-size: 2rem;
   min-block-size: 2rem;
@@ -167,6 +247,11 @@
 .wpl-icon-btn-lg {
   min-inline-size: 3rem;
   min-block-size: 3rem;
+}
+
+.wpl-icon-btn-xl {
+  min-inline-size: 3.25rem;
+  min-block-size: 3.25rem;
 }
 
 .wpl-spinner {

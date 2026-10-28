@@ -1,4 +1,4 @@
-import { buttonClassName, createFocusTrap, iconButtonClassName, supportsModalDialog, type ButtonVariant, type ControlSize } from '@white-plumeria/core';
+import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, isButtonAppearance, isButtonSize, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
 
 export const elementTags = [
   'wpl-button',
@@ -20,13 +20,17 @@ export const elementTags = [
 
 function variantOf(element: HTMLElement): ButtonVariant {
   const value = element.getAttribute('variant') ?? 'primary';
-  if (value === 'secondary' || value === 'outline' || value === 'ghost' || value === 'danger' || value === 'link') return value;
-  return 'primary';
+  return (buttonVariants as readonly string[]).includes(value) ? (value as ButtonVariant) : 'primary';
 }
 
-function sizeOf(element: HTMLElement): ControlSize {
-  const value = element.getAttribute('size');
-  return value === 'sm' || value === 'lg' ? value : 'md';
+function sizeOf(element: HTMLElement): ButtonSize {
+  const value = element.getAttribute('size') ?? '';
+  return isButtonSize(value) ? value : 'md';
+}
+
+function appearanceOf(element: HTMLElement): ButtonAppearance {
+  const value = element.getAttribute('appearance') ?? '';
+  return isButtonAppearance(value) ? value : 'solid';
 }
 
 function boolAttr(element: HTMLElement, name: string): boolean {
@@ -34,7 +38,7 @@ function boolAttr(element: HTMLElement, name: string): boolean {
 }
 
 class WplButton extends HTMLElement {
-  static observedAttributes = ['variant', 'size', 'loading', 'disabled', 'block', 'type'];
+  static observedAttributes = ['variant', 'size', 'appearance', 'loading', 'disabled', 'block', 'type'];
   private button: HTMLButtonElement | null = null;
 
   connectedCallback() {
@@ -69,6 +73,7 @@ class WplButton extends HTMLElement {
     button.className = buttonClassName({
       variant: variantOf(this),
       size: sizeOf(this),
+      appearance: appearanceOf(this),
       loading,
       block: boolAttr(this, 'block'),
     });
@@ -78,7 +83,7 @@ class WplButton extends HTMLElement {
 }
 
 class WplIconButton extends HTMLElement {
-  static observedAttributes = ['label', 'variant', 'size'];
+  static observedAttributes = ['label', 'variant', 'size', 'appearance'];
   private button: HTMLButtonElement | null = null;
 
   connectedCallback() {
@@ -91,7 +96,7 @@ class WplIconButton extends HTMLElement {
       this.button = button;
     }
     const button = this.button;
-    button.className = iconButtonClassName({ variant: variantOf(this) === 'primary' ? 'ghost' : variantOf(this), size: sizeOf(this) });
+    button.className = iconButtonClassName({ variant: variantOf(this) === 'primary' ? 'ghost' : variantOf(this), size: sizeOf(this), appearance: appearanceOf(this) });
     button.setAttribute('aria-label', this.getAttribute('label') ?? '');
   }
 

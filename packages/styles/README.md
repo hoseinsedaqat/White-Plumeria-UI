@@ -20,7 +20,7 @@ Set the theme on any ancestor:
 <html data-wpl-theme="ivory" data-wpl-scheme="dark" lang="fa" dir="rtl">
 ```
 
-`data-wpl-scheme` may be omitted to follow `prefers-color-scheme`. Themes: `ivory`, `ink`, `saffron`, `lagoon`, `blush`.
+`data-wpl-scheme` may be omitted to follow `prefers-color-scheme`. Themes: `white`, `ivory`, `ink`, `saffron`, `lagoon`, `blush`. `white` is the default when the attribute is omitted.
 
 Logical properties are used for spacing and alignment. Directional icons opt into mirroring with `.wpl-icon-dir`. The page is not flipped as a whole.
 

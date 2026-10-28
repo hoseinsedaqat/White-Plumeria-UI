@@ -67,6 +67,12 @@ const messages = {
     empty: 'Nothing to show yet',
     command: 'Command palette',
     notifications: 'Notifications',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
+    steps: 'Steps',
+    carousel: 'Carousel',
+    slide: 'Slide',
+    character: 'Character',
   },
   fa: {
     required: 'الزامی',
@@ -101,6 +107,12 @@ const messages = {
     empty: 'چیزی برای نمایش نیست',
     command: 'پالت فرمان',
     notifications: 'اعلان‌ها',
+    showPassword: 'نمایش رمز',
+    hidePassword: 'پنهان کردن رمز',
+    steps: 'مراحل',
+    carousel: 'اسلایدر',
+    slide: 'اسلاید',
+    character: 'نویسه',
   },
 } as const;
 

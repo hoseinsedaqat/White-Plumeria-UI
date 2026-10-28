@@ -16,7 +16,7 @@ export interface Preferences {
 }
 
 export const defaultPreferences: Preferences = {
-  theme: 'ivory',
+  theme: 'white',
   appearance: 'system',
   locale: 'en',
   direction: 'auto',
@@ -84,4 +84,4 @@ export function sanitizePreferences(value: Partial<Preferences> | null | undefin
   return { theme, appearance, locale, direction, reducedMotion };
 }
 
-export const themeFlashScript = `(function(){try{var k=${JSON.stringify(brand.storageKey)};var raw=localStorage.getItem(k);var p=raw?JSON.parse(raw):{};var theme=p.theme||"ivory";var appearance=p.appearance||"system";var locale=p.locale==="fa"?"fa":"en";var dir=p.direction==="rtl"||p.direction==="ltr"?p.direction:(locale==="fa"?"rtl":"ltr");var root=document.documentElement;root.setAttribute("data-wpl-theme",theme);root.setAttribute("data-wpl-appearance",appearance);if(appearance==="system"){root.removeAttribute("data-wpl-scheme");}else{root.setAttribute("data-wpl-scheme",appearance);}root.lang=locale;root.dir=dir;if(p.reducedMotion&&p.reducedMotion!=="system"){root.setAttribute("data-wpl-motion",p.reducedMotion);}}catch(e){}})();`;
+export const themeFlashScript = `(function(){try{var k=${JSON.stringify(brand.storageKey)};var raw=localStorage.getItem(k);var p=raw?JSON.parse(raw):{};var theme=p.theme||"white";var appearance=p.appearance||"system";var locale=p.locale==="fa"?"fa":"en";var dir=p.direction==="rtl"||p.direction==="ltr"?p.direction:(locale==="fa"?"rtl":"ltr");var root=document.documentElement;root.setAttribute("data-wpl-theme",theme);root.setAttribute("data-wpl-appearance",appearance);if(appearance==="system"){root.removeAttribute("data-wpl-scheme");}else{root.setAttribute("data-wpl-scheme",appearance);}root.lang=locale;root.dir=dir;if(p.reducedMotion&&p.reducedMotion!=="system"){root.setAttribute("data-wpl-motion",p.reducedMotion);}}catch(e){}})();`;

@@ -2,16 +2,19 @@
 
 Framework-agnostic design system. No Tailwind requirement. No model key in the static site.
 
+Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: white, ivory, ink, saffron, lagoon, blush. white is the default. Each theme has light and dark color tokens named --wpl-color-*.
+
 ## Components
 - Accordion (accordion): Disclosure stack, single or multiple.
 - Alert (alert): Inline status message that is part of the page.
 - Avatar (avatar): Image or initials, with an optional status dot.
 - Badge (badge): Compact status label.
 - Breadcrumb (breadcrumb): Hierarchical location.
-- Button (button): Action control with variant, size, and loading state.
+- Button (button): Action control with variant, appearance, size, and loading state.
 - ButtonGroup (button-group): Groups related buttons. Joined mode shares borders.
 - Calendar (calendar): Month grid for Gregorian or Persian calendars.
 - Card (card): Surface for a title, description, body, and actions.
+- Carousel (carousel): Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.
 - ChartContainer (chart-container): Accessible bar summary plus a data table. Not a charting engine.
 - Checkbox (checkbox): Native checkbox with a visible label.
 - Combobox (combobox): Filterable single-select listbox.
@@ -33,6 +36,7 @@ Framework-agnostic design system. No Tailwind requirement. No model key in the s
 - Grid (grid): Responsive 1 to 4 column grid.
 - IconButton (icon-button): Square button that requires an accessible name.
 - Input (input): Single-line text field.
+- Kbd (kbd): Visual keyboard key. It does not register a shortcut.
 - Label (label): Form label associated by htmlFor.
 - Link (link): Text link. External links receive safe rel and target.
 - List (list): Stacked list of title, description, and optional trailing action.
@@ -40,11 +44,14 @@ Framework-agnostic design system. No Tailwind requirement. No model key in the s
 - Navbar (navbar): Sticky header with a collapsible menu.
 - NavigationMenu (navigation-menu): Horizontal list of links.
 - Notification (notification): Persistent inline notice with an optional dismiss action.
+- OtpField (otp-field): One-time-code field. It does not send or verify a code.
 - PageHeader (page-header): Title, description, and action row.
 - Pagination (pagination): Page controls with a current page.
+- PasswordField (password-field): Password field with a visible label and a reveal toggle. It does not score strength.
 - Popover (popover): Anchored non-modal panel.
 - Progress (progress): Determinate or indeterminate progress.
 - RadioGroup (radio-group): Named native radios with a legend.
+- Rating (rating): Star rating as a radio group. It does not submit a review by itself.
 - ResponsiveLayout (responsive-layout): Sidebar plus main. Sidebar stacks below 64rem.
 - SearchInput (search-input): Search field with a clear button.
 - Select (select): Styled native select. Use Combobox for a custom listbox.
@@ -56,6 +63,7 @@ Framework-agnostic design system. No Tailwind requirement. No model key in the s
 - SplitPane (split-pane): Two panes with a keyboard-resizable separator.
 - Stack (stack): Vertical stack with a gap token.
 - StatCard (stat-card): Label, value, and hint. It does not invent numbers.
+- Steps (steps): Checkout or setup progress. Linear mode blocks future steps until the value moves forward.
 - Switch (switch): Boolean switch with role="switch".
 - Table (table): Semantic table wrapper with a caption.
 - Tabs (tabs): Automatic-activation tabs.

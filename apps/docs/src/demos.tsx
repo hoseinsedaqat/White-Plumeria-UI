@@ -8,6 +8,7 @@ import {
   Button,
   ButtonGroup,
   Calendar,
+  Carousel,
   Card,
   ChartContainer,
   Checkbox,
@@ -29,6 +30,7 @@ import {
   FormMessage,
   Grid,
   IconButton,
+  Kbd,
   Input,
   Label,
   Link,
@@ -37,10 +39,13 @@ import {
   NavigationMenu,
   Notification,
   PageHeader,
+  OtpField,
   Pagination,
+  PasswordField,
   Popover,
   Progress,
   RadioGroup,
+  Rating,
   SearchInput,
   Select,
   Separator,
@@ -49,6 +54,7 @@ import {
   Slider,
   Spinner,
   SplitPane,
+  Steps,
   Stack,
   StatCard,
   Switch,
@@ -89,6 +95,73 @@ function DialogDemo() {
       </Dialog>
     </>
   );
+}
+
+export const themeSlides = [
+  {
+    id: 'white',
+    label: 'White',
+    src: '/carousel/white.jpg',
+    alt: 'White plumeria flowers with yellow centers resting on pale stone',
+    caption: 'Neutral white and ink. The default palette, in light and dark.',
+  },
+  {
+    id: 'ivory',
+    label: 'Ivory',
+    src: '/carousel/ivory.jpg',
+    alt: 'A cream ceramic cup of tea and dried grass on ivory linen',
+    caption: 'Warm paper, brass, and ink.',
+  },
+  {
+    id: 'ink',
+    label: 'Ink',
+    src: '/carousel/ink.jpg',
+    alt: 'A brass lamp glowing against deep blue linen',
+    caption: 'Letterpress contrast: near-black type and strong rules.',
+  },
+  {
+    id: 'saffron',
+    label: 'Saffron',
+    src: '/carousel/saffron.jpg',
+    alt: 'Saffron threads and a halved blood orange on a walnut table',
+    caption: 'Editorial saffron for dense dashboards.',
+  },
+  {
+    id: 'lagoon',
+    label: 'Lagoon',
+    src: '/carousel/lagoon.jpg',
+    alt: 'Clear turquoise water over pale sand and smooth stones',
+    caption: 'Cool sand and deep teal.',
+  },
+  {
+    id: 'blush',
+    label: 'Blush',
+    src: '/carousel/blush.jpg',
+    alt: 'A coral-pink flower and blush linen on pale stone',
+    caption: 'Stone and coral, still formal.',
+  },
+];
+
+export const themeCarouselCode = `<Carousel
+  label="Theme stills"
+  loop
+  slides={[
+${themeSlides
+  .map(
+    (slide) => `    {
+      id: "${slide.id}",
+      label: "${slide.label}",
+      src: "${slide.src}",
+      alt: "${slide.alt}",
+      caption: "${slide.caption}",
+    },`,
+  )
+  .join('\n')}
+  ]}
+/>`;
+
+export function ThemeCarousel() {
+  return <Carousel label="Theme stills" loop slides={themeSlides} />;
 }
 
 export function renderDemo(slug: string): ReactNode {
@@ -294,6 +367,18 @@ export function renderDemo(slug: string): ReactNode {
       );
     case 'split-pane':
       return <SplitPane label="Resize editor" start={<p>Notes</p>} end={<p>Preview</p>} />;
+    case 'steps':
+      return <StepsDemo />;
+    case 'carousel':
+      return <ThemeCarousel />;
+    case 'password-field':
+      return <PasswordField label="Password" name="password" />;
+    case 'otp-field':
+      return <OtpField label="Verification code" name="code" length={6} />;
+    case 'rating':
+      return <Rating label="Workspace quality" name="quality" defaultValue={4} />;
+    case 'kbd':
+      return <Kbd keys={['Ctrl', 'K']} />;
     default:
       return <p>No live demo is registered for this slug.</p>;
   }
@@ -329,6 +414,32 @@ function CommandDemo() {
         ]}
       />
     </>
+  );
+}
+
+const checkoutSteps = [
+  { id: 'account', title: 'Account', description: 'Email and name' },
+  { id: 'billing', title: 'Billing', description: 'Payment method' },
+  { id: 'review', title: 'Review', description: 'Confirm the sample' },
+];
+
+function StepsDemo() {
+  const [value, setValue] = useState('account');
+  const index = checkoutSteps.findIndex((item) => item.id === value);
+  const next = checkoutSteps[index + 1];
+  const previous = checkoutSteps[index - 1];
+  return (
+    <div className="wpl-stack" style={{ width: '100%' }}>
+      <Steps label="Checkout" items={checkoutSteps} value={value} onValueChange={setValue} />
+      <div className="wpl-flex">
+        <Button variant="outline" size="sm" disabled={!previous} onClick={() => previous && setValue(previous.id)}>
+          Back
+        </Button>
+        <Button size="sm" disabled={!next} onClick={() => next && setValue(next.id)}>
+          Next
+        </Button>
+      </div>
+    </div>
   );
 }
 

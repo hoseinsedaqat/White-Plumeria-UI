@@ -12,7 +12,7 @@ console.log(ivory?.light.primary);
 console.log(renderTokensCss());
 ```
 
-Themes: `ivory`, `ink`, `saffron`, `lagoon`, `blush`. Each theme has a light and a dark scheme.
+Themes: `white`, `ivory`, `ink`, `saffron`, `lagoon`, `blush`. `white` is the default. Each theme has a light and a dark scheme.
 
 Breakpoints are exported in JavaScript (`sharedTokens.breakpoint`) because CSS media queries cannot reliably read custom properties. The values are `40rem`, `48rem`, `64rem`, and `80rem`.
 

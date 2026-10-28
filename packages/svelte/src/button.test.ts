@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Button from './lib/Button.svelte';
+import Steps from './lib/Steps.svelte';
 import Switch from './lib/Switch.svelte';
 
 describe('svelte adapter', () => {
@@ -22,5 +23,17 @@ describe('svelte adapter', () => {
     expect(control).toHaveAttribute('aria-checked', 'false');
     await user.click(control);
     expect(control).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('renders steps and disables a future step', () => {
+    render(Steps, {
+      label: 'Checkout',
+      items: [
+        { id: 'account', title: 'Account' },
+        { id: 'billing', title: 'Billing' },
+      ],
+      value: 'account',
+    });
+    expect(screen.getByRole('button', { name: /Billing/ }).hasAttribute('disabled')).toBe(true);
   });
 });

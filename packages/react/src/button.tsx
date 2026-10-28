@@ -1,12 +1,13 @@
 import { buttonClassName, buttonGroupClassName, iconButtonClassName } from '@white-plumeria/core';
-import type { ButtonVariant, ControlSize } from '@white-plumeria/core';
+import type { ButtonAppearance, ButtonSize, ButtonVariant } from '@white-plumeria/core';
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-  size?: ControlSize;
+  size?: ButtonSize;
+  appearance?: ButtonAppearance;
   loading?: boolean;
   block?: boolean;
 }
@@ -15,6 +16,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   {
     variant = 'primary',
     size = 'md',
+    appearance = 'solid',
     loading = false,
     block = false,
     disabled,
@@ -32,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       type={type}
-      className={buttonClassName({ variant, size, loading, block, className })}
+      className={buttonClassName({ variant, size, appearance, loading, block, className })}
       disabled={inactive}
       aria-busy={loading || undefined}
       onClick={(event) => {
@@ -54,18 +56,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   variant?: ButtonVariant;
-  size?: ControlSize;
+  size?: ButtonSize;
+  appearance?: ButtonAppearance;
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  { label, variant = 'ghost', size = 'md', className, children, type = 'button', ...rest },
+  { label, variant = 'ghost', size = 'md', appearance = 'solid', className, children, type = 'button', ...rest },
   ref,
 ) {
   return (
     <button
       ref={ref}
       type={type}
-      className={iconButtonClassName({ variant, size, className })}
+      className={iconButtonClassName({ variant, size, appearance, className })}
       aria-label={label}
       {...rest}
     >

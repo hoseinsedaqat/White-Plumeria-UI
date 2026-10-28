@@ -66,7 +66,12 @@
   .wpl-menu-item,
   .wpl-day,
   .wpl-page,
-  .wpl-link
+  .wpl-link,
+  .wpl-step-trigger,
+  .wpl-carousel-dot,
+  .wpl-carousel-control,
+  .wpl-otp-cell,
+  .wpl-password .wpl-icon-btn
 ):focus-visible {
   outline: 2px solid var(--wpl-color-focus);
   outline-offset: 2px;

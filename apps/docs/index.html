@@ -8,14 +8,14 @@
       name="description"
       content="White Plumeria is a framework-agnostic design system for HTML, React, Vue, and Svelte. No Tailwind required."
     />
-    <meta name="theme-color" content="#F6F1E8" />
+    <meta name="theme-color" content="#FFFFFF" />
     <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
     <script>
       (function () {
         try {
           var raw = localStorage.getItem("wpl.preferences");
           var prefs = raw ? JSON.parse(raw) : {};
-          var theme = prefs.theme || "ivory";
+          var theme = prefs.theme || "white";
           var appearance = prefs.appearance || "system";
           var root = document.documentElement;
           root.setAttribute("data-wpl-theme", theme);

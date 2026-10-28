@@ -31,6 +31,17 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     allowedHosts: true,
+    cors: true,
+    // The live preview is an HTTPS proxy. Without this, the dev client
+    // tries the sandbox port and the error overlay covers the page.
+    hmr: {
+      protocol: 'wss',
+      clientPort: 443,
+      overlay: false,
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   preview: {
     host: '0.0.0.0',

@@ -17,6 +17,14 @@ const synonyms: Record<string, string[]> = {
   chart: ['chartcontainer'],
   upload: ['fileupload'],
   search: ['searchinput', 'combobox'],
+  steps: ['steps'],
+  checkout: ['steps', 'formfield', 'button'],
+  carousel: ['carousel'],
+  slider: ['carousel', 'slider'],
+  password: ['passwordfield'],
+  otp: ['otpfield'],
+  rating: ['rating'],
+  kbd: ['kbd'],
 };
 
 export function recommendComponents(prompt: string, limit = 6): Recommendation[] {
