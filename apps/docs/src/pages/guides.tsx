@@ -30,7 +30,7 @@ const pages: Record<string, { title: string; body: string; code?: string }> = {
   },
   '/accessibility': {
     title: 'Accessibility',
-    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
+    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. Dialogs, drawers, menus, and toasts use a short transition. prefers-reduced-motion and data-wpl-motion="reduce" remove it. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
   },
   '/changelog': {
     title: 'Changelog',

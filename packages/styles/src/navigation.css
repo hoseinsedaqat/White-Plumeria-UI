@@ -89,6 +89,10 @@
   background: var(--wpl-color-bg-subtle);
 }
 
+.wpl-accordion-trigger .wpl-icon {
+  transition: transform var(--wpl-duration-fast) var(--wpl-ease);
+}
+
 .wpl-accordion-panel {
   padding: 0 var(--wpl-space-4) var(--wpl-space-4);
   color: var(--wpl-color-text-muted);
@@ -217,6 +221,7 @@
 
 .wpl-navbar[data-open="true"] .wpl-nav-menu {
   display: flex;
+  animation: wpl-menu-in var(--wpl-duration-fast) var(--wpl-ease);
 }
 
 @media (max-width: 48rem) {
