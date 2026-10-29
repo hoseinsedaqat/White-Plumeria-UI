@@ -4,7 +4,6 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
-  nextIndex,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -211,15 +210,46 @@ export function ContextMenu({
   items,
   onSelect,
   children,
+  label = 'Context menu',
 }: {
   items: MenuItem[];
   onSelect?: (id: string) => void;
   children: ReactNode;
+  label?: string;
 }) {
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
   const [active, setActive] = useState(0);
+  const [subActive, setSubActive] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const subRef = useRef<number | null>(null);
+  const menuId = useId();
+  const parent = items[active];
+  const childrenItems = parent?.items ?? [];
+  const current = subActive === null ? parent : childrenItems[subActive];
+
+  function close() {
+    subRef.current = null;
+    setSubActive(null);
+    setPoint(null);
+  }
+
+  function openAt(x: number, y: number) {
+    subRef.current = null;
+    setSubActive(null);
+    setActive(firstEnabledIndex(items));
+    setPoint({ x, y });
+    rootRef.current?.focus();
+  }
+
+  function openSubmenu(index = active) {
+    const item = items[index];
+    if (!menuHasSubmenu(item)) return;
+    const next = firstEnabledIndex(item.items);
+    subRef.current = next;
+    setActive(index);
+    setSubActive(next);
+  }
 
   useEffect(() => {
     if (!point || !menuRef.current) return;
@@ -232,57 +262,140 @@ export function ContextMenu({
     );
     menu.style.left = `${placed.left}px`;
     menu.style.top = `${placed.top}px`;
-    return bindDismissable({ root: menu, onDismiss: () => setPoint(null) });
+    return bindDismissable({
+      root: menu,
+      onDismiss: () => {
+        if (subRef.current !== null) {
+          subRef.current = null;
+          setSubActive(null);
+          return;
+        }
+        setPoint(null);
+      },
+    });
   }, [point]);
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'F10' && event.shiftKey) {
+      event.preventDefault();
+      const rect = rootRef.current?.getBoundingClientRect();
+      openAt(rect?.left ?? 0, rect?.bottom ?? 0);
+      return;
+    }
+    if (!point) return;
+    const command = menuCommand({
+      key: event.key,
+      direction: readingDirection(rootRef.current),
+      open: true,
+      submenuOpen: subActive !== null,
+      hasSubmenu: menuHasSubmenu(current),
+    });
+    if (!command || command === 'open') return;
+    event.preventDefault();
+    if (command === 'close' || command === 'close-submenu') event.stopPropagation();
+    if (command === 'close') {
+      close();
+      return;
+    }
+    if (command === 'close-submenu') {
+      subRef.current = null;
+      setSubActive(null);
+      return;
+    }
+    if (command === 'open-submenu') {
+      openSubmenu();
+      return;
+    }
+    if (command === 'activate') {
+      if (current && !current.disabled && !menuHasSubmenu(current)) {
+        onSelect?.(current.id);
+        close();
+      }
+      return;
+    }
+    const motion = command as MenuMotion;
+    if (subActive === null) setActive(moveEnabledIndex(items, active, motion));
+    else setSubActive(moveEnabledIndex(childrenItems, subActive, motion));
+  }
 
   return (
     <div
       ref={rootRef}
+      role="group"
+      aria-label={label}
+      tabIndex={0}
+      aria-controls={point ? menuId : undefined}
+      aria-activedescendant={point && current ? `${menuId}-${current.id}` : undefined}
       onContextMenu={(event) => {
         event.preventDefault();
-        setPoint({ x: event.clientX, y: event.clientY });
-        setActive(0);
+        openAt(event.clientX, event.clientY);
       }}
-      onKeyDown={(event) => {
-        if (event.key === 'F10' && event.shiftKey) {
-          event.preventDefault();
-          const rect = rootRef.current?.getBoundingClientRect();
-          setPoint({ x: rect?.left ?? 0, y: rect?.bottom ?? 0 });
-        }
-        if (!point) return;
-        const next = nextIndex(active, items.length, event.key, 'vertical');
-        if (next !== null) {
-          event.preventDefault();
-          setActive(next);
-        }
-        if (event.key === 'Enter') {
-          const item = items[active];
-          if (item) {
-            onSelect?.(item.id);
-            setPoint(null);
-          }
-        }
-      }}
-      tabIndex={0}
+      onKeyDown={onKeyDown}
     >
       {children}
       {point ? (
-        <div ref={menuRef} role="menu" className="wpl-menu" style={{ position: 'fixed', zIndex: 80 }}>
-          {items.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              role="menuitem"
-              className="wpl-menu-item"
-              data-active={index === active || undefined}
-              onClick={() => {
-                onSelect?.(item.id);
-                setPoint(null);
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-fixed">
+          {items.map((item, index) => {
+            const nested = menuHasSubmenu(item);
+            const expanded = nested && index === active && subActive !== null;
+            return (
+              <div key={item.id} className="wpl-menu-row">
+                <button
+                  id={`${menuId}-${item.id}`}
+                  type="button"
+                  role="menuitem"
+                  className="wpl-menu-item"
+                  disabled={item.disabled}
+                  aria-haspopup={nested ? 'menu' : undefined}
+                  aria-expanded={nested ? expanded : undefined}
+                  aria-controls={expanded ? `${menuId}-sub-${item.id}` : undefined}
+                  data-active={subActive === null && index === active ? 'true' : undefined}
+                  onMouseEnter={() => {
+                    setActive(index);
+                    if (nested) openSubmenu(index);
+                    else {
+                      subRef.current = null;
+                      setSubActive(null);
+                    }
+                  }}
+                  onClick={() => {
+                    if (nested) openSubmenu(index);
+                    else if (!item.disabled) {
+                      onSelect?.(item.id);
+                      close();
+                    }
+                  }}
+                >
+                  <span>{item.label}</span>
+                  {nested ? <span className="wpl-menu-caret" aria-hidden="true" /> : null}
+                </button>
+                {expanded ? (
+                  <div id={`${menuId}-sub-${item.id}`} role="menu" aria-label={item.label} className="wpl-menu wpl-menu-sub">
+                    {item.items?.map((child, childIndex) => (
+                      <button
+                        key={child.id}
+                        id={`${menuId}-${child.id}`}
+                        type="button"
+                        role="menuitem"
+                        className="wpl-menu-item"
+                        disabled={child.disabled}
+                        data-active={childIndex === subActive ? 'true' : undefined}
+                        onMouseEnter={() => setSubActive(childIndex)}
+                        onClick={() => {
+                          if (!child.disabled) {
+                            onSelect?.(child.id);
+                            close();
+                          }
+                        }}
+                      >
+                        {child.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : null}
     </div>
