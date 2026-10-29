@@ -177,8 +177,10 @@ body {
   top: calc(100% + 0.45rem);
   right: 0;
   z-index: 70;
-  width: min(22rem, calc(100vw - 1.5rem));
-  padding: 0.75rem;
+  width: min(18rem, calc(100vw - 1.5rem));
+  max-height: min(28rem, calc(100vh - var(--docs-bar) - 1.5rem));
+  overflow: auto;
+  padding: 0.55rem;
   border: 1px solid var(--wpl-color-border);
   border-radius: 14px;
   background: var(--wpl-color-surface-raised);
@@ -217,28 +219,54 @@ body {
   background: var(--wpl-color-primary-subtle);
 }
 
+.docs-theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .docs-theme-row {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.7rem;
   width: 100%;
-  margin-top: 0.35rem;
-  padding: 0.4rem 0.5rem;
+  margin-top: 0;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: transparent;
   text-align: left;
 }
 
-.docs-dots {
-  display: inline-flex;
-  gap: 0.2rem;
+.docs-theme-row[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--wpl-color-bg-muted);
 }
 
-.docs-dots i,
+.docs-swatch {
+  display: grid;
+  flex: none;
+  grid-template-columns: 0.62rem 0.62rem;
+  gap: 0.14rem;
+  width: 1.38rem;
+  height: 1.38rem;
+}
+
+.docs-swatch i,
 .docs-dot {
-  width: 0.72rem;
-  height: 0.72rem;
+  display: block;
+  width: 0.62rem;
+  height: 0.62rem;
   border-radius: 999px;
-  display: inline-block;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 18%, transparent);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.docs-theme-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .docs-frame {
@@ -894,6 +922,16 @@ body {
   }
 }
 
+@media (max-width: 1100px) {
+  .docs-theme-name {
+    display: none;
+  }
+
+  .docs-search {
+    max-width: 12rem;
+  }
+}
+
 @media (max-width: 960px) {
   .docs-menu-btn {
     display: inline-flex;
@@ -973,6 +1011,19 @@ body {
 }
 
 @media (max-width: 720px) {
+  .docs-pop-panel {
+    position: fixed;
+    top: calc(var(--docs-bar) + 0.45rem);
+    right: 0.65rem;
+    left: auto;
+    width: min(18.5rem, calc(100vw - 1.3rem));
+    max-height: calc(100vh - var(--docs-bar) - 1.2rem);
+  }
+
+  .docs-theme-name {
+    display: none;
+  }
+
   .docs-top {
     gap: 0.4rem;
     padding-inline: 0.85rem;
