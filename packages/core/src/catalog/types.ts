@@ -21,6 +21,7 @@ export interface FrameworkExamples {
   react: string;
   vue: string;
   svelte: string;
+  angular: string;
 }
 
 export interface ComponentDoc {

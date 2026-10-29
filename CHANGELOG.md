@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `@white-plumeria/angular` is an Angular 22 adapter for the same catalog. Native controls stay on the real element (`button wplButton`). Composites use `wpl-*` elements. It is not published to npm.
 - ContextMenu opens one submenu level from a right-click or Shift+F10. Escape closes that level before the menu.
 - DropdownMenu opens one submenu level. The inline-end arrow opens it, and Escape closes that level before the root menu.
 - RangeSlider selects a numeric start and end. A thumb stops at the other thumb instead of jumping under the pointer.

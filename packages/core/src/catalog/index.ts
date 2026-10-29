@@ -61,5 +61,7 @@ export function componentNames(): string[] {
   return catalog.map((component) => component.name);
 }
 
+export { angularCloseTag, angularHost, angularSelector } from './angular.ts';
+export type { AngularHost } from './angular.ts';
 export type { ComponentCategory, ComponentDoc, EventDoc, FrameworkExamples, PropDoc } from './types.ts';
 export { categoryLabels } from './types.ts';

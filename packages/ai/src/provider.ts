@@ -2,7 +2,7 @@ import { analyzePrompt, buildLayout, renderCode } from './plan.ts';
 import type { AIProvider, AIRequest, FrameworkId, PlanResult } from './types.ts';
 import { validateGeneratedCode } from './validate.ts';
 
-const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'html'];
+const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'html'];
 
 export function planFromPrompt(request: AIRequest): PlanResult {
   const prompt = request.prompt.trim();
@@ -22,22 +22,25 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     react: bundle('react', renderCode(layout.nodes, 'react')),
     vue: bundle('vue', renderCode(layout.nodes, 'vue')),
     svelte: bundle('svelte', renderCode(layout.nodes, 'svelte')),
+    angular: bundle('angular', renderCode(layout.nodes, 'angular')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
     react: validateGeneratedCode(code.react.files[0]?.contents ?? '', 'react'),
     vue: validateGeneratedCode(code.vue.files[0]?.contents ?? '', 'vue'),
     svelte: validateGeneratedCode(code.svelte.files[0]?.contents ?? '', 'svelte'),
+    angular: validateGeneratedCode(code.angular.files[0]?.contents ?? '', 'angular'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };
 }
 
 function bundle(framework: FrameworkId, contents: string) {
-  const extension = framework === 'vue' ? 'vue' : framework === 'svelte' ? 'svelte' : framework === 'html' ? 'html' : 'tsx';
+  const extension = framework === 'vue' ? 'vue' : framework === 'svelte' ? 'svelte' : framework === 'html' ? 'html' : framework === 'angular' ? 'ts' : 'tsx';
+  const language = framework === 'html' ? 'html' : framework === 'vue' ? 'vue' : framework === 'angular' ? 'ts' : 'tsx';
   return {
     framework,
-    files: [{ path: `Example.${extension}`, language: framework === 'html' ? 'html' : 'tsx', contents }],
+    files: [{ path: `Example.${extension}`, language, contents }],
     notes: [
       'Imports are limited to @white-plumeria packages that exist in this repository.',
       'Preview renders a structured plan. It does not eval this source.',

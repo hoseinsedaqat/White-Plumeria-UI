@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
+    "types": []
+  },
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }]
+}
