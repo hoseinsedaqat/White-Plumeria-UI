@@ -1,6 +1,7 @@
 import { getComponent } from '@white-plumeria/core';
 import type { ThemeName } from '@white-plumeria/tokens';
 import { recommendComponents } from './recommend.ts';
+import { angularCloseTag, angularHost } from '@white-plumeria/core';
 import type { Analysis, FrameworkId, LayoutPlan, PreviewNode } from './types.ts';
 
 const themeWords: Array<{ theme: ThemeName; words: string[] }> = [
@@ -151,6 +152,7 @@ export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string
   if (framework === 'html') return nodes.map(renderHtml).join('\n');
   if (framework === 'react') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
+  if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
 }
 
@@ -184,6 +186,27 @@ function renderSvelte(node: PreviewNode, indent: number): string {
   return renderVue(node, indent);
 }
 
+function renderAngular(node: PreviewNode, indent: number): string {
+  const pad = ' '.repeat(indent);
+  const host = angularHost(node.component);
+  const props = propString(node.props, 'angular');
+  const projected = Boolean(node.text || node.children?.length);
+  const icon = host.attribute === 'wplIconButton' && projected ? ' [hasIcon]="true"' : '';
+  const directive = host.attribute ? ` ${host.attribute}` : '';
+  const kids = [
+    node.text ? `${pad}  ${node.text}` : '',
+    ...(node.children ?? []).map((child) => renderAngular(child, indent + 2)),
+  ].filter(Boolean);
+  if (!kids.length) return `${pad}<${host.element}${directive}${props} />`;
+  return `${pad}<${host.element}${directive}${icon}${props}>\n${kids.join('\n')}\n${pad}${angularCloseTag(node.component)}`;
+}
+
+function wrapAngular(nodes: PreviewNode[]): string {
+  const imported = names(nodes);
+  const body = nodes.map((node) => renderAngular(node, 2)).join('\n');
+  return `import { ${imported.join(', ')} } from "@white-plumeria/angular";\nimport { Component } from "@angular/core";\nimport "@white-plumeria/styles";\n\n@Component({\n  selector: "wpl-example",\n  imports: [${imported.join(', ')}],\n  template: \`\n${body}\n  \`,\n})\nexport class Example {}\n`;
+}
+
 function renderHtml(node: PreviewNode): string {
   const component = getComponent(node.component);
   const className = component?.classes[0] ?? 'wpl-root';
@@ -197,9 +220,11 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
     .map(([key, value]) => {
       if (typeof value === 'boolean') {
         if (framework === 'vue') return value ? ` ${key}` : '';
+        if (framework === 'angular') return value ? ` [${key}]="true"` : ` [${key}]="false"`;
         return value ? ` ${key}` : ` ${key}={false}`;
       }
       if (typeof value === 'number') {
+        if (framework === 'angular') return ` [${key}]="${value}"`;
         return framework === 'react' || framework === 'svelte' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
       }
       return ` ${key}="${escapeAttr(String(value))}"`;

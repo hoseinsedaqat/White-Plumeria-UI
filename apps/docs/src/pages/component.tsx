@@ -6,7 +6,7 @@ import { Showcase } from '../showcases.tsx';
 
 export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: (href: string) => void }) {
   const component = getComponent(slug);
-  const [tab, setTab] = useState<'react' | 'vue' | 'svelte' | 'html'>('react');
+  const [tab, setTab] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'html'>('react');
   if (!component) return <p>Unknown component.</p>;
   const index = catalog.findIndex((item) => item.slug === component.slug);
   const prev = catalog[index - 1];
@@ -23,7 +23,7 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       <section className="docs-block" id="usage">
         <h2>Usage</h2>
         <div className="docs-tabs" role="tablist" aria-label="Framework examples">
-          {(['react', 'vue', 'svelte', 'html'] as const).map((item) => (
+          {(['react', 'vue', 'svelte', 'angular', 'html'] as const).map((item) => (
             <button
               key={item}
               type="button"
@@ -75,7 +75,7 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
         <ul>
           {component.events.map((event) => (
             <li key={event.name}>
-              <code>{event.react}</code> / <code>{event.vue}</code> / <code>{event.svelte}</code> — {event.description}
+              <code>{event.react}</code> / <code>{event.vue}</code> / <code>{event.svelte}</code> / <code>{angularEvent(event.react)}</code> — {event.description}
             </li>
           ))}
         </ul>
@@ -136,6 +136,12 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       </nav>
     </article>
   );
+}
+
+function angularEvent(reactName: string): string {
+  if (!reactName.startsWith('on') || reactName.length < 3 || reactName.includes(' ')) return 'output binding';
+  const name = reactName.slice(2);
+  return `(${name.charAt(0).toLowerCase()}${name.slice(1)})`;
 }
 
 function classKind(name: string) {

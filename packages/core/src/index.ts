@@ -139,12 +139,16 @@ export type { ColumnSpec, TableQuery, TableResult } from './table.ts';
 export { directionalIcons, iconPaths } from './icons.ts';
 export type { IconName } from './icons.ts';
 export {
+  angularCloseTag,
+  angularHost,
+  angularSelector,
   catalog,
   categoryLabels,
   componentNames,
   getComponent,
   searchComponents,
 } from './catalog/index.ts';
+export type { AngularHost } from './catalog/index.ts';
 export type {
   ComponentCategory,
   ComponentDoc,

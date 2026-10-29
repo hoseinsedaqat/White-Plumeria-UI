@@ -9,14 +9,25 @@ export default defineConfig({
   plugins: [svelte(), svelteTesting()],
   resolve: {
     conditions: ['browser'],
-    alias: {
-      '@white-plumeria/tokens': `${root}packages/tokens/src/index.ts`,
-      '@white-plumeria/core': `${root}packages/core/src/index.ts`,
-      '@white-plumeria/ai': `${root}packages/ai/src/index.ts`,
-      '@white-plumeria/react': `${root}packages/react/src/index.ts`,
-      '@white-plumeria/vue': `${root}packages/vue/src/index.ts`,
-      '@white-plumeria/elements': `${root}packages/elements/src/index.ts`,
-    },
+    alias: [
+      { find: '@white-plumeria/tokens', replacement: `${root}packages/tokens/src/index.ts` },
+      { find: '@white-plumeria/core', replacement: `${root}packages/core/src/index.ts` },
+      { find: '@white-plumeria/ai', replacement: `${root}packages/ai/src/index.ts` },
+      { find: '@white-plumeria/react', replacement: `${root}packages/react/src/index.ts` },
+      { find: '@white-plumeria/vue', replacement: `${root}packages/vue/src/index.ts` },
+      { find: '@white-plumeria/elements', replacement: `${root}packages/elements/src/index.ts` },
+      { find: '@angular/core/testing', replacement: `${root}packages/angular/node_modules/@angular/core/fesm2022/testing.mjs` },
+      { find: '@angular/core', replacement: `${root}packages/angular/node_modules/@angular/core/fesm2022/core.mjs` },
+      {
+        find: '@angular/platform-browser/testing',
+        replacement: `${root}packages/angular/node_modules/@angular/platform-browser/fesm2022/testing.mjs`,
+      },
+      {
+        find: '@angular/platform-browser',
+        replacement: `${root}packages/angular/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs`,
+      },
+
+    ],
   },
   test: {
     environment: 'happy-dom',

@@ -6,7 +6,7 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-const frameworks = ['html', 'react', 'vue', 'svelte'] as const;
+const frameworks = ['html', 'react', 'vue', 'svelte', 'angular'] as const;
 type Framework = (typeof frameworks)[number];
 
 function frameworkOf(value: string | undefined): Framework {
@@ -83,7 +83,15 @@ export function generateComponentExampleTool(name: string, framework?: string): 
 export function getFrameworkInstallationTool(framework?: string): ToolResult {
   const target = frameworkOf(framework);
   const names: PackageName[] =
-    target === 'html' ? ['styles'] : target === 'vue' ? ['styles', 'vue'] : target === 'svelte' ? ['styles', 'svelte'] : ['styles', 'react'];
+    target === 'html'
+      ? ['styles']
+      : target === 'vue'
+        ? ['styles', 'vue']
+        : target === 'svelte'
+          ? ['styles', 'svelte']
+          : target === 'angular'
+            ? ['styles', 'angular']
+            : ['styles', 'react'];
   return {
     text: JSON.stringify(
       {

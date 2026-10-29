@@ -2,6 +2,12 @@ packages:
   - "apps/*"
   - "packages/*"
 
+allowBuilds:
+  esbuild: true
+  "@parcel/watcher": true
+  lmdb: true
+  msgpackr-extract: true
+
 catalog:
   typescript: 6.0.3
   vite: 8.3.5

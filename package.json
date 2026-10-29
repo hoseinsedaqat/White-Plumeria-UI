@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, and Svelte.",
+  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, Svelte, and Angular.",
   "license": "MIT",
   "packageManager": "pnpm@12.15.0",
   "engines": {

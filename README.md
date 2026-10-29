@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, and Svelte.<br />
+  A design system for HTML, React, Vue, Svelte, and Angular.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, and Svelte |
+| **One contract** | The same component names in React, Vue, Svelte, and Angular |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -95,6 +95,27 @@ import "@white-plumeria/styles";
 </WhitePlumeriaProvider>
 ```
 
+### Angular
+
+```ts
+import { Component } from "@angular/core";
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/angular";
+import "@white-plumeria/styles";
+
+@Component({
+  selector: "app-example",
+  imports: [WhitePlumeriaProvider, Button],
+  template: `
+    <wpl-provider>
+      <button wplButton variant="primary">Save changes</button>
+    </wpl-provider>
+  `,
+})
+export class Example {}
+```
+
+`Button` is the attribute `wplButton` on a native `<button>`. Composites such as `Card` are elements: `<wpl-card>`.
+
 ### HTML
 
 ```html
@@ -122,6 +143,7 @@ That command does not work today.
 | `@white-plumeria/react` | React 19 components |
 | `@white-plumeria/vue` | Vue 3 render-function components |
 | `@white-plumeria/svelte` | Svelte 5 components |
+| `@white-plumeria/angular` | Angular 22 components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

@@ -1,0 +1,59 @@
+{
+  "name": "@white-plumeria/angular",
+  "version": "0.1.0",
+  "description": "Angular 22 components for White Plumeria. Pair with @white-plumeria/styles.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/angular"
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/angular#readme",
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "angular", "design-system", "accessible"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/types/white-plumeria-angular.d.ts",
+      "default": "./dist/fesm2022/white-plumeria-angular.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/types/white-plumeria-angular.d.ts",
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json",
+    "typecheck": "ng-packagr -p ng-package.json"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*",
+    "tslib": "2.8.1"
+  },
+  "peerDependencies": {
+    "@angular/core": "^22.0.0",
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@white-plumeria/styles": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@angular/compiler": "22.2.3",
+    "@angular/compiler-cli": "22.2.3",
+    "@angular/core": "22.2.3",
+    "@angular/platform-browser": "22.2.3",
+    "@angular/platform-browser-dynamic": "22.2.3",
+    "ng-packagr": "22.2.5",
+    "rxjs": "7.8.2",
+    "typescript": "catalog:",
+    "zone.js": "0.16.3"
+  }
+}

@@ -9,7 +9,7 @@ import { renderDemo } from '../demos.tsx';
 export function PlaygroundPage() {
   const { preferences, setPreferences } = useWhitePlumeria();
   const [slug, setSlug] = useState('button');
-  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'html'>('react');
+  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'html'>('react');
   const component = catalog.find((item) => item.slug === slug) ?? catalog[0];
   if (!component) return null;
 
@@ -18,7 +18,7 @@ export function PlaygroundPage() {
       <p className="docs-kicker">Playground</p>
       <h1 className="docs-title">Try the real components</h1>
       <p className="docs-lede">
-        The preview imports @white-plumeria/react. Vue, Svelte, and HTML snippets come from the same catalog and are not a second implementation.
+        The preview imports @white-plumeria/react. Vue, Svelte, Angular, and HTML snippets come from the same catalog and are not a second implementation.
       </p>
       <div className="docs-split">
         <div className="docs-controls">
@@ -67,7 +67,7 @@ export function PlaygroundPage() {
         <div>
           <ThemedFrame className="docs-canvas">{renderDemo(component.slug)}</ThemedFrame>
           <div className="docs-tabs" style={{ marginTop: '1rem' }}>
-            {(['react', 'vue', 'svelte', 'html'] as const).map((item) => (
+            {(['react', 'vue', 'svelte', 'angular', 'html'] as const).map((item) => (
               <button
                 key={item}
                 type="button"

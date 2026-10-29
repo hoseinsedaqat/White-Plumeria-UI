@@ -25,7 +25,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @white-plumeria/tokens --filter @white-plumeria/core --filter @white-plumeria/styles --filter @white-plumeria/react --filter @white-plumeria/vue --filter @white-plumeria/ai --filter @white-plumeria/elements --filter @white-plumeria/cli --filter @white-plumeria/mcp build
+      - run: pnpm --filter @white-plumeria/tokens --filter @white-plumeria/core --filter @white-plumeria/styles --filter @white-plumeria/react --filter @white-plumeria/vue --filter @white-plumeria/angular --filter @white-plumeria/ai --filter @white-plumeria/elements --filter @white-plumeria/cli --filter @white-plumeria/mcp build
       - run: pnpm --filter @white-plumeria/svelte build
       - name: Dry-run pack
         run: |
