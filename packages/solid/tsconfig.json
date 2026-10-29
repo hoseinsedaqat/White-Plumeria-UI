@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@white-plumeria/core": ["../core/src/index.ts"],
+      "@white-plumeria/tokens": ["../tokens/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

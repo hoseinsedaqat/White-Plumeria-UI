@@ -2,7 +2,7 @@ import { analyzePrompt, buildLayout, renderCode } from './plan.ts';
 import type { AIProvider, AIRequest, FrameworkId, PlanResult } from './types.ts';
 import { validateGeneratedCode } from './validate.ts';
 
-const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'html'];
+const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'html'];
 
 export function planFromPrompt(request: AIRequest): PlanResult {
   const prompt = request.prompt.trim();
@@ -23,6 +23,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     vue: bundle('vue', renderCode(layout.nodes, 'vue')),
     svelte: bundle('svelte', renderCode(layout.nodes, 'svelte')),
     angular: bundle('angular', renderCode(layout.nodes, 'angular')),
+    solid: bundle('solid', renderCode(layout.nodes, 'solid')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
@@ -30,6 +31,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     vue: validateGeneratedCode(code.vue.files[0]?.contents ?? '', 'vue'),
     svelte: validateGeneratedCode(code.svelte.files[0]?.contents ?? '', 'svelte'),
     angular: validateGeneratedCode(code.angular.files[0]?.contents ?? '', 'angular'),
+    solid: validateGeneratedCode(code.solid.files[0]?.contents ?? '', 'solid'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };

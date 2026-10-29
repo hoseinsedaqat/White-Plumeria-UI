@@ -22,6 +22,7 @@ export interface FrameworkExamples {
   vue: string;
   svelte: string;
   angular: string;
+  solid: string;
 }
 
 export interface ComponentDoc {

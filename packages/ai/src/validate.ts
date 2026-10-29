@@ -22,6 +22,8 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Generated code must import from an @white-plumeria package.');
     } else if (framework === 'angular' && imported[2] !== '@white-plumeria/angular') {
       errors.push('Angular examples must import @white-plumeria/angular.');
+    } else if (framework === 'solid' && imported[2] !== '@white-plumeria/solid') {
+      errors.push('Solid examples must import @white-plumeria/solid.');
     } else if (!imported[2]?.startsWith('@white-plumeria/')) {
       errors.push('Import source is outside the White Plumeria scope.');
     }

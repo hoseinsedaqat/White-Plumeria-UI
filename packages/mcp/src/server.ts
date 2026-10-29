@@ -54,7 +54,7 @@ export function createServer(): McpServer {
     {
       title: 'Get usage example',
       description: 'Return the catalog example for html, react, vue, svelte, or angular.',
-      inputSchema: z.object({ name: z.string(), framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular']).optional() }),
+      inputSchema: z.object({ name: z.string(), framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular', 'solid']).optional() }),
     },
     async ({ name, framework }) => text(getUsageExampleTool(name, framework)),
   );
@@ -72,7 +72,7 @@ export function createServer(): McpServer {
     {
       title: 'Generate component example',
       description: 'Return a catalog example. Refuses unknown component names. Does not call a model.',
-      inputSchema: z.object({ name: z.string(), framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular']).optional() }),
+      inputSchema: z.object({ name: z.string(), framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular', 'solid']).optional() }),
     },
     async ({ name, framework }) => text(generateComponentExampleTool(name, framework)),
   );
@@ -81,7 +81,7 @@ export function createServer(): McpServer {
     {
       title: 'Get framework installation',
       description: 'Return the intended install command. Packages are not published yet.',
-      inputSchema: z.object({ framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular']).optional() }),
+      inputSchema: z.object({ framework: z.enum(['html', 'react', 'vue', 'svelte', 'angular', 'solid']).optional() }),
     },
     async ({ framework }) => text(getFrameworkInstallationTool(framework)),
   );

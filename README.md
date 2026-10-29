@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, and Angular.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, and Solid.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, and Angular |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, and Solid |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -116,6 +116,23 @@ export class Example {}
 
 `Button` is the attribute `wplButton` on a native `<button>`. Composites such as `Card` are elements: `<wpl-card>`.
 
+### Solid
+
+```tsx
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/solid";
+import "@white-plumeria/styles";
+
+export function Example() {
+  return (
+    <WhitePlumeriaProvider>
+      <Button variant="primary">Save changes</Button>
+    </WhitePlumeriaProvider>
+  );
+}
+```
+
+This is Solid 1.9 JSX, not a React wrapper. `solid-js` is a peer dependency.
+
 ### HTML
 
 ```html
@@ -144,6 +161,7 @@ That command does not work today.
 | `@white-plumeria/vue` | Vue 3 render-function components |
 | `@white-plumeria/svelte` | Svelte 5 components |
 | `@white-plumeria/angular` | Angular 22 components |
+| `@white-plumeria/solid` | Solid 1.9 components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

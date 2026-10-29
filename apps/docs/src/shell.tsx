@@ -183,11 +183,7 @@ export function DocsApp() {
             </button>
             {themeOpen ? (
               <div className="docs-pop-panel" role="dialog" aria-label="Theme">
-                <p className="docs-note-line">
-                  {path === '/'
-                    ? 'Themes color the previews. This page canvas stays dark.'
-                    : 'This theme colors the site and the component previews.'}
-                </p>
+                <p className="docs-note-line">Light and dark follow this choice. Themes color the components.</p>
                 <h2>Appearance</h2>
                 <div className="docs-segment" role="group" aria-label="Appearance">
                   {(['light', 'dark', 'system'] as const).map((item) => (

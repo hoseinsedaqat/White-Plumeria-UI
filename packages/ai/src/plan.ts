@@ -151,6 +151,7 @@ const layouts: Record<string, PreviewNode[]> = {
 export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string {
   if (framework === 'html') return nodes.map(renderHtml).join('\n');
   if (framework === 'react') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n'));
+  if (framework === 'solid') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/solid');
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -225,7 +226,7 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
       }
       if (typeof value === 'number') {
         if (framework === 'angular') return ` [${key}]="${value}"`;
-        return framework === 'react' || framework === 'svelte' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
+        return framework === 'react' || framework === 'svelte' || framework === 'solid' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
       }
       return ` ${key}="${escapeAttr(String(value))}"`;
     })

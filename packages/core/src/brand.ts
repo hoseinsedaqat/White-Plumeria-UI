@@ -26,6 +26,7 @@ export type PackageName =
   | 'vue'
   | 'svelte'
   | 'angular'
+  | 'solid'
   | 'elements'
   | 'ai'
   | 'mcp'
