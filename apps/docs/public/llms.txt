@@ -20,7 +20,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Combobox (combobox): Filterable single-select listbox.
 - CommandPalette (command-palette): Keyboard-first command list inside a dialog.
 - Container (container): Centered content width.
-- ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10.
+- ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10, with one submenu level.
 - DataTable (data-table): Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.
 - DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
 - DateRangePicker (date-range-picker): Start and end dates, with optional 24-hour times. A later choice is ordered first.

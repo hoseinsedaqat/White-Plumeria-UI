@@ -285,7 +285,12 @@ export function renderDemo(slug: string): ReactNode {
       return <CommandDemo />;
     case 'context-menu':
       return (
-        <ContextMenu items={[{ id: 'copy', label: 'Copy label' }]}>
+        <ContextMenu
+          items={[
+            { id: 'copy', label: 'Copy label' },
+            { id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }, { id: 'pdf', label: 'PDF' }] },
+          ]}
+        >
           <Card title="Right-click or Shift+F10">This row has a supplemental menu.</Card>
         </ContextMenu>
       );

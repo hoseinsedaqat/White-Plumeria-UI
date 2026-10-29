@@ -469,8 +469,15 @@
   min-inline-size: 11rem;
 }
 
-.wpl-menu-panel:has(.wpl-menu-sub) {
+.wpl-menu-panel:has(.wpl-menu-sub),
+.wpl-menu:has(.wpl-menu-sub) {
   overflow: visible;
+}
+
+.wpl-menu-fixed {
+  position: fixed;
+  z-index: 80;
+  min-inline-size: 12rem;
 }
 
 .wpl-menu-caret {

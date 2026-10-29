@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { RangeSlider } from './form.tsx';
-import { DropdownMenu } from './menu.tsx';
+import { ContextMenu, DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
 import { OtpField, PasswordField, Rating } from './fields.tsx';
@@ -132,6 +132,42 @@ describe('new controls', () => {
     expect(screen.getByRole('menu', { name: 'Account' })).toBeTruthy();
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('menu', { name: 'Account' })).toBeNull();
+  });
+
+  it('opens a context submenu and closes that level first', async () => {
+    const user = userEvent.setup();
+    let selected = '';
+    render(
+      <ContextMenu
+        items={[{ id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }] }]}
+        onSelect={(id) => (selected = id)}
+      >
+        Invoice row
+      </ContextMenu>,
+    );
+    await user.pointer({ target: screen.getByText('Invoice row'), keys: '[MouseRight]' });
+    expect(screen.getByRole('menu', { name: 'Context menu' })).toBeTruthy();
+    await user.keyboard('{ArrowRight}');
+    await user.keyboard('{Enter}');
+    expect(selected).toBe('csv');
+    expect(screen.queryByRole('menu', { name: 'Context menu' })).toBeNull();
+  });
+
+  it('closes a context submenu before the root menu', async () => {
+    const user = userEvent.setup();
+    render(
+      <ContextMenu items={[{ id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }] }]}>
+        Invoice row
+      </ContextMenu>,
+    );
+    await user.pointer({ target: screen.getByText('Invoice row'), keys: '[MouseRight]' });
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('menu', { name: 'Export' })).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('menu', { name: 'Export' })).toBeNull();
+    expect(screen.getByRole('menu', { name: 'Context menu' })).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('menu', { name: 'Context menu' })).toBeNull();
   });
 
   it('opens the navbar menu and names the toggle', async () => {

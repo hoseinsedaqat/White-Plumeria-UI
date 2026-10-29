@@ -20,7 +20,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Combobox (combobox): Filterable single-select listbox.
 - CommandPalette (command-palette): Keyboard-first command list inside a dialog.
 - Container (container): Centered content width.
-- ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10.
+- ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10, with one submenu level.
 - DataTable (data-table): Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.
 - DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
 - DateRangePicker (date-range-picker): Start and end dates, with optional 24-hour times. A later choice is ordered first.
@@ -91,7 +91,7 @@ AI tools may only name components from this list.
 - Combobox: Single select. Options are local. No virtualization and no async loader.
 - CommandPalette: Filters the provided list only. No fuzzy scoring beyond substring and keywords.
 - ContextMenu: Does not replace the browser menu for assistive tech that does not emit contextmenu.
-- ContextMenu: Does not open nested items. Use DropdownMenu for a submenu.
+- ContextMenu: One submenu level. Deeper items are not opened.
 - DataTable: Client-side only. No virtualization and no server cursor mode in 0.1.0.
 - DatePicker: Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. Use DateRangePicker for a start and end date.
 - DateRangePicker: No seconds and no timezone name. Dates stay Gregorian ISO strings, not Jalali strings. The first open selection sets the start; the next sets the end. Same-day times are ordered too.

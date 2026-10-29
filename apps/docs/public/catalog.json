@@ -125,11 +125,11 @@
   {
     "name": "ContextMenu",
     "slug": "context-menu",
-    "summary": "Menu opened from contextmenu or Shift+F10.",
-    "summaryFa": "منویی که با contextmenu یا Shift+F10 باز می‌شود.",
+    "summary": "Menu opened from contextmenu or Shift+F10, with one submenu level.",
+    "summaryFa": "منویی که با contextmenu یا Shift+F10 باز می‌شود و یک سطح زیرمنو دارد.",
     "limitations": [
       "Does not replace the browser menu for assistive tech that does not emit contextmenu.",
-      "Does not open nested items. Use DropdownMenu for a submenu."
+      "One submenu level. Deeper items are not opened."
     ]
   },
   {

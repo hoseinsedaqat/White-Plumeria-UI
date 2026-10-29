@@ -6,6 +6,7 @@ import {
   ButtonGroup,
   Card,
   Checkbox,
+  ContextMenu,
   DatePicker,
   DateRangePicker,
   Input,
@@ -141,6 +142,30 @@ function MenuLab() {
     >
       <div className="docs-builder" style={{ minBlockSize: '14rem', justifyContent: 'flex-start' }}>
         <DropdownMenu label="Account" items={items} onSelect={setSelected} />
+        <p className="wpl-muted">Selected: {selected}</p>
+      </div>
+    </Preview>
+  );
+}
+
+function ContextLab() {
+  const [selected, setSelected] = useState('Nothing selected');
+  return (
+    <Preview
+      title="Right-click submenu"
+      open
+      code={`<ContextMenu items={[{ id: "export", label: "Export", items: [{ id: "csv", label: "CSV" }] }]}>Row</ContextMenu>`}
+    >
+      <div className="docs-builder" style={{ minBlockSize: '12rem', justifyContent: 'flex-start' }}>
+        <ContextMenu
+          items={[
+            { id: 'copy', label: 'Copy label' },
+            { id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }, { id: 'pdf', label: 'PDF' }] },
+          ]}
+          onSelect={setSelected}
+        >
+          <Card title="Invoice row">Right-click this card, or focus it and press Shift+F10.</Card>
+        </ContextMenu>
         <p className="wpl-muted">Selected: {selected}</p>
       </div>
     </Preview>
@@ -313,6 +338,7 @@ const sections: Record<string, ReactNode> = {
   'date-range-picker': <DateRangeLab />,
   'range-slider': <RangeLab />,
   'dropdown-menu': <MenuLab />,
+  'context-menu': <ContextLab />,
 };
 
 export function Showcase({ slug }: { slug: string }) {
