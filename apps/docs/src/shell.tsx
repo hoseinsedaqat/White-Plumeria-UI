@@ -1,6 +1,6 @@
 import { brand, catalog, categoryLabels, isThemeName, searchComponents } from '@white-plumeria/core';
 import { Mark, useWhitePlumeria } from '@white-plumeria/react';
-import { themes } from '@white-plumeria/tokens';
+import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AiPage } from './pages/ai.tsx';
 import { BlocksPage } from './pages/blocks.tsx';
@@ -143,7 +143,7 @@ export function DocsApp() {
             }}
           />
           {query.trim() ? (
-            <div className="docs-search-results" role="listbox">
+            <div className="docs-search-results" role="listbox" aria-label="Search results">
               {results.length === 0 ? <p className="docs-search-empty">No components match.</p> : null}
               {results.map((item) => (
                 <A key={item.slug} href={`/components/${item.slug}`} onNavigate={go}>
@@ -172,17 +172,22 @@ export function DocsApp() {
           <div className="docs-pop" ref={themeRef}>
             <button
               type="button"
-              className="docs-tool"
+              className="docs-tool docs-theme-trigger"
               aria-expanded={themeOpen}
               aria-haspopup="dialog"
+              aria-label={`Theme: ${theme?.label ?? 'White'}`}
               onClick={() => setThemeOpen((value) => !value)}
             >
-              <i className="docs-dot" style={{ background: theme?.light.primary }} />
-              {theme?.label}
+              {theme ? <ThemeSwatch colors={signatureColors(theme)} /> : null}
+              <span className="docs-theme-name">{theme?.label}</span>
             </button>
             {themeOpen ? (
               <div className="docs-pop-panel" role="dialog" aria-label="Theme">
-                <p className="docs-note-line">This theme colors the whole site, including previews.</p>
+                <p className="docs-note-line">
+                  {path === '/'
+                    ? 'Themes color the previews. This page canvas stays dark.'
+                    : 'This theme colors the site and the component previews.'}
+                </p>
                 <h2>Appearance</h2>
                 <div className="docs-segment" role="group" aria-label="Appearance">
                   {(['light', 'dark', 'system'] as const).map((item) => (
@@ -197,24 +202,24 @@ export function DocsApp() {
                   ))}
                 </div>
                 <h2>Theme</h2>
-                {themes.map((item) => (
-                  <button
-                    key={item.name}
-                    type="button"
-                    className="docs-theme-row"
-                    aria-pressed={preferences.theme === item.name}
-                    onClick={() => {
-                      if (isThemeName(item.name)) setPreferences({ theme: item.name });
-                    }}
-                  >
-                    <span className="docs-dots" aria-hidden="true">
-                      <i style={{ background: item.light.primary }} />
-                      <i style={{ background: item.light.accent }} />
-                      <i style={{ background: item.light.success }} />
-                    </span>
-                    {item.label}
-                  </button>
-                ))}
+                <div className="docs-theme-list" role="listbox" aria-label="Themes">
+                  {themes.map((item) => (
+                    <button
+                      key={item.name}
+                      type="button"
+                      role="option"
+                      className="docs-theme-row"
+                      aria-selected={preferences.theme === item.name}
+                      aria-pressed={preferences.theme === item.name}
+                      onClick={() => {
+                        if (isThemeName(item.name)) setPreferences({ theme: item.name });
+                      }}
+                    >
+                      <ThemeSwatch colors={signatureColors(item)} />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : null}
           </div>
@@ -292,5 +297,19 @@ function MenuIcon() {
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
       <path d="M3 5h12M3 9h12M3 13h12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
+  );
+}
+
+function signatureColors(theme: ThemeDefinition) {
+  return [theme.light.primary, theme.light.danger, theme.light.success, theme.light.info];
+}
+
+function ThemeSwatch({ colors }: { colors: string[] }) {
+  return (
+    <span className="docs-swatch" aria-hidden="true">
+      {colors.map((color, index) => (
+        <i key={`${color}-${index}`} style={{ background: color }} />
+      ))}
+    </span>
   );
 }

@@ -26,7 +26,7 @@ describe('docs app', () => {
     const user = userEvent.setup();
     render(<App />);
     await user.type(screen.getByLabelText('Search docs'), 'datepicker');
-    expect(screen.getByRole('listbox').querySelector('a')).toHaveTextContent('DatePicker');
+    expect(screen.getByRole('listbox', { name: 'Search results' }).querySelector('a')).toHaveTextContent('DatePicker');
     expect(screen.queryByText(/MysteryWidget/)).not.toBeInTheDocument();
   });
 });

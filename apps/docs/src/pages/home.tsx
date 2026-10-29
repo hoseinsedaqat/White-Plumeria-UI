@@ -1,14 +1,11 @@
 import { brand, catalog } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { Button, Checkbox, Input, Switch, useWhitePlumeria } from '@white-plumeria/react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
 import '../home.css';
 
 const install = 'npm i @white-plumeria/styles @white-plumeria/react';
-const longStyle =
-  'display:inline-flex;align-items:center;justify-content:center;height:2.75rem;padding:0 1.1rem;border:1px solid transparent;border-radius:999px;background:#1c1915;color:#fff;font-weight:650;cursor:pointer';
-const shortClass = 'wpl-btn wpl-btn-primary';
 
 const verboseForm = `<div style="width:20rem;border-radius:12px;background:#f6f1e8;padding:1.3rem">
   <input placeholder="Email" style="width:100%;border:1px solid #e0d5c6;border-radius:8px;padding:0.55rem 0.75rem" />
@@ -37,47 +34,14 @@ const swatches = [
   ['warning', 'var(--wpl-color-warning)'],
   ['danger', 'var(--wpl-color-danger)'],
   ['info', 'var(--wpl-color-info)'],
-  ['surface', 'var(--wpl-color-surface)'],
-  ['text', 'var(--wpl-color-text)'],
 ] as const;
 
 export function HomePage({ onNavigate }: { onNavigate: (href: string) => void }) {
-  const heroRef = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [panel, setPanel] = useState('Dashboard');
-  const [tab, setTab] = useState('Features');
-  const [view, setView] = useState<'auto' | 'dashboard' | 'markup'>('auto');
   const [mode, setMode] = useState<'verbose' | 'clean'>('clean');
   const { preferences, setPreferences } = useWhitePlumeria();
   const scheme = useScheme(preferences.appearance);
   const selected = themes.find((theme) => theme.name === preferences.theme);
-  const showMarkup = view === 'auto' ? progress > 24 : view === 'markup';
-  const typed = sliceByProgress(progress, longStyle, shortClass);
-
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const el = heroRef.current;
-      if (!el) return;
-      const total = el.offsetHeight - window.innerHeight;
-      const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), Math.max(total, 0));
-      setProgress(total <= 0 ? 0 : (scrolled / total) * 100);
-    };
-    const onScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
 
   async function copyInstall() {
     try {
@@ -89,11 +53,9 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
     }
   }
 
-  const tilt = lerp(progress, 0, 16, 1, 0);
-
   return (
     <div className="home">
-      <section className="home-hero" ref={heroRef} aria-label="Introduction">
+      <section className="home-hero" aria-label="Introduction">
         <div className="home-intro">
           <div className="home-intro-inner">
             <button type="button" className="home-install" onClick={() => void copyInstall()}>
@@ -105,11 +67,8 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               <span className="home-title-thin">component development</span>
             </h1>
             <p className="home-sub">
-              White Plumeria is a design system you can read.
-              <br />
-              Semantic classes, built-in themes, and native components.
-              <br />
-              Write less markup. Tailwind is not required.
+              White Plumeria is a design system you can read. Semantic classes, built-in themes, and native
+              components. Write less markup. Tailwind is not required.
             </p>
             <div className="home-ctas">
               <A className="home-cta home-cta-dark" href="/components" onNavigate={onNavigate}>
@@ -123,159 +82,67 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           </div>
         </div>
 
-        <div className="home-rail-col">
-          <div
-            className="home-window"
-            data-wpl-theme={preferences.theme}
-            data-wpl-scheme={scheme}
-            style={{ '--home-tilt': String(tilt) } as CSSProperties}
-            aria-label="Live component preview"
-          >
-            <div className="home-window-bar">
-              <span className="home-dots" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              <div className="home-window-tools">
-                <button type="button" aria-pressed={!showMarkup} onClick={() => setView('dashboard')}>
-                  Preview
-                </button>
-                <button type="button" aria-pressed={showMarkup} onClick={() => setView('markup')}>
-                  Markup
-                </button>
-              </div>
+        <div className="home-stage" aria-label="Theme preview">
+          <article className="home-float home-float-system" data-wpl-theme={preferences.theme} data-wpl-scheme="dark">
+            <header>
+              <span>Design system</span>
+              <span className="home-float-mark" aria-hidden="true" />
+            </header>
+            <Switch label="Faster to read" defaultChecked />
+            <Switch label="Themeable" defaultChecked />
+            <Switch label="Pure CSS" defaultChecked />
+            <div className="home-sizes" aria-label="Button sizes">
+              <Button size="xs">xs</Button>
+              <Button size="sm">sm</Button>
+              <Button size="md">md</Button>
+              <Button size="lg">lg</Button>
             </div>
-            <div className="home-window-body">
-              {showMarkup ? (
-                <div className="home-markup">
-                  <pre>
-                    <code>
-                      <span className="is-dim">{'// Styling a simple button\n'}</span>
-                      {'<button '}
-                      {typed.kind === 'short' ? 'class' : 'style'}
-                      {'="'}
-                      <span className={typed.kind === 'short' ? 'is-short' : 'is-long'}>{typed.text}</span>
-                      {'">\n  White Plumeria button\n</button>'}
-                    </code>
-                  </pre>
-                  <div>
-                    <div className="is-dim">{'// Result'}</div>
-                    <Button>Save</Button>
-                  </div>
+          </article>
+          <article className="home-float home-float-colors" data-wpl-theme={preferences.theme} data-wpl-scheme="dark">
+            <header>
+              <span>Semantic colors</span>
+            </header>
+            <div className="home-colors">
+              {swatches.map(([name, background]) => (
+                <div key={name}>
+                  <i style={{ background }} />
+                  {name}
                 </div>
-              ) : (
-                <div className="home-dash">
-                  <div className="home-rail" role="toolbar" aria-label="Preview rail">
-                    {['Overview', 'Activity', 'Messages', 'Account'].map((item, index) => (
-                      <button
-                        key={item}
-                        type="button"
-                        aria-label={item}
-                        aria-pressed={index === 0}
-                        onClick={() => setPanel(item === 'Overview' ? 'Dashboard' : item)}
-                      >
-                        <RailIcon index={index} />
-                      </button>
-                    ))}
-                  </div>
-                  <div className="home-menu">
-                    <p>Workspace</p>
-                    {['Dashboard', 'Customers', 'Invoices', 'Settings'].map((item) => (
-                      <button key={item} type="button" aria-pressed={panel === item} onClick={() => setPanel(item)}>
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="home-panel">
-                    <h2>{panel}</h2>
-                    <div className="home-tabs" role="group" aria-label="Preview tabs">
-                      {['Features', 'Links', 'Message'].map((item) => (
-                        <button key={item} type="button" aria-pressed={tab === item} onClick={() => setTab(item)}>
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="home-tab-body">
-                      {tab === 'Features' ? (
-                        <>
-                          <Switch label="Faster to read" defaultChecked />
-                          <Switch label="Cleaner markup" defaultChecked />
-                          <Switch label="Themeable" defaultChecked />
-                          <Switch label="Pure CSS" defaultChecked />
-                          <div className="home-sizes" aria-label="Button sizes">
-                            <Button size="sm">sm</Button>
-                            <Button size="md">md</Button>
-                            <Button size="lg">lg</Button>
-                          </div>
-                        </>
-                      ) : null}
-                      {tab === 'Links' ? (
-                        <>
-                          <p>{panel}</p>
-                          {['Overview', 'Customers', 'Invoices'].map((item) => (
-                            <button key={item} type="button" className="home-link" onClick={() => setPanel(item === 'Overview' ? 'Dashboard' : item)}>
-                              {item}
-                            </button>
-                          ))}
-                        </>
-                      ) : null}
-                      {tab === 'Message' ? (
-                        <>
-                          <p>A short note stays with the component, not in a second stylesheet.</p>
-                          <Button size="sm">Send</Button>
-                        </>
-                      ) : null}
-                    </div>
-                    <div className="home-colors" aria-label="Semantic colors">
-                      {swatches.map(([name, background]) => (
-                        <div key={name}>
-                          <i style={{ background }} />
-                          {name}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+              ))}
             </div>
-          </div>
+          </article>
         </div>
+      </section>
 
-        <div className="home-beats">
-          <div className="home-beat">
-            <h2>
-              Don&apos;t restyle
-              <br />
-              the same control
-              <br />
-              <span>every time</span>
-            </h2>
-            <p>Without a design system, you rewrite color, spacing, and focus styles for every element.</p>
-          </div>
-          <div className="home-beat home-beat-pin home-beat-long">
-            <div className="home-pin-copy">
-              <h2>
-                <span>instead of writing</span>
-                <br />
-                <span className="home-danger">a long style</span>
-                <br />
-                attribute
-              </h2>
-              <p>For every element, every page, every project, again and again.</p>
-            </div>
-          </div>
-          <div className="home-beat home-beat-pin">
-            <div className="home-pin-copy">
-              <h2>
-                <span>use </span>
-                <span className="home-ok">semantic</span>
-                <br />
-                class names
-              </h2>
-              <p>Shorter markup. The same names in CSS, React, Vue, Svelte, and Angular.</p>
-            </div>
-          </div>
+      <section className="home-beats" aria-label="Why it is shorter">
+        <div className="home-beat">
+          <h2>
+            Don&apos;t restyle
+            <br />
+            the same control
+            <br />
+            <span>every time</span>
+          </h2>
+          <p>Without a design system, you rewrite color, spacing, and focus styles for every element.</p>
+        </div>
+        <div className="home-beat">
+          <h2>
+            <span>instead of writing</span>
+            <br />
+            <span className="home-danger">a long style</span>
+            <br />
+            attribute
+          </h2>
+          <p>For every element, every page, every project, again and again.</p>
+        </div>
+        <div className="home-beat">
+          <h2>
+            <span>use </span>
+            <span className="home-ok">semantic</span>
+            <br />
+            class names
+          </h2>
+          <p>Shorter markup. The same names in CSS, React, Vue, Svelte, and Angular.</p>
         </div>
       </section>
 
@@ -358,7 +225,10 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>with zero extra classes</span>
         </h2>
-        <p>Pick a theme. The preview and the rest of this page use the same CSS variables.</p>
+        <p>
+          Pick a theme. The floating cards show its dark scheme. The preview below follows the appearance you choose.
+          The page canvas stays dark.
+        </p>
         <div className="home-switch" role="group" aria-label="Color scheme">
           {(['light', 'dark', 'system'] as const).map((appearance) => (
             <button
@@ -380,33 +250,39 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               aria-pressed={preferences.theme === theme.name}
               onClick={() => setPreferences({ theme: theme.name })}
             >
+              <span className="docs-swatch" aria-hidden="true">
+                <i style={{ background: theme.light.primary }} />
+                <i style={{ background: theme.light.danger }} />
+                <i style={{ background: theme.light.success }} />
+                <i style={{ background: theme.light.info }} />
+              </span>
               {theme.label}
             </button>
           ))}
         </div>
         {selected ? (
-        <div className="home-preview" style={cssVars(selected, scheme)}>
-          <div className="home-sizes">
-            <Button size="sm">Primary</Button>
-            <Button size="sm" variant="outline">
-              Outline
-            </Button>
-            <Button size="sm" variant="danger">
-              Danger
-            </Button>
-            <Button size="sm" variant="ghost">
-              Ghost
-            </Button>
+          <div className="home-preview" style={cssVars(selected, scheme)}>
+            <div className="home-sizes">
+              <Button size="sm">Primary</Button>
+              <Button size="sm" variant="outline">
+                Outline
+              </Button>
+              <Button size="sm" variant="danger">
+                Danger
+              </Button>
+              <Button size="sm" variant="ghost">
+                Ghost
+              </Button>
+            </div>
+            <div className="home-colors">
+              {swatches.map(([name, background]) => (
+                <div key={name}>
+                  <i style={{ background }} />
+                  {name}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="home-colors">
-            {swatches.map(([name, background]) => (
-              <div key={name}>
-                <i style={{ background }} />
-                {name}
-              </div>
-            ))}
-          </div>
-        </div>
         ) : null}
         <div className="home-theme-cards">
           {themes.map((theme) => (
@@ -423,7 +299,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                 <i style={{ background: 'var(--wpl-color-primary)' }} />
                 <i style={{ background: 'var(--wpl-color-accent)' }} />
                 <i style={{ background: 'var(--wpl-color-success)' }} />
-                <i style={{ background: 'var(--wpl-color-danger)' }} />
+                <i style={{ background: 'var(--wpl-color-info)' }} />
               </span>
             </button>
           ))}
@@ -478,24 +354,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   );
 }
 
-function sliceByProgress(progress: number, longText: string, shortText: string) {
-  if (progress < 40) {
-    const t = Math.min(1, Math.max(0, (progress - 18) / 18));
-    return { text: longText.slice(0, Math.max(8, Math.floor(t * longText.length))), kind: 'long' as const };
-  }
-  if (progress < 48) {
-    const t = (progress - 40) / 8;
-    return { text: longText.slice(0, Math.floor((1 - t) * longText.length)), kind: 'long' as const };
-  }
-  const t = Math.min(1, (progress - 48) / 6);
-  return { text: shortText.slice(0, Math.max(1, Math.floor(t * shortText.length))), kind: 'short' as const };
-}
-
-function lerp(progress: number, from: number, to: number, start: number, end: number) {
-  const t = Math.min(1, Math.max(0, (progress - from) / (to - from)));
-  return start + (end - start) * t;
-}
-
 function cssVars(theme: ThemeDefinition, scheme: 'light' | 'dark'): CSSProperties {
   const style: Record<string, string> = {};
   for (const [key, value] of Object.entries(theme[scheme])) {
@@ -523,20 +381,6 @@ function CopyIcon() {
     <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
       <rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
       <path d="M6 16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" fill="none" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function RailIcon({ index }: { index: number }) {
-  const paths = [
-    'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
-    'M4 16l5-7 4 4 7-9',
-    'M4 6h16v10H8l-4 3z',
-    'M12 12a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM6 19c1.1-2.2 3.2-3.3 6-3.3s4.9 1.1 6 3.3',
-  ];
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-      <path d={paths[index] ?? ''} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
