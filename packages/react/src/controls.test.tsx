@@ -30,6 +30,30 @@ describe('new controls', () => {
     expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
   });
 
+  it('orders a same-day time range and rejects an impossible time', async () => {
+    const user = userEvent.setup();
+    let range = { start: '2026-10-12', end: '2026-10-12', startTime: '', endTime: '' };
+    render(
+      <DateRangePicker
+        label="Stay"
+        showTime
+        start={range.start}
+        end={range.end}
+        startTime={range.startTime}
+        endTime={range.endTime}
+        onValueChange={(next) => {
+          range = { start: next.start, end: next.end, startTime: next.startTime ?? '', endTime: next.endTime ?? '' };
+        }}
+      />,
+    );
+    await user.type(screen.getByLabelText('Start time'), '18:00');
+    await user.type(screen.getByLabelText('End time'), '09:30');
+    expect(range).toEqual({ start: '2026-10-12', end: '2026-10-12', startTime: '09:30', endTime: '18:00' });
+    await user.clear(screen.getByLabelText('End time'));
+    await user.type(screen.getByLabelText('End time'), '25:00');
+    expect(screen.getByRole('alert').textContent).toContain('Use a 24-hour time: HH:mm.');
+  });
+
   it('rejects an invalid single date in English', async () => {
     const user = userEvent.setup();
     render(<DatePicker label="From" />);

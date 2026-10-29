@@ -6,6 +6,7 @@
 - DataTable keeps sorting, filtering, and paging inside its frame, stacks narrow rows, and reports sort changes.
 - Navbar uses one collapsing menu contract in React, Vue, and Svelte.
 - DateRangePicker selects a start and end date. Stored values stay Gregorian ISO dates. There is no time of day.
+- DatePicker and DateRangePicker can show a 24-hour time. The value is `HH:mm`, with no seconds and no timezone name. Same-day times are ordered.
 - Button sizes `xs` and `xl`, appearances `soft` and `dash`, and status variants `success`, `warning`, and `info`
 - Steps, Carousel (image and content slider, distinct from the range Slider), PasswordField, OtpField, Rating, and Kbd
 - Carousel slides accept `src`, `alt`, and `caption`. The docs slider shows one picture at a time.

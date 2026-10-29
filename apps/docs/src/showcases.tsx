@@ -63,14 +63,33 @@ function ButtonLab() {
 }
 
 function DateRangeLab() {
-  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18' });
+  const [showTime, setShowTime] = useState(true);
+  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18', startTime: '09:00', endTime: '18:00' });
   return (
     <Preview
       title="Start and end"
       open
-      code={`<DateRangePicker label="Stay" start="${range.start}" end="${range.end}" />`}
+      code={`<DateRangePicker label="Stay" start="${range.start}" end="${range.end}"${showTime ? ` showTime startTime="${range.startTime}" endTime="${range.endTime}"` : ''} />`}
     >
-      <DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={setRange} />
+      <div className="docs-builder">
+        <Switch label="Include time" checked={showTime} onCheckedChange={setShowTime} />
+        <DateRangePicker
+          label="Stay"
+          start={range.start}
+          end={range.end}
+          showTime={showTime}
+          startTime={range.startTime}
+          endTime={range.endTime}
+          onValueChange={(next) =>
+            setRange({
+              start: next.start,
+              end: next.end,
+              startTime: next.startTime ?? '',
+              endTime: next.endTime ?? '',
+            })
+          }
+        />
+      </div>
     </Preview>
   );
 }
@@ -229,9 +248,14 @@ const sections: Record<string, ReactNode> = {
     </Preview>
   ),
   'date-picker': (
-    <Preview title="ISO date" open code={`<DatePicker label="From" value="2026-10-27" />`}>
-      <DatePicker label="From" value="2026-10-27" />
-    </Preview>
+    <>
+      <Preview title="ISO date" open code={`<DatePicker label="From" value="2026-10-27" />`}>
+        <DatePicker label="From" value="2026-10-27" />
+      </Preview>
+      <Preview title="With time" code={`<DatePicker label="From" value="2026-10-27" showTime time="09:30" />`}>
+        <DatePicker label="From" value="2026-10-27" showTime time="09:30" />
+      </Preview>
+    </>
   ),
   'date-range-picker': <DateRangeLab />,
 };

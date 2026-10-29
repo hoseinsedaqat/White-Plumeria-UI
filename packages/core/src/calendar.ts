@@ -230,6 +230,8 @@ export function isWithinRange(date: Date, start: Date | null | undefined, end: D
 export interface DateRangeValue {
   start: string;
   end: string;
+  startTime?: string;
+  endTime?: string;
 }
 
 export function orderDateRange(start: string, end: string): DateRangeValue {
@@ -239,6 +241,71 @@ export function orderDateRange(start: string, end: string): DateRangeValue {
   return compareDays(left, right) <= 0
     ? { start: toIsoDate(left), end: toIsoDate(right) }
     : { start: toIsoDate(right), end: toIsoDate(left) };
+}
+
+export interface ClockTime {
+  hours: number;
+  minutes: number;
+}
+
+export function parseTimeValue(value: string): ClockTime | null {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (hours > 23 || minutes > 59) return null;
+  return { hours, minutes };
+}
+
+export function formatTimeValue(hours: number, minutes: number): string {
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+export function normalizeTimeValue(value: string): string | null {
+  const parsed = parseTimeValue(value);
+  return parsed ? formatTimeValue(parsed.hours, parsed.minutes) : null;
+}
+
+export interface DateTimeRangeValue extends DateRangeValue {
+  startTime: string;
+  endTime: string;
+}
+
+export function orderDateTimeRange(value: {
+  start: string;
+  end: string;
+  startTime?: string;
+  endTime?: string;
+}): DateTimeRangeValue {
+  const startTime = value.startTime ?? '';
+  const endTime = value.endTime ?? '';
+  const left = parseIsoDate(value.start);
+  const right = parseIsoDate(value.end);
+  if (!left || !right) return { start: value.start, end: value.end, startTime, endTime };
+  if (compareDays(left, right) > 0) {
+    return { start: toIsoDate(right), end: toIsoDate(left), startTime: endTime, endTime: startTime };
+  }
+  const startMinutes = parseTimeValue(startTime);
+  const endMinutes = parseTimeValue(endTime);
+  if (
+    compareDays(left, right) === 0 &&
+    startMinutes &&
+    endMinutes &&
+    startMinutes.hours * 60 + startMinutes.minutes > endMinutes.hours * 60 + endMinutes.minutes
+  ) {
+    return {
+      start: toIsoDate(left),
+      end: toIsoDate(right),
+      startTime: formatTimeValue(endMinutes.hours, endMinutes.minutes),
+      endTime: formatTimeValue(startMinutes.hours, startMinutes.minutes),
+    };
+  }
+  return {
+    start: toIsoDate(left),
+    end: toIsoDate(right),
+    startTime: startMinutes ? formatTimeValue(startMinutes.hours, startMinutes.minutes) : startTime,
+    endTime: endMinutes ? formatTimeValue(endMinutes.hours, endMinutes.minutes) : endTime,
+  };
 }
 
 export function calendarDayClass(options: {

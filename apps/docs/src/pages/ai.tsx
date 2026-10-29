@@ -210,6 +210,9 @@ function PreviewNodeView({ node }: { node: PreviewNode }) {
         label={textProp(node, 'label', 'Stay')}
         start={textProp(node, 'start', '2026-10-12')}
         end={textProp(node, 'end', '2026-10-18')}
+        showTime={node.props?.showTime === true}
+        startTime={textProp(node, 'startTime', '09:00')}
+        endTime={textProp(node, 'endTime', '18:00')}
       />
     );
   }

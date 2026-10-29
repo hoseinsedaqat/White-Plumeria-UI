@@ -108,8 +108,12 @@ export {
   calendarDayClass,
   compareDays,
   isWithinRange,
+  formatTimeValue,
+  normalizeTimeValue,
   orderDateRange,
+  orderDateTimeRange,
   parseIsoDate,
+  parseTimeValue,
   sameDay,
   startOfDay,
   toDate,
@@ -117,7 +121,7 @@ export {
   toParts,
   weekdayLabels,
 } from './calendar.ts';
-export type { CalendarCell, CalendarSystem, DateParts, DateRangeValue, MonthGrid } from './calendar.ts';
+export type { CalendarCell, CalendarSystem, ClockTime, DateParts, DateRangeValue, DateTimeRangeValue, MonthGrid } from './calendar.ts';
 export { queryTable, toggleSort } from './table.ts';
 export type { ColumnSpec, TableQuery, TableResult } from './table.ts';
 export { directionalIcons, iconPaths } from './icons.ts';

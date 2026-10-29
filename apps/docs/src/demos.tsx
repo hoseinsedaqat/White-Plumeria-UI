@@ -398,8 +398,25 @@ export function renderDemo(slug: string): ReactNode {
 }
 
 function DateRangeDemo() {
-  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18' });
-  return <DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={setRange} />;
+  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18', startTime: '09:00', endTime: '18:00' });
+  return (
+    <DateRangePicker
+      label="Stay"
+      showTime
+      start={range.start}
+      end={range.end}
+      startTime={range.startTime}
+      endTime={range.endTime}
+      onValueChange={(next) =>
+        setRange({
+          start: next.start,
+          end: next.end,
+          startTime: next.startTime ?? '',
+          endTime: next.endTime ?? '',
+        })
+      }
+    />
+  );
 }
 
 function DrawerDemo() {
