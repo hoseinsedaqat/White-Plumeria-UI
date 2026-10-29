@@ -28,19 +28,16 @@ export function Icon({
 export function Mark({ className }: { className?: string }) {
   return (
     <svg className={cx('wpl-mark', className)} viewBox="0 0 64 64" aria-hidden="true">
-      <g fill="none" stroke="currentColor" strokeWidth="1.6">
+      <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
         {[0, 72, 144, 216, 288].map((angle) => (
-          <ellipse
+          <path
             key={angle}
-            cx="32"
-            cy="18"
-            rx="6.5"
-            ry="12"
+            d="M32 10.5c5.2 6.7 6.6 14.1 1.6 21.1-1.1-2.2-2.1-2.2-3.2 0-5-7-3.6-14.4 1.6-21.1z"
             transform={`rotate(${angle} 32 32)`}
           />
         ))}
       </g>
-      <circle cx="32" cy="32" r="3.2" fill="currentColor" />
+      <circle cx="32" cy="32" r="2.15" fill="currentColor" />
     </svg>
   );
 }
