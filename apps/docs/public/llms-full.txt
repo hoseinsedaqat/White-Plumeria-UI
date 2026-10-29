@@ -27,7 +27,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Dialog (dialog): Modal dialog with focus management and escape to close.
 - Divider (divider): Horizontal rule, optionally with a label.
 - Drawer (drawer): Side dialog for navigation or filters.
-- DropdownMenu (dropdown-menu): Menu button with keyboard navigation.
+- DropdownMenu (dropdown-menu): Menu button with keyboard navigation and one submenu level.
 - EmptyState (empty-state): Explains an empty collection and offers the next action.
 - FileUpload (file-upload): Local file selection with type and size checks. It does not upload.
 - Flex (flex): Inline row with wrap and alignment options.
@@ -91,11 +91,13 @@ AI tools may only name components from this list.
 - Combobox: Single select. Options are local. No virtualization and no async loader.
 - CommandPalette: Filters the provided list only. No fuzzy scoring beyond substring and keywords.
 - ContextMenu: Does not replace the browser menu for assistive tech that does not emit contextmenu.
+- ContextMenu: Does not open nested items. Use DropdownMenu for a submenu.
 - DataTable: Client-side only. No virtualization and no server cursor mode in 0.1.0.
 - DatePicker: Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. Use DateRangePicker for a start and end date.
 - DateRangePicker: No seconds and no timezone name. Dates stay Gregorian ISO strings, not Jalali strings. The first open selection sets the start; the next sets the end. Same-day times are ordered too.
 - Dialog: Open dialogs are activated after mount. SSR HTML does not call showModal.
-- DropdownMenu: No nested submenus in 0.1.0.
+- DropdownMenu: One submenu level. Deeper items are not opened.
+- DropdownMenu: Typeahead is not implemented.
 - FileUpload: Does not upload to a server. Rejected files are reported in the error list and are not executed.
 - FormField: Context wiring is implemented in React, Vue, and Svelte. HTML users set ids manually.
 - Grid: Collapses to one column below 48rem. Not a masonry layout.

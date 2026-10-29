@@ -1,4 +1,14 @@
-import { bindDismissable, nextIndex, placeOverlay, readingDirection } from '@white-plumeria/core';
+import {
+  bindDismissable,
+  firstEnabledIndex,
+  menuCommand,
+  menuHasSubmenu,
+  moveEnabledIndex,
+  nextIndex,
+  placeOverlay,
+  readingDirection,
+  type MenuMotion,
+} from '@white-plumeria/core';
 import {
   useEffect,
   useId,
@@ -14,6 +24,7 @@ export interface MenuItem {
   label: string;
   disabled?: boolean;
   shortcut?: string;
+  items?: MenuItem[];
 }
 
 export function DropdownMenu({
@@ -27,82 +38,169 @@ export function DropdownMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const [subActive, setSubActive] = useState<number | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const subRef = useRef<number | null>(null);
   const menuId = useId();
+  const parent = items[active];
+  const children = parent?.items ?? [];
+  const current = subActive === null ? parent : children[subActive];
+  const activeId = current ? `${menuId}-${current.id}` : undefined;
 
   useEffect(() => {
     if (!open || !menuRef.current) return;
     return bindDismissable({
       root: menuRef.current,
       owner: buttonRef.current,
-      onDismiss: () => setOpen(false),
+      onDismiss: () => {
+        if (subRef.current !== null) {
+          subRef.current = null;
+          setSubActive(null);
+          return;
+        }
+        setOpen(false);
+      },
     });
   }, [open]);
 
   function select(id: string) {
     onSelect?.(id);
     setOpen(false);
+    setSubActive(null);
     buttonRef.current?.focus();
   }
 
+  function openSubmenu(index = active) {
+    const item = items[index];
+    if (!menuHasSubmenu(item)) return;
+    const next = firstEnabledIndex(item.items ?? []);
+    subRef.current = next;
+    setActive(index);
+    setSubActive(next);
+  }
+
   function onKeyDown(event: KeyboardEvent) {
-    const enabled = items.map((item, index) => ({ item, index })).filter(({ item }) => !item.disabled);
-    if (enabled.length === 0) return;
-    const currentEnabled = Math.max(0, enabled.findIndex(({ index }) => index === active));
-    const direction = readingDirection(buttonRef.current);
-    const next = nextIndex(currentEnabled, enabled.length, event.key, 'vertical', direction);
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
-      event.preventDefault();
-      if (!open) setOpen(true);
-      const target = enabled[next ?? 0];
-      if (target) setActive(target.index);
+    const command = menuCommand({
+      key: event.key,
+      direction: readingDirection(buttonRef.current),
+      open,
+      submenuOpen: subActive !== null,
+      hasSubmenu: menuHasSubmenu(current),
+    });
+    if (!command) return;
+    event.preventDefault();
+    if (command === 'close' || command === 'close-submenu') event.stopPropagation();
+    if (command === 'open') {
+      setOpen(true);
+      setActive(firstEnabledIndex(items));
+      setSubActive(null);
+      return;
     }
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      const item = items[active];
-      if (open && item && !item.disabled) select(item.id);
-      else setOpen(true);
+    if (command === 'close') {
+      setOpen(false);
+      setSubActive(null);
+      return;
     }
-    if (event.key === 'Escape') setOpen(false);
+    if (command === 'close-submenu') {
+      subRef.current = null;
+      setSubActive(null);
+      return;
+    }
+    if (command === 'open-submenu') {
+      setOpen(true);
+      openSubmenu();
+      return;
+    }
+    if (command === 'activate') {
+      if (current && !current.disabled && !menuHasSubmenu(current)) select(current.id);
+      return;
+    }
+    if (!open) {
+      setOpen(true);
+      setActive(firstEnabledIndex(items));
+      setSubActive(null);
+      return;
+    }
+    const motion = command as MenuMotion;
+    if (subActive === null) setActive(moveEnabledIndex(items, active, motion));
+    else setSubActive(moveEnabledIndex(children, subActive, motion));
   }
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div className="wpl-menu-root">
       <Button
         ref={buttonRef}
         variant="secondary"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={menuId}
-        onClick={() => setOpen((value) => !value)}
+        aria-activedescendant={open ? activeId : undefined}
+        onClick={() => {
+          setOpen((value) => !value);
+          setSubActive(null);
+          setActive(firstEnabledIndex(items));
+        }}
         onKeyDown={onKeyDown}
       >
         {label}
       </Button>
       {open ? (
-        <div
-          ref={menuRef}
-          id={menuId}
-          role="menu"
-          className="wpl-menu"
-          style={{ position: 'absolute', insetBlockStart: 'calc(100% + 0.35rem)', insetInlineStart: 0, minInlineSize: '12rem' }}
-        >
-          {items.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              role="menuitem"
-              className="wpl-menu-item"
-              disabled={item.disabled}
-              data-active={index === active || undefined}
-              onMouseEnter={() => setActive(index)}
-              onClick={() => select(item.id)}
-            >
-              <span>{item.label}</span>
-              {item.shortcut ? <span className="wpl-menu-shortcut">{item.shortcut}</span> : null}
-            </button>
-          ))}
+        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-panel">
+          {items.map((item, index) => {
+            const nested = menuHasSubmenu(item);
+            const expanded = nested && index === active && subActive !== null;
+            return (
+              <div key={item.id} className="wpl-menu-row">
+                <button
+                  id={`${menuId}-${item.id}`}
+                  type="button"
+                  role="menuitem"
+                  className="wpl-menu-item"
+                  disabled={item.disabled}
+                  aria-haspopup={nested ? 'menu' : undefined}
+                  aria-expanded={nested ? expanded : undefined}
+                  aria-controls={expanded ? `${menuId}-sub-${item.id}` : undefined}
+                  data-active={subActive === null && index === active ? 'true' : undefined}
+                  onMouseEnter={() => {
+                    setActive(index);
+                    if (nested) openSubmenu(index);
+                    else setSubActive(null);
+                  }}
+                  onClick={() => {
+                    if (nested) openSubmenu(index);
+                    else if (!item.disabled) select(item.id);
+                  }}
+                >
+                  <span>{item.label}</span>
+                  {nested ? <span className="wpl-menu-caret" aria-hidden="true" /> : null}
+                  {!nested && item.shortcut ? <span className="wpl-menu-shortcut">{item.shortcut}</span> : null}
+                </button>
+                {expanded ? (
+                  <div id={`${menuId}-sub-${item.id}`} role="menu" aria-label={item.label} className="wpl-menu wpl-menu-sub">
+                    {item.items?.map((child, childIndex) => (
+                      <button
+                        key={child.id}
+                        id={`${menuId}-${child.id}`}
+                        type="button"
+                        role="menuitem"
+                        className="wpl-menu-item"
+                        disabled={child.disabled}
+                        data-active={childIndex === subActive ? 'true' : undefined}
+                        onMouseEnter={() => setSubActive(childIndex)}
+                        onClick={() => {
+                          if (!child.disabled) select(child.id);
+                        }}
+                      >
+                        <span>{child.label}</span>
+                        {child.shortcut ? <span className="wpl-menu-shortcut">{child.shortcut}</span> : null}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : null}
     </div>

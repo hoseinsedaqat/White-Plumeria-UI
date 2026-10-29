@@ -1,4 +1,12 @@
-import { bindDismissable, nextIndex } from '@white-plumeria/core';
+import {
+  bindDismissable,
+  firstEnabledIndex,
+  menuCommand,
+  menuHasSubmenu,
+  moveEnabledIndex,
+  readingDirection,
+  type MenuMotion,
+} from '@white-plumeria/core';
 import { defineComponent, h, onBeforeUnmount, ref, useId, watch, type PropType } from 'vue';
 import { Button } from './button.ts';
 
@@ -7,6 +15,7 @@ export interface MenuItem {
   label: string;
   disabled?: boolean;
   shortcut?: string;
+  items?: MenuItem[];
 }
 
 export const DropdownMenu = defineComponent({
@@ -19,6 +28,7 @@ export const DropdownMenu = defineComponent({
   setup(props, { emit }) {
     const open = ref(false);
     const active = ref(0);
+    const subActive = ref<number | null>(null);
     const root = ref<HTMLElement | null>(null);
     const menuId = useId();
     let stop: (() => void) | undefined;
@@ -27,7 +37,16 @@ export const DropdownMenu = defineComponent({
       stop?.();
       stop = undefined;
       if (value && root.value) {
-        stop = bindDismissable({ root: root.value, onDismiss: () => (open.value = false) });
+        stop = bindDismissable({
+          root: root.value,
+          onDismiss: () => {
+            if (subActive.value !== null) {
+              subActive.value = null;
+              return;
+            }
+            open.value = false;
+          },
+        });
       }
     });
     onBeforeUnmount(() => stop?.());
@@ -35,55 +54,152 @@ export const DropdownMenu = defineComponent({
     function choose(id: string) {
       emit('select', id);
       open.value = false;
+      subActive.value = null;
     }
 
-    return () =>
-      h('div', { ref: root, class: 'wpl-menu' }, [
-        h(Button, {
-          variant: 'secondary',
-          'aria-expanded': open.value,
-          'aria-controls': menuId,
-          'aria-haspopup': 'menu',
-          onClick: () => (open.value = !open.value),
-        }, () => props.label),
+    function openSubmenu(index = active.value) {
+      const item = props.items[index];
+      if (!menuHasSubmenu(item)) return;
+      active.value = index;
+      subActive.value = firstEnabledIndex(item.items ?? []);
+    }
+
+    function onKeydown(event: KeyboardEvent) {
+      const parent = props.items[active.value];
+      const children = parent?.items ?? [];
+      const current = subActive.value === null ? parent : children[subActive.value];
+      const command = menuCommand({
+        key: event.key,
+        direction: readingDirection(root.value),
+        open: open.value,
+        submenuOpen: subActive.value !== null,
+        hasSubmenu: menuHasSubmenu(current),
+      });
+      if (!command) return;
+      event.preventDefault();
+      if (command === 'close' || command === 'close-submenu') event.stopPropagation();
+      if (command === 'open') {
+        open.value = true;
+        active.value = firstEnabledIndex(props.items);
+        subActive.value = null;
+        return;
+      }
+      if (command === 'close') {
+        open.value = false;
+        subActive.value = null;
+        return;
+      }
+      if (command === 'close-submenu') {
+        subActive.value = null;
+        return;
+      }
+      if (command === 'open-submenu') {
+        open.value = true;
+        openSubmenu();
+        return;
+      }
+      if (command === 'activate') {
+        if (current && !current.disabled && !menuHasSubmenu(current)) choose(current.id);
+        return;
+      }
+      if (!open.value) {
+        open.value = true;
+        active.value = firstEnabledIndex(props.items);
+        subActive.value = null;
+        return;
+      }
+      const motion = command as MenuMotion;
+      if (subActive.value === null) active.value = moveEnabledIndex(props.items, active.value, motion);
+      else subActive.value = moveEnabledIndex(children, subActive.value, motion);
+    }
+
+    return () => {
+      const parent = props.items[active.value];
+      const current = subActive.value === null ? parent : parent?.items?.[subActive.value];
+      return h('div', { ref: root, class: 'wpl-menu-root' }, [
+        h(
+          Button,
+          {
+            variant: 'secondary',
+            'aria-expanded': open.value,
+            'aria-controls': menuId,
+            'aria-haspopup': 'menu',
+            'aria-activedescendant': open.value && current ? `${menuId}-${current.id}` : undefined,
+            onClick: () => {
+              open.value = !open.value;
+              subActive.value = null;
+              active.value = firstEnabledIndex(props.items);
+            },
+            onKeydown,
+          },
+          () => props.label,
+        ),
         open.value
           ? h(
               'div',
-              {
-                id: menuId,
-                role: 'menu',
-                class: 'wpl-menu-panel',
-                onKeydown: (event: KeyboardEvent) => {
-                  const enabled = props.items.filter((item) => !item.disabled);
-                  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                    event.preventDefault();
-                    active.value = nextIndex(active.value, enabled.length, event.key, 'vertical') ?? active.value;
-                  }
-                  if (event.key === 'Enter') {
-                    const item = enabled[active.value];
-                    if (item) choose(item.id);
-                  }
-                  if (event.key === 'Escape') open.value = false;
-                },
-              },
-              props.items.map((item, index) =>
-                h(
-                  'button',
-                  {
-                    key: item.id,
-                    type: 'button',
-                    role: 'menuitem',
-                    class: 'wpl-menu-item',
-                    disabled: item.disabled,
-                    tabindex: index === active.value ? 0 : -1,
-                    onClick: () => choose(item.id),
-                  },
-                  [item.label, item.shortcut ? h('span', { class: 'wpl-muted' }, item.shortcut) : null],
-                ),
-              ),
+              { id: menuId, role: 'menu', 'aria-label': props.label, class: 'wpl-menu wpl-menu-panel' },
+              props.items.map((item, index) => {
+                const nested = menuHasSubmenu(item);
+                const expanded = nested && index === active.value && subActive.value !== null;
+                return h('div', { key: item.id, class: 'wpl-menu-row' }, [
+                  h(
+                    'button',
+                    {
+                      id: `${menuId}-${item.id}`,
+                      type: 'button',
+                      role: 'menuitem',
+                      class: 'wpl-menu-item',
+                      disabled: item.disabled,
+                      'aria-haspopup': nested ? 'menu' : undefined,
+                      'aria-expanded': nested ? expanded : undefined,
+                      'data-active': subActive.value === null && index === active.value ? 'true' : undefined,
+                      onMouseenter: () => {
+                        active.value = index;
+                        if (nested) openSubmenu(index);
+                        else subActive.value = null;
+                      },
+                      onClick: () => {
+                        if (nested) openSubmenu(index);
+                        else if (!item.disabled) choose(item.id);
+                      },
+                    },
+                    [
+                      h('span', item.label),
+                      nested ? h('span', { class: 'wpl-menu-caret', 'aria-hidden': 'true' }) : null,
+                      !nested && item.shortcut ? h('span', { class: 'wpl-menu-shortcut' }, item.shortcut) : null,
+                    ],
+                  ),
+                  expanded
+                    ? h(
+                        'div',
+                        { id: `${menuId}-sub-${item.id}`, role: 'menu', 'aria-label': item.label, class: 'wpl-menu wpl-menu-sub' },
+                        item.items?.map((child, childIndex) =>
+                          h(
+                            'button',
+                            {
+                              key: child.id,
+                              id: `${menuId}-${child.id}`,
+                              type: 'button',
+                              role: 'menuitem',
+                              class: 'wpl-menu-item',
+                              disabled: child.disabled,
+                              'data-active': childIndex === subActive.value ? 'true' : undefined,
+                              onMouseenter: () => (subActive.value = childIndex),
+                              onClick: () => {
+                                if (!child.disabled) choose(child.id);
+                              },
+                            },
+                            child.label,
+                          ),
+                        ),
+                      )
+                    : null,
+                ]);
+              }),
             )
           : null,
       ]);
+    };
   },
 });
 

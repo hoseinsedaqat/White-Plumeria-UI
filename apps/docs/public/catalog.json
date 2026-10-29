@@ -128,7 +128,8 @@
     "summary": "Menu opened from contextmenu or Shift+F10.",
     "summaryFa": "منویی که با contextmenu یا Shift+F10 باز می‌شود.",
     "limitations": [
-      "Does not replace the browser menu for assistive tech that does not emit contextmenu."
+      "Does not replace the browser menu for assistive tech that does not emit contextmenu.",
+      "Does not open nested items. Use DropdownMenu for a submenu."
     ]
   },
   {
@@ -184,10 +185,11 @@
   {
     "name": "DropdownMenu",
     "slug": "dropdown-menu",
-    "summary": "Menu button with keyboard navigation.",
-    "summaryFa": "دکمهٔ منو با ناوبری صفحه‌کلید.",
+    "summary": "Menu button with keyboard navigation and one submenu level.",
+    "summaryFa": "دکمهٔ منو با ناوبری صفحه‌کلید و یک سطح زیرمنو.",
     "limitations": [
-      "No nested submenus in 0.1.0."
+      "One submenu level. Deeper items are not opened.",
+      "Typeahead is not implemented."
     ]
   },
   {

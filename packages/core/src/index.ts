@@ -61,6 +61,8 @@ export {
 } from './dom.ts';
 export type { FocusTrap } from './dom.ts';
 export { nextIndex, readingDirection } from './keyboard.ts';
+export { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex } from './menu.ts';
+export type { MenuCommand, MenuMotion, MenuNode } from './menu.ts';
 export {
   canMove,
   carouselIndexFromKey,

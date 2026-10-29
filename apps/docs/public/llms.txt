@@ -27,7 +27,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Dialog (dialog): Modal dialog with focus management and escape to close.
 - Divider (divider): Horizontal rule, optionally with a label.
 - Drawer (drawer): Side dialog for navigation or filters.
-- DropdownMenu (dropdown-menu): Menu button with keyboard navigation.
+- DropdownMenu (dropdown-menu): Menu button with keyboard navigation and one submenu level.
 - EmptyState (empty-state): Explains an empty collection and offers the next action.
 - FileUpload (file-upload): Local file selection with type and size checks. It does not upload.
 - Flex (flex): Inline row with wrap and alignment options.

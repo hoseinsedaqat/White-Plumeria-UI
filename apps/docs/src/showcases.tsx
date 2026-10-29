@@ -9,6 +9,7 @@ import {
   DatePicker,
   DateRangePicker,
   Input,
+  DropdownMenu,
   Navbar,
   Progress,
   RangeSlider,
@@ -113,6 +114,34 @@ function RangeLab() {
           end={range.end}
           onValueChange={setRange}
         />
+      </div>
+    </Preview>
+  );
+}
+
+function MenuLab() {
+  const [selected, setSelected] = useState('Nothing selected');
+  const items = [
+    { id: 'profile', label: 'Profile' },
+    {
+      id: 'theme',
+      label: 'Theme',
+      items: [
+        { id: 'ivory', label: 'Ivory' },
+        { id: 'ink', label: 'Ink' },
+      ],
+    },
+    { id: 'out', label: 'Sign out' },
+  ];
+  return (
+    <Preview
+      title="One submenu"
+      open
+      code={`<DropdownMenu label="Account" items={[{ id: "theme", label: "Theme", items: [{ id: "ivory", label: "Ivory" }] }]} onSelect={() => {}} />`}
+    >
+      <div className="docs-builder" style={{ minBlockSize: '14rem', justifyContent: 'flex-start' }}>
+        <DropdownMenu label="Account" items={items} onSelect={setSelected} />
+        <p className="wpl-muted">Selected: {selected}</p>
       </div>
     </Preview>
   );
@@ -283,6 +312,7 @@ const sections: Record<string, ReactNode> = {
   ),
   'date-range-picker': <DateRangeLab />,
   'range-slider': <RangeLab />,
+  'dropdown-menu': <MenuLab />,
 };
 
 export function Showcase({ slug }: { slug: string }) {
