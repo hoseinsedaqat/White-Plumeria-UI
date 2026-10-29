@@ -1,10 +1,17 @@
 import {
+  clampRangeEdge,
   fieldClassName,
   formatNumber,
   inputClassName,
+  nearerEdge,
+  normalizeRange,
+  rangeBounds,
+  rangeFill,
   selectClassName,
   textareaClassName,
+  valueFromPointer,
   type ControlSize,
+  type NumberRange,
 } from '@white-plumeria/core';
 import { defineComponent, h, inject, provide, reactive, ref, useId, type InjectionKey, type PropType } from 'vue';
 import { useWhitePlumeria } from './provider.ts';
@@ -330,6 +337,125 @@ export const Slider = defineComponent({
             emit('update:modelValue', next);
           },
         }),
+      ]);
+    };
+  },
+});
+
+export const RangeSlider = defineComponent({
+  name: 'RangeSlider',
+  props: {
+    label: { type: String, required: true },
+    min: { type: Number, default: 0 },
+    max: { type: Number, default: 100 },
+    step: { type: Number, default: 1 },
+    start: { type: Number, default: undefined },
+    end: { type: Number, default: undefined },
+    disabled: { type: Boolean, default: false },
+    name: { type: String, default: '' },
+  },
+  emits: ['update:start', 'update:end', 'change'],
+  setup(props, { emit }) {
+    const id = useId();
+    const { locale } = useWhitePlumeria();
+    const internal = ref<NumberRange>(
+      normalizeRange(props.min, props.max, rangeBounds(props.min, props.max, props.step)),
+    );
+    const startRef = ref<HTMLInputElement | null>(null);
+    const endRef = ref<HTMLInputElement | null>(null);
+    function commit(
+      edge: 'start' | 'end',
+      next: number,
+      current: NumberRange,
+      bounds: ReturnType<typeof rangeBounds>,
+    ) {
+      const ordered = clampRangeEdge(edge, next, current, bounds);
+      if (props.start === undefined) internal.value = ordered;
+      emit('update:start', ordered.start);
+      emit('update:end', ordered.end);
+      emit('change', ordered);
+    }
+    return () => {
+      const bounds = rangeBounds(props.min, props.max, props.step);
+      const current =
+        props.start === undefined
+          ? normalizeRange(internal.value.start, internal.value.end, bounds)
+          : normalizeRange(props.start, props.end ?? bounds.max, bounds);
+      const fill = rangeFill(current, bounds);
+      return h('div', { class: 'wpl-field' }, [
+        h('div', { class: 'wpl-flex wpl-flex-between' }, [
+          h('span', { class: 'wpl-label', id: `${id}-label` }, props.label),
+          h(
+            'output',
+            { class: 'wpl-range-readout', 'aria-hidden': 'true' },
+            `${formatNumber(current.start, locale.value)} – ${formatNumber(current.end, locale.value)}`,
+          ),
+        ]),
+        h(
+          'div',
+          {
+            class: 'wpl-range',
+            role: 'group',
+            'aria-labelledby': `${id}-label`,
+            'data-disabled': props.disabled ? 'true' : undefined,
+            style: { '--wpl-range-start': fill.start, '--wpl-range-size': fill.size },
+            onPointerdown: (event: PointerEvent) => {
+              if (props.disabled || event.target instanceof HTMLInputElement) return;
+              const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+              const direction =
+                getComputedStyle(event.currentTarget as HTMLElement).direction === 'rtl'
+                  ? 'rtl'
+                  : 'ltr';
+              const value = valueFromPointer(
+                event.clientX,
+                rect.left,
+                rect.width,
+                bounds,
+                direction,
+              );
+              const edge = nearerEdge(value, current);
+              commit(edge, value, current, bounds);
+              (edge === 'start' ? startRef.value : endRef.value)?.focus();
+            },
+          },
+          [
+            h('span', { class: 'wpl-range-track', 'aria-hidden': 'true' }),
+            h('span', { class: 'wpl-range-fill', 'aria-hidden': 'true' }),
+            h('input', {
+              ref: startRef,
+              id: `${id}-start`,
+              class: 'wpl-range-input',
+              type: 'range',
+              min: bounds.min,
+              max: bounds.max,
+              step: bounds.step,
+              value: current.start,
+              disabled: props.disabled,
+              name: props.name ? `${props.name}-start` : undefined,
+              'aria-label': `${props.label} start`,
+              'aria-valuetext': formatNumber(current.start, locale.value),
+              onInput: (event: Event) =>
+                commit('start', Number((event.target as HTMLInputElement).value), current, bounds),
+            }),
+            h('input', {
+              ref: endRef,
+              id: `${id}-end`,
+              class: 'wpl-range-input',
+              'data-edge': 'end',
+              type: 'range',
+              min: bounds.min,
+              max: bounds.max,
+              step: bounds.step,
+              value: current.end,
+              disabled: props.disabled,
+              name: props.name ? `${props.name}-end` : undefined,
+              'aria-label': `${props.label} end`,
+              'aria-valuetext': formatNumber(current.end, locale.value),
+              onInput: (event: Event) =>
+                commit('end', Number((event.target as HTMLInputElement).value), current, bounds),
+            }),
+          ],
+        ),
       ]);
     };
   },

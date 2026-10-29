@@ -77,6 +77,16 @@ export {
 } from './sequence.ts';
 export type { StepState } from './sequence.ts';
 export type { Direction, Orientation } from './keyboard.ts';
+export {
+  clampRangeEdge,
+  nearerEdge,
+  normalizeRange,
+  rangeBounds,
+  rangeFill,
+  snapToStep,
+  valueFromPointer,
+} from './range.ts';
+export type { NumberRange, RangeBounds } from './range.ts';
 export { placeOverlay } from './overlay.ts';
 export type { Placement, PlacedOverlay, RectLike } from './overlay.ts';
 export {

@@ -383,6 +383,16 @@
     "limitations": []
   },
   {
+    "name": "RangeSlider",
+    "slug": "range-slider",
+    "summary": "Two thumbs for a numeric start and end. A thumb stops at the other thumb.",
+    "summaryFa": "دو دستگیره برای شروع و پایان عددی. دستگیره روی دستگیرهٔ دیگر نمی‌پرد.",
+    "limitations": [
+      "When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.",
+      "The HTML classes draw the track. Ordering the two values is done by the React, Vue, and Svelte components."
+    ]
+  },
+  {
     "name": "Rating",
     "slug": "rating",
     "summary": "Star rating as a radio group. It does not submit a review by itself.",
@@ -446,7 +456,7 @@
     "summary": "Native range input with a visible value.",
     "summaryFa": "ورودی بازهٔ بومی با مقدار نمایان.",
     "limitations": [
-      "Single thumb only. No range with two thumbs."
+      "Single thumb only. Use RangeSlider for a start and end value."
     ]
   },
   {

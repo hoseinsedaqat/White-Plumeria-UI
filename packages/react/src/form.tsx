@@ -1,10 +1,17 @@
 import {
+  clampRangeEdge,
   cx,
   fieldClassName,
   formatNumber,
   inputClassName,
+  nearerEdge,
+  normalizeRange,
+  rangeBounds,
+  rangeFill,
   selectClassName,
   textareaClassName,
+  valueFromPointer,
+  type NumberRange,
 } from '@white-plumeria/core';
 import type { ControlSize } from '@white-plumeria/core';
 import {
@@ -12,7 +19,10 @@ import {
   forwardRef,
   useContext,
   useId,
+  useRef,
   useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
   type InputHTMLAttributes,
   type ReactNode,
   type SelectHTMLAttributes,
@@ -363,6 +373,118 @@ export function Slider({
           onValueChange?.(next);
         }}
       />
+    </div>
+  );
+}
+
+export function RangeSlider({
+  label,
+  min = 0,
+  max = 100,
+  step = 1,
+  start,
+  end,
+  defaultStart,
+  defaultEnd,
+  disabled = false,
+  name,
+  onValueChange,
+}: {
+  label: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  start?: number;
+  end?: number;
+  defaultStart?: number;
+  defaultEnd?: number;
+  disabled?: boolean;
+  name?: string;
+  onValueChange?: (value: NumberRange) => void;
+}) {
+  const uid = useId();
+  const { locale } = useWhitePlumeria();
+  const startRef = useRef<HTMLInputElement>(null);
+  const endRef = useRef<HTMLInputElement>(null);
+  const bounds = rangeBounds(min, max, step);
+  const [internal, setInternal] = useState(() =>
+    normalizeRange(defaultStart ?? min, defaultEnd ?? max, rangeBounds(min, max, step)),
+  );
+  const current =
+    start !== undefined
+      ? normalizeRange(start, end ?? bounds.max, bounds)
+      : normalizeRange(internal.start, internal.end, bounds);
+  const fill = rangeFill(current, bounds);
+
+  function commit(edge: 'start' | 'end', next: number) {
+    const ordered = clampRangeEdge(edge, next, current, bounds);
+    if (start === undefined) setInternal(ordered);
+    onValueChange?.(ordered);
+  }
+
+  function onTrackPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (disabled || event.target instanceof HTMLInputElement) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const direction = getComputedStyle(event.currentTarget).direction === 'rtl' ? 'rtl' : 'ltr';
+    const value = valueFromPointer(event.clientX, rect.left, rect.width, bounds, direction);
+    const edge = nearerEdge(value, current);
+    commit(edge, value);
+    (edge === 'start' ? startRef : endRef).current?.focus();
+  }
+
+  const style = { '--wpl-range-start': fill.start, '--wpl-range-size': fill.size } as CSSProperties;
+  return (
+    <div className="wpl-field">
+      <div className="wpl-flex wpl-flex-between">
+        <span className="wpl-label" id={`${uid}-label`}>
+          {label}
+        </span>
+        <output className="wpl-range-readout" aria-hidden="true">
+          {formatNumber(current.start, locale)} – {formatNumber(current.end, locale)}
+        </output>
+      </div>
+      <div
+        className="wpl-range"
+        role="group"
+        aria-labelledby={`${uid}-label`}
+        data-disabled={disabled ? 'true' : undefined}
+        style={style}
+        onPointerDown={onTrackPointerDown}
+      >
+        <span className="wpl-range-track" aria-hidden="true" />
+        <span className="wpl-range-fill" aria-hidden="true" />
+        <input
+          ref={startRef}
+          id={`${uid}-start`}
+          className="wpl-range-input"
+          type="range"
+          min={bounds.min}
+          max={bounds.max}
+          step={bounds.step}
+          value={current.start}
+          disabled={disabled}
+          name={name ? `${name}-start` : undefined}
+          aria-label={`${label} start`}
+          aria-valuetext={formatNumber(current.start, locale)}
+          onChange={(event) => commit('start', Number(event.currentTarget.value))}
+        />
+        <input
+          ref={endRef}
+          id={`${uid}-end`}
+          className="wpl-range-input"
+          data-edge="end"
+          type="range"
+          min={bounds.min}
+          max={bounds.max}
+          step={bounds.step}
+          value={current.end}
+          disabled={disabled}
+          name={name ? `${name}-end` : undefined}
+          aria-label={`${label} end`}
+          aria-valuetext={formatNumber(current.end, locale)}
+          onChange={(event) => commit('end', Number(event.currentTarget.value))}
+        />
+      </div>
     </div>
   );
 }

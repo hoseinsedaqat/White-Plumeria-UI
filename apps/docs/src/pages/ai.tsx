@@ -8,6 +8,7 @@ import {
   ChartContainer,
   DatePicker,
   DateRangePicker,
+  RangeSlider,
   EmptyState,
   Input,
   PageHeader,
@@ -213,6 +214,18 @@ function PreviewNodeView({ node }: { node: PreviewNode }) {
         showTime={node.props?.showTime === true}
         startTime={textProp(node, 'startTime', '09:00')}
         endTime={textProp(node, 'endTime', '18:00')}
+      />
+    );
+  }
+  if (node.component === 'RangeSlider') {
+    return (
+      <RangeSlider
+        label={textProp(node, 'label', 'Price')}
+        min={Number(textProp(node, 'min', '0'))}
+        max={Number(textProp(node, 'max', '500'))}
+        step={Number(textProp(node, 'step', '10'))}
+        defaultStart={Number(textProp(node, 'start', '80'))}
+        defaultEnd={Number(textProp(node, 'end', '320'))}
       />
     );
   }

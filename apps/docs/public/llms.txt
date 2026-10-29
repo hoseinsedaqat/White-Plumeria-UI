@@ -52,6 +52,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Popover (popover): Anchored non-modal panel.
 - Progress (progress): Determinate or indeterminate progress.
 - RadioGroup (radio-group): Named native radios with a legend.
+- RangeSlider (range-slider): Two thumbs for a numeric start and end. A thumb stops at the other thumb.
 - Rating (rating): Star rating as a radio group. It does not submit a review by itself.
 - ResponsiveLayout (responsive-layout): Sidebar plus main. Sidebar stacks below 64rem.
 - SearchInput (search-input): Search field with a clear button.

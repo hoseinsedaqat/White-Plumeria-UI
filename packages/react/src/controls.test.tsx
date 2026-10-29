@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
+import { RangeSlider } from './form.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
 import { OtpField, PasswordField, Rating } from './fields.tsx';
@@ -59,6 +60,38 @@ describe('new controls', () => {
     render(<DatePicker label="From" />);
     await user.type(screen.getByLabelText('From'), 'nope');
     expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+  });
+
+  it('stops a range thumb at the other thumb and names both edges', () => {
+    let range = { start: 20, end: 80 };
+    render(
+      <RangeSlider
+        label="Price"
+        defaultStart={20}
+        defaultEnd={80}
+        name="price"
+        onValueChange={(next) => (range = next)}
+      />,
+    );
+    expect(screen.getByRole('group', { name: 'Price' })).toBeTruthy();
+    const start = screen.getByRole('slider', { name: 'Price start' });
+    const end = screen.getByRole('slider', { name: 'Price end' });
+    expect(start.getAttribute('name')).toBe('price-start');
+    expect(end.getAttribute('name')).toBe('price-end');
+    fireEvent.change(start, { target: { value: '90' } });
+    expect(range).toEqual({ start: 80, end: 80 });
+    const lower = render(
+      <RangeSlider
+        label="Budget"
+        defaultStart={20}
+        defaultEnd={80}
+        onValueChange={(next) => (range = next)}
+      />,
+    );
+    fireEvent.change(lower.getByRole('slider', { name: 'Budget end' }), {
+      target: { value: '10' },
+    });
+    expect(range).toEqual({ start: 20, end: 20 });
   });
 
   it('opens the navbar menu and names the toggle', async () => {

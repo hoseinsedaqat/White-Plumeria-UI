@@ -2,12 +2,13 @@
 
 ## Unreleased
 
+- RangeSlider selects a numeric start and end. A thumb stops at the other thumb instead of jumping under the pointer.
 - Public logo in `apps/docs/public/brand`, matching favicon, and a five-petal `Mark` in React, Vue, and Svelte.
 - Dialog and drawer open and close with a short fade. The drawer slides from the logical side. Menus, popovers, tooltips, and toasts rise in. Reduced motion removes those transitions.
 - Homepage preview window stays inside the viewport when the page is at the top.
 - DataTable keeps sorting, filtering, and paging inside its frame, stacks narrow rows, and reports sort changes.
 - Navbar uses one collapsing menu contract in React, Vue, and Svelte.
-- DateRangePicker selects a start and end date. Stored values stay Gregorian ISO dates. There is no time of day.
+- DateRangePicker selects a start and end date. Stored values stay Gregorian ISO dates.
 - DatePicker and DateRangePicker can show a 24-hour time. The value is `HH:mm`, with no seconds and no timezone name. Same-day times are ordered.
 - Button sizes `xs` and `xl`, appearances `soft` and `dash`, and status variants `success`, `warning`, and `info`
 - Steps, Carousel (image and content slider, distinct from the range Slider), PasswordField, OtpField, Rating, and Kbd
