@@ -49,6 +49,7 @@ function detectIntent(prompt: string): string {
   if (/(settings|تنظیمات)/i.test(prompt)) return 'settings';
   if (/(empty|خالی)/i.test(prompt)) return 'empty';
   if (/(dialog|modal|گفتگو)/i.test(prompt)) return 'dialog';
+  if (/(price range|budget|range slider|slider range|two thumbs)/i.test(prompt)) return 'number-range';
   if (/(range|بازه|start and end|from and to)/i.test(prompt)) return 'date-range';
   if (/(calendar|date|تاریخ|تقویم)/i.test(prompt)) return 'calendar';
   return 'general';
@@ -134,6 +135,9 @@ const layouts: Record<string, PreviewNode[]> = {
   ],
   'date-range': [
     { component: 'DateRangePicker', props: { label: 'Stay', start: '2026-10-12', end: '2026-10-18', showTime: true, startTime: '09:00', endTime: '18:00' } },
+  ],
+  'number-range': [
+    { component: 'RangeSlider', props: { label: 'Price', min: 0, max: 500, step: 10, start: 80, end: 320 } },
   ],
   general: [
     { component: 'PageHeader', props: { title: 'Composer', description: 'A small composition from the real catalog.' } },

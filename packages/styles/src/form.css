@@ -265,6 +265,110 @@
   background: var(--wpl-color-surface);
 }
 
+.wpl-range-readout {
+  color: var(--wpl-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wpl-field:has(.wpl-range) {
+  flex: 1 1 18rem;
+  inline-size: min(100%, 28rem);
+  min-inline-size: min(100%, 16rem);
+}
+
+.wpl-range {
+  position: relative;
+  inline-size: 100%;
+  block-size: 2.75rem;
+  touch-action: none;
+}
+
+.wpl-range-track,
+.wpl-range-fill {
+  position: absolute;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  block-size: 0.35rem;
+  border-radius: var(--wpl-radius-full);
+  pointer-events: none;
+}
+
+.wpl-range-track {
+  inset-inline: 0;
+  background: var(--wpl-color-bg-muted);
+}
+
+.wpl-range-fill {
+  inset-inline-start: var(--wpl-range-start, 0%);
+  inline-size: var(--wpl-range-size, 0%);
+  background: var(--wpl-color-primary);
+}
+
+.wpl-range-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.wpl-range-input[data-edge='end'] {
+  z-index: 2;
+}
+
+.wpl-range-input:focus {
+  z-index: 3;
+}
+
+.wpl-range-input::-webkit-slider-runnable-track {
+  block-size: 0.35rem;
+  background: transparent;
+}
+
+.wpl-range-input::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+  margin-block-start: -0.4rem;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  border-radius: var(--wpl-radius-full);
+  border: 2px solid var(--wpl-color-primary);
+  background: var(--wpl-color-surface);
+  cursor: grab;
+}
+
+.wpl-range-input::-moz-range-track {
+  background: transparent;
+}
+
+.wpl-range-input::-moz-range-thumb {
+  pointer-events: auto;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  border: 2px solid var(--wpl-color-primary);
+  border-radius: var(--wpl-radius-full);
+  background: var(--wpl-color-surface);
+  cursor: grab;
+}
+
+.wpl-range-input:focus-visible::-webkit-slider-thumb,
+.wpl-range-input:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--wpl-color-focus);
+  outline-offset: 2px;
+}
+
+.wpl-range[data-disabled='true'] {
+  opacity: 0.55;
+}
+
+.wpl-range-input:disabled::-webkit-slider-thumb,
+.wpl-range-input:disabled::-moz-range-thumb {
+  cursor: not-allowed;
+}
+
 .wpl-search,
 .wpl-file,
 .wpl-combo {

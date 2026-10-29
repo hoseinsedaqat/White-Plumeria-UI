@@ -11,6 +11,7 @@ import {
   Input,
   Navbar,
   Progress,
+  RangeSlider,
   Select,
   Switch,
   Tabs,
@@ -88,6 +89,29 @@ function DateRangeLab() {
               endTime: next.endTime ?? '',
             })
           }
+        />
+      </div>
+    </Preview>
+  );
+}
+
+function RangeLab() {
+  const [range, setRange] = useState({ start: 80, end: 320 });
+  return (
+    <Preview
+      title="Start and end"
+      open
+      code={`<RangeSlider label="Price" min={0} max={500} step={10} start={${range.start}} end={${range.end}} />`}
+    >
+      <div className="docs-builder">
+        <RangeSlider
+          label="Price"
+          min={0}
+          max={500}
+          step={10}
+          start={range.start}
+          end={range.end}
+          onValueChange={setRange}
         />
       </div>
     </Preview>
@@ -258,6 +282,7 @@ const sections: Record<string, ReactNode> = {
     </>
   ),
   'date-range-picker': <DateRangeLab />,
+  'range-slider': <RangeLab />,
 };
 
 export function Showcase({ slug }: { slug: string }) {

@@ -52,6 +52,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Popover (popover): Anchored non-modal panel.
 - Progress (progress): Determinate or indeterminate progress.
 - RadioGroup (radio-group): Named native radios with a legend.
+- RangeSlider (range-slider): Two thumbs for a numeric start and end. A thumb stops at the other thumb.
 - Rating (rating): Star rating as a radio group. It does not submit a review by itself.
 - ResponsiveLayout (responsive-layout): Sidebar plus main. Sidebar stacks below 64rem.
 - SearchInput (search-input): Search field with a clear button.
@@ -108,12 +109,14 @@ AI tools may only name components from this list.
 - PasswordField: Does not score strength or talk to an identity provider.
 - PasswordField: Reveal shows the value on screen.
 - Popover: No hover-open mode. Use Tooltip for hover hints.
+- RangeSlider: When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.
+- RangeSlider: The HTML classes draw the track. Ordering the two values is done by the React, Vue, and Svelte components.
 - Rating: Does not submit a review by itself. Read the value from your form.
 - Rating: max is clamped from 1 to 10.
 - ResponsiveLayout: The 64rem collapse is CSS. The open flag only matters in that collapsed state.
 - Select: Not a custom-styled popup. That is Combobox.
 - Skeleton: Not a content layout detector. You size each placeholder.
-- Slider: Single thumb only. No range with two thumbs.
+- Slider: Single thumb only. Use RangeSlider for a start and end value.
 - SplitPane: Horizontal split only. No nested persistence.
 - StatCard: No sparkline and no live data source.
 - Steps: Does not validate a form or persist progress. Move the value from your own Next control.

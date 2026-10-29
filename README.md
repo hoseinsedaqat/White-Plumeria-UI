@@ -15,11 +15,7 @@
   <img alt="Not published to npm" src="https://img.shields.io/badge/npm-not%20published-854D0E" />
 </p>
 
-<p align="center">
-  <img src="apps/docs/public/brand/social.jpg" alt="" width="720" />
-</p>
-
-The flower is the product mark: five petals, one center. In the components it is drawn in `currentColor`, so it follows the theme. The pictures above are the public logo.
+The flower is the product mark: five petals, one center. The picture above is the public logo. In the components it is drawn in `currentColor`, so it follows the theme.
 
 Packages are **not on npm**. The code samples are the API. Until a release, clone this repository.
 

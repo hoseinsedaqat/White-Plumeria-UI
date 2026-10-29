@@ -46,6 +46,7 @@ export {
   Input,
   Label,
   RadioGroup,
+  RangeSlider,
   SearchInput,
   Select,
   Slider,

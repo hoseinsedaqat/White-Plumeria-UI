@@ -46,6 +46,7 @@ import {
   Popover,
   Progress,
   RadioGroup,
+  RangeSlider,
   Rating,
   SearchInput,
   Select,
@@ -224,6 +225,8 @@ export function renderDemo(slug: string): ReactNode {
       return <Switch label="Reduced motion" />;
     case 'slider':
       return <Slider label="Volume" defaultValue={40} />;
+    case 'range-slider':
+      return <RangeSlider label="Price" min={0} max={500} step={10} defaultStart={80} defaultEnd={320} />;
     case 'label':
       return <Label htmlFor="demo-email" required>Email</Label>;
     case 'form-field':
