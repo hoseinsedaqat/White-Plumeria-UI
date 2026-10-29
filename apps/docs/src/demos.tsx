@@ -263,7 +263,16 @@ export function renderDemo(slug: string): ReactNode {
         </Tooltip>
       );
     case 'dropdown-menu':
-      return <DropdownMenu label="Account" items={[{ id: 'profile', label: 'Profile' }, { id: 'out', label: 'Sign out' }]} />;
+      return (
+        <DropdownMenu
+          label="Account"
+          items={[
+            { id: 'profile', label: 'Profile' },
+            { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }, { id: 'ink', label: 'Ink' }] },
+            { id: 'out', label: 'Sign out' },
+          ]}
+        />
+      );
     case 'tabs':
       return <Tabs tabs={[{ id: 'overview', label: 'Overview', panel: 'Balances for the sample workspace.' }, { id: 'activity', label: 'Activity', panel: 'No live feed is connected.' }]} />;
     case 'accordion':

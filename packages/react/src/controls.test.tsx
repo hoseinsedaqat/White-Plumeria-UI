@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { RangeSlider } from './form.tsx';
+import { DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
 import { OtpField, PasswordField, Rating } from './fields.tsx';
@@ -92,6 +93,45 @@ describe('new controls', () => {
       target: { value: '10' },
     });
     expect(range).toEqual({ start: 20, end: 20 });
+  });
+
+  it('opens a submenu toward the inline end and selects the leaf', async () => {
+    const user = userEvent.setup();
+    let selected = '';
+    render(
+      <DropdownMenu
+        label="Account"
+        items={[
+          { id: 'profile', label: 'Profile' },
+          { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }, { id: 'ink', label: 'Ink', disabled: true }] },
+          { id: 'out', label: 'Sign out' },
+        ]}
+        onSelect={(id) => (selected = id)}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Account' }));
+    await user.keyboard('{ArrowDown}{ArrowRight}');
+    expect(screen.getByRole('menu', { name: 'Theme' })).toBeTruthy();
+    expect(screen.getByRole('menuitem', { name: 'Ivory' }).getAttribute('data-active')).toBe('true');
+    await user.keyboard('{ArrowDown}{Enter}');
+    expect(selected).toBe('ivory');
+    expect(screen.queryByRole('menu', { name: 'Account' })).toBeNull();
+  });
+
+  it('closes the submenu before the root menu', async () => {
+    const user = userEvent.setup();
+    render(
+      <DropdownMenu
+        label="Account"
+        items={[{ id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] }]}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Account' }));
+    await user.keyboard('{ArrowRight}{Escape}');
+    expect(screen.queryByRole('menu', { name: 'Theme' })).toBeNull();
+    expect(screen.getByRole('menu', { name: 'Account' })).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('menu', { name: 'Account' })).toBeNull();
   });
 
   it('opens the navbar menu and names the toggle', async () => {

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- DropdownMenu opens one submenu level. The inline-end arrow opens it, and Escape closes that level before the root menu.
 - RangeSlider selects a numeric start and end. A thumb stops at the other thumb instead of jumping under the pointer.
 - Public logo in `apps/docs/public/brand`, matching favicon, and a five-petal `Mark` in React, Vue, and Svelte.
 - Dialog and drawer open and close with a short fade. The drawer slides from the logical side. Menus, popovers, tooltips, and toasts rise in. Reduced motion removes those transitions.
