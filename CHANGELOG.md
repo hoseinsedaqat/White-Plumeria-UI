@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Public logo in `apps/docs/public/brand`, matching favicon, and a five-petal `Mark` in React, Vue, and Svelte.
 - Dialog and drawer open and close with a short fade. The drawer slides from the logical side. Menus, popovers, tooltips, and toasts rise in. Reduced motion removes those transitions.
 - Homepage preview window stays inside the viewport when the page is at the top.
 - DataTable keeps sorting, filtering, and paging inside its frame, stacks narrow rows, and reports sort changes.
