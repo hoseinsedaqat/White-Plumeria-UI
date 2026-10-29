@@ -269,6 +269,54 @@ body {
   text-overflow: ellipsis;
 }
 
+html[data-wpl-scheme="dark"] .docs-pop-panel {
+  background: #191e24;
+  color: #f2f4f6;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-wpl-scheme="dark"] .docs-pop-panel h2,
+html[data-wpl-scheme="dark"] .docs-note-line {
+  color: #a6adbb;
+}
+
+html[data-wpl-scheme="dark"] .docs-theme-row,
+html[data-wpl-scheme="dark"] .docs-segment button {
+  color: #f2f4f6;
+  background: transparent;
+}
+
+html[data-wpl-scheme="dark"] .docs-theme-row[aria-pressed="true"],
+html[data-wpl-scheme="dark"] .docs-segment button[aria-pressed="true"] {
+  background: #2a323c;
+  color: #f2f4f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-wpl-scheme="light"]) .docs-pop-panel {
+    background: #191e24;
+    color: #f2f4f6;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  html:not([data-wpl-scheme="light"]) .docs-pop-panel h2,
+  html:not([data-wpl-scheme="light"]) .docs-note-line {
+    color: #a6adbb;
+  }
+
+  html:not([data-wpl-scheme="light"]) .docs-theme-row,
+  html:not([data-wpl-scheme="light"]) .docs-segment button {
+    color: #f2f4f6;
+    background: transparent;
+  }
+
+  html:not([data-wpl-scheme="light"]) .docs-theme-row[aria-pressed="true"],
+  html:not([data-wpl-scheme="light"]) .docs-segment button[aria-pressed="true"] {
+    background: #2a323c;
+    color: #f2f4f6;
+  }
+}
+
 .docs-frame {
   display: flex;
   align-items: flex-start;

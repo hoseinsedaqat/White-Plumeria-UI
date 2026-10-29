@@ -99,7 +99,7 @@ AI tools may only name components from this list.
 - DropdownMenu: One submenu level. Deeper items are not opened.
 - DropdownMenu: Typeahead is not implemented.
 - FileUpload: Does not upload to a server. Rejected files are reported in the error list and are not executed.
-- FormField: Context wiring is implemented in React, Vue, Svelte, and Angular. HTML users set ids manually.
+- FormField: Context wiring is implemented in React, Vue, Svelte, Angular, and Solid. HTML users set ids manually.
 - Grid: Collapses to one column below 48rem. Not a masonry layout.
 - Kbd: Visual only. Pair it with a real keydown listener in your application if the shortcut must work.
 - Modal: This is a Dialog preset, not a second focus system.
@@ -112,7 +112,7 @@ AI tools may only name components from this list.
 - PasswordField: Reveal shows the value on screen.
 - Popover: No hover-open mode. Use Tooltip for hover hints.
 - RangeSlider: When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.
-- RangeSlider: The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, and Angular components.
+- RangeSlider: The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, and Solid components.
 - Rating: Does not submit a review by itself. Read the value from your form.
 - Rating: max is clamped from 1 to 10.
 - ResponsiveLayout: The 64rem collapse is CSS. The open flag only matters in that collapsed state.

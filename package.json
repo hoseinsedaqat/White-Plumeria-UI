@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, Svelte, and Angular.",
+  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, Svelte, Angular, and Solid.",
   "license": "MIT",
   "packageManager": "pnpm@12.15.0",
   "engines": {
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "test": "pnpm --filter @white-plumeria/angular... build && vitest run",
+    "test": "pnpm --filter @white-plumeria/angular... build && pnpm --filter @white-plumeria/solid test && vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "format:check": "prettier --check .",

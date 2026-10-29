@@ -6,7 +6,7 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-const frameworks = ['html', 'react', 'vue', 'svelte', 'angular'] as const;
+const frameworks = ['html', 'react', 'vue', 'svelte', 'angular', 'solid'] as const;
 type Framework = (typeof frameworks)[number];
 
 function frameworkOf(value: string | undefined): Framework {
@@ -91,7 +91,9 @@ export function getFrameworkInstallationTool(framework?: string): ToolResult {
           ? ['styles', 'svelte']
           : target === 'angular'
             ? ['styles', 'angular']
-            : ['styles', 'react'];
+            : target === 'solid'
+              ? ['styles', 'solid']
+              : ['styles', 'react'];
   return {
     text: JSON.stringify(
       {

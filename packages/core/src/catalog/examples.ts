@@ -11,7 +11,15 @@ export function examples(
     vue: `<script setup lang="ts">\nimport { ${name} } from "@white-plumeria/vue";\nimport "@white-plumeria/styles";\n</script>\n\n<template>\n  ${body.vue}\n</template>\n`,
     svelte: `<script lang="ts">\n  import { ${name} } from "@white-plumeria/svelte";\n  import "@white-plumeria/styles";\n</script>\n\n${body.svelte}\n`,
     angular: angularExample(name, body.vue),
+    solid: solidExample(name, body.react),
   };
+}
+
+function solidExample(name: string, react: string): string {
+  if (name === 'Toast') {
+    return `import { useToast } from "@white-plumeria/solid";\nimport "@white-plumeria/styles";\n\nexport function Example() {\n  const toast = useToast();\n  return <button type="button" onClick={() => toast.push({ title: "Saved", variant: "success" })}>Save</button>;\n}\n`;
+  }
+  return `import { ${name} } from "@white-plumeria/solid";\nimport "@white-plumeria/styles";\n\nexport function Example() {\n  return (\n    ${react}\n  );\n}`;
 }
 
 function angularExample(name: string, vue: string): string {
