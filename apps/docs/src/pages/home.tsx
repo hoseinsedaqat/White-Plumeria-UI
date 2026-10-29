@@ -242,13 +242,11 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             </button>
           ))}
         </div>
-        <div className="home-theme-row" role="listbox" aria-label="Themes">
+        <div className="home-theme-row" role="group" aria-label="Themes">
           {themes.map((theme) => (
             <button
               key={theme.name}
               type="button"
-              role="option"
-              aria-selected={preferences.theme === theme.name}
               aria-pressed={preferences.theme === theme.name}
               onClick={() => setPreferences({ theme: theme.name })}
             >

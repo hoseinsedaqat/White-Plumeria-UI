@@ -143,7 +143,7 @@ export function DocsApp() {
             }}
           />
           {query.trim() ? (
-            <div className="docs-search-results" role="listbox">
+            <div className="docs-search-results" role="listbox" aria-label="Search results">
               {results.length === 0 ? <p className="docs-search-empty">No components match.</p> : null}
               {results.map((item) => (
                 <A key={item.slug} href={`/components/${item.slug}`} onNavigate={go}>
