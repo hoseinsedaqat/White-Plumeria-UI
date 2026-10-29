@@ -217,6 +217,11 @@
   min-inline-size: 0;
 }
 
+.wpl-time {
+  flex: 1 1 7rem;
+  max-inline-size: 9rem;
+}
+
 .wpl-date .wpl-calendar {
   inline-size: min(20rem, 100%);
   max-inline-size: 100%;

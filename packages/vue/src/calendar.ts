@@ -5,12 +5,15 @@ import {
   formatDate,
   formatNumber,
   orderDateRange,
+  orderDateTimeRange,
   parseIsoDate,
+  parseTimeValue,
   sameDay,
   toIsoDate,
   toParts,
   type CalendarSystem,
   type DateRangeValue,
+  type DateTimeRangeValue,
 } from '@white-plumeria/core';
 import { defineComponent, h, ref, useId, type PropType } from 'vue';
 import { IconButton } from './button.ts';
@@ -94,13 +97,17 @@ export const DatePicker = defineComponent({
     calendar: { type: String as PropType<CalendarSystem>, default: 'gregory' },
     min: { type: String, default: '' },
     max: { type: String, default: '' },
+    showTime: { type: Boolean, default: false },
+    time: { type: String, default: '' },
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update:time'],
   setup(props, { emit }) {
     const id = useId();
+    const timeId = useId();
     const { t, locale } = useWhitePlumeria();
     const open = ref(false);
     const text = ref(props.modelValue);
+    const timeText = ref(props.time);
     const error = ref('');
     function commit(next: string) {
       text.value = next;
@@ -115,6 +122,23 @@ export const DatePicker = defineComponent({
       }
       error.value = '';
       emit('update:modelValue', next);
+    }
+    function commitTime(next: string) {
+      timeText.value = next;
+      if (!next) {
+        error.value = '';
+        emit('update:time', '');
+        return;
+      }
+      const parsed = parseTimeValue(next);
+      if (!parsed) {
+        error.value = t('invalidTime');
+        return;
+      }
+      const stored = `${String(parsed.hours).padStart(2, '0')}:${String(parsed.minutes).padStart(2, '0')}`;
+      timeText.value = stored;
+      error.value = '';
+      emit('update:time', stored);
     }
     return () => {
       const selected = parseIsoDate(props.modelValue || text.value);
@@ -133,6 +157,20 @@ export const DatePicker = defineComponent({
           }),
           h(IconButton, { label: t('chooseDate'), onClick: () => (open.value = !open.value) }, () => '▦'),
         ]),
+        props.showTime
+          ? h('div', { class: 'wpl-field wpl-time' }, [
+              h('label', { class: 'wpl-label', for: timeId }, t('time')),
+              h('input', {
+                id: timeId,
+                class: 'wpl-input',
+                value: timeText.value,
+                inputmode: 'numeric',
+                placeholder: 'HH:mm',
+                'aria-invalid': error.value ? true : undefined,
+                onInput: (event: Event) => commitTime((event.target as HTMLInputElement).value),
+              }),
+            ])
+          : null,
         error.value ? h('p', { id: `${id}-error`, class: 'wpl-field-error', role: 'alert' }, error.value) : null,
         open.value
           ? h(Calendar, {
@@ -151,14 +189,16 @@ export const DatePicker = defineComponent({
         h(
           'p',
           { class: 'wpl-field-hint' },
-          selected ? formatDate(selected, locale.value, { dateStyle: 'full' }, props.calendar) : t('chooseDate'),
+          selected
+            ? `${formatDate(selected, locale.value, { dateStyle: 'full' }, props.calendar)}${props.showTime && parseTimeValue(timeText.value) ? `, ${timeText.value}` : ''}`
+            : t('chooseDate'),
         ),
       ]);
     };
   },
 });
 
-export type { DateRangeValue };
+export type { DateRangeValue, DateTimeRangeValue };
 
 export const DateRangePicker = defineComponent({
   name: 'DateRangePicker',
@@ -166,28 +206,53 @@ export const DateRangePicker = defineComponent({
     label: { type: String, required: true },
     start: { type: String, default: '' },
     end: { type: String, default: '' },
+    startTime: { type: String, default: '' },
+    endTime: { type: String, default: '' },
+    showTime: { type: Boolean, default: false },
     calendar: { type: String as PropType<CalendarSystem>, default: 'gregory' },
     min: { type: String, default: '' },
     max: { type: String, default: '' },
   },
-  emits: ['update:start', 'update:end', 'change'],
+  emits: ['update:start', 'update:end', 'update:startTime', 'update:endTime', 'change'],
   setup(props, { emit }) {
     const startId = useId();
     const endId = useId();
+    const startTimeId = useId();
+    const endTimeId = useId();
     const { t, locale } = useWhitePlumeria();
     const open = ref(false);
     const startText = ref(props.start);
     const endText = ref(props.end);
+    const startTimeText = ref(props.startTime);
+    const endTimeText = ref(props.endTime);
     const error = ref('');
     const awaitingEnd = ref(false);
 
-    function emitRange(nextStart: string, nextEnd: string) {
-      const ordered = nextStart && nextEnd ? orderDateRange(nextStart, nextEnd) : { start: nextStart, end: nextEnd };
+    function emitRange(nextStart: string, nextEnd: string, nextStartTime = startTimeText.value, nextEndTime = endTimeText.value) {
+      if (props.showTime && ((nextStartTime && !parseTimeValue(nextStartTime)) || (nextEndTime && !parseTimeValue(nextEndTime)))) {
+        error.value = t('invalidTime');
+        return;
+      }
+      if (!props.showTime) {
+        const ordered = nextStart && nextEnd ? orderDateRange(nextStart, nextEnd) : { start: nextStart, end: nextEnd };
+        startText.value = ordered.start;
+        endText.value = ordered.end;
+        error.value = '';
+        emit('update:start', ordered.start);
+        emit('update:end', ordered.end);
+        emit('change', ordered);
+        return;
+      }
+      const ordered = orderDateTimeRange({ start: nextStart, end: nextEnd, startTime: nextStartTime, endTime: nextEndTime });
       startText.value = ordered.start;
       endText.value = ordered.end;
+      startTimeText.value = ordered.startTime;
+      endTimeText.value = ordered.endTime;
       error.value = '';
       emit('update:start', ordered.start);
       emit('update:end', ordered.end);
+      emit('update:startTime', ordered.startTime);
+      emit('update:endTime', ordered.endTime);
       emit('change', ordered);
     }
 
@@ -203,16 +268,27 @@ export const DateRangePicker = defineComponent({
       emitRange(nextStart, nextEnd);
     }
 
+    function commitTime(which: 'start' | 'end', next: string) {
+      if (which === 'start') startTimeText.value = next;
+      else endTimeText.value = next;
+      if (next && !parseTimeValue(next)) {
+        error.value = t('invalidTime');
+        return;
+      }
+      emitRange(startText.value, endText.value, which === 'start' ? next : startTimeText.value, which === 'end' ? next : endTimeText.value);
+    }
+
     function pick(date: Date) {
       const iso = toIsoDate(date);
       if (!awaitingEnd.value || !startText.value || endText.value) {
         startText.value = iso;
         endText.value = '';
+        if (props.showTime) endTimeText.value = '';
         awaitingEnd.value = true;
         error.value = '';
         emit('update:start', iso);
         emit('update:end', '');
-        emit('change', { start: iso, end: '' });
+        emit('change', props.showTime ? { start: iso, end: '', startTime: startTimeText.value, endTime: '' } : { start: iso, end: '' });
         return;
       }
       emitRange(startText.value, iso);
@@ -223,11 +299,15 @@ export const DateRangePicker = defineComponent({
     return () => {
       const startDate = parseIsoDate(startText.value);
       const endDate = parseIsoDate(endText.value);
+      const dated = (date: Date, timeValue: string) => {
+        const label = formatDate(date, locale.value, { dateStyle: 'medium' }, props.calendar);
+        return props.showTime && parseTimeValue(timeValue) ? `${label}, ${timeValue}` : label;
+      };
       const hint =
         startDate && endDate
-          ? `${formatDate(startDate, locale.value, { dateStyle: 'medium' }, props.calendar)} – ${formatDate(endDate, locale.value, { dateStyle: 'medium' }, props.calendar)}`
+          ? `${dated(startDate, startTimeText.value)} – ${dated(endDate, endTimeText.value)}`
           : startDate
-            ? formatDate(startDate, locale.value, { dateStyle: 'medium' }, props.calendar)
+            ? dated(startDate, startTimeText.value)
             : t('chooseDate');
       return h('div', { class: 'wpl-date' }, [
         h('span', { class: 'wpl-label' }, props.label),
@@ -262,6 +342,34 @@ export const DateRangePicker = defineComponent({
             onClick: () => (open.value = !open.value),
           }, () => '▦'),
         ]),
+        props.showTime
+          ? h('div', { class: 'wpl-date-row' }, [
+              h('div', { class: 'wpl-field wpl-time' }, [
+                h('label', { class: 'wpl-label', for: startTimeId }, t('startTime')),
+                h('input', {
+                  id: startTimeId,
+                  class: 'wpl-input',
+                  value: startTimeText.value,
+                  inputmode: 'numeric',
+                  placeholder: 'HH:mm',
+                  'aria-invalid': error.value ? true : undefined,
+                  onInput: (event: Event) => commitTime('start', (event.target as HTMLInputElement).value),
+                }),
+              ]),
+              h('div', { class: 'wpl-field wpl-time' }, [
+                h('label', { class: 'wpl-label', for: endTimeId }, t('endTime')),
+                h('input', {
+                  id: endTimeId,
+                  class: 'wpl-input',
+                  value: endTimeText.value,
+                  inputmode: 'numeric',
+                  placeholder: 'HH:mm',
+                  'aria-invalid': error.value ? true : undefined,
+                  onInput: (event: Event) => commitTime('end', (event.target as HTMLInputElement).value),
+                }),
+              ]),
+            ])
+          : null,
         error.value ? h('p', { class: 'wpl-field-error', role: 'alert' }, error.value) : null,
         open.value
           ? h(Calendar, {

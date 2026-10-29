@@ -152,10 +152,10 @@
   {
     "name": "DateRangePicker",
     "slug": "date-range-picker",
-    "summary": "Start and end dates, ordered even if the later day is chosen first.",
+    "summary": "Start and end dates, with optional 24-hour times. A later choice is ordered first.",
     "summaryFa": "تاریخ شروع و پایان. اگر روز بعدی اول انتخاب شود هم مرتب می‌شود.",
     "limitations": [
-      "No time of day. Values are Gregorian ISO dates, not Jalali strings. The first open selection sets the start; the next sets the end."
+      "No seconds and no timezone name. Dates stay Gregorian ISO strings, not Jalali strings. The first open selection sets the start; the next sets the end. Same-day times are ordered too."
     ]
   },
   {

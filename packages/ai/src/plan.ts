@@ -133,7 +133,7 @@ const layouts: Record<string, PreviewNode[]> = {
     { component: 'Calendar', props: { calendar: 'gregory' } },
   ],
   'date-range': [
-    { component: 'DateRangePicker', props: { label: 'Stay', start: '2026-10-12', end: '2026-10-18' } },
+    { component: 'DateRangePicker', props: { label: 'Stay', start: '2026-10-12', end: '2026-10-18', showTime: true, startTime: '09:00', endTime: '18:00' } },
   ],
   general: [
     { component: 'PageHeader', props: { title: 'Composer', description: 'A small composition from the real catalog.' } },

@@ -5,7 +5,7 @@ export type { ButtonProps, IconButtonProps } from './button.tsx';
 export { Carousel } from './carousel.tsx';
 export type { CarouselSlide } from './carousel.tsx';
 export { Calendar, DatePicker, DateRangePicker } from './calendar.tsx';
-export type { DateRangeValue } from './calendar.tsx';
+export type { DateRangeValue, DateTimeRangeValue } from './calendar.tsx';
 export { Combobox } from './combobox.tsx';
 export type { ComboOption } from './combobox.tsx';
 export { CommandPalette } from './command.tsx';

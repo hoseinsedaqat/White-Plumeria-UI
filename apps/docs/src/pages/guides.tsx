@@ -26,7 +26,7 @@ const pages: Record<string, { title: string; body: string; code?: string }> = {
   },
   '/direction': {
     title: 'Direction',
-    body: 'This documentation site is English and left to right. Components use CSS logical properties, so a host page can set dir="rtl" without flipping the whole product with a transform. Directional icons opt in with wpl-icon-dir. Dates stored by DatePicker and DateRangePicker are Gregorian ISO strings.',
+    body: 'This documentation site is English and left to right. Components use CSS logical properties, so a host page can set dir="rtl" without flipping the whole product with a transform. Directional icons opt in with wpl-icon-dir. Dates stored by DatePicker and DateRangePicker are Gregorian ISO strings. Optional times are 24-hour HH:mm values and do not include seconds.',
   },
   '/accessibility': {
     title: 'Accessibility',

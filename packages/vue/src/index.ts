@@ -4,7 +4,7 @@ export { Button, ButtonGroup, IconButton } from './button.ts';
 export { Carousel } from './carousel.ts';
 export type { CarouselSlide } from './carousel.ts';
 export { Calendar, DatePicker, DateRangePicker } from './calendar.ts';
-export type { DateRangeValue } from './calendar.ts';
+export type { DateRangeValue, DateTimeRangeValue } from './calendar.ts';
 export { Combobox } from './combobox.ts';
 export type { ComboOption } from './combobox.ts';
 export { CommandPalette } from './command.ts';

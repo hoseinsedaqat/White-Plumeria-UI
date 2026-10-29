@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { formatDate, orderDateRange, parseIsoDate, toIsoDate, type CalendarSystem, type DateRangeValue } from '@white-plumeria/core';
+  import {
+    formatDate,
+    orderDateRange,
+    orderDateTimeRange,
+    parseIsoDate,
+    parseTimeValue,
+    toIsoDate,
+    type CalendarSystem,
+    type DateRangeValue,
+    type DateTimeRangeValue,
+  } from '@white-plumeria/core';
   import Calendar from './Calendar.svelte';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
@@ -11,6 +21,9 @@
     calendar = 'gregory',
     min = '',
     max = '',
+    showTime = false,
+    startTime = $bindable(''),
+    endTime = $bindable(''),
     onchange,
   }: {
     label: string;
@@ -19,7 +32,10 @@
     calendar?: CalendarSystem;
     min?: string;
     max?: string;
-    onchange?: (value: DateRangeValue) => void;
+    showTime?: boolean;
+    startTime?: string;
+    endTime?: string;
+    onchange?: (value: DateRangeValue | DateTimeRangeValue) => void;
   } = $props();
 
   const wpl = useWhitePlumeria();
@@ -27,20 +43,50 @@
   let open = $state(false);
   let startText = $state(start);
   let endText = $state(end);
+  let startTimeText = $state(startTime);
+  let endTimeText = $state(endTime);
   let error = $state('');
   let awaitingEnd = $state(false);
   let picked = $state<Date | null>(null);
   const startDate = $derived(parseIsoDate(startText));
   const endDate = $derived(parseIsoDate(endText));
 
-  function emit(nextStart: string, nextEnd: string) {
-    const ordered = nextStart && nextEnd ? orderDateRange(nextStart, nextEnd) : { start: nextStart, end: nextEnd };
+  function emit(nextStart: string, nextEnd: string, nextStartTime = startTimeText, nextEndTime = endTimeText) {
+    if (showTime && ((nextStartTime && !parseTimeValue(nextStartTime)) || (nextEndTime && !parseTimeValue(nextEndTime)))) {
+      error = wpl.t('invalidTime');
+      return;
+    }
+    if (!showTime) {
+      const ordered = nextStart && nextEnd ? orderDateRange(nextStart, nextEnd) : { start: nextStart, end: nextEnd };
+      startText = ordered.start;
+      endText = ordered.end;
+      start = ordered.start;
+      end = ordered.end;
+      error = '';
+      onchange?.(ordered);
+      return;
+    }
+    const ordered = orderDateTimeRange({ start: nextStart, end: nextEnd, startTime: nextStartTime, endTime: nextEndTime });
     startText = ordered.start;
     endText = ordered.end;
+    startTimeText = ordered.startTime;
+    endTimeText = ordered.endTime;
     start = ordered.start;
     end = ordered.end;
+    startTime = ordered.startTime;
+    endTime = ordered.endTime;
     error = '';
     onchange?.(ordered);
+  }
+
+  function commitTime(which: 'start' | 'end', next: string) {
+    if (which === 'start') startTimeText = next;
+    else endTimeText = next;
+    if (next && !parseTimeValue(next)) {
+      error = wpl.t('invalidTime');
+      return;
+    }
+    emit(startText, endText, which === 'start' ? next : startTimeText, which === 'end' ? next : endTimeText);
   }
 
   function commit(which: 'start' | 'end', next: string) {
@@ -61,11 +107,13 @@
     if (!awaitingEnd || !startText || endText) {
       startText = iso;
       endText = '';
+      if (showTime) endTimeText = '';
       start = iso;
       end = '';
+      if (showTime) endTime = '';
       awaitingEnd = true;
       error = '';
-      onchange?.({ start: iso, end: '' });
+      onchange?.(showTime ? { start: iso, end: '', startTime: startTimeText, endTime: '' } : { start: iso, end: '' });
       picked = null;
       return;
     }
@@ -105,6 +153,34 @@
     </div>
     <IconButton label={wpl.t('chooseDate')} onclick={() => (open = !open)}>▦</IconButton>
   </div>
+  {#if showTime}
+    <div class="wpl-date-row">
+      <div class="wpl-field wpl-time">
+        <label class="wpl-label" for="{startId}-start-time">{wpl.t('startTime')}</label>
+        <input
+          id="{startId}-start-time"
+          class="wpl-input"
+          value={startTimeText}
+          placeholder="HH:mm"
+          inputmode="numeric"
+          aria-invalid={error ? true : undefined}
+          oninput={(event) => commitTime('start', (event.currentTarget as HTMLInputElement).value)}
+        />
+      </div>
+      <div class="wpl-field wpl-time">
+        <label class="wpl-label" for="{startId}-end-time">{wpl.t('endTime')}</label>
+        <input
+          id="{startId}-end-time"
+          class="wpl-input"
+          value={endTimeText}
+          placeholder="HH:mm"
+          inputmode="numeric"
+          aria-invalid={error ? true : undefined}
+          oninput={(event) => commitTime('end', (event.currentTarget as HTMLInputElement).value)}
+        />
+      </div>
+    </div>
+  {/if}
   {#if error}<p class="wpl-field-error" role="alert">{error}</p>{/if}
   {#if open}
     <Calendar
@@ -119,9 +195,9 @@
   {/if}
   <p class="wpl-field-hint">
     {#if startDate && endDate}
-      {formatDate(startDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)} – {formatDate(endDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)}
+      {formatDate(startDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)}{showTime && parseTimeValue(startTimeText) ? `, ${startTimeText}` : ''} – {formatDate(endDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)}{showTime && parseTimeValue(endTimeText) ? `, ${endTimeText}` : ''}
     {:else if startDate}
-      {formatDate(startDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)}
+      {formatDate(startDate, wpl.preferences.locale, { dateStyle: 'medium' }, calendar)}{showTime && parseTimeValue(startTimeText) ? `, ${startTimeText}` : ''}
     {:else}
       {wpl.t('chooseDate')}
     {/if}
