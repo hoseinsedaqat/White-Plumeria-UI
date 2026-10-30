@@ -5,58 +5,100 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember.<br />
-  Its own tokens. Its own CSS. No Tailwind required.
+  A design system you can read.<br />
+  One stylesheet, six themes, and a native adapter for the framework you already use.<br />
+  Tailwind is not required.
 </p>
 
 <p align="center">
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-3F3F46" />
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-3F3F46" />
+  <img alt="Node 22.12 or newer" src="https://img.shields.io/badge/node-%3E%3D22.12-3F3F46" />
   <img alt="Not published to npm" src="https://img.shields.io/badge/npm-not%20published-854D0E" />
 </p>
 
-The flower is the product mark: five petals, one center. The picture above is the public logo. In the components it is drawn in `currentColor`, so it follows the theme.
+<p align="center">
+  <a href="#quick-setup">Quick setup</a>
+  ·
+  <a href="#install">Install</a>
+  ·
+  <a href="#first-component">First component</a>
+  ·
+  <a href="#adapters">Adapters</a>
+  ·
+  <a href="#themes">Themes</a>
+  ·
+  <a href="#develop">Develop</a>
+</p>
 
-Packages are **not on npm**. The code samples are the API. Until a release, clone this repository.
+The flower is the product mark: five petals, one center. The picture above is the public logo. Inside an app, the `Mark` component is drawn in `currentColor`, so it follows the theme.
 
-## Start the docs
+Packages are **not on npm**. The samples below are the API. Until a release, clone this repository.
+
+## Quick setup
+
+This is the path that works today.
 
 ```bash
-pnpm install
-pnpm dev
+git clone https://github.com/hoseinsedaqat/White-Plumeria-UI.git
+cd White-Plumeria-UI
+corepack pnpm install
+corepack pnpm dev
 ```
 
-The docs app listens on `0.0.0.0:5173`. It is English. Theme, direction, and reduced motion are working controls, not pictures of a settings panel.
+Open [http://localhost:5173](http://localhost:5173). The docs app is English. Theme, direction, and reduced motion are working controls.
+
+Requirements:
+
+| Requirement    | Value                          |
+| -------------- | ------------------------------ |
+| Node           | `>= 22.12.0`                   |
+| pnpm           | `12.15.0`, via `corepack pnpm` |
+| Default branch | `test`                         |
+
+`corepack pnpm` uses the version in `packageManager`. A global `pnpm` of another version is not required.
+
+What you get after `pnpm dev`:
+
+- the catalog, with a live preview for every component
+- the theme lab, playground, and local AI studio
+- the same `wpl-` classes the adapters render
+
+To open one framework desk instead of the docs site:
 
 ```bash
-pnpm test
-pnpm --filter @white-plumeria/docs build
+corepack pnpm --filter @white-plumeria/example-react dev
 ```
 
-## Why this exists
+That desk listens on port `5174`. The other desks are listed under [Develop](#develop).
 
-Most component kits ask you to adopt their utility framework. White Plumeria does not. You import one stylesheet, pick one adapter, and keep the class names prefixed with `wpl-` so they can sit beside another system.
+## Install
 
-What you get:
+The intended install, once `@white-plumeria` exists on npm:
 
-| | |
-| --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember |
-| **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
-| **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
-| **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
-| **No paid tier** | Patterns that other libraries sell are included. No API key for basic use |
-| **Honest limits** | Unpublished. Marko tags have a tested server render. Other adapters do not claim SSR. No claimed full screen-reader audit |
+```bash
+npm install @white-plumeria/styles @white-plumeria/react
+```
 
-## Use a component
+```bash
+pnpm add @white-plumeria/styles @white-plumeria/react
+```
 
-Import the CSS once. The component names match across adapters.
+```bash
+yarn add @white-plumeria/styles @white-plumeria/react
+```
 
-### React
+Those three commands **do not work today**. Swap `react` for the adapter you use: `vue`, `svelte`, `angular`, `solid`, `preact`, `qwik`, `lit`, `alpine`, `marko`, `ember`, or `elements`. Always install `@white-plumeria/styles` with it. The stylesheet is not bundled into the adapter.
+
+Peers are the framework you already have. `@white-plumeria/styles` is also a peer, so the CSS import stays explicit.
+
+## First component
+
+Import the stylesheet once, wrap the tree in the provider, and use the catalog name.
 
 ```tsx
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/react";
-import "@white-plumeria/styles";
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/react';
+import '@white-plumeria/styles';
 
 export function Example() {
   return (
@@ -67,12 +109,59 @@ export function Example() {
 }
 ```
 
-### Vue
+The same names exist in every adapter. A button is `Button` in React, Vue, Svelte, Solid, Preact, Qwik, Marko, and Ember. Angular puts `wplButton` on a native `<button>`. Lit and the elements package use `<wpl-button>`. Alpine mounts a factory on the host.
+
+`pushToast` throws unless the node is inside the provider. That is intentional.
+
+## Adapters
+
+Each package is written for that framework. None of them wrap another adapter.
+
+| Adapter  | Package                    | You already have   | Entry               |
+| -------- | -------------------------- | ------------------ | ------------------- |
+| HTML     | `@white-plumeria/styles`   | a page             | `wpl-` classes      |
+| React    | `@white-plumeria/react`    | React 19           | `Button`            |
+| Vue      | `@white-plumeria/vue`      | Vue 3.5            | `Button`            |
+| Svelte   | `@white-plumeria/svelte`   | Svelte 5           | `Button`            |
+| Angular  | `@white-plumeria/angular`  | Angular 22         | `wplButton`         |
+| Solid    | `@white-plumeria/solid`    | Solid 1.9          | `Button`            |
+| Preact   | `@white-plumeria/preact`   | Preact 11          | `Button`            |
+| Qwik     | `@white-plumeria/qwik`     | `@qwik.dev/core` 2 | `Button`            |
+| Lit      | `@white-plumeria/lit`      | Lit 3.3            | `<wpl-button>`      |
+| Alpine   | `@white-plumeria/alpine`   | Alpine.js 3.17     | `Button({ ... })`   |
+| Marko    | `@white-plumeria/marko`    | Marko 6.4          | `<Button>`          |
+| Ember    | `@white-plumeria/ember`    | Ember 7.4          | `<Button>`          |
+| Elements | `@white-plumeria/elements` | custom elements    | a documented subset |
+
+<details>
+<summary>React</summary>
+
+React 19 hooks and controlled props. This is the adapter the docs site renders. `react` and `react-dom` are peers.
+
+```tsx
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/react';
+import '@white-plumeria/styles';
+
+export function Example() {
+  return (
+    <WhitePlumeriaProvider>
+      <Button variant="primary">Save changes</Button>
+    </WhitePlumeriaProvider>
+  );
+}
+```
+
+</details>
+
+<details>
+<summary>Vue</summary>
+
+Vue 3 render functions and `v-model`. Not a React wrapper. `vue` is a peer.
 
 ```vue
 <script setup lang="ts">
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/vue";
-import "@white-plumeria/styles";
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/vue';
+import '@white-plumeria/styles';
 </script>
 
 <template>
@@ -82,7 +171,12 @@ import "@white-plumeria/styles";
 </template>
 ```
 
-### Svelte
+</details>
+
+<details>
+<summary>Svelte</summary>
+
+Svelte 5 runes. State stays in the component file. `svelte` is a peer.
 
 ```svelte
 <script lang="ts">
@@ -95,15 +189,20 @@ import "@white-plumeria/styles";
 </WhitePlumeriaProvider>
 ```
 
-### Angular
+</details>
+
+<details>
+<summary>Angular</summary>
+
+Angular 22 standalone components and signals. `Button` is the `wplButton` attribute on a native `<button>`. Composites such as `Card` are elements: `<wpl-card>`. `@angular/core` is a peer.
 
 ```ts
-import { Component } from "@angular/core";
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/angular";
-import "@white-plumeria/styles";
+import { Component } from '@angular/core';
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/angular';
+import '@white-plumeria/styles';
 
 @Component({
-  selector: "app-example",
+  selector: 'app-example',
   imports: [WhitePlumeriaProvider, Button],
   template: `
     <wpl-provider>
@@ -114,13 +213,16 @@ import "@white-plumeria/styles";
 export class Example {}
 ```
 
-`Button` is the attribute `wplButton` on a native `<button>`. Composites such as `Card` are elements: `<wpl-card>`.
+</details>
 
-### Solid
+<details>
+<summary>Solid</summary>
+
+Solid 1.9 JSX and signals. Not the React package under another import. `solid-js` is a peer.
 
 ```tsx
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/solid";
-import "@white-plumeria/styles";
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/solid';
+import '@white-plumeria/styles';
 
 export function Example() {
   return (
@@ -131,16 +233,19 @@ export function Example() {
 }
 ```
 
-This is Solid 1.9 JSX, not a React wrapper. `solid-js` is a peer dependency.
+</details>
 
-### Preact
+<details>
+<summary>Preact</summary>
+
+Preact 11 JSX and hooks. Not a `preact/compat` wrapper around `@white-plumeria/react`. Text, range, and date fields use the DOM `input` event. `preact` is a peer.
 
 ```tsx
-import { render } from "preact";
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/preact";
-import "@white-plumeria/styles";
+import { render } from 'preact';
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/preact';
+import '@white-plumeria/styles';
 
-const root = document.getElementById("app");
+const root = document.getElementById('app');
 if (root) {
   render(
     <WhitePlumeriaProvider>
@@ -151,52 +256,67 @@ if (root) {
 }
 ```
 
-This is Preact 11 JSX and hooks, not a `preact/compat` wrapper around the React package. `preact` is a peer dependency. Text, range, and date fields use the DOM `input` event.
+</details>
 
-### Qwik
+<details>
+<summary>Qwik</summary>
+
+Qwik 2 (`@qwik.dev/core` `^2.0.0-rc.4`). Not the npm package named `qwik`, and not a React wrapper. Callbacks use the `$` suffix. Children are projected with `<Slot />`. Text, range, and date fields listen to `onInput$` and read the element from the second handler argument. Server rendering is not claimed.
 
 ```tsx
-import { component$, render } from "@qwik.dev/core";
-import { Button, WhitePlumeriaProvider } from "@white-plumeria/qwik";
-import "@white-plumeria/styles";
+import { component$, render } from '@qwik.dev/core';
+import { Button, WhitePlumeriaProvider } from '@white-plumeria/qwik';
+import '@white-plumeria/styles';
 
 export const App = component$(() => {
   return (
     <WhitePlumeriaProvider>
-      <Button onClick$={() => { document.title = "Saved · White Plumeria"; }}>Save changes</Button>
+      <Button
+        onClick$={() => {
+          document.title = 'Saved · White Plumeria';
+        }}
+      >
+        Save changes
+      </Button>
     </WhitePlumeriaProvider>
   );
 });
 
-const root = document.getElementById("app");
+const root = document.getElementById('app');
 if (root) void render(root, <App />);
 ```
 
-This is Qwik 2 (`@qwik.dev/core` 2.0.0-rc.4), not a React wrapper and not the npm package named `qwik`. Callbacks use the `$` suffix. Children are projected with `<Slot />`. `@qwik.dev/core` is a peer dependency. Text, range, and date fields listen to `onInput$` and read the element from the second handler argument. SSR is not claimed until a server render is tested.
+</details>
 
-### Lit
+<details>
+<summary>Lit</summary>
+
+Lit 3.3 custom elements in light DOM, so the global `wpl-` stylesheet applies. Call `defineWhitePlumeria()` once. It is safe to call again. Text, range, and date fields listen to `input` and emit `wpl-change`. Server rendering is not claimed. `lit` is a peer.
 
 ```ts
-import { html, render } from "lit";
-import { Button, defineWhitePlumeria } from "@white-plumeria/lit";
-import "@white-plumeria/styles";
+import { html, render } from 'lit';
+import { defineWhitePlumeria } from '@white-plumeria/lit';
+import '@white-plumeria/styles';
 
 defineWhitePlumeria();
 
-const root = document.querySelector("#app");
+const root = document.querySelector('#app');
 if (root) {
   render(html`<wpl-button variant="primary">Save changes</wpl-button>`, root);
 }
 ```
 
-This is Lit 3.3 custom elements, not a React wrapper and not `@lit/react`. Call `defineWhitePlumeria()` once. It registers the tags and is safe to call again. Components render in light DOM, so the global `wpl-` stylesheet applies. `lit` is a peer dependency. Text, range, and date fields listen to `input` and emit `wpl-change`. SSR is not claimed until a server render is tested.
+</details>
 
-### Alpine
+<details>
+<summary>Alpine</summary>
+
+Alpine.js 3.17. Not a Vue wrapper and not a wrapper around `@white-plumeria/elements`. `whitePlumeria(Alpine)` registers one `Alpine.data` factory per catalog component and is safe to call again. A factory renders into its host during `init()`. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. Server rendering is not claimed. `alpinejs` is a peer.
 
 ```ts
-import Alpine from "alpinejs";
-import { whitePlumeria } from "@white-plumeria/alpine";
-import "@white-plumeria/styles";
+import Alpine from 'alpinejs';
+import { whitePlumeria } from '@white-plumeria/alpine';
+import '@white-plumeria/styles';
 
 Alpine.plugin(whitePlumeria);
 Alpine.start();
@@ -208,9 +328,12 @@ Alpine.start();
 </div>
 ```
 
-This is Alpine.js 3.17, not a Vue wrapper and not a wrapper around `@white-plumeria/elements`. `whitePlumeria(Alpine)` registers one `Alpine.data` factory per catalog component and is safe to call again. A factory renders into its host during `init()`. `alpinejs` is a peer dependency. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. SSR is not claimed.
+</details>
 
-### Marko
+<details>
+<summary>Marko</summary>
+
+Marko 6.4 Tags API. Not a wrapper around Alpine, Vue, or `@white-plumeria/elements`. Each catalog component is a `.marko` tag. Text, range, and date fields listen through `valueChange` and emit `wpl-change`. `pushToast` throws unless the node is inside `wpl-provider`. A Node test covers the server render of Button and Provider. The other tags are client components. The desk example mounts in the browser. `marko` is a peer.
 
 ```marko
 import Button from "@white-plumeria/marko/tags/wpl-button.marko";
@@ -219,9 +342,12 @@ import "@white-plumeria/styles";
 <Button variant="primary">Save changes</Button>
 ```
 
-This is Marko 6.4 Tags API, not a wrapper around Alpine, Vue, or `@white-plumeria/elements`. Each catalog component is a `.marko` tag. `marko` is a peer dependency. Text, range, and date fields listen through `valueChange` and emit `wpl-change`. `pushToast` throws unless the node is inside `wpl-provider`. The tags render to HTML on the server; that path is covered by a Node test. The desk example mounts in the browser.
+</details>
 
-### Ember
+<details>
+<summary>Ember</summary>
+
+Ember 7.4 Glimmer components. Not a wrapper around Alpine, Vue, Marko, or `@white-plumeria/elements`. `renderComponent` mounts a component into any element. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. Server rendering is not claimed. The desk example mounts in the browser. `ember-source` and `@glimmer/component` are peers.
 
 ```gjs
 import { Button } from "@white-plumeria/ember";
@@ -232,66 +358,40 @@ import "@white-plumeria/styles";
 </template>
 ```
 
-This is Ember 7.4 with Glimmer components, not a wrapper around Alpine, Vue, Marko, or `@white-plumeria/elements`. `renderComponent` mounts a component into any element. `ember-source` is a peer dependency. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. Server rendering is not claimed. The desk example mounts in the browser.
+</details>
 
-### HTML
+<details>
+<summary>HTML and custom elements</summary>
+
+Class names work without a framework. The stylesheet does not style bare `button` or `input` elements.
 
 ```html
 <link rel="stylesheet" href="node_modules/@white-plumeria/styles/src/index.css" />
 <button class="wpl-btn wpl-btn-primary" type="button">Save changes</button>
 ```
 
-`@white-plumeria/elements` covers a documented subset as light-DOM custom elements. Dialog, DataTable, and Combobox stay in the framework adapters.
+`@white-plumeria/elements` is a smaller light-DOM set, not a second catalog: `wpl-button`, `wpl-icon-button`, `wpl-badge`, `wpl-card`, `wpl-spinner`, `wpl-progress`, `wpl-alert`, `wpl-input`, `wpl-textarea`, `wpl-select`, `wpl-checkbox`, `wpl-switch`, `wpl-dialog`, `wpl-tabs`, and `wpl-accordion`. DataTable, Combobox, and the rest of the catalog stay in the framework adapters.
 
-The intended install, once the scope exists on npm:
-
-```bash
-npm install @white-plumeria/styles @white-plumeria/react
-```
-
-That command does not work today.
-
-## Packages
-
-| Package | What it is |
-| --- | --- |
-| `@white-plumeria/tokens` | Themes, CSS variables, contrast helpers |
-| `@white-plumeria/core` | Class names, catalog, calendar, table, focus helpers |
-| `@white-plumeria/styles` | Prefixed CSS |
-| `@white-plumeria/react` | React 19 components |
-| `@white-plumeria/vue` | Vue 3 render-function components |
-| `@white-plumeria/svelte` | Svelte 5 components |
-| `@white-plumeria/angular` | Angular 22 components |
-| `@white-plumeria/solid` | Solid 1.9 components |
-| `@white-plumeria/preact` | Preact 11 components |
-| `@white-plumeria/qwik` | Qwik 2 components |
-| `@white-plumeria/lit` | Lit 3 custom elements |
-| `@white-plumeria/alpine` | Alpine.js 3.17 components |
-| `@white-plumeria/marko` | Marko 6.4 Tags API components |
-| `@white-plumeria/ember` | Ember 7.4 Glimmer components |
-| `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
-| `@white-plumeria/ai` | Local planner and theme generator. No API key |
-| `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |
-| `@white-plumeria/cli` | `wpl init`, `add`, `doctor`, `theme` |
-
-Peers are the framework you already use.
+</details>
 
 ## Themes
 
-```html
+```text
 <html data-wpl-theme="white" data-wpl-scheme="light" lang="en" dir="ltr">
 ```
 
-| Theme | Character |
-| --- | --- |
-| `white` | Default. Paper and ink |
-| `ivory` | Warm paper |
-| `ink` | Dark-first |
-| `saffron` | Warm accent |
-| `lagoon` | Cool accent |
-| `blush` | Soft accent |
+| Theme     | Character              |
+| --------- | ---------------------- |
+| `white`   | Default. Paper and ink |
+| `ivory`   | Warm paper             |
+| `ink`     | Dark-first             |
+| `saffron` | Warm accent            |
+| `lagoon`  | Cool accent            |
+| `blush`   | Soft accent            |
 
-Omit `data-wpl-scheme` to follow the system. Custom themes override `--wpl-color-*`. The same attributes color the docs site and the component previews.
+Omit `data-wpl-scheme` to follow the system. Custom themes override `--wpl-color-*`. The same attributes color the docs site and the component previews. Component chrome uses those variables. It does not keep a second hardcoded palette.
+
+`dir="rtl"` is a host-page setting. Directional icons opt in with `wpl-icon-dir`. A verification code stays left to right: a code is a sequence, not a sentence. Dates from DatePicker and DateRangePicker are Gregorian ISO strings. Optional times are 24-hour `HH:mm`, with no seconds and no timezone name.
 
 ## Motion
 
@@ -299,25 +399,94 @@ Dialog and drawer fade. The drawer slides from the logical side, so `start` and 
 
 `prefers-reduced-motion: reduce` and `data-wpl-motion="reduce"` remove those transitions. Focus, names, and escape-to-close do not depend on motion.
 
-## Direction and dates
+## Packages
 
-Set `dir="rtl"` on a host page. Directional icons opt in with `wpl-icon-dir`. Dates from DatePicker and DateRangePicker are Gregorian ISO strings. Optional times are 24-hour `HH:mm`, with no seconds and no timezone name.
+| Package                    | What it is                                           |
+| -------------------------- | ---------------------------------------------------- |
+| `@white-plumeria/tokens`   | Themes, CSS variables, contrast helpers              |
+| `@white-plumeria/core`     | Class names, catalog, calendar, table, focus helpers |
+| `@white-plumeria/styles`   | Prefixed CSS. Import this once                       |
+| `@white-plumeria/react`    | React 19 components                                  |
+| `@white-plumeria/vue`      | Vue 3.5 components                                   |
+| `@white-plumeria/svelte`   | Svelte 5 components                                  |
+| `@white-plumeria/angular`  | Angular 22 components                                |
+| `@white-plumeria/solid`    | Solid 1.9 components                                 |
+| `@white-plumeria/preact`   | Preact 11 components                                 |
+| `@white-plumeria/qwik`     | Qwik 2 components                                    |
+| `@white-plumeria/lit`      | Lit 3.3 custom elements                              |
+| `@white-plumeria/alpine`   | Alpine.js 3.17 components                            |
+| `@white-plumeria/marko`    | Marko 6.4 Tags API components                        |
+| `@white-plumeria/ember`    | Ember 7.4 Glimmer components                         |
+| `@white-plumeria/elements` | Light-DOM custom elements for the subset above       |
+| `@white-plumeria/ai`       | Local planner and theme generator. No API key        |
+| `@white-plumeria/mcp`      | Catalog MCP server. It does not call a model         |
+| `@white-plumeria/cli`      | `wpl init`, `add`, `doctor`, `theme`                 |
+
+## CLI
+
+`wpl` does not copy component source into your app.
+
+```text
+wpl init
+wpl add button --framework react
+wpl doctor
+wpl theme saffron
+```
+
+`init` writes `wpl.config.json` and prints the install command. `add` prints the package install for a catalog component. `--copy` writes a thin re-export, not a fork. `doctor` checks the Node version and the catalog. It does not claim packages are published. Unknown commands exit 2.
+
+## Develop
+
+From the repository root. If `pnpm` is not on your PATH, prefix these scripts with `corepack`.
+
+```bash
+corepack pnpm test
+corepack pnpm typecheck
+corepack pnpm lint
+corepack pnpm docs:build
+```
+
+| Command                | What it does                                 |
+| ---------------------- | -------------------------------------------- |
+| `pnpm dev`             | Docs site on `5173`                          |
+| `pnpm test`            | Adapter suites, then the shared Vitest run   |
+| `pnpm typecheck`       | `tsc` and the Svelte check, per package      |
+| `pnpm lint`            | ESLint                                       |
+| `pnpm docs:build`      | Static docs build                            |
+| `pnpm generate:tokens` | Regenerates token CSS from `packages/tokens` |
+
+Example desks alias workspace source, so they run before a publish:
+
+| Desk    | Command                                             | Port |
+| ------- | --------------------------------------------------- | ---- |
+| Docs    | `pnpm dev`                                          | 5173 |
+| React   | `pnpm --filter @white-plumeria/example-react dev`   | 5174 |
+| Vue     | `pnpm --filter @white-plumeria/example-vue dev`     | 5175 |
+| Svelte  | `pnpm --filter @white-plumeria/example-svelte dev`  | 5176 |
+| Angular | `pnpm --filter @white-plumeria/example-angular dev` | 5177 |
+| Solid   | `pnpm --filter @white-plumeria/example-solid dev`   | 5178 |
+| Preact  | `pnpm --filter @white-plumeria/example-preact dev`  | 5179 |
+| Qwik    | `pnpm --filter @white-plumeria/example-qwik dev`    | 5180 |
+| Lit     | `pnpm --filter @white-plumeria/example-lit dev`     | 5181 |
+| Alpine  | `pnpm --filter @white-plumeria/example-alpine dev`  | 5182 |
+| Marko   | `pnpm --filter @white-plumeria/example-marko dev`   | 5183 |
+| Ember   | `pnpm --filter @white-plumeria/example-ember dev`   | 5184 |
 
 ## Logo
 
-| File | Use |
-| --- | --- |
-| [logo.jpg](apps/docs/public/brand/logo.jpg) | Square public logo |
-| [social.jpg](apps/docs/public/brand/social.jpg) | Wide preview |
-| [mark.svg](apps/docs/public/brand/mark.svg) | Vector mark |
-| `Mark` component | Theme-colored mark inside an app |
+| File                                            | Use                              |
+| ----------------------------------------------- | -------------------------------- |
+| [logo.jpg](apps/docs/public/brand/logo.jpg)     | Square public logo               |
+| [social.jpg](apps/docs/public/brand/social.jpg) | Wide preview                     |
+| [mark.svg](apps/docs/public/brand/mark.svg)     | Vector mark                      |
+| `Mark` component                                | Theme-colored mark inside an app |
 
 ## Not claimed
 
 - npm publish. The `@white-plumeria` scope may still need to be created.
 - A full manual screen-reader audit. The target is WCAG 2.2 AA. Automated tests cover the critical paths only.
-- SSR. Dialogs call `showModal()` in the browser after mount.
-- A GitHub Pages deploy from the current branch. The workflow is [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
+- Server rendering for React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Ember, or the elements package. Marko has a tested server render for Button and Provider only.
+- A GitHub Pages deploy from every branch. The workflow is [`.github/workflows/pages.yml`](.github/workflows/pages.yml) and runs on `test` and `main`.
 
 ## Project
 
