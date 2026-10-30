@@ -63,5 +63,6 @@ export function componentNames(): string[] {
 
 export { angularCloseTag, angularHost, angularSelector } from './angular.ts';
 export type { AngularHost } from './angular.ts';
+export { litAttribute, litTag } from './lit.ts';
 export type { ComponentCategory, ComponentDoc, EventDoc, FrameworkExamples, PropDoc } from './types.ts';
 export { categoryLabels } from './types.ts';

@@ -142,6 +142,8 @@ export {
   angularCloseTag,
   angularHost,
   angularSelector,
+  litAttribute,
+  litTag,
   catalog,
   categoryLabels,
   componentNames,

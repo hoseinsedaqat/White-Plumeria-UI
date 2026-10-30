@@ -25,6 +25,7 @@ export interface FrameworkExamples {
   solid: string;
   preact: string;
   qwik: string;
+  lit: string;
 }
 
 export interface ComponentDoc {

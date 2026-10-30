@@ -29,6 +29,7 @@ export type PackageName =
   | 'solid'
   | 'preact'
   | 'qwik'
+  | 'lit'
   | 'elements'
   | 'ai'
   | 'mcp'

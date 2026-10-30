@@ -1,4 +1,5 @@
 import { angularCloseTag, angularOpenTag } from './angular.ts';
+import { litExample } from './lit.ts';
 import type { FrameworkExamples } from './types.ts';
 
 export function examples(
@@ -14,6 +15,7 @@ export function examples(
     solid: solidExample(name, body.react),
     preact: preactExample(name, body.react),
     qwik: qwikExample(name, body.react),
+    lit: litExample(name, body.react),
   };
 }
 

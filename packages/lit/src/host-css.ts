@@ -1,0 +1,88 @@
+export const hostCss = `/* Host box model for White Plumeria Lit elements.
+   The controls themselves use the shared wpl-* classes in light DOM.
+   These rules only correct the custom-element box. */
+
+:where(
+  wpl-provider,
+  wpl-card,
+  wpl-alert,
+  wpl-navbar,
+  wpl-container,
+  wpl-stack,
+  wpl-grid,
+  wpl-flex,
+  wpl-footer,
+  wpl-page-header,
+  wpl-responsive-layout,
+  wpl-split-pane,
+  wpl-sidebar,
+  wpl-data-table,
+  wpl-table,
+  wpl-carousel,
+  wpl-calendar,
+  wpl-date-picker,
+  wpl-date-range-picker,
+  wpl-form-field,
+  wpl-slider,
+  wpl-range-slider,
+  wpl-tabs,
+  wpl-accordion,
+  wpl-steps,
+  wpl-file-upload,
+  wpl-chart-container,
+  wpl-empty-state,
+  wpl-notification,
+  wpl-tree-view,
+  wpl-list,
+  wpl-timeline,
+  wpl-breadcrumb,
+  wpl-stat-card,
+  wpl-progress,
+  wpl-search-input,
+  wpl-password-field,
+  wpl-otp-field,
+  wpl-rating,
+  wpl-combobox,
+  wpl-context-menu,
+  wpl-dropdown-menu,
+  wpl-command-palette
+) {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:where(wpl-dialog, wpl-modal, wpl-drawer) {
+  display: contents;
+}
+
+:where(wpl-button, wpl-icon-button, wpl-badge, wpl-link, wpl-kbd, wpl-spinner, wpl-separator, wpl-divider, wpl-popover, wpl-tooltip) {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+wpl-button-group {
+  display: inline-flex;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+wpl-button-group.wpl-btn-group-joined > wpl-button .wpl-btn {
+  border-radius: 0;
+}
+
+wpl-button-group.wpl-btn-group-joined > wpl-button:first-child .wpl-btn {
+  border-start-start-radius: var(--wpl-radius-md);
+  border-end-start-radius: var(--wpl-radius-md);
+}
+
+wpl-button-group.wpl-btn-group-joined > wpl-button:last-child .wpl-btn {
+  border-start-end-radius: var(--wpl-radius-md);
+  border-end-end-radius: var(--wpl-radius-md);
+}
+
+wpl-button-group.wpl-btn-group-joined > wpl-button + wpl-button .wpl-btn {
+  margin-inline-start: -1px;
+}
+`;

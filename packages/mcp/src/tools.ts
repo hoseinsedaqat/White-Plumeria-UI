@@ -6,7 +6,7 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-const frameworks = ['html', 'react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik'] as const;
+const frameworks = ['html', 'react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit'] as const;
 type Framework = (typeof frameworks)[number];
 
 function frameworkOf(value: string | undefined): Framework {
@@ -97,7 +97,9 @@ export function getFrameworkInstallationTool(framework?: string): ToolResult {
                 ? ['styles', 'preact']
                 : target === 'qwik'
                   ? ['styles', 'qwik']
-                  : ['styles', 'react'];
+                  : target === 'lit'
+                    ? ['styles', 'lit']
+                    : ['styles', 'react'];
   return {
     text: JSON.stringify(
       {
