@@ -4,6 +4,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   moveIndex,
   readingDirection,
   stepIndex,
@@ -58,6 +59,9 @@ interface Slide {
   id?: string;
   label: string;
   content?: string;
+  caption?: string;
+  src?: string;
+  alt?: string;
 }
 
 function openDialog(kind: 'dialog' | 'drawer' | 'modal', config: Config, magic: Magic): void {
@@ -168,6 +172,7 @@ function menu(config: Config, mode: 'click' | 'context') {
       let open = false;
       let active = firstEnabledIndex(items);
       let sub: number | null = null;
+      const typeahead = { query: '', at: 0 };
       let stop: (() => void) | undefined;
       const menuId = uid('menu');
       const panel = h('div', { className: 'wpl-menu wpl-menu-panel', attrs: { id: menuId, role: 'menu', hidden: true } });
@@ -245,7 +250,18 @@ function menu(config: Config, mode: 'click' | 'context') {
           submenuOpen: sub !== null,
           hasSubmenu: menuHasSubmenu(current),
         });
-        if (!command) return;
+        if (!command) {
+          if (!open) return;
+          const pool = sub === null ? items : children;
+          const from = sub === null ? active : sub;
+          const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+          if (next === null) return;
+          event.preventDefault();
+          if (sub === null) active = next;
+          else sub = next;
+          paint();
+          return;
+        }
         event.preventDefault();
         if (command === 'open') {
           setOpen(true);
@@ -431,8 +447,19 @@ export function Carousel(config: Config = {}) {
       const viewport = h('div', { className: 'wpl-carousel-viewport' });
       const paint = () => {
         const slide = slides[index];
+        const figure = slide?.src
+          ? h('figure', { className: 'wpl-carousel-figure' }, [
+              h('img', { className: 'wpl-carousel-image', attrs: { src: slide.src, alt: slide.alt ?? slide.label ?? '' } }),
+              h('figcaption', { className: 'wpl-carousel-caption' }, [
+                h('strong', { text: slide.label }),
+                slide.caption ? h('span', { text: slide.caption }) : null,
+              ]),
+            ])
+          : null;
         viewport.replaceChildren(h('div', { className: 'wpl-carousel-slide', attrs: { 'aria-label': slide?.label } }, [
-          slide?.content ? h('div', { className: 'wpl-carousel-copy', text: slide.content }) : h('p', { className: 'wpl-carousel-copy', text: slide?.label ?? translate(this.$el, 'empty') }),
+          figure,
+          slide?.content ? h('div', { className: 'wpl-carousel-copy', text: slide.content }) : null,
+          !slide?.src && !slide?.content ? h('p', { className: 'wpl-carousel-copy', text: slide?.label ?? translate(this.$el, 'empty') }) : null,
         ]));
         previous.disabled = !config.loop && index === 0;
         next.disabled = !config.loop && index >= slides.length - 1;

@@ -4,6 +4,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -26,6 +27,7 @@ export function DropdownMenu(props: { label: string; items: MenuItem[]; onSelect
   let buttonRef: HTMLButtonElement | undefined;
   let menuRef: HTMLDivElement | undefined;
   let subRef: number | null = null;
+  const typeahead = { query: '', at: 0 };
   const menuId = createUniqueId();
   const parent = () => props.items[active()];
   const children = () => parent()?.items ?? [];
@@ -77,7 +79,17 @@ export function DropdownMenu(props: { label: string; items: MenuItem[]; onSelect
       submenuOpen: subActive() !== null,
       hasSubmenu: menuHasSubmenu(current()),
     });
-    if (!command) return;
+    if (!command) {
+      if (!open()) return;
+      const pool = subActive() === null ? props.items : children();
+      const from = subActive() === null ? active() : (subActive() ?? 0);
+      const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive() === null) setActive(next);
+      else setSubActive(next);
+      return;
+    }
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'open') {
@@ -208,6 +220,7 @@ export function ContextMenu(props: { items: MenuItem[]; onSelect?: (id: string) 
   let menuRef: HTMLDivElement | undefined;
   let rootRef: HTMLDivElement | undefined;
   let subRef: number | null = null;
+  const typeahead = { query: '', at: 0 };
   const menuId = createUniqueId();
   const label = () => props.label ?? 'Context menu';
   const parent = () => props.items[active()];
@@ -278,7 +291,17 @@ export function ContextMenu(props: { items: MenuItem[]; onSelect?: (id: string) 
       submenuOpen: subActive() !== null,
       hasSubmenu: menuHasSubmenu(current()),
     });
-    if (!command || command === 'open') return;
+    if (!command) {
+      const pool = subActive() === null ? props.items : childrenItems();
+      const from = subActive() === null ? active() : (subActive() ?? 0);
+      const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive() === null) setActive(next);
+      else setSubActive(next);
+      return;
+    }
+    if (command === 'open') return;
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'close') {

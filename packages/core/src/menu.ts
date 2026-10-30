@@ -8,7 +8,37 @@ export interface MenuNode {
 
 export type MenuMotion = 'next' | 'prev' | 'first' | 'last';
 
-export type MenuCommand = 'open' | 'close' | 'close-submenu' | 'open-submenu' | 'activate' | MenuMotion;
+export type MenuCommand = 'open' | 'close' | 'close-submenu' | 'open-submenu' | 'activate' | 'typeahead' | MenuMotion;
+
+export interface TypeaheadBuffer {
+  query: string;
+  at: number;
+}
+
+const TYPEAHEAD_WINDOW = 500;
+
+/** Prefix match for a printable key. Repeating the same letter cycles. A quick second letter narrows the prefix. */
+export function typeaheadMove(
+  buffer: TypeaheadBuffer,
+  items: readonly { label?: string; disabled?: boolean }[],
+  key: string,
+  now: number,
+  from: number,
+): number | null {
+  if (key.length !== 1 || key === ' ' || key.trim() === '') return null;
+  const letter = key.toLowerCase();
+  const recent = buffer.query.length > 0 && now - buffer.at <= TYPEAHEAD_WINDOW;
+  const query = recent && buffer.query !== letter ? `${buffer.query}${letter}` : letter;
+  buffer.query = query;
+  buffer.at = now;
+  const matches = items.flatMap((item, index) => {
+    if (item.disabled) return [];
+    return (item.label ?? '').toLowerCase().startsWith(query) ? [index] : [];
+  });
+  if (matches.length === 0) return null;
+  if (query.length === 1) return matches.find((index) => index > from) ?? matches[0] ?? null;
+  return matches[0] ?? null;
+}
 
 export function menuHasSubmenu(item: MenuNode | undefined): item is MenuNode & { items: readonly MenuNode[] } {
   return Boolean(item && !item.disabled && item.items && item.items.length > 0);

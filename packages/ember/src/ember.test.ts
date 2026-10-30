@@ -6,6 +6,7 @@ import {
   Carousel,
   components,
   DataTable,
+  Dialog,
   DateRangePicker,
   DropdownMenu,
   FileUpload,
@@ -103,6 +104,36 @@ describe('Ember adapter', () => {
     expect(events).toEqual([]);
     items.find((item) => item.textContent?.includes('Profile'))?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(events).toEqual([{ id: 'profile' }]);
+  });
+
+  it('opens a submenu from the keyboard and renders a slide image', async () => {
+    const menu = mount(DropdownMenu, {
+      label: 'Account',
+      items: [
+        { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] },
+        { id: 'profile', label: 'Profile' },
+      ],
+    });
+    const root = menu.querySelector('.wpl-menu-root') ?? menu;
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(menu.textContent).toContain('Ivory');
+
+    const carousel = mount(Carousel, {
+      label: 'Suites',
+      slides: [{ id: 'villa', label: 'Villa', src: '/villa.jpg', alt: 'Lagoon villa', caption: 'West wing' }],
+    });
+    const image = carousel.querySelector('img');
+    expect(image?.getAttribute('src')).toBe('/villa.jpg');
+    expect(image?.getAttribute('alt')).toBe('Lagoon villa');
+    expect(carousel.textContent).toContain('West wing');
+
+    const dialog = mount(Dialog, { title: 'Confirm', trigger: 'Open dialog' });
+    dialog.querySelector('button')?.click();
+    await renderSettled();
+    expect(dialog.querySelector('dialog')).not.toBeNull();
   });
 
   it('sorts a data table by the amount column', async () => {

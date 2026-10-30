@@ -1,44 +1,99 @@
+import { firstEnabledIndex, menuHasSubmenu, typeaheadMove } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
-export interface MenuItem {
+export interface Item {
   id: string;
   label: string;
   disabled?: boolean;
-  items?: MenuItem[];
+  items?: Item[];
 }
 
 export interface Input {
+  items?: Item[];
   label?: string;
-  items?: MenuItem[];
   content?: Marko.Body;
-  onSelect?: (detail: { id: string }) => void;
+  onSelect?: (id: string) => void;
 }
 
-<let/open=false>
+<let/point=(null as { x: number; y: number } | null)>
+<let/active=0>
+<let/sub=(null as number | null)>
+<let/typeahead={ query: "", at: 0 }>
+<const/items=input.items ?? []>
+<const/parent=items[active]>
+<const/children=parent?.items ?? []>
 <id/menuId/>
 
 <div/host
   class="wpl-context"
+  tabindex="0"
+  aria-label=input.label || "Context menu"
   onContextMenu(event) {
     event.preventDefault();
-    open = true;
+    point = { x: event.clientX, y: event.clientY };
+    active = firstEnabledIndex(items);
+    sub = null;
+  }
+  onKeyDown(event) {
+    if (!point) return;
+    const pool = sub === null ? items : children;
+    const from = sub === null ? active : sub;
+    const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+    if (next === null) return;
+    event.preventDefault();
+    if (sub === null) active = next;
+    else sub = next;
   }
 >
   <${input.content}/>
-  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" aria-label=input.label || "Context menu" hidden=!open>
-    <for|item| of=(input.items ?? [])>
-      <button
-        type="button"
-        class="wpl-menu-item"
-        role="menuitem"
-        disabled=Boolean(item.disabled)
-        onClick() {
-          if (item.disabled) return;
-          emit(host(), "wpl-select", { id: item.id });
-          input.onSelect?.({ id: item.id });
-          open = false;
-        }
-      >${item.label}</button>
-    </for>
-  </div>
+  <if=point>
+    <div class="wpl-menu wpl-menu-panel" id=menuId role="menu" aria-label=input.label || "Context menu">
+      <for|item, index| of=items>
+        <div class="wpl-menu-row">
+          <button
+            type="button"
+            class="wpl-menu-item"
+            role="menuitem"
+            disabled=item.disabled
+            aria-haspopup=menuHasSubmenu(item) ? "menu" : undefined
+            data-active=sub === null && index === active
+            onClick() {
+              if (item.disabled) return;
+              if (menuHasSubmenu(item)) {
+                active = index;
+                sub = firstEnabledIndex(item.items ?? []);
+                return;
+              }
+              point = null;
+              sub = null;
+              emit(host(), "wpl-select", { id: item.id });
+              input.onSelect?.(item.id);
+            }
+          >
+            ${item.label}
+          </button>
+          <if=sub !== null && index === active && menuHasSubmenu(item)>
+            <div class="wpl-menu-sub" role="menu" aria-label=item.label>
+              <for|child, childIndex| of=item.items ?? []>
+                <button
+                  type="button"
+                  class="wpl-menu-item"
+                  role="menuitem"
+                  disabled=child.disabled
+                  data-active=childIndex === sub
+                  onClick() {
+                    if (child.disabled) return;
+                    point = null;
+                    sub = null;
+                    emit(host(), "wpl-select", { id: child.id });
+                    input.onSelect?.(child.id);
+                  }
+                >${child.label}</button>
+              </for>
+            </div>
+          </if>
+        </div>
+      </for>
+    </div>
+  </if>
 </div>

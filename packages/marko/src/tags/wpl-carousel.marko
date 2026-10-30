@@ -38,9 +38,16 @@ export interface Input {
     <div class="wpl-carousel-viewport">
       <div class="wpl-carousel-slide" aria-label=slide?.label>
         <if=slide?.src>
-          <img src=slide.src alt=slide.alt || slide.label || "">
+          <figure class="wpl-carousel-figure">
+            <img class="wpl-carousel-image" src=slide.src alt=slide.alt || slide.label || "">
+            <figcaption class="wpl-carousel-caption">
+              <strong>${slide.label || ""}</strong>
+              <if=slide.caption><span>${slide.caption}</span></if>
+            </figcaption>
+          </figure>
         </if>
-        <p class="wpl-carousel-copy">${slide?.content || slide?.caption || slide?.label || ""}</p>
+        <if=slide?.content><div class="wpl-carousel-copy">${slide.content}</div></if>
+        <if=!slide?.src && !slide?.content><p class="wpl-carousel-copy">${slide?.label || ""}</p></if>
       </div>
     </div>
     <button

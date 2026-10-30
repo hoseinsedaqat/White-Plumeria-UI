@@ -14,7 +14,7 @@ export interface Input {
 <let/open=Boolean(input.open)>
 
 <div/host class="wpl-drawer-host">
-  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = !open; emit(host(), "wpl-close", { open }); input.onOpenChange?.(open); }>${input.trigger || "Open"}</button>
+  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = !open; emit(host(), open ? "wpl-open" : "wpl-close", { open }); input.onOpenChange?.(open); }>${input.trigger || "Open"}</button>
   <div class=["wpl-drawer", input.side === "start" && "wpl-drawer-start"] hidden=!open role="dialog" aria-label=input.title || "Drawer">
     <header class="wpl-dialog-header">
       <h2 class="wpl-dialog-title">${input.title || "Drawer"}</h2>

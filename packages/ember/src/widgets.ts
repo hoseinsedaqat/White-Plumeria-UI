@@ -1,17 +1,54 @@
-import { createId, message, moveIndex, stepIndex, stepState } from '@white-plumeria/core';
-import { bubble, flag, glimmer, list, localeOf, num, str, type Host } from './runtime.ts';
+import { capabilities, setModifierManager } from '@ember/modifier';
+import {
+  createId,
+  firstEnabledIndex,
+  menuCommand,
+  menuHasSubmenu,
+  message,
+  moveEnabledIndex,
+  moveIndex,
+  readingDirection,
+  stepIndex,
+  stepState,
+  typeaheadMove,
+} from '@white-plumeria/core';
+import { bubble, flag, glimmer, list, localeOf, num, registerHelper, str, type Host } from './runtime.ts';
+
+const dialogFrame = setModifierManager(
+  () => ({
+    capabilities: capabilities('3.22'),
+    createModifier() {
+      return {};
+    },
+    installModifier(_state: unknown, element: Element) {
+      if (!(element instanceof HTMLDialogElement)) return;
+      if (typeof element.showModal === 'function' && !element.open) element.showModal();
+      else element.setAttribute('open', '');
+    },
+    updateModifier() {},
+    destroyModifier(_state: unknown, element: Element) {
+      if (element instanceof HTMLDialogElement && element.open && typeof element.close === 'function') element.close();
+    },
+  }),
+  class DialogFrame {},
+);
+registerHelper('dialogFrame', dialogFrame);
 
 interface MenuItem {
   id: string;
   label?: string;
   disabled?: boolean;
   shortcut?: string;
+  items?: MenuItem[];
 }
 
 interface Slide {
   id?: string;
   label?: string;
   content?: string;
+  caption?: string;
+  src?: string;
+  alt?: string;
 }
 
 interface StepItem {
@@ -21,17 +58,96 @@ interface StepItem {
   description?: string;
 }
 
-function menuItems(value: unknown): MenuItem[] {
-  return list<MenuItem>(value).map((item) => ({
+function menuView(host: Host) {
+  const items = list<MenuItem>(host.args.items);
+  const active = num(host.state.active, 0);
+  const sub = typeof host.state.sub === 'number' ? host.state.sub : null;
+  return items.map((item, index) => ({
     id: str(item.id),
     label: str(item.label, str(item.id)),
     disabled: item.disabled === true,
     shortcut: str(item.shortcut),
+    nested: menuHasSubmenu(item),
+    popup: menuHasSubmenu(item) ? 'menu' : '',
+    expanded: menuHasSubmenu(item) && index === active && sub !== null,
+    children: (item.items ?? []).map((child) => ({
+      id: str(child.id),
+      label: str(child.label, str(child.id)),
+      disabled: child.disabled === true,
+    })),
   }));
 }
 
+function menuKey(host: Host, event: Event, closeOnLeaf: boolean): void {
+  const keyEvent = event as KeyboardEvent;
+  const items = list<MenuItem>(host.args.items);
+  const active = num(host.state.active, 0);
+  const sub = typeof host.state.sub === 'number' ? host.state.sub : null;
+  const parent = items[active];
+  const children = parent?.items ?? [];
+  const current = sub === null ? parent : children[sub];
+  const command = menuCommand({
+    key: keyEvent.key,
+    direction: readingDirection(keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null),
+    open: Boolean(host.state.open),
+    submenuOpen: sub !== null,
+    hasSubmenu: menuHasSubmenu(current),
+  });
+  const buffer = (host.state.typeahead ?? { query: '', at: 0 }) as { query: string; at: number };
+  host.state.typeahead = buffer;
+  if (!command) {
+    if (!host.state.open) return;
+    const pool = sub === null ? items : children;
+    const from = sub === null ? active : sub;
+    const next = typeaheadMove(buffer, pool, keyEvent.key, Date.now(), from);
+    if (next === null) return;
+    keyEvent.preventDefault();
+    if (sub === null) host.state.active = next;
+    else host.state.sub = next;
+    return;
+  }
+  keyEvent.preventDefault();
+  if (command === 'open') {
+    host.state.open = true;
+    host.state.active = firstEnabledIndex(items);
+    host.state.sub = null;
+    return;
+  }
+  if (command === 'close') {
+    host.state.open = false;
+    host.state.sub = null;
+    return;
+  }
+  if (command === 'close-submenu') {
+    host.state.sub = null;
+    return;
+  }
+  if (command === 'open-submenu') {
+    host.state.open = true;
+    if (menuHasSubmenu(parent)) host.state.sub = firstEnabledIndex(parent.items);
+    return;
+  }
+  if (command === 'activate') {
+    if (current && !current.disabled && !menuHasSubmenu(current)) {
+      host.state.open = false;
+      host.state.sub = null;
+      if (closeOnLeaf) bubble(keyEvent, 'wpl-select', { id: current.id });
+    }
+    return;
+  }
+  if (!host.state.open) {
+    host.state.open = true;
+    host.state.active = firstEnabledIndex(items);
+    host.state.sub = null;
+    return;
+  }
+  if (command === 'typeahead') return;
+  if (sub === null) host.state.active = moveEnabledIndex(items, active, command);
+  else host.state.sub = moveEnabledIndex(children, sub, command);
+}
+
 export const Dialog = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<div class="wpl-dialog" role="dialog" aria-modal="true" aria-labelledby={{this.titleId}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</div>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</dialog>{{/if}}</div>`,
   {
     state: () => ({ open: false, titleId: createId('dialog') }),
     getters: {
@@ -46,6 +162,7 @@ export const Dialog = glimmer(
         bubble(event as Event, 'wpl-open', { open: true });
       },
       close(event) {
+        (event as Event).preventDefault();
         this.state.open = false;
         bubble(event as Event, 'wpl-close', { open: false });
       },
@@ -58,12 +175,13 @@ export const Dialog = glimmer(
 );
 
 export const Modal = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<div class="wpl-dialog" role="dialog" aria-modal="true"><header class="wpl-dialog-header"><h2 class="wpl-dialog-title">{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></div>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></dialog>{{/if}}</div>`,
   {
-    state: () => ({ open: false }),
+    state: () => ({ open: false, titleId: createId('modal') }),
     getters: {
       trigger: (host) => str(host.args.trigger, str(host.args.label, 'Open')),
       title: (host) => str(host.args.title, 'Modal'),
+      titleId: (host) => str(host.state.titleId),
       openState: (host) => Boolean(host.state.open),
     },
     methods: {
@@ -72,6 +190,7 @@ export const Modal = glimmer(
         bubble(event as Event, 'wpl-open', { open: true });
       },
       close(event) {
+        (event as Event).preventDefault();
         this.state.open = false;
         bubble(event as Event, 'wpl-close', { open: false });
       },
@@ -142,51 +261,76 @@ export const Tooltip = glimmer(
 );
 
 export const DropdownMenu = glimmer(
-  `<div class="wpl-menu-root"><button type="button" class="wpl-btn wpl-btn-secondary" aria-haspopup="menu" aria-expanded={{this.expanded}} aria-controls={{this.menuId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu">{{#each this.items as |item|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.shortcut}}<span class="wpl-menu-shortcut">{{item.shortcut}}</span>{{/if}}</button>{{/each}}</div>{{/if}}</div>`,
+  `<div class="wpl-menu-root" {{on "keydown" this.onKey}}><button type="button" class="wpl-btn wpl-btn-secondary" aria-haspopup="menu" aria-expanded={{this.expanded}} aria-controls={{this.menuId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} aria-haspopup={{item.popup}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}{{#if item.shortcut}}<span class="wpl-menu-shortcut">{{item.shortcut}}</span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
   {
-    state: () => ({ open: false, menuId: createId('menu') }),
+    state: () => ({ open: false, active: 0, sub: null, menuId: createId('menu'), typeahead: { query: '', at: 0 } }),
     getters: {
       label: (host) => str(host.args.label, 'Open menu'),
       menuId: (host) => str(host.state.menuId),
       openState: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
-      items: (host) => menuItems(host.args.items),
+      items: (host) => menuView(host),
     },
     methods: {
       toggle() {
         if (flag(this.args.disabled)) return;
         this.state.open = !this.state.open;
+        if (this.state.open) this.state.active = firstEnabledIndex(list<MenuItem>(this.args.items));
+        this.state.sub = null;
       },
       choose(item, event) {
-        const chosen = item as MenuItem;
+        const chosen = item as { id?: string; disabled?: boolean; nested?: boolean };
         if (chosen.disabled || flag(this.args.disabled)) return;
+        if (chosen.nested) {
+          const items = list<MenuItem>(this.args.items);
+          const index = items.findIndex((entry) => str(entry.id) === str(chosen.id));
+          this.state.active = index < 0 ? 0 : index;
+          this.state.sub = firstEnabledIndex(items[index]?.items ?? []);
+          return;
+        }
         this.state.open = false;
-        this.state.value = chosen.id;
-        bubble(event as Event, 'wpl-select', { id: chosen.id });
+        this.state.sub = null;
+        bubble(event as Event, 'wpl-select', { id: str(chosen.id) });
+      },
+      onKey(event) {
+        menuKey(this, event as Event, true);
       },
     },
   },
 );
 
 export const ContextMenu = glimmer(
-  `<div class="wpl-menu-root" {{on "contextmenu" this.open}}><span>{{this.label}}</span>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" role="menu">{{#each this.items as |item|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} {{on "click" (fn this.choose item)}}>{{item.label}}</button>{{/each}}</div>{{/if}}</div>`,
+  `<div class="wpl-menu-root" tabindex="0" {{on "contextmenu" this.open}} {{on "keydown" this.onKey}}><span>{{this.label}}</span>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} aria-haspopup={{item.popup}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
   {
-    state: () => ({ open: false }),
+    state: () => ({ open: false, active: 0, sub: null, typeahead: { query: '', at: 0 } }),
     getters: {
-      label: (host) => str(host.args.label, 'Context'),
+      label: (host) => str(host.args.label, 'Context menu'),
       openState: (host) => Boolean(host.state.open),
-      items: (host) => menuItems(host.args.items),
+      items: (host) => menuView(host),
     },
     methods: {
       open(event) {
         (event as Event).preventDefault();
         this.state.open = true;
+        this.state.active = firstEnabledIndex(list<MenuItem>(this.args.items));
+        this.state.sub = null;
       },
       choose(item, event) {
-        const chosen = item as MenuItem;
+        const chosen = item as { id?: string; disabled?: boolean; nested?: boolean };
         if (chosen.disabled) return;
+        if (chosen.nested) {
+          const items = list<MenuItem>(this.args.items);
+          const index = items.findIndex((entry) => str(entry.id) === str(chosen.id));
+          this.state.active = index < 0 ? 0 : index;
+          this.state.sub = firstEnabledIndex(items[index]?.items ?? []);
+          return;
+        }
         this.state.open = false;
-        bubble(event as Event, 'wpl-select', { id: chosen.id });
+        this.state.sub = null;
+        bubble(event as Event, 'wpl-select', { id: str(chosen.id) });
+      },
+      onKey(event) {
+        menuKey(this, event as Event, true);
       },
     },
   },
@@ -350,7 +494,7 @@ export const Steps = glimmer(
 );
 
 export const Carousel = glimmer(
-  `<div class="wpl-carousel" aria-roledescription="carousel" aria-label={{this.label}}><div class="wpl-carousel-bar"><button type="button" class="wpl-carousel-control" aria-label="Previous" disabled={{this.atStart}} {{on "click" this.previous}}>Previous</button><div class="wpl-carousel-viewport"><div class="wpl-carousel-slide" aria-label={{this.slideLabel}}><div class="wpl-carousel-copy">{{this.slideText}}</div></div></div><button type="button" class="wpl-carousel-control" aria-label="Next" disabled={{this.atEnd}} {{on "click" this.next}}>Next</button></div></div>`,
+  `<div class="wpl-carousel" aria-roledescription="carousel" aria-label={{this.label}}><div class="wpl-carousel-bar"><button type="button" class="wpl-carousel-control" aria-label="Previous" disabled={{this.atStart}} {{on "click" this.previous}}>Previous</button><div class="wpl-carousel-viewport"><div class="wpl-carousel-slide" aria-label={{this.slideLabel}}>{{#if this.slideSrc}}<figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src={{this.slideSrc}} alt={{this.slideAlt}} /><figcaption class="wpl-carousel-caption"><strong>{{this.slideLabel}}</strong>{{#if this.slideCaption}}<span>{{this.slideCaption}}</span>{{/if}}</figcaption></figure>{{/if}}{{#if this.slideCopy}}<div class="wpl-carousel-copy">{{this.slideCopy}}</div>{{/if}}{{#if this.showFallback}}<p class="wpl-carousel-copy">{{this.slideLabel}}</p>{{/if}}</div></div><button type="button" class="wpl-carousel-control" aria-label="Next" disabled={{this.atEnd}} {{on "click" this.next}}>Next</button></div></div>`,
   {
     state: () => ({ index: 0 }),
     getters: {
@@ -363,9 +507,22 @@ export const Carousel = glimmer(
       slideLabel(this: Host) {
         return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.label);
       },
-      slideText(this: Host) {
+      slideSrc(this: Host) {
+        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.src);
+      },
+      slideAlt(this: Host) {
         const slide = list<Slide>(this.args.slides)[num(this.state.index, 0)];
-        return str(slide?.content, str(slide?.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'empty')));
+        return str(slide?.alt, str(slide?.label));
+      },
+      slideCaption(this: Host) {
+        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.caption);
+      },
+      slideCopy(this: Host) {
+        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.content);
+      },
+      showFallback(this: Host) {
+        const slide = list<Slide>(this.args.slides)[num(this.state.index, 0)];
+        return !str(slide?.src) && !str(slide?.content);
       },
       atStart(this: Host) {
         return !flag(this.args.loop) && num(this.state.index, 0) === 0;

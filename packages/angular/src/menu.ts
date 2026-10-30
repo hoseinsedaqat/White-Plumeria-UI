@@ -17,6 +17,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -107,6 +108,7 @@ export class DropdownMenu {
   readonly open = signal(false);
   readonly active = signal(0);
   readonly subActive = signal<number | null>(null);
+  private readonly typeahead = { query: '', at: 0 };
   readonly menuId = createId('wpl-menu');
   private readonly trigger = viewChild<ElementRef<HTMLButtonElement>>('trigger');
   private readonly menu = viewChild<ElementRef<HTMLElement>>('menu');
@@ -196,7 +198,18 @@ export class DropdownMenu {
       submenuOpen: this.subActive() !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command) return;
+    if (!command) {
+      if (!this.open()) return;
+      const parent = this.items()[this.active()];
+      const pool = this.subActive() === null ? this.items() : (parent?.items ?? []);
+      const from = this.subActive() === null ? this.active() : (this.subActive() ?? 0);
+      const next = typeaheadMove(this.typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (this.subActive() === null) this.active.set(next);
+      else this.subActive.set(next);
+      return;
+    }
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'open') {
@@ -306,6 +319,7 @@ export class ContextMenu {
   readonly point = signal<{ x: number; y: number } | null>(null);
   readonly active = signal(0);
   readonly subActive = signal<number | null>(null);
+  private readonly typeahead = { query: '', at: 0 };
   readonly menuId = createId('wpl-context');
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly menu = viewChild<ElementRef<HTMLElement>>('menu');
@@ -414,7 +428,18 @@ export class ContextMenu {
       submenuOpen: this.subActive() !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command || command === 'open') return;
+    if (!command) {
+      const parent = this.items()[this.active()];
+      const pool = this.subActive() === null ? this.items() : (parent?.items ?? []);
+      const from = this.subActive() === null ? this.active() : (this.subActive() ?? 0);
+      const next = typeaheadMove(this.typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (this.subActive() === null) this.active.set(next);
+      else this.subActive.set(next);
+      return;
+    }
+    if (command === 'open') return;
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'close') {

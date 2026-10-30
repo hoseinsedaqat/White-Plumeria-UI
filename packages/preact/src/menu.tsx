@@ -4,6 +4,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -36,6 +37,7 @@ export function DropdownMenu({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<number | null>(null);
+  const typeahead = useRef({ query: '', at: 0 });
   const menuId = useId();
   const parent = items[active];
   const children = parent?.items ?? [];
@@ -82,7 +84,17 @@ export function DropdownMenu({
       submenuOpen: subActive !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command) return;
+    if (!command) {
+      if (!open) return;
+      const pool = subActive === null ? items : children;
+      const from = subActive === null ? active : subActive;
+      const next = typeaheadMove(typeahead.current, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive === null) setActive(next);
+      else setSubActive(next);
+      return;
+    }
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'open') {
@@ -233,6 +245,7 @@ export function ContextMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<number | null>(null);
+  const typeahead = useRef({ query: '', at: 0 });
   const menuId = useId();
   const parent = items[active];
   const childrenItems = parent?.items ?? [];
@@ -300,7 +313,17 @@ export function ContextMenu({
       submenuOpen: subActive !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command || command === 'open') return;
+    if (!command) {
+      const pool = subActive === null ? items : childrenItems;
+      const from = subActive === null ? active : subActive;
+      const next = typeaheadMove(typeahead.current, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive === null) setActive(next);
+      else setSubActive(next);
+      return;
+    }
+    if (command === 'open') return;
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'close') {
