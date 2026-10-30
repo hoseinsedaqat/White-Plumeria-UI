@@ -16,11 +16,16 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
     if (rule.pattern.test(code)) errors.push(rule.message);
   }
   const known = new Set(catalog.map((component) => component.name));
+  const markoTags = [
+    ...code.matchAll(
+      /import\s+([A-Z][A-Za-z0-9]*)\s+from\s*["']@white-plumeria\/marko\/tags\/(wpl-[a-z0-9-]+)\.marko["']/g,
+    ),
+  ];
   if (framework !== 'html') {
     const imported = code.match(/import\s*\{([^}]+)\}\s*from\s*["'](@white-plumeria\/[^"']+)["']/);
-    if (!imported) {
+    if (!imported && markoTags.length === 0) {
       errors.push('Generated code must import from an @white-plumeria package.');
-    } else if (framework === 'angular' && imported[2] !== '@white-plumeria/angular') {
+    } else if (imported && framework === 'angular' && imported[2] !== '@white-plumeria/angular') {
       errors.push('Angular examples must import @white-plumeria/angular.');
     } else if (framework === 'solid' && imported[2] !== '@white-plumeria/solid') {
       errors.push('Solid examples must import @white-plumeria/solid.');
@@ -32,14 +37,26 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Lit examples must import @white-plumeria/lit.');
     } else if (framework === 'alpine' && imported[2] !== '@white-plumeria/alpine') {
       errors.push('Alpine examples must import @white-plumeria/alpine.');
-    } else if (!imported[2]?.startsWith('@white-plumeria/')) {
+    } else if (framework === 'marko' && imported && imported[2] !== '@white-plumeria/marko') {
+      errors.push('Marko examples must import @white-plumeria/marko.');
+    } else if (imported && !imported[2]?.startsWith('@white-plumeria/')) {
       errors.push('Import source is outside the White Plumeria scope.');
     }
-    const importedNames = imported?.[1]?.split(',').map((name) => name.trim()).filter(Boolean) ?? [];
+    const importedNames =
+      imported?.[1]
+        ?.split(',')
+        .map((name) => name.trim())
+        .filter(Boolean) ?? [];
     for (const name of importedNames) {
       if (framework === 'lit' && name === 'defineWhitePlumeria') continue;
       if (framework === 'alpine' && (name === 'whitePlumeria' || name === 'pushToast')) continue;
+      if (framework === 'marko' && name === 'pushToast') continue;
       if (!known.has(name)) errors.push(`Imported name ${name} is not in the component catalog.`);
+    }
+    for (const match of markoTags) {
+      const name = match[1];
+      if (name && !known.has(name))
+        errors.push(`Imported name ${name} is not in the component catalog.`);
     }
     if (framework === 'angular') {
       if (!/\bwpl[A-Z]|\bwpl-/.test(code)) errors.push('Angular examples must use a wpl selector.');

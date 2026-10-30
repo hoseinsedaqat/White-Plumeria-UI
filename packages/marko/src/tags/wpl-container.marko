@@ -1,0 +1,5 @@
+import { containerClassName, type ContainerSize } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
+export interface Input { size?: ContainerSize; content?: Marko.Body; }
+static const sizes = ["sm", "md", "lg", "xl"] as const;
+<div class=containerClassName(oneOf(input.size, sizes, "lg"))><${input.content}/></div>

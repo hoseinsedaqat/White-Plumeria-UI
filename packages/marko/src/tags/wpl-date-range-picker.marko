@@ -1,0 +1,134 @@
+import {
+  addMonths,
+  buildMonthGrid,
+  calendarDayClass,
+  formatDate,
+  message,
+  parseIsoDate,
+  type CalendarSystem,
+} from "@white-plumeria/core";
+import { emit, oneOf } from "../emit.ts";
+import { commitRange, pickRange } from "../range-state.ts";
+
+export interface Input {
+  label?: string;
+  start?: string;
+  end?: string;
+  calendar?: CalendarSystem;
+  min?: string;
+  max?: string;
+  onChange?: (value: { start: string; end: string }) => void;
+}
+
+static const calendars = ["gregory", "persian"] as const;
+static function publish(
+  host: HTMLElement,
+  value: { start: string; end: string },
+  onChange?: (value: { start: string; end: string }) => void,
+) {
+  emit(host, "wpl-change", value);
+  onChange?.(value);
+}
+
+<let/start=input.start ?? "">
+<let/end=input.end ?? "">
+<let/error="">
+<let/anchor=parseIsoDate(input.start ?? "") ?? parseIsoDate(input.end ?? "") ?? new Date()>
+<const/calendar=oneOf(input.calendar, calendars, "gregory")>
+<const/startDate=parseIsoDate(start)>
+<const/endDate=parseIsoDate(end)>
+<const/month=buildMonthGrid({
+  anchor,
+  calendar,
+  locale: "en",
+  min: parseIsoDate(input.min ?? "") ?? undefined,
+  max: parseIsoDate(input.max ?? "") ?? undefined,
+})>
+<id/startId/>
+<id/endId/>
+<const/apply=(which: "start" | "end", next: string) => {
+  const result = commitRange(which, next, start, end);
+  start = result.start;
+  end = result.end;
+  error = result.error;
+  if (result.ok) publish(host(), { start, end }, input.onChange);
+}>
+
+<div/host class="wpl-date">
+  <span class="wpl-label">${input.label || message("en", "chooseDate")}</span>
+  <div class="wpl-date-row">
+    <div class="wpl-field">
+      <label class="wpl-label" for=startId>${message("en", "startDate")}</label>
+      <input/startInput
+        id=startId
+        class="wpl-input"
+        value=start
+        data-wpl-edge="start"
+        placeholder="YYYY-MM-DD"
+        aria-invalid=String(Boolean(error))
+        valueChange(next) { apply("start", String(next)) }
+      >
+    </div>
+    <div class="wpl-field">
+      <label class="wpl-label" for=endId>${message("en", "endDate")}</label>
+      <input/endInput
+        id=endId
+        class="wpl-input"
+        value=end
+        data-wpl-edge="end"
+        placeholder="YYYY-MM-DD"
+        aria-invalid=String(Boolean(error))
+        valueChange(next) { apply("end", String(next)) }
+      >
+    </div>
+  </div>
+  <if=error><p class="wpl-field-error" role="alert">${error}</p></if>
+  <p class="wpl-field-hint">
+    <if=(startDate && endDate)>${formatDate(startDate, "en")} – ${formatDate(endDate, "en")}</if>
+    <else if=startDate>${formatDate(startDate, "en")}</else>
+    <else>${message("en", "chooseDate")}</else>
+  </p>
+  <div class="wpl-calendar">
+    <div class="wpl-calendar-head">
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "previous") onClick() { anchor = addMonths(anchor, -1, calendar) }>‹</button>
+      <strong>${month.title}</strong>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "next") onClick() { anchor = addMonths(anchor, 1, calendar) }>›</button>
+    </div>
+    <div class="wpl-calendar-grid" role="grid" aria-label=month.title>
+      <for|day| of=month.weekdays>
+        <div class="wpl-calendar-weekday" role="columnheader">${day}</div>
+      </for>
+      <for|cell| of=month.cells>
+        <button
+          type="button"
+          class=calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: startDate, rangeEnd: endDate })
+          disabled=cell.disabled
+          aria-label=formatDate(cell.date, "en", { dateStyle: "full" }, calendar)
+          onClick() {
+            const result = pickRange(cell.date, start, end);
+            start = result.start;
+            end = result.end;
+            error = result.error;
+            anchor = result.anchor;
+            if (result.ok) publish(host(), { start, end }, input.onChange);
+          }
+        >${cell.label}</button>
+      </for>
+    </div>
+  </div>
+  <lifecycle
+    onMount() {
+      const forward = (event: Event) => {
+        const target = event.currentTarget;
+        if (target instanceof HTMLInputElement) target.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      startInput().addEventListener("change", forward);
+      endInput().addEventListener("change", forward);
+      return { forward };
+    }
+    onDestroy() {
+      startInput().removeEventListener("change", this.forward);
+      endInput().removeEventListener("change", this.forward);
+    }
+  />
+</div>

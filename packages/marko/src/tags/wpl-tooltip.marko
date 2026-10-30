@@ -1,0 +1,10 @@
+export interface Input {
+  content?: string;
+  label?: string;
+}
+
+<id/tipId/>
+<span class="wpl-tooltip-host">
+  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-describedby=tipId>${input.label || "Hint"}</button>
+  <span class="wpl-tooltip" role="tooltip" id=tipId>${input.content || ""}</span>
+</span>

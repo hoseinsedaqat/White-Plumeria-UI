@@ -1,0 +1,4 @@
+{
+  "tags-dir": "./src/tags",
+  "exports": "./src/tags"
+}

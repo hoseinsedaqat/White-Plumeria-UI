@@ -1,0 +1,4 @@
+import { gridClassName, type GridColumns } from "@white-plumeria/core";
+export interface Input { columns?: GridColumns; content?: Marko.Body; }
+<const/count=([1, 2, 3, 4] as const).includes(Number(input.columns) as GridColumns) ? Number(input.columns) as GridColumns : 2>
+<div class=gridClassName(count)><${input.content}/></div>

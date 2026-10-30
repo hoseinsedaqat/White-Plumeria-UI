@@ -1,0 +1,5 @@
+export interface Input { href?: string; label?: string; external?: boolean; content?: Marko.Body; }
+<a class="wpl-link" href=input.href || "#" target=(input.external ? "_blank" : null) rel=(input.external ? "noreferrer" : null)>
+  <if=input.label>${input.label}</if>
+  <${input.content}/>
+</a>

@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, and Alpine.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,12 +41,12 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, and Alpine |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
 | **No paid tier** | Patterns that other libraries sell are included. No API key for basic use |
-| **Honest limits** | Unpublished, no claimed SSR, no claimed full screen-reader audit |
+| **Honest limits** | Unpublished. Marko tags have a tested server render. Other adapters do not claim SSR. No claimed full screen-reader audit |
 
 ## Use a component
 
@@ -210,6 +210,17 @@ Alpine.start();
 
 This is Alpine.js 3.17, not a Vue wrapper and not a wrapper around `@white-plumeria/elements`. `whitePlumeria(Alpine)` registers one `Alpine.data` factory per catalog component and is safe to call again. A factory renders into its host during `init()`. `alpinejs` is a peer dependency. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. SSR is not claimed.
 
+### Marko
+
+```marko
+import Button from "@white-plumeria/marko/tags/wpl-button.marko";
+import "@white-plumeria/styles";
+
+<Button variant="primary">Save changes</Button>
+```
+
+This is Marko 6.4 Tags API, not a wrapper around Alpine, Vue, or `@white-plumeria/elements`. Each catalog component is a `.marko` tag. `marko` is a peer dependency. Text, range, and date fields listen through `valueChange` and emit `wpl-change`. `pushToast` throws unless the node is inside `wpl-provider`. The tags render to HTML on the server; that path is covered by a Node test. The desk example mounts in the browser.
+
 ### HTML
 
 ```html
@@ -243,6 +254,7 @@ That command does not work today.
 | `@white-plumeria/qwik` | Qwik 2 components |
 | `@white-plumeria/lit` | Lit 3 custom elements |
 | `@white-plumeria/alpine` | Alpine.js 3.17 components |
+| `@white-plumeria/marko` | Marko 6.4 Tags API components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

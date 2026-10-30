@@ -1,0 +1,7 @@
+export interface Item { id?: string; title: string; description?: string; }
+export interface Input { items?: Item[]; }
+<ol class="wpl-timeline">
+  <for|item| of=(input.items ?? [])>
+    <li><strong>${item.title}</strong><if=item.description><p>${item.description}</p></if></li>
+  </for>
+</ol>

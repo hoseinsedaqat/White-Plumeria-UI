@@ -1,0 +1,7 @@
+import { fieldClassName } from "@white-plumeria/core";
+export interface Input { label?: string; invalid?: boolean; hint?: string; content?: Marko.Body; }
+<div class=fieldClassName(Boolean(input.invalid))>
+  <if=input.label><span class="wpl-label">${input.label}</span></if>
+  <${input.content}/>
+  <if=input.hint><p class="wpl-field-hint">${input.hint}</p></if>
+</div>

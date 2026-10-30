@@ -1,0 +1,9 @@
+import { emit } from "../emit.ts";
+export interface Input { label?: string; value?: number; max?: number; name?: string; onChange?: (value: number) => void; }
+<let/value=Number(input.value ?? 0)>
+<const/max=Math.max(1, Number(input.max) || 5)>
+<div/host class="wpl-rating" role="radiogroup" aria-label=input.label || "Rating">
+  <for|n| from=1 to=max>
+    <button type="button" class="wpl-rating-star" aria-pressed=String(value === n) aria-label=`${n} of ${max}` onClick() { value = n; emit(host(), "wpl-change", { value }); input.onChange?.(value); }>${n}</button>
+  </for>
+</div>

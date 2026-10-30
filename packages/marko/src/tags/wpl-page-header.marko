@@ -1,0 +1,6 @@
+export interface Input { title?: string; description?: string; content?: Marko.Body; }
+<header class="wpl-page-header">
+  <h1 class="wpl-page-title">${input.title || "Page"}</h1>
+  <if=input.description><p class="wpl-page-description">${input.description}</p></if>
+  <${input.content}/>
+</header>

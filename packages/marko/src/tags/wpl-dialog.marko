@@ -1,0 +1,61 @@
+import { message } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Input {
+  title?: string;
+  description?: string;
+  trigger?: string;
+  confirm?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onConfirm?: () => void;
+  content?: Marko.Body;
+}
+
+<let/open=Boolean(input.open)>
+<id/titleId/>
+
+<div/host class="wpl-dialog-host">
+  <button
+    type="button"
+    class="wpl-btn wpl-btn-secondary"
+    onClick() {
+      open = true;
+      emit(host(), "wpl-close", { open: true });
+      input.onOpenChange?.(true);
+    }
+  >${input.trigger || "Open"}</button>
+  <dialog class="wpl-dialog" open=open aria-labelledby=titleId>
+    <header class="wpl-dialog-header">
+      <h2 class="wpl-dialog-title" id=titleId>${input.title || "Dialog"}</h2>
+      <button
+        type="button"
+        class="wpl-btn wpl-btn-ghost wpl-btn-sm"
+        onClick() {
+          open = false;
+          emit(host(), "wpl-close", { open: false });
+          input.onOpenChange?.(false);
+        }
+      >${message("en", "close")}</button>
+    </header>
+    <div class="wpl-dialog-body">
+      <if=input.description><p class="wpl-dialog-description">${input.description}</p></if>
+      <${input.content}/>
+    </div>
+    <if=input.confirm>
+      <footer class="wpl-dialog-footer">
+        <button
+          type="button"
+          class="wpl-btn wpl-btn-danger wpl-btn-sm"
+          onClick() {
+            emit(host(), "wpl-confirm", {});
+            input.onConfirm?.();
+            open = false;
+            emit(host(), "wpl-close", { open: false });
+            input.onOpenChange?.(false);
+          }
+        >${input.confirm}</button>
+      </footer>
+    </if>
+  </dialog>
+</div>

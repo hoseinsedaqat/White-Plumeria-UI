@@ -1,0 +1,36 @@
+import { formatNumber } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Input {
+  label?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  onChange?: (value: number) => void;
+}
+
+<let/value=Number.isFinite(input.value) ? Number(input.value) : Number(input.min ?? 0)>
+<id/sliderId/>
+
+<div/host class="wpl-field">
+  <div class="wpl-flex wpl-flex-between">
+    <label class="wpl-label" for=sliderId>${input.label || "Value"}</label>
+    <output for=sliderId>${formatNumber(value, "en")}</output>
+  </div>
+  <input
+    id=sliderId
+    class="wpl-slider"
+    type="range"
+    min=input.min ?? 0
+    max=input.max ?? 100
+    step=input.step ?? 1
+    value=value
+    aria-valuetext=formatNumber(value, "en")
+    valueChange(next) {
+      value = Number(next);
+      emit(host(), "wpl-change", { value });
+      input.onChange?.(value);
+    }
+  >
+</div>

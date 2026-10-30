@@ -1,0 +1,11 @@
+import { buttonGroupClassName } from "@white-plumeria/core";
+
+export interface Input {
+  label?: string;
+  joined?: boolean;
+  content?: Marko.Body;
+}
+
+<div role="group" aria-label=input.label || "Actions" class=buttonGroupClassName(Boolean(input.joined))>
+  <${input.content}/>
+</div>

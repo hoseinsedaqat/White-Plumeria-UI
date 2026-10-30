@@ -1,0 +1,8 @@
+import { emit } from "../emit.ts";
+export interface Input { label?: string; checked?: boolean; name?: string; onChange?: (checked: boolean) => void; }
+<let/checked=Boolean(input.checked)>
+<id/fieldId/>
+<label/host class="wpl-check" for=fieldId>
+  <input id=fieldId type="checkbox" name=input.name checked=checked checkedChange(next) { checked = Boolean(next); emit(host(), "wpl-change", { checked }); input.onChange?.(checked); }>
+  ${input.label || "Checkbox"}
+</label>

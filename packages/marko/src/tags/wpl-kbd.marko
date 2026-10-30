@@ -1,0 +1,5 @@
+export interface Input { keys?: string | string[]; label?: string; }
+<const/keys=Array.isArray(input.keys) ? input.keys : String(input.keys || input.label || "Enter").split("+").map((part) => part.trim()).filter(Boolean)>
+<span class="wpl-kbd-group">
+  <for|key| of=keys><kbd class="wpl-kbd">${key}</kbd></for>
+</span>

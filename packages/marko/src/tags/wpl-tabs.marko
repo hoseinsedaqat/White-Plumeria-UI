@@ -1,0 +1,40 @@
+import { emit } from "../emit.ts";
+
+export interface TabItem {
+  id: string;
+  label: string;
+  panel?: string;
+}
+
+export interface Input {
+  tabs?: TabItem[];
+  value?: string;
+  orientation?: "horizontal" | "vertical";
+  onValueChange?: (value: string) => void;
+}
+
+<let/value=input.value || (input.tabs ?? [])[0]?.id || "">
+<const/tabs=input.tabs ?? []>
+<id/tablistId/>
+
+<div/host class="wpl-tabs" data-orientation=input.orientation || "horizontal">
+  <div role="tablist" id=tablistId aria-orientation=input.orientation || "horizontal">
+    <for|tab| of=tabs>
+      <button
+        type="button"
+        class="wpl-tab"
+        role="tab"
+        aria-selected=String(value === tab.id)
+        tabindex=(value === tab.id ? 0 : -1)
+        onClick() {
+          value = tab.id;
+          emit(host(), "wpl-change", { value });
+          input.onValueChange?.(tab.id);
+        }
+      >${tab.label}</button>
+    </for>
+  </div>
+  <for|tab| of=tabs>
+    <div class="wpl-tab-panel" role="tabpanel" hidden=value !== tab.id>${tab.panel || ""}</div>
+  </for>
+</div>

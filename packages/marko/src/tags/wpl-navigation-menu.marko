@@ -1,0 +1,7 @@
+export interface Item { href?: string; label: string; current?: boolean; }
+export interface Input { label?: string; items?: Item[]; }
+<nav class="wpl-nav-menu" aria-label=input.label || "Navigation">
+  <for|item| of=(input.items ?? [])>
+    <a class="wpl-nav-link" href=item.href || "#" aria-current=(item.current ? "page" : null)>${item.label}</a>
+  </for>
+</nav>

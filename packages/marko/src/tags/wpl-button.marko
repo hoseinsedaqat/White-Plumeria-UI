@@ -1,0 +1,52 @@
+import { buttonClassName } from "@white-plumeria/core";
+
+export interface Input {
+  label?: string;
+  variant?: "primary" | "secondary" | "ghost" | "danger" | "link";
+  size?: "sm" | "md" | "lg";
+  appearance?: "solid" | "outline" | "soft";
+  loading?: boolean;
+  disabled?: boolean;
+  block?: boolean;
+  type?: "button" | "submit" | "reset";
+  onClick?: (event: MouseEvent) => void;
+  content?: Marko.Body;
+}
+
+static const variants = ["primary", "secondary", "ghost", "danger", "link"] as const;
+static const sizes = ["sm", "md", "lg"] as const;
+static const appearances = ["solid", "outline", "soft"] as const;
+
+<const/variant=(variants.includes(input.variant as (typeof variants)[number]) ? input.variant : "primary") || "primary">
+<const/size=(sizes.includes(input.size as (typeof sizes)[number]) ? input.size : "md") || "md">
+<const/appearance=(appearances.includes(input.appearance as (typeof appearances)[number]) ? input.appearance : "solid") || "solid">
+<const/inactive=Boolean(input.loading || input.disabled)>
+
+<button/host
+  type=input.type ?? "button"
+  class=buttonClassName({
+    variant,
+    size,
+    appearance,
+    loading: input.loading,
+    block: input.block,
+  })
+  disabled=inactive
+  aria-busy=(input.loading ? "true" : null)
+  onClick(event) {
+    if (inactive) {
+      event.preventDefault();
+      return;
+    }
+    host().dispatchEvent(
+      new CustomEvent("wpl-click", { bubbles: true, detail: { variant } }),
+    );
+    input.onClick?.(event);
+  }
+>
+  <if=input.loading>
+    <span class="wpl-spinner wpl-spinner-sm" aria-hidden="true"></span>
+  </if>
+  <if=input.label>${input.label}</if>
+  <${input.content}/>
+</button>

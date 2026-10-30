@@ -1,0 +1,10 @@
+import Toast from "./wpl-toast.marko";
+
+export interface Input {
+  title?: string;
+  description?: string;
+  variant?: "neutral" | "success" | "warning" | "danger";
+  onDismiss?: () => void;
+}
+
+<Toast title=input.title description=input.description variant=input.variant onDismiss=input.onDismiss/>

@@ -1,0 +1,14 @@
+import Dialog from "./wpl-dialog.marko";
+
+export interface Input {
+  title?: string;
+  description?: string;
+  trigger?: string;
+  confirm?: string;
+  open?: boolean;
+  content?: Marko.Body;
+}
+
+<Dialog title=input.title description=input.description trigger=input.trigger confirm=input.confirm open=input.open>
+  <${input.content}/>
+</Dialog>

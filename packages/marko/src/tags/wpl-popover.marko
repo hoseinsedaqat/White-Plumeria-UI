@@ -1,0 +1,23 @@
+import { emit } from "../emit.ts";
+
+export interface Input {
+  label?: string;
+  open?: boolean;
+  content?: Marko.Body;
+  onOpenChange?: (open: boolean) => void;
+}
+
+<let/open=Boolean(input.open)>
+
+<div/host class="wpl-popover-host">
+  <button
+    type="button"
+    class="wpl-btn wpl-btn-secondary"
+    aria-expanded=String(open)
+    aria-haspopup="dialog"
+    onClick() { open = !open; emit(host(), "wpl-close", { open }); input.onOpenChange?.(open); }
+  >${input.label || "Open"}</button>
+  <div class="wpl-popover" role="dialog" hidden=!open>
+    <${input.content}/>
+  </div>
+</div>

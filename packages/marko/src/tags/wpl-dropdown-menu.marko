@@ -1,0 +1,80 @@
+import { emit } from "../emit.ts";
+
+export interface MenuItem {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  shortcut?: string;
+  items?: MenuItem[];
+}
+
+export interface Input {
+  label?: string;
+  items?: MenuItem[];
+  onSelect?: (detail: { id: string }) => void;
+}
+
+<let/open=false>
+<let/sub=-1>
+<id/menuId/>
+<const/items=input.items ?? []>
+
+<div/host class="wpl-dropdown">
+  <button
+    type="button"
+    class="wpl-btn wpl-btn-secondary"
+    aria-haspopup="menu"
+    aria-expanded=String(open)
+    aria-controls=menuId
+    onClick() { open = !open; sub = -1; }
+    onKeyDown(event) {
+      if (event.key === "Escape") open = false;
+      if (event.key === "ArrowDown") open = true;
+    }
+  >${input.label || "Open menu"}</button>
+  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" hidden=!open>
+    <for|item, index| of=items>
+      <button
+        type="button"
+        class="wpl-menu-item"
+        role="menuitem"
+        disabled=Boolean(item.disabled)
+        aria-disabled=(item.disabled ? "true" : null)
+        aria-haspopup=(item.items?.length ? "menu" : null)
+        onClick() {
+          if (item.disabled) return;
+          if (item.items?.length) {
+            sub = index;
+            return;
+          }
+          emit(host(), "wpl-select", { id: item.id });
+          input.onSelect?.({ id: item.id });
+          open = false;
+          sub = -1;
+        }
+      >
+        ${item.label}
+        <if=item.shortcut><span class="wpl-menu-shortcut">${item.shortcut}</span></if>
+      </button>
+      <if=(item.items?.length && sub === index)>
+        <div class="wpl-menu-sub" role="menu">
+          <for|child| of=item.items>
+            <button
+              type="button"
+              class="wpl-menu-item"
+              role="menuitem"
+              disabled=Boolean(child.disabled)
+              onClick() {
+                if (child.disabled) return;
+                emit(host(), "wpl-select", { id: child.id });
+                input.onSelect?.({ id: child.id });
+                open = false;
+                sub = -1;
+              }
+            >${child.label}</button>
+          </for>
+        </div>
+      </if>
+    </for>
+  </div>
+</div>

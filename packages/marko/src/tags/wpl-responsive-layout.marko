@@ -1,0 +1,6 @@
+export interface Input { label?: string; open?: boolean; content?: Marko.Body; sidebar?: Marko.AttrTag<{ content?: Marko.Body }>; }
+<div class="wpl-responsive" data-open=Boolean(input.open)>
+  <if=input.sidebar><${input.sidebar.content}/></if>
+  <else if=input.label><nav class="wpl-sidebar" aria-label=input.label></nav></else>
+  <div class="wpl-responsive-main"><${input.content}/></div>
+</div>

@@ -27,6 +27,7 @@ export interface FrameworkExamples {
   qwik: string;
   lit: string;
   alpine: string;
+  marko: string;
 }
 
 export interface ComponentDoc {

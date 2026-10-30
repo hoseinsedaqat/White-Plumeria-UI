@@ -1,0 +1,183 @@
+import Alert from "@white-plumeria/marko/tags/wpl-alert.marko";
+import Badge from "@white-plumeria/marko/tags/wpl-badge.marko";
+import Button from "@white-plumeria/marko/tags/wpl-button.marko";
+import Carousel from "@white-plumeria/marko/tags/wpl-carousel.marko";
+import DataTable from "@white-plumeria/marko/tags/wpl-data-table.marko";
+import DateRange from "@white-plumeria/marko/tags/wpl-date-range-picker.marko";
+import Dialog from "@white-plumeria/marko/tags/wpl-dialog.marko";
+import Dropdown from "@white-plumeria/marko/tags/wpl-dropdown-menu.marko";
+import FileUpload from "@white-plumeria/marko/tags/wpl-file-upload.marko";
+import Provider from "@white-plumeria/marko/tags/wpl-provider.marko";
+import Stat from "@white-plumeria/marko/tags/wpl-stat-card.marko";
+import Steps from "@white-plumeria/marko/tags/wpl-steps.marko";
+import { pushToast } from "@white-plumeria/marko";
+
+export interface Booking {
+  id: string;
+  guest: string;
+  arrive: string;
+  nights: number;
+  amount: number;
+  status: "hold" | "confirmed" | "cancelled";
+}
+
+static const themes = ["white", "ivory", "ink", "saffron", "lagoon", "blush"] as const;
+static const money = new Intl.NumberFormat("en", { style: "currency", currency: "EUR" });
+static function labelStatus(status: string) {
+  if (status === "hold") return "Hold";
+  if (status === "confirmed") return "Confirmed";
+  return "Cancelled";
+}
+static function titleCase(value: string) {
+  return value.slice(0, 1).toUpperCase() + value.slice(1);
+}
+static function seed(): Booking[] {
+  return [
+    { id: "BK-204", guest: "North Atelier", arrive: "2026-10-03", nights: 3, amount: 840, status: "confirmed" },
+    { id: "BK-211", guest: "Paper & Pine", arrive: "2026-10-12", nights: 2, amount: 560, status: "hold" },
+    { id: "BK-218", guest: "Lagoon Press", arrive: "2026-10-18", nights: 4, amount: 1280, status: "hold" },
+    { id: "BK-226", guest: "Saffron Studio", arrive: "2026-10-27", nights: 2, amount: 640, status: "confirmed" },
+    { id: "BK-230", guest: "Ivory Goods", arrive: "2026-11-02", nights: 5, amount: 2100, status: "hold" },
+  ];
+}
+
+<let/bookings=seed()>
+<let/start="2026-10-01">
+<let/end="2026-10-31">
+<let/selected="BK-211">
+<let/note="Session not saved. Nothing leaves this tab.">
+<let/fileName="">
+<const/visible=bookings.filter((row) => (!start || row.arrive >= start) && (!end || row.arrive <= end))>
+<const/current=bookings.find((row) => row.id === selected)>
+<const/holds=visible.filter((row) => row.status === "hold").length>
+<const/total=visible.reduce((sum, row) => sum + row.amount, 0)>
+<const/stepValue=current?.status === "confirmed" ? "confirm" : "hold">
+
+<Provider persist=false theme="white" appearance="light">
+  <main/desk class="desk">
+    <header class="desk-mast">
+      <p class="desk-kicker">White Plumeria · Marko 6.4</p>
+      <h1>Atelier desk</h1>
+      <p>Bookings stay in this tab. Nothing is sent to a server.</p>
+    </header>
+    <div class="desk-themes">
+      <for|theme| of=themes>
+        <Button variant=(theme === "white" ? "primary" : "secondary") onClick() {
+          desk().dispatchEvent(new CustomEvent("wpl-theme", { bubbles: true, detail: { theme } }));
+        }>${titleCase(theme)}</Button>
+      </for>
+      <Button variant="ghost" onClick() {
+        desk().dispatchEvent(new CustomEvent("wpl-appearance", { bubbles: true, detail: { appearance: "light" } }));
+      }>Light</Button>
+      <Button variant="ghost" onClick() {
+        desk().dispatchEvent(new CustomEvent("wpl-appearance", { bubbles: true, detail: { appearance: "dark" } }));
+      }>Dark</Button>
+      <Button variant="ghost" onClick() {
+        const host = desk().closest("[data-wpl-provider]");
+        const next = host?.getAttribute("lang") === "fa" ? "en" : "fa";
+        desk().dispatchEvent(new CustomEvent("wpl-locale", { bubbles: true, detail: { locale: next } }));
+        note = next === "fa" ? "جهت صفحه راست‌به‌چپ شد." : "Session not saved. Nothing leaves this tab.";
+      }>فارسی</Button>
+    </div>
+    <Alert variant="neutral" title="Local only" description=note/>
+    <div class="desk-stats">
+      <Stat label="In window" value=visible.length hint="Rows matching the stay dates"/>
+      <Stat label="On hold" value=holds hint="Still movable"/>
+      <Stat label="Window total" value=money.format(total) hint="Not a charge"/>
+    </div>
+    <div class="desk-grid">
+      <section class="desk-panel">
+        <h2>Bookings</h2>
+        <DateRange label="Stay window" start=start end=end onChange(value) {
+          start = value.start;
+          end = value.end;
+          note = `Showing ${value.start || "any"} to ${value.end || "any"}.`;
+        }/>
+        <DataTable
+          caption="Bookings in this stay window"
+          columns=[
+            { id: "id", header: "Booking" },
+            { id: "guest", header: "Guest" },
+            { id: "arrive", header: "Arrive", sortValue: (row) => String(row.arrive) },
+            { id: "nights", header: "Nights", sortValue: (row) => Number(row.nights) },
+            { id: "amount", header: "Amount", text: (row) => money.format(Number(row.amount)), sortValue: (row) => Number(row.amount) },
+            { id: "status", header: "Status", text: (row) => labelStatus(String(row.status)) },
+          ]
+          rows=visible
+          onSelect(detail) {
+            selected = detail.id;
+            note = `${detail.id} selected.`;
+          }
+        />
+      </section>
+      <section class="desk-panel">
+        <h2>Selected stay</h2>
+        <if=current>
+          <Badge variant=(current.status === "confirmed" ? "success" : current.status === "cancelled" ? "danger" : "warning") label=labelStatus(current.status)/>
+        </if>
+        <for|step| of=[{ id: `${selected}:${stepValue}:${current?.arrive ?? ""}` }] by="id">
+          <Steps
+            label="Booking"
+            value=stepValue
+            items=[
+              { id: "hold", title: "Hold", description: "The date can still move." },
+              { id: "confirm", title: "Confirm", description: "The guest has a room." },
+              { id: "arrive", title: "Arrive", description: current ? `${current.guest} arrives ${current.arrive}.` : "Choose a row." },
+            ]
+          />
+        </for>
+        <div class="desk-actions">
+          <Dropdown
+            label="Set status"
+            items=[
+              { id: "confirmed", label: "Confirmed" },
+              { id: "hold", label: "Hold" },
+              { id: "cancelled", label: "Cancelled" },
+            ]
+            onSelect(detail) {
+              const status = detail.id === "confirmed" || detail.id === "cancelled" ? detail.id : "hold";
+              bookings = bookings.map((row) => row.id === selected ? { ...row, status } : row);
+              note = `${selected} is now ${labelStatus(status).toLowerCase()}.`;
+            }
+          />
+          <Button variant="primary" onClick() {
+            note = fileName ? `Saved with ${fileName}.` : "Saved in this tab.";
+            pushToast(desk(), { title: "Saved", description: note, variant: "success" });
+          }>Save note</Button>
+        </div>
+        <Dialog
+          title="Cancel this booking?"
+          description="The change stays in this tab. It is not sent anywhere."
+          trigger="Cancel booking"
+          confirm="Cancel booking"
+          onConfirm() {
+            bookings = bookings.map((row) => row.id === selected ? { ...row, status: "cancelled" } : row);
+            note = `${selected} cancelled in this tab.`;
+            pushToast(desk(), { title: `${selected} cancelled`, variant: "warning" });
+          }
+        />
+        <FileUpload
+          label="Floor plan"
+          accept=".pdf,application/pdf"
+          maxSize=2000000
+          onChange(detail) {
+            fileName = detail.files[0] ?? "";
+            note = fileName ? `${fileName} is ready to save.` : note;
+          }
+          onReject() {
+            note = "That file was rejected. Use a PDF under 2 MB.";
+          }
+        />
+        <Carousel
+          label="House notes"
+          slides=[
+            { id: "window", label: "Window", content: "October is the default stay window. Widen it to include November." },
+            { id: "status", label: "Status", content: "Set status from the menu. Cancel asks before it changes the row." },
+            { id: "save", label: "Save", content: "Save writes a note in this tab. It does not call a server." },
+          ]
+        />
+        <p class="desk-status">${note}</p>
+      </section>
+    </div>
+  </main>
+</Provider>

@@ -11,5 +11,7 @@ describe('mcp catalog tools', () => {
     expect(JSON.parse(checkComponentAvailabilityTool('button').text).available).toBe(true);
     expect(getFrameworkInstallationTool('alpine').text).toContain('@white-plumeria/alpine');
     expect(generateComponentExampleTool('button', 'alpine').text).toContain('whitePlumeria');
+    expect(getFrameworkInstallationTool('marko').text).toContain('@white-plumeria/marko');
+    expect(generateComponentExampleTool('button', 'marko').text).toContain('wpl-button.marko');
   });
 });

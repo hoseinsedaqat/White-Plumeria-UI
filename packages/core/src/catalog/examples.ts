@@ -1,4 +1,5 @@
 import { alpineExample } from './alpine.ts';
+import { markoExample } from './marko.ts';
 import { angularCloseTag, angularOpenTag } from './angular.ts';
 import { litExample } from './lit.ts';
 import type { FrameworkExamples } from './types.ts';
@@ -18,6 +19,7 @@ export function examples(
     qwik: qwikExample(name, body.react),
     lit: litExample(name, body.react),
     alpine: alpineExample(name, body.react),
+    marko: markoExample(name, body.react),
   };
 }
 

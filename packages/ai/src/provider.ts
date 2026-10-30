@@ -2,7 +2,19 @@ import { analyzePrompt, buildLayout, renderCode } from './plan.ts';
 import type { AIProvider, AIRequest, FrameworkId, PlanResult } from './types.ts';
 import { validateGeneratedCode } from './validate.ts';
 
-const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'alpine', 'html'];
+const frameworks: FrameworkId[] = [
+  'react',
+  'vue',
+  'svelte',
+  'angular',
+  'solid',
+  'preact',
+  'qwik',
+  'lit',
+  'alpine',
+  'marko',
+  'html',
+];
 
 export function planFromPrompt(request: AIRequest): PlanResult {
   const prompt = request.prompt.trim();
@@ -28,6 +40,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     qwik: bundle('qwik', renderCode(layout.nodes, 'qwik')),
     lit: bundle('lit', renderCode(layout.nodes, 'lit')),
     alpine: bundle('alpine', renderCode(layout.nodes, 'alpine')),
+    marko: bundle('marko', renderCode(layout.nodes, 'marko')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
@@ -40,14 +53,35 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     qwik: validateGeneratedCode(code.qwik.files[0]?.contents ?? '', 'qwik'),
     lit: validateGeneratedCode(code.lit.files[0]?.contents ?? '', 'lit'),
     alpine: validateGeneratedCode(code.alpine.files[0]?.contents ?? '', 'alpine'),
+    marko: validateGeneratedCode(code.marko.files[0]?.contents ?? '', 'marko'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };
 }
 
 function bundle(framework: FrameworkId, contents: string) {
-  const extension = framework === 'vue' ? 'vue' : framework === 'svelte' ? 'svelte' : framework === 'html' ? 'html' : framework === 'angular' || framework === 'lit' || framework === 'alpine' ? 'ts' : 'tsx';
-  const language = framework === 'html' ? 'html' : framework === 'vue' ? 'vue' : framework === 'angular' || framework === 'lit' || framework === 'alpine' ? 'ts' : 'tsx';
+  const extension =
+    framework === 'marko'
+      ? 'marko'
+      : framework === 'vue'
+        ? 'vue'
+        : framework === 'svelte'
+          ? 'svelte'
+          : framework === 'html'
+            ? 'html'
+            : framework === 'angular' || framework === 'lit' || framework === 'alpine'
+              ? 'ts'
+              : 'tsx';
+  const language =
+    framework === 'marko'
+      ? 'marko'
+      : framework === 'html'
+        ? 'html'
+        : framework === 'vue'
+          ? 'vue'
+          : framework === 'angular' || framework === 'lit' || framework === 'alpine'
+            ? 'ts'
+            : 'tsx';
   return {
     framework,
     files: [{ path: `Example.${extension}`, language, contents }],
@@ -80,7 +114,9 @@ export class HttpProvider implements AIProvider {
 
   constructor(options: HttpProviderOptions) {
     if (!options.endpoint || /api[_-]?key|secret|sk-/i.test(options.endpoint)) {
-      throw new Error('Refusing an endpoint that appears to contain a secret. Call your own backend with a relative URL.');
+      throw new Error(
+        'Refusing an endpoint that appears to contain a secret. Call your own backend with a relative URL.',
+      );
     }
     this.endpoint = options.endpoint;
     this.timeoutMs = options.timeoutMs ?? 8000;
@@ -93,7 +129,11 @@ export class HttpProvider implements AIProvider {
     const response = await this.fetchImpl(this.endpoint, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt: request.prompt, framework: request.framework, locale: request.locale }),
+      body: JSON.stringify({
+        prompt: request.prompt,
+        framework: request.framework,
+        locale: request.locale,
+      }),
       signal: combined,
     });
     if (!response.ok) {
