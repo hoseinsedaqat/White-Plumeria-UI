@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, Solid, and Preact.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, and Qwik.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, and Preact |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, and Qwik |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -153,6 +153,27 @@ if (root) {
 
 This is Preact 11 JSX and hooks, not a `preact/compat` wrapper around the React package. `preact` is a peer dependency. Text, range, and date fields use the DOM `input` event.
 
+### Qwik
+
+```tsx
+import { component$, render } from "@qwik.dev/core";
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/qwik";
+import "@white-plumeria/styles";
+
+export const App = component$(() => {
+  return (
+    <WhitePlumeriaProvider>
+      <Button onClick$={() => { document.title = "Saved · White Plumeria"; }}>Save changes</Button>
+    </WhitePlumeriaProvider>
+  );
+});
+
+const root = document.getElementById("app");
+if (root) void render(root, <App />);
+```
+
+This is Qwik 2 (`@qwik.dev/core` 2.0.0-rc.4), not a React wrapper and not the npm package named `qwik`. Callbacks use the `$` suffix. Children are projected with `<Slot />`. `@qwik.dev/core` is a peer dependency. Text, range, and date fields listen to `onInput$` and read the element from the second handler argument. SSR is not claimed until a server render is tested.
+
 ### HTML
 
 ```html
@@ -183,6 +204,7 @@ That command does not work today.
 | `@white-plumeria/angular` | Angular 22 components |
 | `@white-plumeria/solid` | Solid 1.9 components |
 | `@white-plumeria/preact` | Preact 11 components |
+| `@white-plumeria/qwik` | Qwik 2 components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

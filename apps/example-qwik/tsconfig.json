@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@qwik.dev/core",
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@white-plumeria/qwik": ["../../packages/qwik/src/index.ts"],
+      "@white-plumeria/core": ["../../packages/core/src/index.ts"],
+      "@white-plumeria/tokens": ["../../packages/tokens/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

@@ -28,6 +28,7 @@ export type PackageName =
   | 'angular'
   | 'solid'
   | 'preact'
+  | 'qwik'
   | 'elements'
   | 'ai'
   | 'mcp'

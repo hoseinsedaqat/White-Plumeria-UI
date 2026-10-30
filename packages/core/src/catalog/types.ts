@@ -24,6 +24,7 @@ export interface FrameworkExamples {
   angular: string;
   solid: string;
   preact: string;
+  qwik: string;
 }
 
 export interface ComponentDoc {

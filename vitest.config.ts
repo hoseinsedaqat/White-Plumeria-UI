@@ -38,7 +38,7 @@ export default defineConfig({
       'apps/docs/src/**/*.test.ts',
       'apps/docs/src/**/*.test.tsx',
     ],
-    exclude: ['**/dist/**', '**/node_modules/**', 'packages/solid/**', 'packages/preact/**'],
+    exclude: ['**/dist/**', '**/node_modules/**', 'packages/solid/**', 'packages/preact/**', 'packages/qwik/**'],
     setupFiles: ['./tests/setup.ts'],
   },
 });

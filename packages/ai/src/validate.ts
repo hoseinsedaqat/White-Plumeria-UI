@@ -26,6 +26,8 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Solid examples must import @white-plumeria/solid.');
     } else if (framework === 'preact' && imported[2] !== '@white-plumeria/preact') {
       errors.push('Preact examples must import @white-plumeria/preact.');
+    } else if (framework === 'qwik' && imported[2] !== '@white-plumeria/qwik') {
+      errors.push('Qwik examples must import @white-plumeria/qwik.');
     } else if (!imported[2]?.startsWith('@white-plumeria/')) {
       errors.push('Import source is outside the White Plumeria scope.');
     }
