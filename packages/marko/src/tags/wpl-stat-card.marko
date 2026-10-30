@@ -1,0 +1,6 @@
+export interface Input { label?: string; value?: string | number; hint?: string; }
+<article class="wpl-stat">
+  <p class="wpl-stat-label">${input.label || "Stat"}</p>
+  <p class="wpl-stat-value">${input.value ?? "0"}</p>
+  <if=input.hint><p class="wpl-muted">${input.hint}</p></if>
+</article>

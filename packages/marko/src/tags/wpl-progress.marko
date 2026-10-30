@@ -1,0 +1,5 @@
+export interface Input { label?: string; value?: number; }
+<const/value=Math.min(100, Math.max(0, Number(input.value) || 0))>
+<div class="wpl-progress" role="progressbar" aria-label=input.label || "Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow=value>
+  <span class="wpl-progress-bar" style=`inline-size:${value}%`></span>
+</div>

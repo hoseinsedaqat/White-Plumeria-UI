@@ -5,3 +5,4 @@ pnpm-lock.yaml
 apps/docs/public/llms.txt
 apps/docs/public/llms-full.txt
 packages/styles/src/generated
+*.marko

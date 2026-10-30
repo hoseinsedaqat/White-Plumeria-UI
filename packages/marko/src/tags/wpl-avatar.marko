@@ -1,0 +1,10 @@
+import { avatarClassName, type AvatarSize } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
+export interface Input { name?: string; src?: string; size?: AvatarSize; }
+static const sizes = ["sm", "md", "lg"] as const;
+<const/name=input.name || "User">
+<const/initials=name.split(" ").map((part) => part[0] || "").join("").slice(0, 2).toUpperCase()>
+<span class=avatarClassName(oneOf(input.size, sizes, "md")) role="img" aria-label=name>
+  <if=input.src><img src=input.src alt=""></if>
+  <else>${initials}</else>
+</span>

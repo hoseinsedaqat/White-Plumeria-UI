@@ -1,0 +1,58 @@
+import { canMove, moveIndex } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Slide {
+  id?: string;
+  label?: string;
+  content?: string;
+  src?: string;
+  alt?: string;
+  caption?: string;
+}
+
+export interface Input {
+  label?: string;
+  slides?: Slide[];
+  index?: number;
+  loop?: boolean;
+  onIndexChange?: (index: number) => void;
+}
+
+<let/index=Number.isFinite(input.index) ? Number(input.index) : 0>
+<const/slides=input.slides ?? []>
+<const/slide=slides[index]>
+
+<div/host class="wpl-carousel" aria-roledescription="carousel" aria-label=input.label || "Carousel" data-index=index>
+  <div class="wpl-carousel-bar">
+    <button
+      type="button"
+      class="wpl-carousel-control"
+      aria-label="Previous"
+      disabled=!canMove(index, -1, slides.length, Boolean(input.loop))
+      onClick() {
+        index = moveIndex(index, -1, slides.length, Boolean(input.loop));
+        emit(host(), "wpl-change", { index });
+        input.onIndexChange?.(index);
+      }
+    >‹</button>
+    <div class="wpl-carousel-viewport">
+      <div class="wpl-carousel-slide" aria-label=slide?.label>
+        <if=slide?.src>
+          <img src=slide.src alt=slide.alt || slide.label || "">
+        </if>
+        <p class="wpl-carousel-copy">${slide?.content || slide?.caption || slide?.label || ""}</p>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="wpl-carousel-control"
+      aria-label="Next"
+      disabled=!canMove(index, 1, slides.length, Boolean(input.loop))
+      onClick() {
+        index = moveIndex(index, 1, slides.length, Boolean(input.loop));
+        emit(host(), "wpl-change", { index });
+        input.onIndexChange?.(index);
+      }
+    >›</button>
+  </div>
+</div>

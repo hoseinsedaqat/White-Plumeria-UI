@@ -19,7 +19,9 @@ export function analyzePrompt(prompt: string): Analysis {
     .split(/[^\p{L}\p{N}+-]+/u)
     .map((term) => term.trim())
     .filter((term) => term.length > 1);
-  const fa = /[\u0600-\u06FF]/.test(prompt) || keywords.some((word) => ['فارسی', 'rtl', 'راست'].includes(word));
+  const fa =
+    /[\u0600-\u06FF]/.test(prompt) ||
+    keywords.some((word) => ['فارسی', 'rtl', 'راست'].includes(word));
   const dark = /(dark|night|تاریک|شب)/i.test(prompt);
   const theme = themeWords.find((item) => item.words.some((word) => lower.includes(word)))?.theme;
   const intent = detectIntent(lower);
@@ -29,7 +31,9 @@ export function analyzePrompt(prompt: string): Analysis {
     'Sample figures in previews are labeled sample data and are not live metrics.',
   ];
   if (intent === 'general') {
-    limitations.push('The prompt did not match a specialized layout, so a compact component composition is used.');
+    limitations.push(
+      'The prompt did not match a specialized layout, so a compact component composition is used.',
+    );
   }
   return {
     prompt,
@@ -45,12 +49,14 @@ export function analyzePrompt(prompt: string): Analysis {
 }
 
 function detectIntent(prompt: string): string {
-  if (/(dashboard|finance|مالی|داشبورد|تراکنش|transaction|invoice)/i.test(prompt)) return 'finance-dashboard';
+  if (/(dashboard|finance|مالی|داشبورد|تراکنش|transaction|invoice)/i.test(prompt))
+    return 'finance-dashboard';
   if (/(form|signup|login|ورود|فرم|ثبت)/i.test(prompt)) return 'form';
   if (/(settings|تنظیمات)/i.test(prompt)) return 'settings';
   if (/(empty|خالی)/i.test(prompt)) return 'empty';
   if (/(dialog|modal|گفتگو)/i.test(prompt)) return 'dialog';
-  if (/(price range|budget|range slider|slider range|two thumbs)/i.test(prompt)) return 'number-range';
+  if (/(price range|budget|range slider|slider range|two thumbs)/i.test(prompt))
+    return 'number-range';
   if (/(range|بازه|start and end|from and to)/i.test(prompt)) return 'date-range';
   if (/(calendar|date|تاریخ|تقویم)/i.test(prompt)) return 'calendar';
   return 'general';
@@ -72,7 +78,10 @@ export function buildLayout(analysis: Analysis): LayoutPlan {
 }
 
 function collect(nodes: PreviewNode[]): string[] {
-  return nodes.flatMap((node) => [node.component, ...(node.children ? collect(node.children) : [])]);
+  return nodes.flatMap((node) => [
+    node.component,
+    ...(node.children ? collect(node.children) : []),
+  ]);
 }
 
 const layouts: Record<string, PreviewNode[]> = {
@@ -85,9 +94,18 @@ const layouts: Record<string, PreviewNode[]> = {
       component: 'Grid',
       props: { columns: 3 },
       children: [
-        { component: 'StatCard', props: { label: 'Open invoices', value: '12', hint: 'Sample data' } },
-        { component: 'StatCard', props: { label: 'Due this week', value: 'EUR 4,280', hint: 'Sample data' } },
-        { component: 'StatCard', props: { label: 'Failed payments', value: '1', hint: 'Sample data' } },
+        {
+          component: 'StatCard',
+          props: { label: 'Open invoices', value: '12', hint: 'Sample data' },
+        },
+        {
+          component: 'StatCard',
+          props: { label: 'Due this week', value: 'EUR 4,280', hint: 'Sample data' },
+        },
+        {
+          component: 'StatCard',
+          props: { label: 'Failed payments', value: '1', hint: 'Sample data' },
+        },
       ],
     },
     {
@@ -135,14 +153,34 @@ const layouts: Record<string, PreviewNode[]> = {
     { component: 'Calendar', props: { calendar: 'gregory' } },
   ],
   'date-range': [
-    { component: 'DateRangePicker', props: { label: 'Stay', start: '2026-10-12', end: '2026-10-18', showTime: true, startTime: '09:00', endTime: '18:00' } },
+    {
+      component: 'DateRangePicker',
+      props: {
+        label: 'Stay',
+        start: '2026-10-12',
+        end: '2026-10-18',
+        showTime: true,
+        startTime: '09:00',
+        endTime: '18:00',
+      },
+    },
   ],
   'number-range': [
-    { component: 'RangeSlider', props: { label: 'Price', min: 0, max: 500, step: 10, start: 80, end: 320 } },
+    {
+      component: 'RangeSlider',
+      props: { label: 'Price', min: 0, max: 500, step: 10, start: 80, end: 320 },
+    },
   ],
   general: [
-    { component: 'PageHeader', props: { title: 'Composer', description: 'A small composition from the real catalog.' } },
-    { component: 'Alert', props: { variant: 'neutral', title: 'Local planner' }, text: 'No external model was called.' },
+    {
+      component: 'PageHeader',
+      props: { title: 'Composer', description: 'A small composition from the real catalog.' },
+    },
+    {
+      component: 'Alert',
+      props: { variant: 'neutral', title: 'Local planner' },
+      text: 'No external model was called.',
+    },
     { component: 'Button', props: { variant: 'primary' }, text: 'Save changes' },
     { component: 'Badge', props: { variant: 'primary' }, text: 'Catalog' },
   ],
@@ -151,11 +189,20 @@ const layouts: Record<string, PreviewNode[]> = {
 export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string {
   if (framework === 'html') return nodes.map(renderHtml).join('\n');
   if (framework === 'react') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n'));
-  if (framework === 'solid') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/solid');
-  if (framework === 'preact') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/preact');
+  if (framework === 'solid')
+    return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll(
+      '@white-plumeria/react',
+      '@white-plumeria/solid',
+    );
+  if (framework === 'preact')
+    return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll(
+      '@white-plumeria/react',
+      '@white-plumeria/preact',
+    );
   if (framework === 'qwik') return wrapQwik(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'lit') return wrapLit(nodes);
   if (framework === 'alpine') return wrapAlpine(nodes);
+  if (framework === 'marko') return wrapMarko(nodes);
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -235,6 +282,27 @@ function renderAlpine(node: PreviewNode, indent: number): string {
   return `${opening}>\n${kids.join('\n')}\n${pad}</div>`;
 }
 
+function renderMarko(node: PreviewNode, indent: number): string {
+  const pad = ' '.repeat(indent);
+  const props = propString(node.props, 'marko');
+  const kids = [
+    node.text ? `${pad}  ${node.text}` : '',
+    ...(node.children ?? []).map((child) => renderMarko(child, indent + 2)),
+  ].filter(Boolean);
+  if (!kids.length) return `${pad}<${node.component}${props}/>`;
+  return `${pad}<${node.component}${props}>\n${kids.join('\n')}\n${pad}</${node.component}>`;
+}
+
+function wrapMarko(nodes: PreviewNode[]): string {
+  const imports = names(nodes)
+    .map(
+      (name) =>
+        `import ${name} from "@white-plumeria/marko/tags/wpl-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}.marko";`,
+    )
+    .join('\n');
+  return `${imports}\nimport "@white-plumeria/styles";\n\n${nodes.map((node) => renderMarko(node, 0)).join('\n')}\n`;
+}
+
 function wrapAlpine(nodes: PreviewNode[]): string {
   const body = nodes.map((node) => renderAlpine(node, 0)).join('\n');
   return [
@@ -285,6 +353,11 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
   if (!props) return '';
   return Object.entries(props)
     .map(([key, value]) => {
+      if (framework === 'marko') {
+        if (typeof value === 'boolean') return value ? ` ${key}` : ` ${key}=false`;
+        if (typeof value === 'number') return ` ${key}=${value}`;
+        return ` ${key}="${escapeAttr(String(value))}"`;
+      }
       if (typeof value === 'boolean') {
         if (framework === 'vue') return value ? ` ${key}` : '';
         if (framework === 'angular') return value ? ` [${key}]="true"` : ` [${key}]="false"`;
@@ -294,7 +367,13 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
       if (typeof value === 'number') {
         if (framework === 'angular') return ` [${key}]="${value}"`;
         if (framework === 'lit') return ` ${litAttribute(key)}="${value}"`;
-        return framework === 'react' || framework === 'svelte' || framework === 'solid' || framework === 'preact' || framework === 'qwik' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
+        return framework === 'react' ||
+          framework === 'svelte' ||
+          framework === 'solid' ||
+          framework === 'preact' ||
+          framework === 'qwik'
+          ? ` ${key}={${value}}`
+          : ` :${kebab(key)}="${value}"`;
       }
       if (framework === 'lit') return ` ${litAttribute(key)}="${escapeAttr(String(value))}"`;
       return ` ${key}="${escapeAttr(String(value))}"`;
@@ -332,7 +411,11 @@ function kebab(value: string): string {
 }
 
 function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
+  return value.replace(
+    /[&<>"']/g,
+    (char) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char,
+  );
 }
 
 function escapeAttr(value: string): string {

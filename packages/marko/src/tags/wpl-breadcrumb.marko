@@ -1,0 +1,9 @@
+export interface Crumb { href?: string; label: string; current?: boolean; }
+export interface Input { items?: Crumb[]; }
+<nav aria-label="Breadcrumb">
+  <ol class="wpl-breadcrumb">
+    <for|item| of=(input.items ?? [])>
+      <li><a href=item.href || "#" aria-current=(item.current ? "page" : null)>${item.label}</a></li>
+    </for>
+  </ol>
+</nav>

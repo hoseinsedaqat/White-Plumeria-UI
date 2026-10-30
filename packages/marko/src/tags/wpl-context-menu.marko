@@ -1,0 +1,44 @@
+import { emit } from "../emit.ts";
+
+export interface MenuItem {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  items?: MenuItem[];
+}
+
+export interface Input {
+  label?: string;
+  items?: MenuItem[];
+  content?: Marko.Body;
+  onSelect?: (detail: { id: string }) => void;
+}
+
+<let/open=false>
+<id/menuId/>
+
+<div/host
+  class="wpl-context"
+  onContextMenu(event) {
+    event.preventDefault();
+    open = true;
+  }
+>
+  <${input.content}/>
+  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" aria-label=input.label || "Context menu" hidden=!open>
+    <for|item| of=(input.items ?? [])>
+      <button
+        type="button"
+        class="wpl-menu-item"
+        role="menuitem"
+        disabled=Boolean(item.disabled)
+        onClick() {
+          if (item.disabled) return;
+          emit(host(), "wpl-select", { id: item.id });
+          input.onSelect?.({ id: item.id });
+          open = false;
+        }
+      >${item.label}</button>
+    </for>
+  </div>
+</div>

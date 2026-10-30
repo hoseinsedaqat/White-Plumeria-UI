@@ -23,6 +23,10 @@ describe('wpl cli', () => {
     expect(alpine.code).toBe(0);
     expect(alpine.stdout).toContain('@white-plumeria/alpine');
     expect(alpine.stdout).toContain('whitePlumeria');
+    const marko = run(['add', 'button', '--framework', 'marko']);
+    expect(marko.code).toBe(0);
+    expect(marko.stdout).toContain('@white-plumeria/marko');
+    expect(marko.stdout).toContain('wpl-button.marko');
   });
 
   it('doctor fails on an old Node and theme rejects an unknown name', () => {

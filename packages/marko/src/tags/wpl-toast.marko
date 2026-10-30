@@ -1,0 +1,25 @@
+import { toastClassName } from "@white-plumeria/core";
+import { emit, oneOf } from "../emit.ts";
+
+export interface Input {
+  title?: string;
+  description?: string;
+  variant?: "neutral" | "success" | "warning" | "danger";
+  onDismiss?: () => void;
+}
+
+static const variants = ["neutral", "success", "warning", "danger"] as const;
+<const/variant=oneOf(input.variant, variants, "neutral")>
+
+<article/host class=toastClassName(variant) role=(variant === "danger" ? "alert" : "status")>
+  <strong class="wpl-toast-title">${input.title || "Notice"}</strong>
+  <if=input.description><p class="wpl-toast-description">${input.description}</p></if>
+  <button
+    type="button"
+    class="wpl-btn wpl-btn-ghost wpl-btn-sm"
+    onClick() {
+      emit(host(), "wpl-dismiss", {});
+      input.onDismiss?.();
+    }
+  >Dismiss</button>
+</article>

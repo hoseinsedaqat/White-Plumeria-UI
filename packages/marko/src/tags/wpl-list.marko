@@ -1,0 +1,7 @@
+export interface Item { id?: string; label: string; description?: string; }
+export interface Input { items?: Item[]; }
+<ul class="wpl-list">
+  <for|item| of=(input.items ?? [])>
+    <li class="wpl-list-item"><strong>${item.label}</strong><if=item.description><span>${item.description}</span></if></li>
+  </for>
+</ul>

@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  overflow-x: clip;
+}
+
+.desk {
+  width: min(72rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-block: 1.5rem 3rem;
+  display: grid;
+  gap: 1.25rem;
+  min-block-size: 100vh;
+}
+
+.desk-mast {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.desk-kicker {
+  margin: 0;
+  color: var(--wpl-color-muted, var(--wpl-color-fg-muted, inherit));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.desk h1,
+.desk h2,
+.desk p {
+  margin: 0;
+}
+
+.desk h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.1;
+}
+
+.desk-themes,
+.desk-actions,
+.desk-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.desk-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.desk-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.desk-panel {
+  min-width: 0;
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  padding: 1rem;
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
+}
+
+.desk-panel h2 {
+  font-size: 1.05rem;
+}
+
+.desk-status {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 48rem) {
+  .desk {
+    width: min(72rem, calc(100% - 3rem));
+  }
+}
+
+@media (min-width: 64rem) {
+  .desk-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  }
+}

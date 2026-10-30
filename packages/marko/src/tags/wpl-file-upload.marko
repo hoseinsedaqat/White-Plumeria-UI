@@ -1,0 +1,45 @@
+import { emit } from "../emit.ts";
+import { takeFiles } from "../files.ts";
+
+export interface Input {
+  label?: string;
+  accept?: string;
+  maxSize?: number;
+  multiple?: boolean;
+  onChange?: (detail: { files: string[] }) => void;
+  onReject?: (detail: { files: { name: string; reason: string }[] }) => void;
+}
+
+<let/names=[]>
+<let/rejected=[]>
+
+<div/host class="wpl-file">
+  <label class="wpl-file-drop">
+    ${input.label || "Choose a file"}
+    <input
+      class="wpl-file-input"
+      type="file"
+      accept=input.accept
+      multiple=input.multiple
+      onChange(_event, el) {
+        const taken = takeFiles(el.files, input.accept, Number(input.maxSize) || 0);
+        names = taken.accepted;
+        rejected = taken.rejected;
+        if (taken.accepted.length) {
+          emit(host(), "wpl-change", { files: taken.accepted });
+          input.onChange?.({ files: taken.accepted });
+        }
+        if (taken.rejected.length) {
+          emit(host(), "wpl-reject", { files: taken.rejected });
+          input.onReject?.({ files: taken.rejected });
+        }
+      }
+    >
+  </label>
+  <ul class="wpl-file-list">
+    <for|name| of=names><li class="wpl-file-item">${name}</li></for>
+  </ul>
+  <if=rejected.length>
+    <p class="wpl-field-error" role="alert">${rejected.map((item) => item.name).join(", ")}</p>
+  </if>
+</div>

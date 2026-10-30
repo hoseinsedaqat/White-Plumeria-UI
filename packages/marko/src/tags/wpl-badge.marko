@@ -1,0 +1,8 @@
+import { badgeClassName, type BadgeVariant } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
+export interface Input { label?: string; variant?: BadgeVariant; content?: Marko.Body; }
+static const variants = ["neutral", "primary", "success", "warning", "danger"] as const;
+<span class=badgeClassName(oneOf(input.variant, variants, "neutral"))>
+  <if=input.label>${input.label}</if>
+  <${input.content}/>
+</span>

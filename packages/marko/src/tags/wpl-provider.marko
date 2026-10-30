@@ -1,0 +1,23 @@
+import { mountProvider } from "../provider.ts";
+
+export interface Input {
+  theme?: string;
+  appearance?: "light" | "dark" | "system";
+  locale?: "en" | "fa";
+  direction?: "ltr" | "rtl" | "auto";
+  persist?: boolean;
+  content?: Marko.Body;
+}
+
+<div/host class="wpl-root wpl-reset wpl-provider" data-wpl-provider>
+  <${input.content}/>
+  <div class="wpl-toast-region" data-wpl-toasts role="region" aria-live="polite"></div>
+  <lifecycle
+    onMount() {
+      return { stop: mountProvider(host(), input) };
+    }
+    onDestroy() {
+      this.stop?.();
+    }
+  />
+</div>

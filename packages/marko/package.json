@@ -1,0 +1,60 @@
+{
+  "name": "@white-plumeria/marko",
+  "version": "0.1.0",
+  "description": "Marko 6 Tags API components for White Plumeria. Pair with @white-plumeria/styles.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/marko"
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/marko#readme",
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "marko", "design-system", "accessible"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "src/tags", "marko.json", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tags/*": "./src/tags/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "marko": "^6.4.0",
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@white-plumeria/styles": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@marko/testing-library": "catalog:",
+    "@marko/vite": "catalog:",
+    "happy-dom": "21.0.4",
+    "marko": "catalog:",
+    "tsdown": "0.23.2",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

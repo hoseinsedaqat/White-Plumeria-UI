@@ -1,0 +1,9 @@
+import DataTable from "./wpl-data-table.marko";
+
+export interface Input {
+  caption?: string;
+  columns?: { id: string; header: string; text?: (row: Record<string, unknown>) => string }[];
+  rows?: Record<string, unknown>[];
+}
+
+<DataTable caption=input.caption columns=input.columns rows=input.rows pageSize=0/>

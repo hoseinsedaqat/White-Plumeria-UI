@@ -1,0 +1,6 @@
+export interface Input { title?: string; description?: string; content?: Marko.Body; }
+<div class="wpl-empty">
+  <h2>${input.title || "Nothing here"}</h2>
+  <if=input.description><p>${input.description}</p></if>
+  <${input.content}/>
+</div>

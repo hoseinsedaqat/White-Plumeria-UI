@@ -1,0 +1,10 @@
+import { alertClassName, type AlertVariant } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
+export interface Input { title?: string; description?: string; variant?: AlertVariant; content?: Marko.Body; }
+static const variants = ["neutral", "info", "success", "warning", "danger"] as const;
+<const/variant=oneOf(input.variant, variants, "neutral")>
+<div class=alertClassName(variant) role=(variant === "danger" ? "alert" : "status")>
+  <strong>${input.title || "Notice"}</strong>
+  <if=input.description><p>${input.description}</p></if>
+  <${input.content}/>
+</div>

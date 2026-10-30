@@ -24,4 +24,11 @@ catalog:
   "@qwik.dev/core": 2.0.0-rc.4
   lit: 3.3.3
   alpinejs: 3.17.5
+  marko: 6.4.7
+  "@marko/vite": 6.1.13
+  "@marko/testing-library": 6.4.2
   zod: 4.6.7
+
+minimumReleaseAgeExclude:
+  - "@marko/compiler@5.42.13"
+  - marko@6.4.7

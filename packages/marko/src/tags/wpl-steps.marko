@@ -1,0 +1,44 @@
+import { stepIndex, stepState } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface StepItem {
+  id: string;
+  title: string;
+  description?: string;
+}
+
+export interface Input {
+  label?: string;
+  items?: StepItem[];
+  value?: string;
+  orientation?: "horizontal" | "vertical";
+  linear?: boolean;
+  onValueChange?: (value: string) => void;
+}
+
+<let/value=input.value || (input.items ?? [])[0]?.id || "">
+<const/items=input.items ?? []>
+<const/current=stepIndex(items, value)>
+
+<ol/host class="wpl-steps" aria-label=input.label || "Steps" data-orientation=input.orientation || "horizontal">
+  <for|item, index| of=items>
+    <li class="wpl-step" data-state=stepState(index, current)>
+      <button
+        type="button"
+        class="wpl-step-trigger"
+        aria-current=(stepState(index, current) === "current" ? "step" : null)
+        disabled=(input.linear !== false && index > current)
+        onClick() {
+          if (input.linear !== false && index > current) return;
+          value = item.id;
+          emit(host(), "wpl-change", { value });
+          input.onValueChange?.(item.id);
+        }
+      >
+        <span class="wpl-step-marker" aria-hidden="true">${index + 1}</span>
+        <span class="wpl-step-title">${item.title}</span>
+        <if=item.description><span class="wpl-step-desc">${item.description}</span></if>
+      </button>
+    </li>
+  </for>
+</ol>

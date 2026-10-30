@@ -1,0 +1,13 @@
+import { emit } from "../emit.ts";
+export interface Option { value: string; label: string; disabled?: boolean; }
+export interface Input { label?: string; name?: string; value?: string; options?: Option[]; onChange?: (value: string) => void; }
+<let/value=input.value ?? "">
+<id/nameId/>
+<div/host class="wpl-radio-group" role="radiogroup" aria-label=input.label || "Choose one">
+  <for|option| of=(input.options ?? [])>
+    <label class="wpl-radio">
+      <input type="radio" name=input.name || nameId value=option.value disabled=option.disabled checkedValue:=value onChange() { emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+      ${option.label}
+    </label>
+  </for>
+</div>

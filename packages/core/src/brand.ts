@@ -31,6 +31,7 @@ export type PackageName =
   | 'qwik'
   | 'lit'
   | 'alpine'
+  | 'marko'
   | 'elements'
   | 'ai'
   | 'mcp'

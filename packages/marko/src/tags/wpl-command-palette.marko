@@ -1,0 +1,55 @@
+import { emit } from "../emit.ts";
+
+export interface CommandItem {
+  id: string;
+  label: string;
+  group?: string;
+  keywords?: string[];
+}
+
+export interface Input {
+  open?: boolean;
+  label?: string;
+  commands?: CommandItem[];
+  onSelect?: (detail: { id: string }) => void;
+  onOpenChange?: (open: boolean) => void;
+}
+
+<let/open=Boolean(input.open)>
+<let/query="">
+<const/commands=(input.commands ?? []).filter((item) => {
+  const haystack = [item.label, item.group, ...(item.keywords ?? [])].join(" ").toLowerCase();
+  return haystack.includes(query.trim().toLowerCase());
+})>
+
+<div/host class="wpl-command-host">
+  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = true; input.onOpenChange?.(true); }>${input.label || "Commands"}</button>
+  <div class="wpl-command" role="dialog" aria-label=input.label || "Commands" hidden=!open>
+    <input
+      class="wpl-input"
+      type="search"
+      placeholder="Search commands"
+      value=query
+      valueChange(next) { query = String(next); }
+      aria-label="Search commands"
+    >
+    <ul class="wpl-list" role="listbox">
+      <for|item| of=commands>
+        <li>
+          <button
+            type="button"
+            class="wpl-menu-item"
+            role="option"
+            onClick() {
+              emit(host(), "wpl-select", { id: item.id });
+              input.onSelect?.({ id: item.id });
+              open = false;
+              input.onOpenChange?.(false);
+            }
+          >${item.label}</button>
+        </li>
+      </for>
+    </ul>
+    <if=!commands.length><p class="wpl-muted">No matching results</p></if>
+  </div>
+</div>

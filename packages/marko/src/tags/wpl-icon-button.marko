@@ -1,0 +1,31 @@
+import { iconButtonClassName, iconPaths, type IconName } from "@white-plumeria/core";
+import { emit, oneOf } from "../emit.ts";
+
+export interface Input {
+  label?: string;
+  icon?: string;
+  variant?: "primary" | "secondary" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  onClick?: (event: MouseEvent) => void;
+}
+
+static const variants = ["primary", "secondary", "ghost", "danger"] as const;
+static const sizes = ["sm", "md", "lg"] as const;
+<const/icon=(input.icon && input.icon in iconPaths ? input.icon : "plus") as IconName>
+
+<button/host
+  type="button"
+  class=iconButtonClassName({ variant: oneOf(input.variant, variants, "ghost"), size: oneOf(input.size, sizes, "md") })
+  aria-label=input.label || "Action"
+  disabled=input.disabled
+  onClick(event) {
+    if (input.disabled) return;
+    emit(host(), "wpl-click", { label: input.label || "Action" });
+    input.onClick?.(event);
+  }
+>
+  <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d=iconPaths[icon]/>
+  </svg>
+</button>

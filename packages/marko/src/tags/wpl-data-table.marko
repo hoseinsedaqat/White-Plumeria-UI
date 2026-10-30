@@ -1,0 +1,79 @@
+import { queryTable, toggleSort } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Column {
+  id: string;
+  header: string;
+  text?: (row: Record<string, unknown>) => string;
+  sortValue?: (row: Record<string, unknown>) => string | number;
+}
+
+export interface Input {
+  caption?: string;
+  columns?: Column[];
+  rows?: Record<string, unknown>[];
+  pageSize?: number;
+  onSortChange?: (detail: { sortId: string; sortDirection: "asc" | "desc" }) => void;
+  onSelect?: (detail: { id: string }) => void;
+}
+
+static function cell(column: Column, row: Record<string, unknown>): string {
+  if (typeof column.text === "function") return column.text(row);
+  const value = row[column.id];
+  return value == null ? "" : String(value);
+}
+
+<let/sortId="">
+<let/direction="asc">
+<const/columns=input.columns ?? []>
+<const/specs=columns.map((column) => ({
+  id: column.id,
+  header: column.header,
+  text: (row: Record<string, unknown>) => cell(column, row),
+  sortValue: column.sortValue,
+}))>
+<const/result=queryTable(input.rows ?? [], specs, {
+  sortId: sortId || undefined,
+  sortDirection: direction === "desc" ? "desc" : "asc",
+  pageSize: input.pageSize || undefined,
+})>
+
+<div/host class="wpl-data-table">
+  <div class="wpl-table-wrap">
+    <table class="wpl-table">
+      <if=input.caption><caption>${input.caption}</caption></if>
+      <thead>
+        <tr>
+          <for|column| of=columns>
+            <th scope="col" aria-sort=(sortId === column.id ? (direction === "desc" ? "descending" : "ascending") : "none")>
+              <button
+                type="button"
+                class="wpl-sort"
+                onClick() {
+                  const next = toggleSort({ sortId: sortId || undefined, sortDirection: direction === "desc" ? "desc" : "asc" }, column.id);
+                  sortId = next.sortId;
+                  direction = next.sortDirection;
+                  emit(host(), "wpl-sort", next);
+                  input.onSortChange?.(next);
+                }
+              >${column.header}</button>
+            </th>
+          </for>
+        </tr>
+      </thead>
+      <tbody>
+        <for|row| of=result.rows>
+          <tr onClick() {
+            const id = String(row.id ?? "");
+            emit(host(), "wpl-select", { id });
+            input.onSelect?.({ id });
+          }>
+            <for|column| of=columns>
+              <td>${cell(column, row)}</td>
+            </for>
+          </tr>
+        </for>
+      </tbody>
+    </table>
+  </div>
+</div>

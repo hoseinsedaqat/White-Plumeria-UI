@@ -1,0 +1,4 @@
+export interface Input { wrap?: boolean; justify?: "start" | "between" | "end"; content?: Marko.Body; }
+<div class=["wpl-flex", input.justify === "between" && "wpl-flex-between", input.justify === "end" && "wpl-flex-end", input.wrap && "wpl-flex-wrap"]>
+  <${input.content}/>
+</div>

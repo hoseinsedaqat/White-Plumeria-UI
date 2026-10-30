@@ -1,0 +1,7 @@
+import { cardClassName } from "@white-plumeria/core";
+export interface Input { title?: string; description?: string; content?: Marko.Body; }
+<article class=cardClassName()>
+  <h2 class="wpl-card-title">${input.title || "Card"}</h2>
+  <if=input.description><p>${input.description}</p></if>
+  <${input.content}/>
+</article>

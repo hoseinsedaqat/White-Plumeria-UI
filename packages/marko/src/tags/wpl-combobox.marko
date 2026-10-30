@@ -1,0 +1,16 @@
+import { emit } from "../emit.ts";
+export interface Option { value: string; label: string; disabled?: boolean; }
+export interface Input { label?: string; value?: string; options?: Option[]; onChange?: (value: string) => void; }
+<let/query=input.value ?? "">
+<let/open=false>
+<const/options=(input.options ?? []).filter((option) => option.label.toLowerCase().includes(query.trim().toLowerCase()))>
+<id/listId/>
+<div/host class="wpl-field">
+  <label class="wpl-label">${input.label || "Choose"}</label>
+  <input class="wpl-input" role="combobox" aria-expanded=String(open) aria-controls=listId aria-autocomplete="list" value=query valueChange(next) { query = String(next); open = true; }>
+  <ul id=listId class="wpl-menu" role="listbox" hidden=!open>
+    <for|option| of=options>
+      <li><button type="button" class="wpl-menu-item" role="option" disabled=option.disabled onClick() { if (option.disabled) return; query = option.label; open = false; emit(host(), "wpl-change", { value: option.value }); input.onChange?.(option.value); }>${option.label}</button></li>
+    </for>
+  </ul>
+</div>

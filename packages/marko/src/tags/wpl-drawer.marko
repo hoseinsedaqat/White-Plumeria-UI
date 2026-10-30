@@ -1,0 +1,28 @@
+import { message } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Input {
+  title?: string;
+  description?: string;
+  side?: "start" | "end";
+  trigger?: string;
+  open?: boolean;
+  content?: Marko.Body;
+  onOpenChange?: (open: boolean) => void;
+}
+
+<let/open=Boolean(input.open)>
+
+<div/host class="wpl-drawer-host">
+  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = !open; emit(host(), "wpl-close", { open }); input.onOpenChange?.(open); }>${input.trigger || "Open"}</button>
+  <div class=["wpl-drawer", input.side === "start" && "wpl-drawer-start"] hidden=!open role="dialog" aria-label=input.title || "Drawer">
+    <header class="wpl-dialog-header">
+      <h2 class="wpl-dialog-title">${input.title || "Drawer"}</h2>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" onClick() { open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>${message("en", "close")}</button>
+    </header>
+    <div class="wpl-dialog-body">
+      <if=input.description><p>${input.description}</p></if>
+      <${input.content}/>
+    </div>
+  </div>
+</div>

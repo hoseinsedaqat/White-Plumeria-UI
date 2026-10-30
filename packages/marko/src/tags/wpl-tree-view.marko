@@ -1,0 +1,16 @@
+export interface Node { id: string; label: string; children?: { id: string; label: string }[]; }
+export interface Input { label?: string; nodes?: Node[]; }
+<ul class="wpl-tree" role="tree" aria-label=input.label || "Tree">
+  <for|node| of=(input.nodes ?? [])>
+    <li role="treeitem" aria-expanded=(node.children?.length ? "true" : null)>
+      ${node.label}
+      <if=node.children?.length>
+        <ul role="group">
+          <for|child| of=node.children>
+            <li role="treeitem">${child.label}</li>
+          </for>
+        </ul>
+      </if>
+    </li>
+  </for>
+</ul>

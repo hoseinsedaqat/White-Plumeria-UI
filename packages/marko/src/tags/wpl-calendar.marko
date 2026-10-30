@@ -1,0 +1,21 @@
+import { addMonths, buildMonthGrid, calendarDayClass, formatDate, parseIsoDate, toIsoDate, type CalendarSystem } from "@white-plumeria/core";
+import { emit, oneOf } from "../emit.ts";
+export interface Input { value?: string; calendar?: CalendarSystem; label?: string; onChange?: (value: string) => void; }
+static const calendars = ["gregory", "persian"] as const;
+<let/selected=input.value ?? "">
+<let/anchor=parseIsoDate(input.value ?? "") ?? new Date()>
+<const/calendar=oneOf(input.calendar, calendars, "gregory")>
+<const/month=buildMonthGrid({ anchor, calendar, locale: "en" })>
+<div/host class="wpl-calendar" aria-label=input.label || month.title>
+  <div class="wpl-calendar-head">
+    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Previous" onClick() { anchor = addMonths(anchor, -1, calendar); }>‹</button>
+    <strong>${month.title}</strong>
+    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Next" onClick() { anchor = addMonths(anchor, 1, calendar); }>›</button>
+  </div>
+  <div class="wpl-calendar-grid" role="grid" aria-label=month.title>
+    <for|day| of=month.weekdays><div class="wpl-calendar-weekday" role="columnheader">${day}</div></for>
+    <for|cell| of=month.cells>
+      <button type="button" class=calendarDayClass({ inMonth: cell.inMonth, date: cell.date }) disabled=cell.disabled aria-label=formatDate(cell.date, "en", { dateStyle: "full" }, calendar) aria-selected=String(selected === toIsoDate(cell.date)) onClick() { selected = toIsoDate(cell.date); emit(host(), "wpl-change", { value: selected }); input.onChange?.(selected); }>${cell.label}</button>
+    </for>
+  </div>
+</div>

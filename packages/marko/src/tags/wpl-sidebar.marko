@@ -1,0 +1,7 @@
+export interface Item { href?: string; label: string; current?: boolean; }
+export interface Input { label?: string; items?: Item[]; }
+<nav class="wpl-sidebar" aria-label=input.label || "Sidebar">
+  <for|item| of=(input.items ?? [])>
+    <a href=item.href || "#" aria-current=(item.current ? "page" : null)>${item.label}</a>
+  </for>
+</nav>

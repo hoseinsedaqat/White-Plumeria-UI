@@ -1,0 +1,5 @@
+import { stackClassName, type StackGap } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
+export interface Input { gap?: StackGap; content?: Marko.Body; }
+static const gaps = ["sm", "md", "lg"] as const;
+<div class=stackClassName(oneOf(input.gap, gaps, "md"))><${input.content}/></div>
