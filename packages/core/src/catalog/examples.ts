@@ -13,7 +13,24 @@ export function examples(
     angular: angularExample(name, body.vue),
     solid: solidExample(name, body.react),
     preact: preactExample(name, body.react),
+    qwik: qwikExample(name, body.react),
   };
+}
+
+function qwikExample(name: string, react: string): string {
+  if (name === 'Toast') {
+    return `import { component$ } from "@qwik.dev/core";\nimport { useToast } from "@white-plumeria/qwik";\nimport "@white-plumeria/styles";\n\nexport const Example = component$(() => {\n  const toast = useToast();\n  return <button type="button" onClick$={() => toast.push({ title: "Saved", variant: "success" })}>Save</button>;\n});\n`;
+  }
+  if (name === 'ResponsiveLayout') {
+    return `import { component$ } from "@qwik.dev/core";\nimport { ResponsiveLayout, Sidebar } from "@white-plumeria/qwik";\nimport "@white-plumeria/styles";\n\nexport const Example = component$(() => {\n  return (\n    <ResponsiveLayout>\n      <Sidebar q:slot="sidebar" label="Docs" items={[]} />\n      Main\n    </ResponsiveLayout>\n  );\n});\n`;
+  }
+  if (name === 'SplitPane') {
+    return `import { component$ } from "@qwik.dev/core";\nimport { SplitPane } from "@white-plumeria/qwik";\nimport "@white-plumeria/styles";\n\nexport const Example = component$(() => {\n  return (\n    <SplitPane label="Resize editor">\n      <p q:slot="start">Notes</p>\n      <p q:slot="end">Preview</p>\n    </SplitPane>\n  );\n});\n`;
+  }
+  const body = react
+    .replace(/\bon([A-Z][A-Za-z]*)=/g, 'on$1$=')
+    .replace(/on([A-Z][A-Za-z]*)\$=\{(set[A-Za-z]+)\}/g, 'on$1$={(next) => $2(next)}');
+  return `import { component$ } from "@qwik.dev/core";\nimport { ${name} } from "@white-plumeria/qwik";\nimport "@white-plumeria/styles";\n\nexport const Example = component$(() => {\n  return (\n    ${body}\n  );\n});\n`;
 }
 
 function preactExample(name: string, react: string): string {

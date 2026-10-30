@@ -153,6 +153,7 @@ export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string
   if (framework === 'react') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'solid') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/solid');
   if (framework === 'preact') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/preact');
+  if (framework === 'qwik') return wrapQwik(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -227,11 +228,16 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
       }
       if (typeof value === 'number') {
         if (framework === 'angular') return ` [${key}]="${value}"`;
-        return framework === 'react' || framework === 'svelte' || framework === 'solid' || framework === 'preact' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
+        return framework === 'react' || framework === 'svelte' || framework === 'solid' || framework === 'preact' || framework === 'qwik' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
       }
       return ` ${key}="${escapeAttr(String(value))}"`;
     })
     .join('');
+}
+
+function wrapQwik(body: string): string {
+  const converted = body.replace(/\bon([A-Z][A-Za-z]*)=/g, 'on$1$=');
+  return `import { component$ } from "@qwik.dev/core";\nimport { ${namesFrom(body).join(', ')} } from "@white-plumeria/qwik";\nimport "@white-plumeria/styles";\n\nexport const Example = component$(() => {\n  return (\n    <>\n${converted}\n    </>\n  );\n});\n`;
 }
 
 function wrapReact(body: string): string {

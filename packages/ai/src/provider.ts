@@ -2,7 +2,7 @@ import { analyzePrompt, buildLayout, renderCode } from './plan.ts';
 import type { AIProvider, AIRequest, FrameworkId, PlanResult } from './types.ts';
 import { validateGeneratedCode } from './validate.ts';
 
-const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'html'];
+const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'html'];
 
 export function planFromPrompt(request: AIRequest): PlanResult {
   const prompt = request.prompt.trim();
@@ -25,6 +25,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     angular: bundle('angular', renderCode(layout.nodes, 'angular')),
     solid: bundle('solid', renderCode(layout.nodes, 'solid')),
     preact: bundle('preact', renderCode(layout.nodes, 'preact')),
+    qwik: bundle('qwik', renderCode(layout.nodes, 'qwik')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
@@ -34,6 +35,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     angular: validateGeneratedCode(code.angular.files[0]?.contents ?? '', 'angular'),
     solid: validateGeneratedCode(code.solid.files[0]?.contents ?? '', 'solid'),
     preact: validateGeneratedCode(code.preact.files[0]?.contents ?? '', 'preact'),
+    qwik: validateGeneratedCode(code.qwik.files[0]?.contents ?? '', 'qwik'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };

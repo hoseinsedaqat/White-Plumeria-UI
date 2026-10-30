@@ -21,7 +21,7 @@ const help = `wpl — ${brand.productName} CLI
 
 Usage:
   wpl init
-  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|html] [--copy]
+  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|qwik|html] [--copy]
   wpl doctor
   wpl theme [name]
   wpl --help
@@ -91,8 +91,8 @@ function add(name: string | undefined, framework: string, copy: boolean, io: Cli
   if (!name) return fail(1, 'add needs a component name. Example: wpl add button');
   const component = getComponent(name);
   if (!component) return fail(1, `Unknown component: ${name}. Run wpl theme or search the docs catalog.`);
-  const target = framework === 'vue' || framework === 'svelte' || framework === 'angular' || framework === 'solid' || framework === 'preact' || framework === 'html' || framework === 'react' ? framework : '';
-  if (!target) return fail(1, `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, or html.`);
+  const target = framework === 'vue' || framework === 'svelte' || framework === 'angular' || framework === 'solid' || framework === 'preact' || framework === 'qwik' || framework === 'html' || framework === 'react' ? framework : '';
+  if (!target) return fail(1, `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, qwik, or html.`);
   const packages: PackageName[] = target === 'html' ? ['styles'] : ['styles', target];
   const lines = [
     installCommand(packages, 'npm'),
