@@ -255,14 +255,17 @@
 
 .wpl-toast-success {
   border-color: var(--wpl-color-success);
+  background: color-mix(in srgb, var(--wpl-color-success-subtle) 72%, var(--wpl-color-surface));
 }
 
 .wpl-toast-warning {
   border-color: var(--wpl-color-warning);
+  background: color-mix(in srgb, var(--wpl-color-warning-subtle) 72%, var(--wpl-color-surface));
 }
 
 .wpl-toast-danger {
   border-color: var(--wpl-color-danger);
+  background: color-mix(in srgb, var(--wpl-color-danger-subtle) 72%, var(--wpl-color-surface));
 }
 
 .wpl-toast-title {

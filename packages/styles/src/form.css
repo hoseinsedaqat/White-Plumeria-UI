@@ -64,6 +64,48 @@
   color: var(--wpl-color-text-subtle);
 }
 
+/* Must follow .wpl-input. A one-time code is a left-to-right sequence, even on an RTL page. */
+.wpl-field:has(.wpl-otp) {
+  inline-size: min(100%, 22rem);
+}
+
+.wpl-otp {
+  display: flex;
+  flex-flow: row nowrap;
+  direction: ltr;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  inline-size: 100%;
+  unicode-bidi: isolate;
+}
+
+.wpl-otp .wpl-input.wpl-otp-cell {
+  flex: 1 1 0;
+  inline-size: auto;
+  width: auto;
+  min-inline-size: 0;
+  max-inline-size: none;
+  aspect-ratio: 1;
+  min-block-size: 2.45rem;
+  padding-inline: 0;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: var(--wpl-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--wpl-color-primary);
+}
+
+.wpl-otp .wpl-otp-cell:focus {
+  border-color: var(--wpl-color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wpl-color-focus) 28%, transparent);
+}
+
+.wpl-otp:has(> :nth-child(6)):not(:has(> :nth-child(7))) > :nth-child(3),
+.wpl-otp:has(> :nth-child(4)):not(:has(> :nth-child(5))) > :nth-child(2) {
+  margin-inline-end: 0.55rem;
+}
+
 .wpl-textarea {
   min-block-size: 6.5rem;
   resize: vertical;
