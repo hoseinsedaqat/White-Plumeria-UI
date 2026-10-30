@@ -32,6 +32,7 @@ export type PackageName =
   | 'lit'
   | 'alpine'
   | 'marko'
+  | 'ember'
   | 'elements'
   | 'ai'
   | 'mcp'

@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -221,6 +221,19 @@ import "@white-plumeria/styles";
 
 This is Marko 6.4 Tags API, not a wrapper around Alpine, Vue, or `@white-plumeria/elements`. Each catalog component is a `.marko` tag. `marko` is a peer dependency. Text, range, and date fields listen through `valueChange` and emit `wpl-change`. `pushToast` throws unless the node is inside `wpl-provider`. The tags render to HTML on the server; that path is covered by a Node test. The desk example mounts in the browser.
 
+### Ember
+
+```gjs
+import { Button } from "@white-plumeria/ember";
+import "@white-plumeria/styles";
+
+<template>
+  <Button @variant="primary">Save changes</Button>
+</template>
+```
+
+This is Ember 7.4 with Glimmer components, not a wrapper around Alpine, Vue, Marko, or `@white-plumeria/elements`. `renderComponent` mounts a component into any element. `ember-source` is a peer dependency. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. Server rendering is not claimed. The desk example mounts in the browser.
+
 ### HTML
 
 ```html
@@ -255,6 +268,7 @@ That command does not work today.
 | `@white-plumeria/lit` | Lit 3 custom elements |
 | `@white-plumeria/alpine` | Alpine.js 3.17 components |
 | `@white-plumeria/marko` | Marko 6.4 Tags API components |
+| `@white-plumeria/ember` | Ember 7.4 Glimmer components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

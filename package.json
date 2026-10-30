@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko.",
+  "description": "White Plumeria — a framework-agnostic design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember.",
   "license": "MIT",
   "packageManager": "pnpm@12.15.0",
   "engines": {
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "test": "pnpm --filter @white-plumeria/angular... build && pnpm --filter @white-plumeria/solid test && pnpm --filter @white-plumeria/preact test && pnpm --filter @white-plumeria/qwik test && pnpm --filter @white-plumeria/lit test && pnpm --filter @white-plumeria/alpine test && pnpm --filter @white-plumeria/marko test && vitest run",
+    "test": "pnpm --filter @white-plumeria/angular... build && pnpm --filter @white-plumeria/solid test && pnpm --filter @white-plumeria/preact test && pnpm --filter @white-plumeria/qwik test && pnpm --filter @white-plumeria/lit test && pnpm --filter @white-plumeria/alpine test && pnpm --filter @white-plumeria/marko test && pnpm --filter @white-plumeria/ember test && vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "format:check": "prettier --check .",

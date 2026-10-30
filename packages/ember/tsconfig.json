@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@white-plumeria/core": ["../core/src/index.ts"],
+      "@white-plumeria/tokens": ["../tokens/src/index.ts"],
+      "@ember/*": ["./node_modules/ember-source/types/stable/@ember/*"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

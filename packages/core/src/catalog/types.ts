@@ -28,6 +28,7 @@ export interface FrameworkExamples {
   lit: string;
   alpine: string;
   marko: string;
+  ember: string;
 }
 
 export interface ComponentDoc {

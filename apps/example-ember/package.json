@@ -1,0 +1,24 @@
+{
+  "name": "@white-plumeria/example-ember",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5184",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4184",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@glimmer/component": "2.2.1",
+    "@glimmer/tracking": "1.0.1",
+    "@white-plumeria/ember": "workspace:*",
+    "@white-plumeria/styles": "workspace:*",
+    "@white-plumeria/tokens": "workspace:*",
+    "ember-source": "7.4.0"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
