@@ -26,6 +26,7 @@ export interface FrameworkExamples {
   preact: string;
   qwik: string;
   lit: string;
+  alpine: string;
 }
 
 export interface ComponentDoc {

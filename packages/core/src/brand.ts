@@ -30,6 +30,7 @@ export type PackageName =
   | 'preact'
   | 'qwik'
   | 'lit'
+  | 'alpine'
   | 'elements'
   | 'ai'
   | 'mcp'

@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-const files = readdirSync('packages/core/src/catalog').filter((name) => name.endsWith('.ts') && !['types.ts', 'examples.ts', 'index.ts'].includes(name));
+const files = readdirSync('packages/core/src/catalog').filter((name) => name.endsWith('.ts') && !['types.ts', 'examples.ts', 'alpine.ts', 'index.ts'].includes(name));
 const components = [];
 for (const file of files) {
   const source = readFileSync(`packages/core/src/catalog/${file}`, 'utf8');

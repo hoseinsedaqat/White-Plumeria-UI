@@ -30,12 +30,15 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Qwik examples must import @white-plumeria/qwik.');
     } else if (framework === 'lit' && imported[2] !== '@white-plumeria/lit') {
       errors.push('Lit examples must import @white-plumeria/lit.');
+    } else if (framework === 'alpine' && imported[2] !== '@white-plumeria/alpine') {
+      errors.push('Alpine examples must import @white-plumeria/alpine.');
     } else if (!imported[2]?.startsWith('@white-plumeria/')) {
       errors.push('Import source is outside the White Plumeria scope.');
     }
     const importedNames = imported?.[1]?.split(',').map((name) => name.trim()).filter(Boolean) ?? [];
     for (const name of importedNames) {
       if (framework === 'lit' && name === 'defineWhitePlumeria') continue;
+      if (framework === 'alpine' && (name === 'whitePlumeria' || name === 'pushToast')) continue;
       if (!known.has(name)) errors.push(`Imported name ${name} is not in the component catalog.`);
     }
     if (framework === 'angular') {

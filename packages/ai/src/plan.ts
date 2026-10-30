@@ -155,6 +155,7 @@ export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string
   if (framework === 'preact') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/preact');
   if (framework === 'qwik') return wrapQwik(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'lit') return wrapLit(nodes);
+  if (framework === 'alpine') return wrapAlpine(nodes);
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -221,6 +222,36 @@ function renderLit(node: PreviewNode, indent: number): string {
   const tag = litTag(node.component);
   if (!kids.length) return `${pad}<${tag}${props}></${tag}>`;
   return `${pad}<${tag}${props}>\n${kids.join('\n')}\n${pad}</${tag}>`;
+}
+
+function renderAlpine(node: PreviewNode, indent: number): string {
+  const pad = ' '.repeat(indent);
+  const props = { ...(node.props ?? {}) };
+  if (node.text && props.label == null && !node.children?.length) props.label = node.text;
+  const config = JSON.stringify(props).replaceAll("'", '&#39;');
+  const opening = `${pad}<div x-data='${node.component}(${config})'`;
+  const kids = (node.children ?? []).map((child) => renderAlpine(child, indent + 2));
+  if (!kids.length) return `${opening}></div>`;
+  return `${opening}>\n${kids.join('\n')}\n${pad}</div>`;
+}
+
+function wrapAlpine(nodes: PreviewNode[]): string {
+  const body = nodes.map((node) => renderAlpine(node, 0)).join('\n');
+  return [
+    'import Alpine from "alpinejs";',
+    'import { whitePlumeria } from "@white-plumeria/alpine";',
+    'import "@white-plumeria/styles";',
+    '',
+    'document.addEventListener("alpine:init", () => {',
+    '  Alpine.plugin(whitePlumeria);',
+    '});',
+    'Alpine.start();',
+    '',
+    'export const markup = `',
+    body,
+    '`;',
+    '',
+  ].join('\n');
 }
 
 function wrapLit(nodes: PreviewNode[]): string {

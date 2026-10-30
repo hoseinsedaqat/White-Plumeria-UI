@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkComponentAvailabilityTool, generateComponentExampleTool, searchComponentsTool } from './tools.ts';
+import { checkComponentAvailabilityTool, generateComponentExampleTool, getFrameworkInstallationTool, searchComponentsTool } from './tools.ts';
 
 describe('mcp catalog tools', () => {
   it('searches real components and refuses an invented name', () => {
@@ -9,5 +9,7 @@ describe('mcp catalog tools', () => {
     expect(missing.isError).toBe(true);
     expect(missing.text).toContain('Refusing');
     expect(JSON.parse(checkComponentAvailabilityTool('button').text).available).toBe(true);
+    expect(getFrameworkInstallationTool('alpine').text).toContain('@white-plumeria/alpine');
+    expect(generateComponentExampleTool('button', 'alpine').text).toContain('whitePlumeria');
   });
 });
