@@ -27,6 +27,7 @@ export type PackageName =
   | 'svelte'
   | 'angular'
   | 'solid'
+  | 'preact'
   | 'elements'
   | 'ai'
   | 'mcp'

@@ -23,6 +23,7 @@ export interface FrameworkExamples {
   svelte: string;
   angular: string;
   solid: string;
+  preact: string;
 }
 
 export interface ComponentDoc {

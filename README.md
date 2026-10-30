@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, and Solid.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, Solid, and Preact.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, and Solid |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, and Preact |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -133,6 +133,26 @@ export function Example() {
 
 This is Solid 1.9 JSX, not a React wrapper. `solid-js` is a peer dependency.
 
+### Preact
+
+```tsx
+import { render } from "preact";
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/preact";
+import "@white-plumeria/styles";
+
+const root = document.getElementById("app");
+if (root) {
+  render(
+    <WhitePlumeriaProvider>
+      <Button variant="primary">Save changes</Button>
+    </WhitePlumeriaProvider>,
+    root,
+  );
+}
+```
+
+This is Preact 11 JSX and hooks, not a `preact/compat` wrapper around the React package. `preact` is a peer dependency. Text, range, and date fields use the DOM `input` event.
+
 ### HTML
 
 ```html
@@ -162,6 +182,7 @@ That command does not work today.
 | `@white-plumeria/svelte` | Svelte 5 components |
 | `@white-plumeria/angular` | Angular 22 components |
 | `@white-plumeria/solid` | Solid 1.9 components |
+| `@white-plumeria/preact` | Preact 11 components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

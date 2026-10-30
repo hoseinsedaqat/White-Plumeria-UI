@@ -9,7 +9,7 @@ import { renderDemo } from '../demos.tsx';
 export function PlaygroundPage() {
   const { preferences, setPreferences } = useWhitePlumeria();
   const [slug, setSlug] = useState('button');
-  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'html'>('react');
+  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'html'>('react');
   const component = catalog.find((item) => item.slug === slug) ?? catalog[0];
   if (!component) return null;
 
@@ -67,7 +67,7 @@ export function PlaygroundPage() {
         <div>
           <ThemedFrame className="docs-canvas">{renderDemo(component.slug)}</ThemedFrame>
           <div className="docs-tabs" style={{ marginTop: '1rem' }}>
-            {(['react', 'vue', 'svelte', 'angular', 'solid', 'html'] as const).map((item) => (
+            {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'html'] as const).map((item) => (
               <button
                 key={item}
                 type="button"

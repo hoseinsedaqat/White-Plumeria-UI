@@ -258,7 +258,7 @@ export const formCatalog: ComponentDoc[] = [
     ],
     limitations: [
       'When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.',
-      'The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, and Solid components.',
+      'The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, Solid, and Preact components.',
     ],
     element: false,
     examples: examples('RangeSlider', {
@@ -310,7 +310,7 @@ export const formCatalog: ComponentDoc[] = [
     events: [],
     a11y: ['Error has role="alert". The nested control receives aria-invalid and aria-describedby from context.'],
     rtl: ['Stack is block direction, so it does not depend on left/right.'],
-    limitations: ['Context wiring is implemented in React, Vue, Svelte, Angular, and Solid. HTML users set ids manually.'],
+    limitations: ['Context wiring is implemented in React, Vue, Svelte, Angular, Solid, and Preact. HTML users set ids manually.'],
     element: false,
     examples: examples('FormField', {
       react: '<FormField label="Email" error="Enter a valid email"><Input type="email" /></FormField>',
