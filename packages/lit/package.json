@@ -1,0 +1,57 @@
+{
+  "name": "@white-plumeria/lit",
+  "version": "0.1.0",
+  "description": "Lit components for White Plumeria. Pair with @white-plumeria/styles.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/lit"
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/lit#readme",
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "lit", "web-components", "design-system", "accessible"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "host.css", "README.md"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./host.css": "./host.css",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.emit.json --pretty false",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "lit": "^3.3.0",
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@white-plumeria/styles": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "happy-dom": "21.0.4",
+    "lit": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

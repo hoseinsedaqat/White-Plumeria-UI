@@ -22,4 +22,5 @@ catalog:
   "@preact/preset-vite": 2.10.6
   "@babel/core": 7.29.7
   "@qwik.dev/core": 2.0.0-rc.4
+  lit: 3.3.3
   zod: 4.6.7

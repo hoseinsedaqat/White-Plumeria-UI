@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  overflow-x: clip;
+}
+
+.desk {
+  width: min(68rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-block: 1.25rem 3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.desk-toolbar,
+.desk-actions,
+.desk-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.desk-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.desk-panel {
+  min-width: 0;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  padding: 1rem;
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
+}
+
+.desk-panel h2,
+.desk-status,
+.desk-note {
+  margin: 0;
+}
+
+.desk-panel h2 {
+  font-size: 1.05rem;
+}
+
+.desk-status {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 48rem) {
+  .desk {
+    width: min(68rem, calc(100% - 3rem));
+  }
+}
+
+@media (min-width: 60rem) {
+  .desk-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+  }
+}

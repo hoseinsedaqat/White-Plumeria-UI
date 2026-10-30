@@ -28,7 +28,7 @@ export function AiPage() {
   const { setPreferences } = useWhitePlumeria();
   const { navigate } = useRoute();
   const [prompt, setPrompt] = useState(starter);
-  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'qwik' | 'html'>('react');
+  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'qwik' | 'lit' | 'html'>('react');
   const [error, setError] = useState('');
   const [plan, setPlan] = useState<PlanResult | null>(null);
 
@@ -83,7 +83,7 @@ export function AiPage() {
             <Preview nodes={plan.layout.nodes} />
           </ThemedFrame>
           <div className="docs-tabs">
-            {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'html'] as const).map((item) => (
+            {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'html'] as const).map((item) => (
               <button
                 key={item}
                 type="button"

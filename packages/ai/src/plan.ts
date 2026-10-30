@@ -1,7 +1,7 @@
 import { getComponent } from '@white-plumeria/core';
 import type { ThemeName } from '@white-plumeria/tokens';
 import { recommendComponents } from './recommend.ts';
-import { angularCloseTag, angularHost } from '@white-plumeria/core';
+import { angularCloseTag, angularHost, litAttribute, litTag } from '@white-plumeria/core';
 import type { Analysis, FrameworkId, LayoutPlan, PreviewNode } from './types.ts';
 
 const themeWords: Array<{ theme: ThemeName; words: string[] }> = [
@@ -154,6 +154,7 @@ export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string
   if (framework === 'solid') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/solid');
   if (framework === 'preact') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll('@white-plumeria/react', '@white-plumeria/preact');
   if (framework === 'qwik') return wrapQwik(nodes.map((node) => renderReact(node, 2)).join('\n'));
+  if (framework === 'lit') return wrapLit(nodes);
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -210,6 +211,38 @@ function wrapAngular(nodes: PreviewNode[]): string {
   return `import { ${imported.join(', ')} } from "@white-plumeria/angular";\nimport { Component } from "@angular/core";\nimport "@white-plumeria/styles";\n\n@Component({\n  selector: "wpl-example",\n  imports: [${imported.join(', ')}],\n  template: \`\n${body}\n  \`,\n})\nexport class Example {}\n`;
 }
 
+function renderLit(node: PreviewNode, indent: number): string {
+  const pad = ' '.repeat(indent);
+  const props = propString(node.props, 'lit');
+  const kids = [
+    node.text ? `${pad}  ${node.text}` : '',
+    ...(node.children ?? []).map((child) => renderLit(child, indent + 2)),
+  ].filter(Boolean);
+  const tag = litTag(node.component);
+  if (!kids.length) return `${pad}<${tag}${props}></${tag}>`;
+  return `${pad}<${tag}${props}>\n${kids.join('\n')}\n${pad}</${tag}>`;
+}
+
+function wrapLit(nodes: PreviewNode[]): string {
+  const body = nodes.map((node) => renderLit(node, 4)).join('\n');
+  const imported = names(nodes);
+  return [
+    'import { html, render } from "lit";',
+    `import { ${imported.join(', ')}, defineWhitePlumeria } from "@white-plumeria/lit";`,
+    'import "@white-plumeria/styles";',
+    '',
+    'defineWhitePlumeria();',
+    '',
+    'const root = document.querySelector("#app");',
+    'if (root) {',
+    '  render(html`',
+    body,
+    '  `, root);',
+    '}',
+    '',
+  ].join('\n');
+}
+
 function renderHtml(node: PreviewNode): string {
   const component = getComponent(node.component);
   const className = component?.classes[0] ?? 'wpl-root';
@@ -224,12 +257,15 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
       if (typeof value === 'boolean') {
         if (framework === 'vue') return value ? ` ${key}` : '';
         if (framework === 'angular') return value ? ` [${key}]="true"` : ` [${key}]="false"`;
+        if (framework === 'lit') return value ? ` ${litAttribute(key)}` : '';
         return value ? ` ${key}` : ` ${key}={false}`;
       }
       if (typeof value === 'number') {
         if (framework === 'angular') return ` [${key}]="${value}"`;
+        if (framework === 'lit') return ` ${litAttribute(key)}="${value}"`;
         return framework === 'react' || framework === 'svelte' || framework === 'solid' || framework === 'preact' || framework === 'qwik' ? ` ${key}={${value}}` : ` :${kebab(key)}="${value}"`;
       }
+      if (framework === 'lit') return ` ${litAttribute(key)}="${escapeAttr(String(value))}"`;
       return ` ${key}="${escapeAttr(String(value))}"`;
     })
     .join('');
