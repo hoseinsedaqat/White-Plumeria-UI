@@ -1,13 +1,18 @@
 import type { PropertyValues } from 'lit';
 import {
   clampInteger,
+  createId,
   inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   otpApply,
   otpCells,
   otpDelete,
   otpLength,
+  rangeBounds,
   readingDirection,
-  createId,
 } from '@white-plumeria/core';
 import { defineTag, html, nothing, WplElement, type RenderResult } from './element';
 import { iconSvg } from './icon';
@@ -154,7 +159,11 @@ export class OtpField extends WplElement {
 
   protected override updated(changed: PropertyValues): void {
     super.updated(changed);
-    this.cells.splice(0, this.cells.length, ...this.view.querySelectorAll<HTMLInputElement>('input.wpl-otp-cell'));
+    this.cells.splice(
+      0,
+      this.cells.length,
+      ...this.view.querySelectorAll<HTMLInputElement>('input.wpl-otp-cell'),
+    );
   }
 
   protected override render(): RenderResult {
@@ -166,41 +175,58 @@ export class OtpField extends WplElement {
       <label class="wpl-label" id=${`${this.uid}-label`}>${this.label}</label>
       <div class="wpl-otp" role="group" aria-labelledby=${`${this.uid}-label`}>
         ${values.map(
-          (cell, index) => html`<input
-            class=${inputClassName({ className: 'wpl-otp-cell' })}
-            .value=${cell}
-            inputmode=${numeric ? 'numeric' : 'text'}
-            autocomplete=${index === 0 ? 'one-time-code' : 'off'}
-            aria-label=${`${translate(this, 'character')} ${index + 1} ${translate(this, 'of')} ${size}`}
-            ?disabled=${this.disabled}
-            maxlength="1"
-            @input=${(event: Event) => {
-              const element = event.target instanceof HTMLInputElement ? event.target : null;
-              if (!element) return;
-              const raw = element.value;
-              const result = raw ? otpApply(this.current(), size, numeric, index, raw.slice(-1)) : otpDelete(this.current(), size, numeric, index);
-              this.commit(result.value, result.focus);
-            }}
-            @paste=${(event: ClipboardEvent) => {
-              event.preventDefault();
-              const result = otpApply(this.current(), size, numeric, index, event.clipboardData?.getData('text') ?? '');
-              this.commit(result.value, result.focus);
-            }}
-            @keydown=${(event: KeyboardEvent) => {
-              if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                event.preventDefault();
-                const element = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
-                const direction = readingDirection(element);
-                const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
-                this.cells[Math.min(size - 1, Math.max(0, index + delta))]?.focus();
-              }
-              if (event.key === 'Backspace' && !values[index]) {
-                event.preventDefault();
-                const result = otpDelete(this.current(), size, numeric, index);
+          (cell, index) =>
+            html`<input
+              class=${inputClassName({ className: 'wpl-otp-cell' })}
+              .value=${cell}
+              inputmode=${numeric ? 'numeric' : 'text'}
+              autocomplete=${index === 0 ? 'one-time-code' : 'off'}
+              aria-label=${`${translate(this, 'character')} ${index + 1} ${translate(this, 'of')} ${size}`}
+              ?disabled=${this.disabled}
+              maxlength="1"
+              @input=${(event: Event) => {
+                const element = event.target instanceof HTMLInputElement ? event.target : null;
+                if (!element) return;
+                const raw = element.value;
+                const result = raw
+                  ? otpApply(this.current(), size, numeric, index, raw.slice(-1))
+                  : otpDelete(this.current(), size, numeric, index);
                 this.commit(result.value, result.focus);
-              }
-            }}
-          />`,
+              }}
+              @paste=${(event: ClipboardEvent) => {
+                event.preventDefault();
+                const result = otpApply(
+                  this.current(),
+                  size,
+                  numeric,
+                  index,
+                  event.clipboardData?.getData('text') ?? '',
+                );
+                this.commit(result.value, result.focus);
+              }}
+              @keydown=${(event: KeyboardEvent) => {
+                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                  event.preventDefault();
+                  const element =
+                    event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+                  const direction = readingDirection(element);
+                  const delta =
+                    event.key === 'ArrowRight'
+                      ? direction === 'rtl'
+                        ? -1
+                        : 1
+                      : direction === 'rtl'
+                        ? 1
+                        : -1;
+                  this.cells[Math.min(size - 1, Math.max(0, index + delta))]?.focus();
+                }
+                if (event.key === 'Backspace' && !values[index]) {
+                  event.preventDefault();
+                  const result = otpDelete(this.current(), size, numeric, index);
+                  this.commit(result.value, result.focus);
+                }
+              }}
+            />`,
         )}
       </div>
       ${this.name ? html`<input type="hidden" name=${this.name} .value=${current} />` : nothing}
@@ -252,7 +278,11 @@ export class Rating extends WplElement {
     const count = clampInteger(this.max || 5, 1, 10, 5);
     const current = this.current(count);
     if (this.readOnly) {
-      return html`<div class="wpl-rating" role="img" aria-label=${`${this.label}: ${current} ${translate(this, 'of')} ${count}`}>
+      return html`<div
+        class="wpl-rating"
+        role="img"
+        aria-label=${`${this.label}: ${current} ${translate(this, 'of')} ${count}`}
+      >
         ${Array.from({ length: count }, (_, index) => html`<span class=${index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">${iconSvg('star')}</span>`)}
       </div>`;
     }
@@ -274,7 +304,11 @@ export class Rating extends WplElement {
               this.emit('wpl-change', { value: score });
             }}
           />
-          <span class=${score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">${iconSvg('star')}</span>
+          <span
+            class=${score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+            aria-hidden="true"
+            >${iconSvg('star')}</span
+          >
           <span class="wpl-sr-only">${score} ${translate(this, 'of')} ${count}</span>
         </label>`;
       })}
@@ -282,6 +316,157 @@ export class Rating extends WplElement {
   }
 }
 
+export class NumberField extends WplElement {
+  static override properties = {
+    label: { type: String },
+    min: { type: Number },
+    max: { type: Number },
+    step: { type: Number },
+    value: { type: Number },
+    defaultValue: { type: Number, attribute: 'default-value' },
+    name: { type: String },
+    disabled: { type: Boolean },
+  };
+
+  declare label: string;
+  declare min: number;
+  declare max: number;
+  declare step: number;
+  declare value: number | null;
+  declare defaultValue: number | null;
+  declare name: string;
+  declare disabled: boolean;
+  private internal = 0;
+  private draft = '';
+  private focused = false;
+  private seeded = false;
+  private readonly uid = createId('wpl-number');
+
+  constructor() {
+    super();
+    this.label = '';
+    this.min = 0;
+    this.max = 100;
+    this.step = 1;
+    this.value = null;
+    this.defaultValue = null;
+    this.name = '';
+    this.disabled = false;
+  }
+
+  protected override willUpdate(): void {
+    if (this.seeded) return;
+    this.seeded = true;
+    const bounds = rangeBounds(this.min, this.max, this.step);
+    this.internal = numberFieldCommit(
+      String(this.defaultValue ?? this.value ?? bounds.min),
+      bounds,
+      bounds.min,
+    );
+    this.draft = numberFieldText(this.internal, bounds);
+  }
+
+  private limits() {
+    return rangeBounds(this.min, this.max, this.step);
+  }
+
+  private committed(): number {
+    const bounds = this.limits();
+    return numberFieldCommit(
+      String(this.value === null ? this.internal : this.value),
+      bounds,
+      bounds.min,
+    );
+  }
+
+  private shown(): string {
+    return this.focused ? this.draft : numberFieldText(this.committed(), this.limits());
+  }
+
+  private parsed(): number {
+    return numberFieldDraftValue(this.shown(), this.limits()) ?? this.committed();
+  }
+
+  private commit(next: number): void {
+    const bounds = this.limits();
+    const snapped = numberFieldCommit(String(next), bounds, bounds.min);
+    this.draft = numberFieldText(snapped, bounds);
+    if (this.value === null) this.internal = snapped;
+    this.emit('wpl-change', { value: snapped });
+    this.requestUpdate();
+  }
+
+  protected override render(): RenderResult {
+    const bounds = this.limits();
+    const shown = this.shown();
+    const parsed = this.parsed();
+    return html`<div class="wpl-field">
+      <label class="wpl-label" for=${this.uid}>${this.label}</label>
+      <div class="wpl-number">
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label=${translate(this, 'decrease')}
+          ?disabled=${this.disabled || parsed <= bounds.min}
+          @click=${() => this.commit(numberFieldStep(parsed, -1, bounds))}
+        >
+          ${iconSvg('minus')}
+        </button>
+        <input
+          id=${this.uid}
+          class="wpl-input"
+          type="number"
+          name=${this.name || nothing}
+          inputmode=${bounds.step < 1 ? 'decimal' : 'numeric'}
+          min=${bounds.min}
+          max=${bounds.max}
+          step=${bounds.step}
+          .value=${shown}
+          ?disabled=${this.disabled}
+          @focus=${() => {
+            this.focused = true;
+            this.draft = numberFieldText(this.committed(), bounds);
+            this.requestUpdate();
+          }}
+          @blur=${(event: Event) => {
+            const target = event.target;
+            const raw = target instanceof HTMLInputElement ? target.value : this.draft;
+            this.focused = false;
+            this.commit(numberFieldCommit(raw, bounds, this.committed()));
+          }}
+          @input=${(event: Event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLInputElement)) return;
+            this.draft = target.value;
+            const parsedNext = numberFieldDraftValue(target.value, bounds);
+            if (parsedNext === null) {
+              this.requestUpdate();
+              return;
+            }
+            if (this.value === null) this.internal = parsedNext;
+            this.emit('wpl-change', { value: parsedNext });
+            this.requestUpdate();
+          }}
+          @wheel=${(event: Event) => {
+            const target = event.target;
+            if (target instanceof HTMLInputElement) target.blur();
+          }}
+        />
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label=${translate(this, 'increase')}
+          ?disabled=${this.disabled || parsed >= bounds.max}
+          @click=${() => this.commit(numberFieldStep(parsed, 1, bounds))}
+        >
+          ${iconSvg('plus')}
+        </button>
+      </div>
+    </div>`;
+  }
+}
+
 defineTag('wpl-password-field', PasswordField);
 defineTag('wpl-otp-field', OtpField);
 defineTag('wpl-rating', Rating);
+defineTag('wpl-number-field', NumberField);

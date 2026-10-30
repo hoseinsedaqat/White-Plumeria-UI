@@ -5,14 +5,64 @@ import { Carousel } from './carousel';
 import { Calendar, DatePicker, DateRangePicker } from './calendar';
 import { Combobox } from './menu';
 import { CommandPalette } from './command';
-import { Breadcrumb, ChartContainer, DataTable, List, Pagination, Table, Timeline, TreeView } from './data';
+import {
+  Breadcrumb,
+  ChartContainer,
+  DataTable,
+  List,
+  Pagination,
+  Table,
+  Timeline,
+  TreeView,
+} from './data';
 import { Dialog, Drawer, Modal } from './dialog';
-import { Alert, Avatar, Badge, Card, Divider, EmptyState, Kbd, Link, Notification, Progress, Separator, Skeleton, Spinner, StatCard } from './display';
+import {
+  Alert,
+  Avatar,
+  Badge,
+  Card,
+  Divider,
+  EmptyState,
+  Kbd,
+  Link,
+  Notification,
+  Progress,
+  Separator,
+  Skeleton,
+  Spinner,
+  StatCard,
+} from './display';
 import { FileUpload } from './file-upload';
-import { Checkbox, FormField, FormMessage, Input, Label, RadioGroup, RangeSlider, SearchInput, Select, Slider, Switch, Textarea, ValidationMessage } from './form';
-import { OtpField, PasswordField, Rating } from './fields';
+import {
+  Checkbox,
+  FormField,
+  FormMessage,
+  Input,
+  Label,
+  RadioGroup,
+  RangeSlider,
+  SearchInput,
+  Select,
+  Slider,
+  Switch,
+  Textarea,
+  ValidationMessage,
+} from './form';
+import { NumberField, OtpField, PasswordField, Rating } from './fields';
 import { Icon, Mark } from './icon';
-import { Container, Flex, Footer, Grid, Navbar, NavigationMenu, PageHeader, ResponsiveLayout, Sidebar, SplitPane, Stack } from './layout';
+import {
+  Container,
+  Flex,
+  Footer,
+  Grid,
+  Navbar,
+  NavigationMenu,
+  PageHeader,
+  ResponsiveLayout,
+  Sidebar,
+  SplitPane,
+  Stack,
+} from './layout';
 import { ContextMenu, DropdownMenu, Popover, Tooltip } from './menu';
 import { WhitePlumeriaProvider } from './provider';
 import { Steps } from './steps';
@@ -28,19 +78,76 @@ export { Combobox, ContextMenu, DropdownMenu, Popover, Tooltip } from './menu';
 export type { ComboOption, MenuItem } from './menu';
 export { CommandPalette } from './command';
 export type { CommandItem } from './command';
-export { Breadcrumb, ChartContainer, DataTable, List, Pagination, Table, Timeline, TreeView } from './data';
+export {
+  Breadcrumb,
+  ChartContainer,
+  DataTable,
+  List,
+  Pagination,
+  Table,
+  Timeline,
+  TreeView,
+} from './data';
 export type { ChartPoint, DataColumn, TimelineItem, TreeNode } from './data';
 export { Dialog, Drawer, Modal } from './dialog';
-export { Alert, Avatar, Badge, Card, Divider, EmptyState, Kbd, Link, Notification, Progress, Separator, Skeleton, Spinner, StatCard } from './display';
+export {
+  Alert,
+  Avatar,
+  Badge,
+  Card,
+  Divider,
+  EmptyState,
+  Kbd,
+  Link,
+  Notification,
+  Progress,
+  Separator,
+  Skeleton,
+  Spinner,
+  StatCard,
+} from './display';
 export { FileUpload } from './file-upload';
 export type { RejectedFile } from './file-upload';
-export { Checkbox, FormField, FormMessage, Input, Label, RadioGroup, RangeSlider, SearchInput, Select, Slider, Switch, Textarea, ValidationMessage } from './form';
+export {
+  Checkbox,
+  FormField,
+  FormMessage,
+  Input,
+  Label,
+  RadioGroup,
+  RangeSlider,
+  SearchInput,
+  Select,
+  Slider,
+  Switch,
+  Textarea,
+  ValidationMessage,
+} from './form';
 export type { SelectOption } from './form';
-export { OtpField, PasswordField, Rating } from './fields';
+export { NumberField, OtpField, PasswordField, Rating } from './fields';
 export { Icon, Mark } from './icon';
-export { Container, Flex, Footer, Grid, Navbar, NavigationMenu, PageHeader, ResponsiveLayout, Sidebar, SplitPane, Stack } from './layout';
+export {
+  Container,
+  Flex,
+  Footer,
+  Grid,
+  Navbar,
+  NavigationMenu,
+  PageHeader,
+  ResponsiveLayout,
+  Sidebar,
+  SplitPane,
+  Stack,
+} from './layout';
 export type { NavItem } from './layout';
-export { pushToast, requireProvider, useLocale, useToast, useWhitePlumeria, WhitePlumeriaProvider } from './provider';
+export {
+  pushToast,
+  requireProvider,
+  useLocale,
+  useToast,
+  useWhitePlumeria,
+  WhitePlumeriaProvider,
+} from './provider';
 export type { ToastInput, ToastRecord } from './provider';
 export { Steps } from './steps';
 export type { StepItem } from './steps';
@@ -90,6 +197,7 @@ const tags: Array<[string, CustomElementConstructor]> = [
   ['wpl-navbar', Navbar],
   ['wpl-navigation-menu', NavigationMenu],
   ['wpl-notification', Notification],
+  ['wpl-number-field', NumberField],
   ['wpl-otp-field', OtpField],
   ['wpl-page-header', PageHeader],
   ['wpl-pagination', Pagination],

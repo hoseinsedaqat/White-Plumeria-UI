@@ -1,4 +1,17 @@
-import { Badge, Button, Card, Checkbox, EmptyState, Input, PageHeader, Select, StatCard, Switch, Alert } from '@white-plumeria/react';
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  EmptyState,
+  Input,
+  NumberField,
+  PageHeader,
+  Select,
+  StatCard,
+  Switch,
+} from '@white-plumeria/react';
 import { useState } from 'react';
 import { CodeBlock } from '../copy.tsx';
 import { ThemedFrame } from '../preview.tsx';
@@ -20,8 +33,9 @@ export function BlocksPage() {
     <article className="docs-article">
       <h1 className="docs-title">Blocks</h1>
       <p className="docs-lede">
-        Application and marketing patterns other libraries sell as a paid add-on. These are free compositions of
-        White Plumeria components. They do not call a server, and they are not a copy of another product.
+        Application and marketing patterns other libraries sell as a paid add-on. These are free
+        compositions of White Plumeria components. They do not call a server, and they are not a
+        copy of another product.
       </p>
 
       <section className="docs-blocks">
@@ -29,7 +43,11 @@ export function BlocksPage() {
           <h2>Sign in</h2>
           <p>A credential form. This sample never sends the email or password.</p>
           <ThemedFrame className="docs-canvas">
-            <Card title="Sign in" description="Use the account for this sample workspace." className="wpl-measure">
+            <Card
+              title="Sign in"
+              description="Use the account for this sample workspace."
+              className="wpl-measure"
+            >
               <form
                 className="wpl-stack"
                 onSubmit={(event) => {
@@ -40,14 +58,24 @@ export function BlocksPage() {
                 <label className="wpl-label" htmlFor="block-email">
                   Email
                 </label>
-                <Input id="block-email" type="email" value={email} placeholder="ada@example.com" onChange={(event) => setEmail(event.currentTarget.value)} />
+                <Input
+                  id="block-email"
+                  type="email"
+                  value={email}
+                  placeholder="ada@example.com"
+                  onChange={(event) => setEmail(event.currentTarget.value)}
+                />
                 <label className="wpl-label" htmlFor="block-password">
                   Password
                 </label>
                 <Input id="block-password" type="password" autoComplete="current-password" />
                 <Checkbox label="Remember this browser" defaultChecked />
                 <Button type="submit">Continue</Button>
-                {signedIn ? <Alert variant="success" title="Sample only">Nothing was sent. Email stays in this page.</Alert> : null}
+                {signedIn ? (
+                  <Alert variant="success" title="Sample only">
+                    Nothing was sent. Email stays in this page.
+                  </Alert>
+                ) : null}
               </form>
             </Card>
           </ThemedFrame>
@@ -75,7 +103,10 @@ export function BlocksPage() {
                   title={item.name}
                   description={item.detail}
                   footer={
-                    <Button variant={plan === item.name ? 'primary' : 'outline'} onClick={() => setPlan(item.name)}>
+                    <Button
+                      variant={plan === item.name ? 'primary' : 'outline'}
+                      onClick={() => setPlan(item.name)}
+                    >
                       {plan === item.name ? 'Selected' : 'Choose'}
                     </Button>
                   }
@@ -86,12 +117,16 @@ export function BlocksPage() {
               ))}
             </div>
           </ThemedFrame>
-          <p className="docs-note-line">Selected plan: {plan}. Price is free in every column on purpose.</p>
+          <p className="docs-note-line">
+            Selected plan: {plan}. Price is free in every column on purpose.
+          </p>
         </section>
 
         <section>
           <h2>Dashboard</h2>
-          <p>Sample workspace numbers, labeled as a sample. They are not download or star counts.</p>
+          <p>
+            Sample workspace numbers, labeled as a sample. They are not download or star counts.
+          </p>
           <ThemedFrame className="docs-canvas">
             <div className="wpl-stack" style={{ width: '100%' }}>
               <PageHeader
@@ -104,7 +139,9 @@ export function BlocksPage() {
                 <StatCard label="Paid" value="48" hint="Sample" />
                 <StatCard label="Review" value="3" hint="Sample" />
               </div>
-              <Alert variant="info" title="Local data">These figures are fixed sample values.</Alert>
+              <Alert variant="info" title="Local data">
+                These figures are fixed sample values.
+              </Alert>
             </div>
           </ThemedFrame>
         </section>
@@ -120,6 +157,7 @@ export function BlocksPage() {
                 setSaved(true);
               }}
             >
+              <NumberField label="Copies" name="copies" min={1} max={12} defaultValue={1} />
               <Switch label="Email invoices" defaultChecked />
               <label className="wpl-label" htmlFor="block-week">
                 Week start
@@ -133,7 +171,11 @@ export function BlocksPage() {
                 ]}
               />
               <Button type="submit">Save settings</Button>
-              {saved ? <Alert variant="success" title="Saved on this page">No request left the browser.</Alert> : null}
+              {saved ? (
+                <Alert variant="success" title="Saved on this page">
+                  No request left the browser.
+                </Alert>
+              ) : null}
             </form>
           </ThemedFrame>
         </section>
@@ -143,9 +185,14 @@ export function BlocksPage() {
           <p>The empty view can be replaced with a row. The button does that here.</p>
           <ThemedFrame className="docs-canvas">
             {hasRows ? (
-              <Alert variant="success" title="One sample row">Invoice 1042 is only a preview.</Alert>
+              <Alert variant="success" title="One sample row">
+                Invoice 1042 is only a preview.
+              </Alert>
             ) : (
-              <EmptyState title="No invoices yet" description="Add a sample row to see the filled state.">
+              <EmptyState
+                title="No invoices yet"
+                description="Add a sample row to see the filled state."
+              >
                 <Button onClick={() => setHasRows(true)}>Add sample row</Button>
               </EmptyState>
             )}

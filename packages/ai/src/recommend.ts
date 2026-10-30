@@ -28,6 +28,9 @@ const synonyms: Record<string, string[]> = {
   password: ['passwordfield'],
   otp: ['otpfield'],
   rating: ['rating'],
+  quantity: ['numberfield', 'number-field'],
+  guests: ['numberfield', 'number-field'],
+  stepper: ['numberfield', 'number-field'],
   kbd: ['kbd'],
 };
 
@@ -46,11 +49,20 @@ export function recommendComponents(prompt: string, limit = 6): Recommendation[]
   const pool = found.length > 0 ? found : catalog;
   const ranked = pool
     .map((component) => {
-      const haystack = [component.name, component.slug, component.summary, component.summaryFa, ...component.tags]
+      const haystack = [
+        component.name,
+        component.slug,
+        component.summary,
+        component.summaryFa,
+        ...component.tags,
+      ]
         .join(' ')
         .toLowerCase();
       const overlap = terms.filter((term) => haystack.includes(term));
-      const score = overlap.length + (boosted.get(component.slug) ?? 0) + (boosted.get(component.name.toLowerCase()) ?? 0);
+      const score =
+        overlap.length +
+        (boosted.get(component.slug) ?? 0) +
+        (boosted.get(component.name.toLowerCase()) ?? 0);
       return { component, score, overlap };
     })
     .filter((item) => item.score > 0)

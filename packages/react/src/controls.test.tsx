@@ -6,7 +6,7 @@ import { RangeSlider } from './form.tsx';
 import { ContextMenu, DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
-import { OtpField, PasswordField, Rating } from './fields.tsx';
+import { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
 import { Kbd } from './kbd.tsx';
 import { Navbar } from './layout.tsx';
 import { Steps } from './steps.tsx';
@@ -21,12 +21,26 @@ describe('new controls', () => {
   it('orders a date range and rejects a non-ISO day in English', async () => {
     const user = userEvent.setup();
     let range = { start: '', end: '' };
-    const view = render(<DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={(next) => (range = next)} />);
+    const view = render(
+      <DateRangePicker
+        label="Stay"
+        start={range.start}
+        end={range.end}
+        onValueChange={(next) => (range = next)}
+      />,
+    );
     await user.click(screen.getByRole('button', { name: 'Choose date' }));
     await user.click(screen.getByRole('gridcell', { name: /October 20, 2026/ }));
     await user.click(screen.getByRole('gridcell', { name: /October 12, 2026/ }));
     expect(range).toEqual({ start: '2026-10-12', end: '2026-10-20' });
-    view.rerender(<DateRangePicker label="Stay" start={range.start} end={range.end} onValueChange={(next) => (range = next)} />);
+    view.rerender(
+      <DateRangePicker
+        label="Stay"
+        start={range.start}
+        end={range.end}
+        onValueChange={(next) => (range = next)}
+      />,
+    );
     await user.clear(screen.getByLabelText('Start'));
     await user.type(screen.getByLabelText('Start'), '2026-13-01');
     expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
@@ -44,13 +58,23 @@ describe('new controls', () => {
         startTime={range.startTime}
         endTime={range.endTime}
         onValueChange={(next) => {
-          range = { start: next.start, end: next.end, startTime: next.startTime ?? '', endTime: next.endTime ?? '' };
+          range = {
+            start: next.start,
+            end: next.end,
+            startTime: next.startTime ?? '',
+            endTime: next.endTime ?? '',
+          };
         }}
       />,
     );
     await user.type(screen.getByLabelText('Start time'), '18:00');
     await user.type(screen.getByLabelText('End time'), '09:30');
-    expect(range).toEqual({ start: '2026-10-12', end: '2026-10-12', startTime: '09:30', endTime: '18:00' });
+    expect(range).toEqual({
+      start: '2026-10-12',
+      end: '2026-10-12',
+      startTime: '09:30',
+      endTime: '18:00',
+    });
     await user.clear(screen.getByLabelText('End time'));
     await user.type(screen.getByLabelText('End time'), '25:00');
     expect(screen.getByRole('alert').textContent).toContain('Use a 24-hour time: HH:mm.');
@@ -103,7 +127,14 @@ describe('new controls', () => {
         label="Account"
         items={[
           { id: 'profile', label: 'Profile' },
-          { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }, { id: 'ink', label: 'Ink', disabled: true }] },
+          {
+            id: 'theme',
+            label: 'Theme',
+            items: [
+              { id: 'ivory', label: 'Ivory' },
+              { id: 'ink', label: 'Ink', disabled: true },
+            ],
+          },
           { id: 'out', label: 'Sign out' },
         ]}
         onSelect={(id) => (selected = id)}
@@ -112,7 +143,9 @@ describe('new controls', () => {
     await user.click(screen.getByRole('button', { name: 'Account' }));
     await user.keyboard('{ArrowDown}{ArrowRight}');
     expect(screen.getByRole('menu', { name: 'Theme' })).toBeTruthy();
-    expect(screen.getByRole('menuitem', { name: 'Ivory' }).getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('menuitem', { name: 'Ivory' }).getAttribute('data-active')).toBe(
+      'true',
+    );
     await user.keyboard('{ArrowDown}{Enter}');
     expect(selected).toBe('ivory');
     expect(screen.queryByRole('menu', { name: 'Account' })).toBeNull();
@@ -133,12 +166,18 @@ describe('new controls', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Account' }));
     await user.keyboard('t');
-    expect(screen.getByRole('menuitem', { name: 'Theme' }).getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('menuitem', { name: 'Theme' }).getAttribute('data-active')).toBe(
+      'true',
+    );
     vi.advanceTimersByTime(600);
     await user.keyboard('p');
-    expect(screen.getByRole('menuitem', { name: 'Profile' }).getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('menuitem', { name: 'Profile' }).getAttribute('data-active')).toBe(
+      'true',
+    );
     await user.keyboard('p');
-    expect(screen.getByRole('menuitem', { name: 'Preferences' }).getAttribute('data-active')).toBe('true');
+    expect(screen.getByRole('menuitem', { name: 'Preferences' }).getAttribute('data-active')).toBe(
+      'true',
+    );
     vi.useRealTimers();
   });
 
@@ -180,7 +219,9 @@ describe('new controls', () => {
   it('closes a context submenu before the root menu', async () => {
     const user = userEvent.setup();
     render(
-      <ContextMenu items={[{ id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }] }]}>
+      <ContextMenu
+        items={[{ id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }] }]}
+      >
         Invoice row
       </ContextMenu>,
     );
@@ -196,11 +237,15 @@ describe('new controls', () => {
 
   it('opens the navbar menu and names the toggle', async () => {
     const user = userEvent.setup();
-    render(<Navbar brand="White Plumeria" items={[{ href: '#docs', label: 'Docs', current: true }]} />);
+    render(
+      <Navbar brand="White Plumeria" items={[{ href: '#docs', label: 'Docs', current: true }]} />,
+    );
     const toggle = screen.getByRole('button', { name: 'Open menu' });
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     await user.click(toggle);
-    expect(screen.getByRole('button', { name: 'Close menu' }).getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('button', { name: 'Close menu' }).getAttribute('aria-expanded')).toBe(
+      'true',
+    );
   });
 
   it('labels data table cells and sorts from the header', async () => {
@@ -208,10 +253,18 @@ describe('new controls', () => {
     render(
       <DataTable
         caption="Sample transactions"
-        rows={[{ id: 'b', merchant: 'Beta' }, { id: 'a', merchant: 'Alpha' }]}
+        rows={[
+          { id: 'b', merchant: 'Beta' },
+          { id: 'a', merchant: 'Alpha' },
+        ]}
         columns={[
           { id: 'id', header: 'ID', accessor: (row) => row.id, text: (row) => row.id },
-          { id: 'merchant', header: 'Merchant', accessor: (row) => row.merchant, text: (row) => row.merchant },
+          {
+            id: 'merchant',
+            header: 'Merchant',
+            accessor: (row) => row.merchant,
+            text: (row) => row.merchant,
+          },
         ]}
       />,
     );
@@ -223,11 +276,25 @@ describe('new controls', () => {
   it('blocks a future step until the current value moves', async () => {
     const user = userEvent.setup();
     let value = 'account';
-    const view = render(<Steps label="Checkout" items={steps} value={value} onValueChange={(next) => (value = next)} />);
+    const view = render(
+      <Steps
+        label="Checkout"
+        items={steps}
+        value={value}
+        onValueChange={(next) => (value = next)}
+      />,
+    );
     expect(screen.getByRole('button', { name: /Review/ })).toBeDisabled();
     await user.click(screen.getByRole('button', { name: /Billing/ }));
     expect(value).toBe('account');
-    view.rerender(<Steps label="Checkout" items={steps} value="billing" onValueChange={(next) => (value = next)} />);
+    view.rerender(
+      <Steps
+        label="Checkout"
+        items={steps}
+        value="billing"
+        onValueChange={(next) => (value = next)}
+      />,
+    );
     expect(screen.getByRole('button', { name: /Billing/ })).toHaveAttribute('aria-current', 'step');
     await user.click(screen.getByRole('button', { name: /Account/ }));
     expect(value).toBe('account');
@@ -244,11 +311,21 @@ describe('new controls', () => {
         ]}
       />,
     );
-    expect(screen.getByText('Six themes').closest('[role="tabpanel"]')).not.toHaveAttribute('aria-hidden');
-    expect(screen.getByText('Three adapters').closest('[role="tabpanel"]')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByText('Six themes').closest('[role="tabpanel"]')).not.toHaveAttribute(
+      'aria-hidden',
+    );
+    expect(screen.getByText('Three adapters').closest('[role="tabpanel"]')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
     await user.click(screen.getByRole('button', { name: 'Next' }));
-    expect(screen.getByText('Three adapters').closest('[role="tabpanel"]')).not.toHaveAttribute('aria-hidden');
-    expect(screen.getByRole('tab', { name: 'Frameworks' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText('Three adapters').closest('[role="tabpanel"]')).not.toHaveAttribute(
+      'aria-hidden',
+    );
+    expect(screen.getByRole('tab', { name: 'Frameworks' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
   it('shows a picture, its alt text, and a caption', async () => {
@@ -279,7 +356,10 @@ describe('new controls', () => {
     expect(picture).toHaveAttribute('src', '/carousel/white.jpg');
     expect(screen.getByText('The default palette.')).toBeInTheDocument();
     await user.click(screen.getByRole('tab', { name: 'Ink' }));
-    expect(screen.getByRole('img', { name: 'A brass lamp on deep blue linen' })).toHaveAttribute('src', '/carousel/ink.jpg');
+    expect(screen.getByRole('img', { name: 'A brass lamp on deep blue linen' })).toHaveAttribute(
+      'src',
+      '/carousel/ink.jpg',
+    );
     expect(screen.getByRole('tab', { name: 'Ink' })).toHaveAttribute('aria-selected', 'true');
   });
 
@@ -304,5 +384,29 @@ describe('new controls', () => {
     await user.click(screen.getByRole('radio', { name: /3 of 5/ }));
     expect(screen.getByRole('radio', { name: /3 of 5/ })).toBeChecked();
     expect(screen.getByText('Ctrl')).toBeInTheDocument();
+  });
+
+  it('steps a number field and stops at the bounds', async () => {
+    const user = userEvent.setup();
+    const values: number[] = [];
+    render(
+      <NumberField
+        label="Guests"
+        min={1}
+        max={3}
+        defaultValue={2}
+        onValueChange={(value) => values.push(value)}
+      />,
+    );
+    const input = screen.getByRole('spinbutton', { name: 'Guests' });
+    expect(input).toHaveValue(2);
+    await user.click(screen.getByRole('button', { name: 'Increase' }));
+    expect(input).toHaveValue(3);
+    expect(screen.getByRole('button', { name: 'Increase' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Decrease' }));
+    await user.click(screen.getByRole('button', { name: 'Decrease' }));
+    expect(input).toHaveValue(1);
+    expect(screen.getByRole('button', { name: 'Decrease' })).toBeDisabled();
+    expect(values).toEqual([3, 2, 1]);
   });
 });

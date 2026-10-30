@@ -1,4 +1,17 @@
-import { clampInteger, inputClassName, otpApply, otpCells, otpDelete, otpLength, readingDirection } from '@white-plumeria/core';
+import {
+  clampInteger,
+  inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
+  otpApply,
+  otpCells,
+  otpDelete,
+  otpLength,
+  rangeBounds,
+  readingDirection,
+} from '@white-plumeria/core';
 import { defineComponent, h, ref } from 'vue';
 import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
@@ -111,14 +124,27 @@ export const OtpField = defineComponent({
               },
               onPaste: (event: ClipboardEvent) => {
                 event.preventDefault();
-                const result = otpApply(current, size, props.numeric, index, event.clipboardData?.getData('text') ?? '');
+                const result = otpApply(
+                  current,
+                  size,
+                  props.numeric,
+                  index,
+                  event.clipboardData?.getData('text') ?? '',
+                );
                 commit(result.value, result.focus);
               },
               onKeydown: (event: KeyboardEvent) => {
                 if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                   event.preventDefault();
                   const direction = readingDirection(event.currentTarget as HTMLElement);
-                  const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
+                  const delta =
+                    event.key === 'ArrowRight'
+                      ? direction === 'rtl'
+                        ? -1
+                        : 1
+                      : direction === 'rtl'
+                        ? 1
+                        : -1;
                   refs[Math.min(size - 1, Math.max(0, index + delta))]?.focus();
                 }
                 if (event.key === 'Backspace' && !cells[index]) {
@@ -156,9 +182,20 @@ export const Rating = defineComponent({
       if (props.readOnly) {
         return h(
           'div',
-          { class: 'wpl-rating', role: 'img', 'aria-label': `${props.label}: ${current} ${t('of')} ${count}` },
+          {
+            class: 'wpl-rating',
+            role: 'img',
+            'aria-label': `${props.label}: ${current} ${t('of')} ${count}`,
+          },
           Array.from({ length: count }, (_, index) =>
-            h('span', { class: index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon', 'aria-hidden': 'true' }, [h(Icon, { name: 'star' })]),
+            h(
+              'span',
+              {
+                class: index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon',
+                'aria-hidden': 'true',
+              },
+              [h(Icon, { name: 'star' })],
+            ),
           ),
         );
       }
@@ -177,10 +214,113 @@ export const Rating = defineComponent({
                 emit('update:modelValue', score);
               },
             }),
-            h('span', { class: score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon', 'aria-hidden': 'true' }, [h(Icon, { name: 'star' })]),
+            h(
+              'span',
+              {
+                class: score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon',
+                'aria-hidden': 'true',
+              },
+              [h(Icon, { name: 'star' })],
+            ),
             h('span', { class: 'wpl-sr-only' }, `${score} ${t('of')} ${count}`),
           ]);
         }),
+      ]);
+    };
+  },
+});
+
+export const NumberField = defineComponent({
+  name: 'NumberField',
+  props: {
+    label: { type: String, required: true },
+    min: { type: Number, default: 0 },
+    max: { type: Number, default: 100 },
+    step: { type: Number, default: 1 },
+    modelValue: { type: Number, default: undefined },
+    name: { type: String, default: undefined },
+    disabled: { type: Boolean, default: false },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const { t } = useWhitePlumeria();
+    const inputId = `wpl-number-${Math.random().toString(36).slice(2, 8)}`;
+    const bounds = () => rangeBounds(props.min, props.max, props.step);
+    const internal = ref(
+      numberFieldCommit(String(props.modelValue ?? props.min), bounds(), props.min),
+    );
+    const draft = ref(numberFieldText(internal.value, bounds()));
+    const focused = ref(false);
+    return () => {
+      const limit = bounds();
+      const committed = numberFieldCommit(
+        String(props.modelValue ?? internal.value),
+        limit,
+        limit.min,
+      );
+      const shown = focused.value ? draft.value : numberFieldText(committed, limit);
+      const parsed = numberFieldDraftValue(shown, limit) ?? committed;
+      const commit = (next: number) => {
+        const snapped = numberFieldCommit(String(next), limit, limit.min);
+        draft.value = numberFieldText(snapped, limit);
+        if (props.modelValue === undefined) internal.value = snapped;
+        emit('update:modelValue', snapped);
+      };
+      return h('div', { class: 'wpl-field' }, [
+        h('label', { class: 'wpl-label', for: inputId }, props.label),
+        h('div', { class: 'wpl-number' }, [
+          h(
+            'button',
+            {
+              type: 'button',
+              class: 'wpl-number-step',
+              'aria-label': t('decrease'),
+              disabled: props.disabled || parsed <= limit.min,
+              onClick: () => commit(numberFieldStep(parsed, -1, limit)),
+            },
+            [h(Icon, { name: 'minus' })],
+          ),
+          h('input', {
+            id: inputId,
+            class: 'wpl-input',
+            type: 'number',
+            name: props.name,
+            inputmode: limit.step < 1 ? 'decimal' : 'numeric',
+            min: limit.min,
+            max: limit.max,
+            step: limit.step,
+            value: shown,
+            disabled: props.disabled,
+            onFocus: () => {
+              focused.value = true;
+              draft.value = numberFieldText(committed, limit);
+            },
+            onBlur: () => {
+              focused.value = false;
+              commit(numberFieldCommit(draft.value, limit, committed));
+            },
+            onInput: (event: Event) => {
+              const next = (event.target as HTMLInputElement).value;
+              draft.value = next;
+              const parsedNext = numberFieldDraftValue(next, limit);
+              if (parsedNext === null) return;
+              if (props.modelValue === undefined) internal.value = parsedNext;
+              emit('update:modelValue', parsedNext);
+            },
+            onWheel: (event: WheelEvent) => (event.currentTarget as HTMLInputElement).blur(),
+          }),
+          h(
+            'button',
+            {
+              type: 'button',
+              class: 'wpl-number-step',
+              'aria-label': t('increase'),
+              disabled: props.disabled || parsed >= limit.max,
+              onClick: () => commit(numberFieldStep(parsed, 1, limit)),
+            },
+            [h(Icon, { name: 'plus' })],
+          ),
+        ]),
       ]);
     };
   },

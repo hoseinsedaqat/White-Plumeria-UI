@@ -36,6 +36,29 @@ export function snapToStep(value: number, bounds: RangeBounds): number {
   return Math.min(bounds.max, Math.max(bounds.min, rounded));
 }
 
+const incompleteNumber = /^(?:[+-]?\.?|[+-]?\d+\.|[+-]?\d+(?:\.\d+)?[eE][+-]?)$/;
+
+/** A finite draft snaps to the step. An unfinished draft stays unfinished. */
+export function numberFieldDraftValue(raw: string, bounds: RangeBounds): number | null {
+  const text = raw.trim();
+  if (!text || incompleteNumber.test(text)) return null;
+  const parsed = Number(text);
+  if (!Number.isFinite(parsed)) return null;
+  return snapToStep(parsed, bounds);
+}
+
+export function numberFieldText(value: number, bounds: RangeBounds): string {
+  return String(snapToStep(value, bounds));
+}
+
+export function numberFieldCommit(raw: string, bounds: RangeBounds, fallback: number): number {
+  return numberFieldDraftValue(raw, bounds) ?? snapToStep(fallback, bounds);
+}
+
+export function numberFieldStep(current: number, delta: -1 | 1, bounds: RangeBounds): number {
+  return snapToStep(current + delta * bounds.step, bounds);
+}
+
 export function normalizeRange(start: number, end: number, bounds: RangeBounds): NumberRange {
   const low = snapToStep(Math.min(start, end), bounds);
   const high = snapToStep(Math.max(start, end), bounds);

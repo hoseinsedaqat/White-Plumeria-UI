@@ -9,7 +9,16 @@ export { Combobox } from './combobox';
 export type { ComboOption } from './combobox';
 export { CommandPalette } from './command';
 export type { CommandItem } from './command';
-export { Breadcrumb, ChartContainer, DataTable, List, Pagination, Table, Timeline, TreeView } from './data';
+export {
+  Breadcrumb,
+  ChartContainer,
+  DataTable,
+  List,
+  Pagination,
+  Table,
+  Timeline,
+  TreeView,
+} from './data';
 export type { ChartPoint, DataColumn, TimelineItem, TreeNode } from './data';
 export { Dialog, Drawer, Modal } from './dialog';
 export {
@@ -43,7 +52,7 @@ export {
   Textarea,
   ValidationMessage,
 } from './form';
-export { OtpField, PasswordField, Rating } from './fields';
+export { NumberField, OtpField, PasswordField, Rating } from './fields';
 export type { SelectOption } from './form';
 export { Icon, Mark } from './icon';
 export { Kbd } from './kbd';

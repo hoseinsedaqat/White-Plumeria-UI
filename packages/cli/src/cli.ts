@@ -1,7 +1,13 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { parseArgs } from 'node:util';
-import { brand, getComponent, installCommand, packageName, type PackageName } from '@white-plumeria/core';
+import {
+  brand,
+  getComponent,
+  installCommand,
+  packageName,
+  type PackageName,
+} from '@white-plumeria/core';
 import { themeNames, themes } from '@white-plumeria/tokens';
 
 export interface CliResult {
@@ -21,7 +27,7 @@ const help = `wpl — ${brand.productName} CLI
 
 Usage:
   wpl init
-  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|qwik|lit|alpine|marko|html] [--copy]
+  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|qwik|lit|alpine|marko|ember|html] [--copy]
   wpl doctor
   wpl theme [name]
   wpl --help
@@ -62,7 +68,8 @@ export function run(argv: string[], io?: Partial<CliIo>): CliResult {
   if (parsed.values.help || parsed.positionals.length === 0) return ok(help);
   const [command, ...rest] = parsed.positionals;
   if (command === 'init') return init(runtime);
-  if (command === 'add') return add(rest[0], String(parsed.values.framework), Boolean(parsed.values.copy), runtime);
+  if (command === 'add')
+    return add(rest[0], String(parsed.values.framework), Boolean(parsed.values.copy), runtime);
   if (command === 'doctor') return doctor(runtime);
   if (command === 'theme') return theme(rest[0]);
   return fail(2, `Unknown command: ${command ?? ''}\n\n${help}`);
@@ -90,9 +97,28 @@ function init(io: CliIo): CliResult {
 function add(name: string | undefined, framework: string, copy: boolean, io: CliIo): CliResult {
   if (!name) return fail(1, 'add needs a component name. Example: wpl add button');
   const component = getComponent(name);
-  if (!component) return fail(1, `Unknown component: ${name}. Run wpl theme or search the docs catalog.`);
-  const target = framework === 'vue' || framework === 'svelte' || framework === 'angular' || framework === 'solid' || framework === 'preact' || framework === 'qwik' || framework === 'lit' || framework === 'alpine' || framework === 'marko' || framework === 'ember' || framework === 'html' || framework === 'react' ? framework : '';
-  if (!target) return fail(1, `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, or html.`);
+  if (!component)
+    return fail(1, `Unknown component: ${name}. Run wpl theme or search the docs catalog.`);
+  const target =
+    framework === 'vue' ||
+    framework === 'svelte' ||
+    framework === 'angular' ||
+    framework === 'solid' ||
+    framework === 'preact' ||
+    framework === 'qwik' ||
+    framework === 'lit' ||
+    framework === 'alpine' ||
+    framework === 'marko' ||
+    framework === 'ember' ||
+    framework === 'html' ||
+    framework === 'react'
+      ? framework
+      : '';
+  if (!target)
+    return fail(
+      1,
+      `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, or html.`,
+    );
   const packages: PackageName[] = target === 'html' ? ['styles'] : ['styles', target];
   const lines = [
     installCommand(packages, 'npm'),
@@ -123,7 +149,8 @@ function doctor(io: CliIo): CliResult {
     `Themes: ${themeNames.join(', ')}`,
     'npm packages: not published',
   ];
-  if (problems.length) return { code: 1, stdout: `${lines.join('\n')}\n`, stderr: `${problems.join('\n')}\n` };
+  if (problems.length)
+    return { code: 1, stdout: `${lines.join('\n')}\n`, stderr: `${problems.join('\n')}\n` };
   return ok(`${lines.join('\n')}\nDoctor found no local problems.\n`);
 }
 
@@ -132,7 +159,10 @@ function theme(name: string | undefined): CliResult {
   const found = themes.find((item) => item.name === name);
   if (!found) return fail(1, `Unknown theme: ${name}. Known: ${themeNames.join(', ')}`);
   const css = Object.entries(found.light)
-    .map(([key, value]) => `  --wpl-color-${key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}: ${value};`)
+    .map(
+      ([key, value]) =>
+        `  --wpl-color-${key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}: ${value};`,
+    )
     .join('\n');
   return ok(`[data-wpl-theme="${found.name}"] {\n${css}\n}\n`);
 }

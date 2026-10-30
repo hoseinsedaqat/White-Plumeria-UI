@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- NumberField is a numeric stepper in every adapter. The value snaps to the step, the buttons stop at the bounds, and a wheel event blurs the field. It is not published.
 - README leads with a working clone setup, the intended install commands, and a per-adapter quick start. Packages are still not published.
 - `@white-plumeria/angular` is an Angular 22 adapter for the same catalog. Native controls stay on the real element (`button wplButton`). Composites use `wpl-*` elements. It is not published to npm.
 - ContextMenu opens one submenu level from a right-click or Shift+F10. Escape closes that level before the menu.

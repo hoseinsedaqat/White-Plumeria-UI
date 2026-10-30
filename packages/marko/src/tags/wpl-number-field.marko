@@ -1,0 +1,97 @@
+import { iconPaths, message, numberFieldCommit, numberFieldDraftValue, numberFieldStep, numberFieldText, rangeBounds } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Input {
+  label?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  name?: string;
+  disabled?: boolean;
+  onChange?: (value: number) => void;
+}
+
+<let/bounds=rangeBounds(Number(input.min ?? 0), Number(input.max ?? 100), Number(input.step ?? 1))>
+<let/value=numberFieldCommit(String(input.value ?? bounds.min), bounds, bounds.min)>
+<let/draft=numberFieldText(value, bounds)>
+<let/focused=false>
+<id/fieldId/>
+
+<div/host class="wpl-field">
+  <label class="wpl-label" for=fieldId>${input.label || "Number"}</label>
+  <div class="wpl-number">
+    <button
+      type="button"
+      class="wpl-number-step"
+      aria-label=message("en", "decrease")
+      disabled=input.disabled || (numberFieldDraftValue(focused ? draft : numberFieldText(value, bounds), bounds) ?? value) <= bounds.min
+      onClick() {
+        const shown = focused ? draft : numberFieldText(value, bounds);
+        const current = numberFieldDraftValue(shown, bounds) ?? value;
+        value = numberFieldStep(current, -1, bounds);
+        draft = numberFieldText(value, bounds);
+        emit(host(), "wpl-change", { value });
+        input.onChange?.(value);
+      }
+    >
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d=iconPaths.minus/>
+      </svg>
+    </button>
+    <input
+      id=fieldId
+      class="wpl-input"
+      type="number"
+      name=input.name
+      inputmode=bounds.step < 1 ? "decimal" : "numeric"
+      min=bounds.min
+      max=bounds.max
+      step=bounds.step
+      value=focused ? draft : numberFieldText(value, bounds)
+      disabled=input.disabled
+      onFocus() {
+        focused = true;
+        draft = numberFieldText(value, bounds);
+      }
+      onBlur(event) {
+        focused = false;
+        const raw = event.target instanceof HTMLInputElement ? event.target.value : draft;
+        value = numberFieldCommit(raw, bounds, value);
+        draft = numberFieldText(value, bounds);
+        emit(host(), "wpl-change", { value });
+        input.onChange?.(value);
+      }
+      onInput(event) {
+        const raw = event.target instanceof HTMLInputElement ? event.target.value : "";
+        draft = raw;
+        const parsed = numberFieldDraftValue(raw, bounds);
+        if (parsed === null) return;
+        value = parsed;
+        emit(host(), "wpl-change", { value });
+        input.onChange?.(value);
+      }
+      onWheel(event) {
+        if (event.target instanceof HTMLInputElement) event.target.blur();
+      }
+    >
+    <button
+      type="button"
+      class="wpl-number-step"
+      aria-label=message("en", "increase")
+      disabled=input.disabled || (numberFieldDraftValue(focused ? draft : numberFieldText(value, bounds), bounds) ?? value) >= bounds.max
+      onClick() {
+        const shown = focused ? draft : numberFieldText(value, bounds);
+        const current = numberFieldDraftValue(shown, bounds) ?? value;
+        value = numberFieldStep(current, 1, bounds);
+        draft = numberFieldText(value, bounds);
+        emit(host(), "wpl-change", { value });
+        input.onChange?.(value);
+      }
+    >
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d=iconPaths.plus/>
+      </svg>
+    </button>
+  </div>
+</div>

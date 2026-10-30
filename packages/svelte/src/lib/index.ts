@@ -40,6 +40,7 @@ export { default as Modal } from './Modal.svelte';
 export { default as Navbar } from './Navbar.svelte';
 export { default as NavigationMenu } from './NavigationMenu.svelte';
 export { default as Notification } from './Notification.svelte';
+export { default as NumberField } from './NumberField.svelte';
 export { default as OtpField } from './OtpField.svelte';
 export { default as PasswordField } from './PasswordField.svelte';
 export { default as PageHeader } from './PageHeader.svelte';

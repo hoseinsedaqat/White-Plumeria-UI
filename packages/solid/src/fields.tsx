@@ -1,5 +1,18 @@
-import { clampInteger, inputClassName, otpApply, otpCells, otpDelete, otpLength, readingDirection } from '@white-plumeria/core';
-import { createSignal , createUniqueId } from 'solid-js';
+import {
+  clampInteger,
+  inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
+  otpApply,
+  otpCells,
+  otpDelete,
+  otpLength,
+  rangeBounds,
+  readingDirection,
+} from '@white-plumeria/core';
+import { createSignal, createUniqueId } from 'solid-js';
 import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
@@ -111,14 +124,27 @@ export function OtpField(props: {
             }}
             onPaste={(event) => {
               event.preventDefault();
-              const result = otpApply(current(), size(), numeric(), index, event.clipboardData?.getData('text') ?? '');
+              const result = otpApply(
+                current(),
+                size(),
+                numeric(),
+                index,
+                event.clipboardData?.getData('text') ?? '',
+              );
               commit(result.value, result.focus);
             }}
             onKeyDown={(event) => {
               if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 event.preventDefault();
                 const direction = readingDirection(event.currentTarget);
-                const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
+                const delta =
+                  event.key === 'ArrowRight'
+                    ? direction === 'rtl'
+                      ? -1
+                      : 1
+                    : direction === 'rtl'
+                      ? 1
+                      : -1;
                 refs[Math.min(size() - 1, Math.max(0, index + delta))]?.focus();
               }
               if (event.key === 'Backspace' && !cells()[index]) {
@@ -155,9 +181,16 @@ export function Rating(props: {
   return (
     <>
       {props.readOnly ? (
-        <div class="wpl-rating" role="img" aria-label={`${props.label}: ${current()} ${t('of')} ${count()}`}>
+        <div
+          class="wpl-rating"
+          role="img"
+          aria-label={`${props.label}: ${current()} ${t('of')} ${count()}`}
+        >
           {stars().map((score) => (
-            <span class={score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+            <span
+              class={score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+              aria-hidden="true"
+            >
               <Icon name="star" />
             </span>
           ))}
@@ -177,7 +210,10 @@ export function Rating(props: {
                   props.onValueChange?.(score);
                 }}
               />
-              <span class={score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+              <span
+                class={score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+                aria-hidden="true"
+              >
                 <Icon name="star" />
               </span>
               <span class="wpl-sr-only">
@@ -188,5 +224,100 @@ export function Rating(props: {
         </fieldset>
       )}
     </>
+  );
+}
+
+export function NumberField(props: {
+  label: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+  name?: string;
+  disabled?: boolean;
+  id?: string;
+}) {
+  const { t } = useWhitePlumeria();
+  const uid = createUniqueId();
+  const inputId = () => props.id ?? uid;
+  const bounds = () => rangeBounds(props.min ?? 0, props.max ?? 100, props.step ?? 1);
+  const [internal, setInternal] = createSignal(
+    numberFieldCommit(
+      String(props.defaultValue ?? props.value ?? props.min ?? 0),
+      bounds(),
+      bounds().min,
+    ),
+  );
+  const [draft, setDraft] = createSignal(numberFieldText(internal(), bounds()));
+  const [focused, setFocused] = createSignal(false);
+  const committed = () =>
+    numberFieldCommit(String(props.value ?? internal()), bounds(), bounds().min);
+  const shown = () => (focused() ? draft() : numberFieldText(committed(), bounds()));
+  const parsed = () => numberFieldDraftValue(shown(), bounds()) ?? committed();
+
+  function commit(next: number) {
+    const snapped = numberFieldCommit(String(next), bounds(), bounds().min);
+    setDraft(numberFieldText(snapped, bounds()));
+    if (props.value === undefined) setInternal(snapped);
+    props.onValueChange?.(snapped);
+  }
+
+  return (
+    <div class="wpl-field">
+      <label class="wpl-label" for={inputId()}>
+        {props.label}
+      </label>
+      <div class="wpl-number">
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label={t('decrease')}
+          disabled={props.disabled || parsed() <= bounds().min}
+          onClick={() => commit(numberFieldStep(parsed(), -1, bounds()))}
+        >
+          <Icon name="minus" />
+        </button>
+        <input
+          id={inputId()}
+          class="wpl-input"
+          type="number"
+          name={props.name}
+          inputMode={bounds().step < 1 ? 'decimal' : 'numeric'}
+          min={bounds().min}
+          max={bounds().max}
+          step={bounds().step}
+          value={shown()}
+          disabled={props.disabled}
+          onFocus={() => {
+            setFocused(true);
+            setDraft(numberFieldText(committed(), bounds()));
+          }}
+          onBlur={() => {
+            setFocused(false);
+            commit(numberFieldCommit(draft(), bounds(), committed()));
+          }}
+          onInput={(event) => {
+            const next = event.currentTarget.value;
+            setDraft(next);
+            const parsedNext = numberFieldDraftValue(next, bounds());
+            if (parsedNext === null) return;
+            if (props.value === undefined) setInternal(parsedNext);
+            props.onValueChange?.(parsedNext);
+          }}
+          onWheel={(event) => event.currentTarget.blur()}
+        />
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label={t('increase')}
+          disabled={props.disabled || parsed() >= bounds().max}
+          onClick={() => commit(numberFieldStep(parsed(), 1, bounds()))}
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
+    </div>
   );
 }

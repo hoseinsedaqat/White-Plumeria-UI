@@ -4,19 +4,42 @@ import { CodeBlock } from '../copy.tsx';
 const pages: Record<string, { title: string; body: string; code?: string }> = {
   '/start': {
     title: 'Quick start',
-    body: 'Install the styles and one adapter. The core package comes with the adapter. You do not need Tailwind.',
-    code: `${installCommand(['styles', 'react'], 'npm')}\n\nimport { Button } from "@white-plumeria/react";\nimport "@white-plumeria/styles";\n\nexport function Example() {\n  return <Button>Save changes</Button>;\n}`,
+    body: 'Packages are not on npm. Clone the repository and start the docs site. The npm command below is the intended install, and it does not work today.',
+    code: `git clone https://github.com/hoseinsedaqat/White-Plumeria-UI.git
+cd White-Plumeria-UI
+corepack pnpm install
+corepack pnpm dev
+
+# Intended install, once published. It fails today.
+${installCommand(['styles', 'react'], 'npm')}
+
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/react";
+import "@white-plumeria/styles";
+
+export function Example() {
+  return (
+    <WhitePlumeriaProvider>
+      <Button>Save changes</Button>
+    </WhitePlumeriaProvider>
+  );
+}`,
   },
   '/install': {
     title: 'Installation',
-    body: 'Packages are prepared for the @white-plumeria scope. They are not published to npm yet. The commands below are the intended install API.',
+    body: 'These are the intended install commands. They do not work until @white-plumeria is published. Always install @white-plumeria/styles with an adapter. Today, clone the repository and run corepack pnpm install, then corepack pnpm dev.',
     code: [
-      installCommand(['styles'], 'npm'),
-      installCommand(['react'], 'npm'),
-      installCommand(['vue'], 'npm'),
-      installCommand(['svelte'], 'npm'),
-      installCommand(['elements'], 'npm'),
-      installCommand(['cli'], 'npm'),
+      installCommand(['styles', 'react'], 'npm'),
+      installCommand(['styles', 'vue'], 'pnpm'),
+      installCommand(['styles', 'svelte'], 'yarn'),
+      installCommand(['styles', 'angular'], 'npm'),
+      installCommand(['styles', 'solid'], 'npm'),
+      installCommand(['styles', 'preact'], 'npm'),
+      installCommand(['styles', 'qwik'], 'npm'),
+      installCommand(['styles', 'lit'], 'npm'),
+      installCommand(['styles', 'alpine'], 'npm'),
+      installCommand(['styles', 'marko'], 'npm'),
+      installCommand(['styles', 'ember'], 'npm'),
+      installCommand(['styles', 'elements'], 'npm'),
     ].join('\n'),
   },
   '/theming': {
