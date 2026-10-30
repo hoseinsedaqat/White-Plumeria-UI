@@ -30,6 +30,25 @@ const cleanForm = `<form class="wpl-stack">
 
 const fewer = Math.round((1 - cleanForm.length / verboseForm.length) * 100);
 const chips = ['badge', 'card', 'input', 'select', 'dialog', 'tabs', 'alert', 'table'];
+const principles = [
+  ['One vocabulary', 'Class names stay wpl-. Tokens stay --wpl-. A theme change does not fork the markup.'],
+  ['Native, not wrapped', 'Each adapter is written for that framework. Vue is not React in a costume, and Ember is not Alpine.'],
+  ['Theme once', 'Color, type, and focus come from CSS variables, so the same component follows the selected theme.'],
+] as const;
+const adapters = [
+  ['HTML', '@white-plumeria/styles', 'Stylesheet only', 'Put the classes on native elements. No framework runtime. The elements package is a smaller custom-element set, not a second catalog.'],
+  ['React', '@white-plumeria/react', 'Docs and hooks', 'Controlled props and hooks. The live previews on this site render from this package.'],
+  ['Vue', '@white-plumeria/vue', 'Single-file components', 'Templates and v-model. The same names as React, with Vue events instead of a React wrapper.'],
+  ['Svelte', '@white-plumeria/svelte', 'Svelte 5', 'Runes and markup in the component file. State does not go through another framework.'],
+  ['Angular', '@white-plumeria/angular', 'Signals', 'Standalone components and signal inputs. Templates stay Angular templates.'],
+  ['Solid', '@white-plumeria/solid', 'Fine-grained', 'JSX with Solid signals. It is not the React package under another import.'],
+  ['Preact', '@white-plumeria/preact', 'Smaller runtime', 'A React-shaped API of its own. It does not re-export @white-plumeria/react.'],
+  ['Qwik', '@white-plumeria/qwik', 'Resumable', 'Components and QRL handlers for Qwik. The stylesheet is still the shared one.'],
+  ['Lit', '@white-plumeria/lit', 'Custom elements', 'Light DOM, so the shared stylesheet reaches the controls. Register the tags, then use them as elements.'],
+  ['Alpine', '@white-plumeria/alpine', 'HTML behavior', 'Add behavior to markup you already have. No compile step and no Vue wrapper.'],
+  ['Marko', '@white-plumeria/marko', 'Tags', 'Tag files for Marko 6. Button and Provider have a tested server render. The other tags are client components.'],
+  ['Ember', '@white-plumeria/ember', 'Glimmer', 'Native Glimmer components for Ember 7.4. Rendered on the client. Server render is not claimed.'],
+] as const;
 const swatches = [
   ['primary', 'var(--wpl-color-primary)'],
   ['accent', 'var(--wpl-color-accent)'],
@@ -447,20 +466,11 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>Works everywhere.</span>
         </h2>
-        <p>The stylesheet does not require a framework. The components are native in each one.</p>
-        <div className="home-frameworks" aria-label="Frameworks">
-          <span>HTML</span>
-          <span>React</span>
-          <span>Vue</span>
-          <span>Svelte</span>
-          <span>Angular</span>
-          <span>Solid</span>
-          <span>Preact</span>
-          <span>Qwik</span>
-          <span>Lit</span>
-          <span>Alpine</span>
-          <span>Marko</span>
-          <span>Ember</span>
+        <p>The stylesheet does not require a framework. Each adapter is native, and they share one set of names.</p>
+        <div className="home-ctas">
+          <a className="home-cta" href="#frameworks">
+            See the adapters
+          </a>
         </div>
       </section>
 
@@ -481,6 +491,41 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               </A>
             );
           })}
+        </div>
+      </section>
+
+      <section className="home-section home-adapters" id="frameworks" aria-labelledby="frameworks-title">
+        <h2 id="frameworks-title">
+          Use the framework
+          <br />
+          <span>you already have</span>
+        </h2>
+        <p>Twelve ways in. One catalog, one theme, one keyboard model. Pick the package that matches the app, not a second design system.</p>
+        <div className="home-principles">
+          {principles.map(([title, body]) => (
+            <div key={title}>
+              <strong>{title}</strong>
+              <p>{body}</p>
+            </div>
+          ))}
+        </div>
+        <ul className="home-adapter-grid">
+          {adapters.map(([name, pkg, role, detail]) => (
+            <li key={name} className="home-adapter">
+              <small>{pkg}</small>
+              <strong>{name}</strong>
+              <em>{role}</em>
+              <p>{detail}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="home-ctas">
+          <A className="home-cta home-cta-dark" href="/playground" onNavigate={onNavigate}>
+            Open the playground
+          </A>
+          <A className="home-cta" href="/install" onNavigate={onNavigate}>
+            Install notes
+          </A>
         </div>
       </section>
 

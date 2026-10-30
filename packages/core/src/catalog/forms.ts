@@ -484,7 +484,7 @@ export const formCatalog: ComponentDoc[] = [
     ],
     events: [{ name: 'change', react: 'onValueChange', vue: '@update:modelValue', svelte: 'bind:value', description: 'Code changed.' }],
     a11y: ['Each cell has an accessible name. Paste fills from the focused cell. Arrow keys move between cells.'],
-    rtl: ['Arrow keys follow reading direction.'],
+    rtl: ['Cells stay left to right. A code is a sequence, not a sentence, so arrow keys follow that order.'],
     limitations: ['Does not send or verify a code.', 'The value is left-packed. Typing past the current end appends.'],
     element: false,
     examples: examples('OtpField', {

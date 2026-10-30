@@ -285,9 +285,17 @@
   border-color: var(--wpl-color-success);
 }
 
+.wpl-alert-success .wpl-icon {
+  color: var(--wpl-color-success);
+}
+
 .wpl-alert-warning {
   background: var(--wpl-color-warning-subtle);
   border-color: var(--wpl-color-warning);
+}
+
+.wpl-alert-warning .wpl-icon {
+  color: var(--wpl-color-warning);
 }
 
 .wpl-alert-danger {
@@ -295,9 +303,17 @@
   border-color: var(--wpl-color-danger);
 }
 
+.wpl-alert-danger .wpl-icon {
+  color: var(--wpl-color-danger);
+}
+
 .wpl-alert-info {
   background: var(--wpl-color-info-subtle);
   border-color: var(--wpl-color-info);
+}
+
+.wpl-alert-info .wpl-icon {
+  color: var(--wpl-color-info);
 }
 
 .wpl-stat {
