@@ -1,0 +1,22 @@
+{
+  "name": "@white-plumeria/example-preact",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5179",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4179"
+  },
+  "dependencies": {
+    "@white-plumeria/preact": "workspace:*",
+    "@white-plumeria/styles": "workspace:*",
+    "preact": "catalog:"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:",
+    "@preact/preset-vite": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

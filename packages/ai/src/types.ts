@@ -1,7 +1,7 @@
 import type { ThemeName } from '@white-plumeria/tokens';
 import type { ComponentDoc } from '@white-plumeria/core';
 
-export type FrameworkId = 'html' | 'react' | 'vue' | 'svelte' | 'angular' | 'solid';
+export type FrameworkId = 'html' | 'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact';
 
 export interface Recommendation {
   component: string;

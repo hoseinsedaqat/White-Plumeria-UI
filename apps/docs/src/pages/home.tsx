@@ -273,7 +273,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                 <br />
                 class names
               </h2>
-              <p>Shorter markup. The same names in CSS, React, Vue, Svelte, Angular, and Solid.</p>
+              <p>Shorter markup. The same names in CSS, React, Vue, Svelte, Angular, Solid, and Preact.</p>
             </div>
           </div>
         </div>
@@ -455,6 +455,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>Svelte</span>
           <span>Angular</span>
           <span>Solid</span>
+          <span>Preact</span>
         </div>
       </section>
 

@@ -6,7 +6,7 @@ import { Showcase } from '../showcases.tsx';
 
 export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: (href: string) => void }) {
   const component = getComponent(slug);
-  const [tab, setTab] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'html'>('react');
+  const [tab, setTab] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'html'>('react');
   if (!component) return <p>Unknown component.</p>;
   const index = catalog.findIndex((item) => item.slug === component.slug);
   const prev = catalog[index - 1];
@@ -23,7 +23,7 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       <section className="docs-block" id="usage">
         <h2>Usage</h2>
         <div className="docs-tabs" role="tablist" aria-label="Framework examples">
-          {(['react', 'vue', 'svelte', 'angular', 'solid', 'html'] as const).map((item) => (
+          {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'html'] as const).map((item) => (
             <button
               key={item}
               type="button"
