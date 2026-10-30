@@ -9,7 +9,16 @@ export { Combobox } from './combobox.ts';
 export type { ComboOption } from './combobox.ts';
 export { CommandPalette } from './command.ts';
 export type { CommandItem } from './command.ts';
-export { Breadcrumb, ChartContainer, DataTable, List, Pagination, Table, Timeline, TreeView } from './data.ts';
+export {
+  Breadcrumb,
+  ChartContainer,
+  DataTable,
+  List,
+  Pagination,
+  Table,
+  Timeline,
+  TreeView,
+} from './data.ts';
 export type { DataColumn, TreeNode } from './data.ts';
 export { Dialog, Drawer, Modal } from './dialog.ts';
 export {
@@ -43,7 +52,7 @@ export {
   Textarea,
   ValidationMessage,
 } from './form.ts';
-export { OtpField, PasswordField, Rating } from './fields.ts';
+export { NumberField, OtpField, PasswordField, Rating } from './fields.ts';
 export type { SelectOption } from './form.ts';
 export { Icon, Mark } from './icon.ts';
 export { Kbd } from './kbd.ts';

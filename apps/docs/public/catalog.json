@@ -189,7 +189,7 @@
     "summaryFa": "دکمهٔ منو با ناوبری صفحه‌کلید و یک سطح زیرمنو.",
     "limitations": [
       "One submenu level. Deeper items are not opened.",
-      "Typeahead is not implemented."
+      "Typeahead matches a label prefix. Letters typed within half a second narrow it; the same letter cycles."
     ]
   },
   {
@@ -325,6 +325,16 @@
     "summaryFa": "اعلان ماندگار درون صفحه با بستن اختیاری.",
     "limitations": [
       "Not a push-notification service."
+    ]
+  },
+  {
+    "name": "NumberField",
+    "slug": "number-field",
+    "summary": "Numeric field with decrease and increase buttons. The value snaps to the step.",
+    "summaryFa": "فیلد عددی با دکمه‌های کم و زیاد. مقدار روی گام می‌نشیند.",
+    "limitations": [
+      "Does not format currency or locale grouping inside the input. The stored value is a number.",
+      "An unfinished draft, such as a trailing decimal, is kept until blur, then snapped or restored."
     ]
   },
   {

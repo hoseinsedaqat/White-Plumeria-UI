@@ -1,10 +1,15 @@
 import {
   clampInteger,
   inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   otpApply,
   otpCells,
   otpDelete,
   otpLength,
+  rangeBounds,
   readingDirection,
 } from '@white-plumeria/core';
 import { useId, useRef, useState } from 'react';
@@ -138,14 +143,27 @@ export function OtpField({
             }}
             onPaste={(event) => {
               event.preventDefault();
-              const result = otpApply(current, size, numeric, index, event.clipboardData.getData('text'));
+              const result = otpApply(
+                current,
+                size,
+                numeric,
+                index,
+                event.clipboardData.getData('text'),
+              );
               commit(result.value, result.focus);
             }}
             onKeyDown={(event) => {
               if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 event.preventDefault();
                 const direction = readingDirection(event.currentTarget);
-                const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
+                const delta =
+                  event.key === 'ArrowRight'
+                    ? direction === 'rtl'
+                      ? -1
+                      : 1
+                    : direction === 'rtl'
+                      ? 1
+                      : -1;
                 refs.current[Math.min(size - 1, Math.max(0, index + delta))]?.focus();
               }
               if (event.key === 'Backspace' && !cells[index]) {
@@ -188,9 +206,17 @@ export function Rating({
 
   if (readOnly) {
     return (
-      <div className="wpl-rating" role="img" aria-label={`${label}: ${current} ${t('of')} ${count}`}>
+      <div
+        className="wpl-rating"
+        role="img"
+        aria-label={`${label}: ${current} ${t('of')} ${count}`}
+      >
         {Array.from({ length: count }, (_, index) => (
-          <span key={index} className={index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+          <span
+            key={index}
+            className={index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+            aria-hidden="true"
+          >
             <Icon name="star" />
           </span>
         ))}
@@ -215,7 +241,10 @@ export function Rating({
                 onValueChange?.(score);
               }}
             />
-            <span className={score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+            <span
+              className={score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+              aria-hidden="true"
+            >
               <Icon name="star" />
             </span>
             <span className="wpl-sr-only">
@@ -226,4 +255,109 @@ export function Rating({
       })}
     </fieldset>
   );
+}
+
+export function NumberField({
+  label,
+  min = 0,
+  max = 100,
+  step = 1,
+  value,
+  defaultValue,
+  onValueChange,
+  name,
+  disabled = false,
+  id,
+}: {
+  label: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+  name?: string;
+  disabled?: boolean;
+  id?: string;
+}) {
+  const { t } = useWhitePlumeria();
+  const uid = useId();
+  const inputId = id ?? uid;
+  const bounds = rangeBounds(min, max, step);
+  const [internal, setInternal] = useState(() =>
+    snapOr(defaultValue ?? value ?? bounds.min, bounds),
+  );
+  const [draft, setDraft] = useState(() => numberFieldText(internal, bounds));
+  const [focused, setFocused] = useState(false);
+  const committed = snapOr(value ?? internal, bounds);
+  const shown = focused ? draft : numberFieldText(committed, bounds);
+  const parsed = numberFieldDraftValue(shown, bounds) ?? committed;
+
+  function commit(next: number) {
+    const snapped = snapOr(next, bounds);
+    setDraft(numberFieldText(snapped, bounds));
+    if (value === undefined) setInternal(snapped);
+    onValueChange?.(snapped);
+  }
+
+  return (
+    <div className="wpl-field">
+      <label className="wpl-label" htmlFor={inputId}>
+        {label}
+      </label>
+      <div className="wpl-number">
+        <button
+          type="button"
+          className="wpl-number-step"
+          aria-label={t('decrease')}
+          disabled={disabled || parsed <= bounds.min}
+          onClick={() => commit(numberFieldStep(parsed, -1, bounds))}
+        >
+          <Icon name="minus" />
+        </button>
+        <input
+          id={inputId}
+          className="wpl-input"
+          type="number"
+          name={name}
+          inputMode={bounds.step < 1 ? 'decimal' : 'numeric'}
+          min={bounds.min}
+          max={bounds.max}
+          step={bounds.step}
+          value={shown}
+          disabled={disabled}
+          onFocus={() => {
+            setFocused(true);
+            setDraft(numberFieldText(committed, bounds));
+          }}
+          onBlur={() => {
+            setFocused(false);
+            commit(numberFieldCommit(draft, bounds, committed));
+          }}
+          onChange={(event) => {
+            const next = event.currentTarget.value;
+            setDraft(next);
+            const parsedNext = numberFieldDraftValue(next, bounds);
+            if (parsedNext === null) return;
+            if (value === undefined) setInternal(parsedNext);
+            onValueChange?.(parsedNext);
+          }}
+          onWheel={(event) => event.currentTarget.blur()}
+        />
+        <button
+          type="button"
+          className="wpl-number-step"
+          aria-label={t('increase')}
+          disabled={disabled || parsed >= bounds.max}
+          onClick={() => commit(numberFieldStep(parsed, 1, bounds))}
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function snapOr(value: number, bounds: ReturnType<typeof rangeBounds>): number {
+  return numberFieldCommit(String(value), bounds, bounds.min);
 }

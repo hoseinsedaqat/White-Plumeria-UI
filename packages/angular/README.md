@@ -3,11 +3,11 @@
 Angular 22 components for White Plumeria. Same names as the React, Vue, and Svelte adapters. Templates use the Angular idiom: attribute components for native controls, element components for composites.
 
 ```ts
-import { Button, Card, WhitePlumeriaProvider } from "@white-plumeria/angular";
-import "@white-plumeria/styles";
+import { Button, Card, WhitePlumeriaProvider } from '@white-plumeria/angular';
+import '@white-plumeria/styles';
 
 @Component({
-  selector: "app-example",
+  selector: 'app-example',
   imports: [WhitePlumeriaProvider, Card, Button],
   template: `
     <wpl-provider>
@@ -30,4 +30,4 @@ Peer dependency: `@angular/core` `^22`. Works with zoneless change detection. `z
 
 The runnable example is `apps/example-angular`. Build this package first, then run `pnpm --filter @white-plumeria/example-angular dev`. It listens on port 5177.
 
-Cell accessors, tab panels, and accordion content are strings, matching the Vue adapter. One submenu level. Typeahead is not implemented.
+Cell accessors, tab panels, and accordion content are strings, matching the Vue adapter. One submenu level. Typeahead matches a label prefix, the same as the other adapters.

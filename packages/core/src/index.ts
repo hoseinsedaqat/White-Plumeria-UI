@@ -61,7 +61,13 @@ export {
 } from './dom.ts';
 export type { FocusTrap } from './dom.ts';
 export { nextIndex, readingDirection } from './keyboard.ts';
-export { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex, typeaheadMove } from './menu.ts';
+export {
+  firstEnabledIndex,
+  menuCommand,
+  menuHasSubmenu,
+  moveEnabledIndex,
+  typeaheadMove,
+} from './menu.ts';
 export type { MenuCommand, MenuMotion, MenuNode, TypeaheadBuffer } from './menu.ts';
 export {
   canMove,
@@ -83,6 +89,10 @@ export {
   clampRangeEdge,
   nearerEdge,
   normalizeRange,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   rangeBounds,
   rangeFill,
   snapToStep,
@@ -133,7 +143,15 @@ export {
   toParts,
   weekdayLabels,
 } from './calendar.ts';
-export type { CalendarCell, CalendarSystem, ClockTime, DateParts, DateRangeValue, DateTimeRangeValue, MonthGrid } from './calendar.ts';
+export type {
+  CalendarCell,
+  CalendarSystem,
+  ClockTime,
+  DateParts,
+  DateRangeValue,
+  DateTimeRangeValue,
+  MonthGrid,
+} from './calendar.ts';
 export { queryTable, toggleSort } from './table.ts';
 export type { ColumnSpec, TableQuery, TableResult } from './table.ts';
 export { directionalIcons, iconPaths } from './icons.ts';

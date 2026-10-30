@@ -54,7 +54,7 @@ export {
   Textarea,
   ValidationMessage,
 } from './form.tsx';
-export { OtpField, PasswordField, Rating } from './fields.tsx';
+export { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
 export type { SelectOption } from './form.tsx';
 export { Icon, Mark } from './icon.tsx';
 export { Kbd } from './kbd.tsx';

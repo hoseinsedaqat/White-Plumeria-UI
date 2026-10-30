@@ -1,4 +1,17 @@
-import { clampInteger, inputClassName, otpApply, otpCells, otpDelete, otpLength, readingDirection } from '@white-plumeria/core';
+import {
+  clampInteger,
+  inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
+  otpApply,
+  otpCells,
+  otpDelete,
+  otpLength,
+  rangeBounds,
+  readingDirection,
+} from '@white-plumeria/core';
 import { component$, useId, useSignal, type QRL } from '@qwik.dev/core';
 import { Icon } from './icon';
 import { useWhitePlumeria } from './provider';
@@ -22,7 +35,9 @@ export const PasswordField = component$<{
   const current = props.value ?? internal.value;
   return (
     <div class="wpl-field">
-      <label class="wpl-label" for={inputId}>{props.label}</label>
+      <label class="wpl-label" for={inputId}>
+        {props.label}
+      </label>
       <div class="wpl-password">
         <input
           id={inputId}
@@ -44,7 +59,9 @@ export const PasswordField = component$<{
           aria-pressed={visible.value}
           aria-label={visible.value ? wpl.t('hidePassword') : wpl.t('showPassword')}
           disabled={props.disabled}
-          onClick$={() => { visible.value = !visible.value; }}
+          onClick$={() => {
+            visible.value = !visible.value;
+          }}
         >
           <Icon name={visible.value ? 'eyeOff' : 'eye'} />
         </button>
@@ -74,12 +91,16 @@ export const OtpField = component$<{
 
   return (
     <div class="wpl-field">
-      <label class="wpl-label" id={`${uid}-label`}>{props.label}</label>
+      <label class="wpl-label" id={`${uid}-label`}>
+        {props.label}
+      </label>
       <div class="wpl-otp" role="group" aria-labelledby={`${uid}-label`}>
         {cells.map((cell, index) => (
           <input
             key={index}
-            ref={(element) => { refs.value[index] = element; }}
+            ref={(element) => {
+              refs.value[index] = element;
+            }}
             class={inputClassName({ className: 'wpl-otp-cell' })}
             value={cell}
             inputMode={numeric ? 'numeric' : 'text'}
@@ -98,7 +119,13 @@ export const OtpField = component$<{
             }}
             preventdefault:paste
             onPaste$={(event) => {
-              const result = otpApply(current, size, numeric, index, event.clipboardData?.getData('text') ?? '');
+              const result = otpApply(
+                current,
+                size,
+                numeric,
+                index,
+                event.clipboardData?.getData('text') ?? '',
+              );
               if (props.value === undefined) internal.value = result.value;
               void props.onValueChange$?.(result.value);
               queueMicrotask(() => refs.value[result.focus]?.focus());
@@ -107,7 +134,14 @@ export const OtpField = component$<{
               if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 event.preventDefault();
                 const direction = readingDirection(element);
-                const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
+                const delta =
+                  event.key === 'ArrowRight'
+                    ? direction === 'rtl'
+                      ? -1
+                      : 1
+                    : direction === 'rtl'
+                      ? 1
+                      : -1;
                 refs.value[Math.min(size - 1, Math.max(0, index + delta))]?.focus();
               }
               if (event.key === 'Backspace' && !cells[index]) {
@@ -143,9 +177,17 @@ export const Rating = component$<{
   const groupName = props.name ?? uid;
   if (props.readOnly) {
     return (
-      <div class="wpl-rating" role="img" aria-label={`${props.label}: ${current} ${wpl.t('of')} ${count}`}>
+      <div
+        class="wpl-rating"
+        role="img"
+        aria-label={`${props.label}: ${current} ${wpl.t('of')} ${count}`}
+      >
         {Array.from({ length: count }, (_, index) => (
-          <span key={index} class={index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+          <span
+            key={index}
+            class={index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+            aria-hidden="true"
+          >
             <Icon name="star" />
           </span>
         ))}
@@ -169,13 +211,115 @@ export const Rating = component$<{
                 void props.onValueChange$?.(score);
               }}
             />
-            <span class={score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'} aria-hidden="true">
+            <span
+              class={score <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'}
+              aria-hidden="true"
+            >
               <Icon name="star" />
             </span>
-            <span class="wpl-sr-only">{score} {wpl.t('of')} {count}</span>
+            <span class="wpl-sr-only">
+              {score} {wpl.t('of')} {count}
+            </span>
           </label>
         );
       })}
     </fieldset>
+  );
+});
+
+export const NumberField = component$<{
+  label: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  defaultValue?: number;
+  name?: string;
+  disabled?: boolean;
+  id?: string;
+  onValueChange$?: QRL<(value: number) => void>;
+}>((props) => {
+  const wpl = useWhitePlumeria();
+  const uid = useId();
+  const inputId = props.id ?? uid;
+  const bounds = rangeBounds(props.min ?? 0, props.max ?? 100, props.step ?? 1);
+  const internal = useSignal(
+    numberFieldCommit(String(props.defaultValue ?? props.value ?? bounds.min), bounds, bounds.min),
+  );
+  const draft = useSignal(numberFieldText(internal.value, bounds));
+  const focused = useSignal(false);
+  const committed = numberFieldCommit(String(props.value ?? internal.value), bounds, bounds.min);
+  const shown = focused.value ? draft.value : numberFieldText(committed, bounds);
+  const parsed = numberFieldDraftValue(shown, bounds) ?? committed;
+
+  return (
+    <div class="wpl-field">
+      <label class="wpl-label" for={inputId}>
+        {props.label}
+      </label>
+      <div class="wpl-number">
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label={wpl.t('decrease')}
+          disabled={props.disabled || parsed <= bounds.min}
+          onClick$={() => {
+            const next = numberFieldStep(parsed, -1, bounds);
+            const snapped = numberFieldCommit(String(next), bounds, bounds.min);
+            draft.value = numberFieldText(snapped, bounds);
+            if (props.value === undefined) internal.value = snapped;
+            void props.onValueChange$?.(snapped);
+          }}
+        >
+          <Icon name="minus" />
+        </button>
+        <input
+          id={inputId}
+          class="wpl-input"
+          type="number"
+          name={props.name}
+          inputMode={bounds.step < 1 ? 'decimal' : 'numeric'}
+          min={bounds.min}
+          max={bounds.max}
+          step={bounds.step}
+          value={shown}
+          disabled={props.disabled}
+          onFocus$={() => {
+            focused.value = true;
+            draft.value = numberFieldText(committed, bounds);
+          }}
+          onBlur$={(_, element) => {
+            focused.value = false;
+            const next = numberFieldCommit(element.value, bounds, committed);
+            draft.value = numberFieldText(next, bounds);
+            if (props.value === undefined) internal.value = next;
+            void props.onValueChange$?.(next);
+          }}
+          onInput$={(_, element) => {
+            draft.value = element.value;
+            const parsedNext = numberFieldDraftValue(element.value, bounds);
+            if (parsedNext === null) return;
+            if (props.value === undefined) internal.value = parsedNext;
+            void props.onValueChange$?.(parsedNext);
+          }}
+          onWheel$={(_, element) => element.blur()}
+        />
+        <button
+          type="button"
+          class="wpl-number-step"
+          aria-label={wpl.t('increase')}
+          disabled={props.disabled || parsed >= bounds.max}
+          onClick$={() => {
+            const next = numberFieldStep(parsed, 1, bounds);
+            const snapped = numberFieldCommit(String(next), bounds, bounds.min);
+            draft.value = numberFieldText(snapped, bounds);
+            if (props.value === undefined) internal.value = snapped;
+            void props.onValueChange$?.(snapped);
+          }}
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
+    </div>
   );
 });

@@ -3,6 +3,10 @@ import {
   clampRangeEdge,
   nearerEdge,
   normalizeRange,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   rangeBounds,
   rangeFill,
   snapToStep,
@@ -32,6 +36,20 @@ describe('numeric range', () => {
       start: 20,
       end: 20,
     });
+  });
+
+  it('keeps an unfinished number draft and snaps a finished one', () => {
+    const guests = rangeBounds(1, 8, 1);
+    expect(numberFieldDraftValue('', guests)).toBeNull();
+    expect(numberFieldDraftValue('-', guests)).toBeNull();
+    expect(numberFieldDraftValue('1.', guests)).toBeNull();
+    expect(numberFieldDraftValue('3', guests)).toBe(3);
+    expect(numberFieldDraftValue('12', guests)).toBe(8);
+    expect(numberFieldCommit('nope', guests, 2)).toBe(2);
+    expect(numberFieldStep(2, 1, guests)).toBe(3);
+    expect(numberFieldStep(8, 1, guests)).toBe(8);
+    expect(numberFieldStep(1, -1, guests)).toBe(1);
+    expect(numberFieldText(2.2, rangeBounds(0, 10, 0.25))).toBe('2.25');
   });
 
   it('maps the fill and a pointer to the same scale', () => {

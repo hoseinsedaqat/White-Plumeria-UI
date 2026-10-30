@@ -43,6 +43,7 @@ export const tagNames = [
   'wpl-navbar',
   'wpl-navigation-menu',
   'wpl-notification',
+  'wpl-number-field',
   'wpl-otp-field',
   'wpl-page-header',
   'wpl-pagination',

@@ -6,8 +6,13 @@ import {
   fieldClassName,
   iconButtonClassName,
   inputClassName,
+  iconPaths,
   message,
   normalizeRange,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   otpApply,
   otpCells,
   otpDelete,
@@ -52,7 +57,10 @@ export const Button = glimmer(
         return buttonClassName({
           variant: variantOf(this.args.variant),
           size: typeof this.args.size === 'string' ? (this.args.size as ButtonSize) : undefined,
-          appearance: typeof this.args.appearance === 'string' ? (this.args.appearance as ButtonAppearance) : undefined,
+          appearance:
+            typeof this.args.appearance === 'string'
+              ? (this.args.appearance as ButtonAppearance)
+              : undefined,
           loading: flag(this.args.loading),
           block: flag(this.args.block),
           className: str(this.args.className) || undefined,
@@ -78,7 +86,10 @@ export const IconButton = glimmer(
         return iconButtonClassName({
           variant: variantOf(this.args.variant),
           size: typeof this.args.size === 'string' ? (this.args.size as ButtonSize) : undefined,
-          appearance: typeof this.args.appearance === 'string' ? (this.args.appearance as ButtonAppearance) : undefined,
+          appearance:
+            typeof this.args.appearance === 'string'
+              ? (this.args.appearance as ButtonAppearance)
+              : undefined,
           className: str(this.args.className) || undefined,
         });
       },
@@ -96,7 +107,8 @@ export const ButtonGroup = glimmer(
   `<div class={{this.className}} role="group" aria-label={{@label}}>{{yield}}</div>`,
   {
     getters: {
-      className: (host) => buttonGroupClassName(flag(host.args.joined), str(host.args.className) || undefined),
+      className: (host) =>
+        buttonGroupClassName(flag(host.args.joined), str(host.args.className) || undefined),
     },
   },
 );
@@ -112,12 +124,16 @@ export const Input = glimmer(
       disabled: (host) => flag(host.args.disabled),
       invalid: (host) => (flag(host.args.invalid) || str(host.args.error) ? 'true' : ''),
       inputType: (host) => str(host.args.type, 'text'),
-      fieldClass: (host) => fieldClassName(flag(host.args.invalid) || Boolean(str(host.args.error))),
+      fieldClass: (host) =>
+        fieldClassName(flag(host.args.invalid) || Boolean(str(host.args.error))),
       controlClass: (host) => inputClassName({ size: sizeOf(host.args.size) }),
     },
     methods: {
       commit(event) {
-        const value = (event as Event).target instanceof HTMLInputElement ? (event as Event & { target: HTMLInputElement }).target.value : '';
+        const value =
+          (event as Event).target instanceof HTMLInputElement
+            ? (event as Event & { target: HTMLInputElement }).target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -140,7 +156,10 @@ export const Textarea = glimmer(
     },
     methods: {
       commit(event) {
-        const value = event instanceof Event && event.target instanceof HTMLTextAreaElement ? event.target.value : '';
+        const value =
+          event instanceof Event && event.target instanceof HTMLTextAreaElement
+            ? event.target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -160,15 +179,20 @@ export const Select = glimmer(
       controlClass: (host) => selectClassName({ size: sizeOf(host.args.size) }),
       options(this: Host) {
         const current = str(this.state.value, str(this.args.value));
-        return list<{ value?: string; label?: string; id?: string }>(this.args.options).map((option) => {
-          const value = str(option.value, str(option.id));
-          return { value, label: str(option.label, value), selected: value === current };
-        });
+        return list<{ value?: string; label?: string; id?: string }>(this.args.options).map(
+          (option) => {
+            const value = str(option.value, str(option.id));
+            return { value, label: str(option.label, value), selected: value === current };
+          },
+        );
       },
     },
     methods: {
       commit(event) {
-        const value = event instanceof Event && event.target instanceof HTMLSelectElement ? event.target.value : '';
+        const value =
+          event instanceof Event && event.target instanceof HTMLSelectElement
+            ? event.target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -187,7 +211,10 @@ export const Checkbox = glimmer(
     },
     methods: {
       commit(event) {
-        const checked = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.checked : !this.state.checked;
+        const checked =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.checked
+            : !this.state.checked;
         this.state.checked = checked;
         bubble(event as Event, 'wpl-change', { checked });
       },
@@ -206,7 +233,10 @@ export const Switch = glimmer(
     },
     methods: {
       commit(event) {
-        const checked = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.checked : !this.state.checked;
+        const checked =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.checked
+            : !this.state.checked;
         this.state.checked = checked;
         bubble(event as Event, 'wpl-change', { checked });
       },
@@ -233,7 +263,10 @@ export const RadioGroup = glimmer(
     },
     methods: {
       commit(event) {
-        const value = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        const value =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -256,7 +289,10 @@ export const Slider = glimmer(
     },
     methods: {
       slide(event) {
-        const value = event instanceof Event && event.target instanceof HTMLInputElement ? Number(event.target.value) : num(this.state.value, 0);
+        const value =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? Number(event.target.value)
+            : num(this.state.value, 0);
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -282,8 +318,15 @@ export const RangeSlider = glimmer(
       startLabel: (host) => `${str(host.args.label, 'Range')} start`,
       endLabel: (host) => `${str(host.args.label, 'Range')} end`,
       fillStyle(this: Host) {
-        const bounds = rangeBounds(num(this.args.min, 0), num(this.args.max, 100), num(this.args.step, 1));
-        const fill = rangeFill({ start: num(this.state.start, bounds.min), end: num(this.state.end, bounds.max) }, bounds);
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const fill = rangeFill(
+          { start: num(this.state.start, bounds.min), end: num(this.state.end, bounds.max) },
+          bounds,
+        );
         return `--wpl-range-start:${fill.start};--wpl-range-size:${fill.size}`;
       },
     },
@@ -297,8 +340,17 @@ export const RangeSlider = glimmer(
       move(edge, event) {
         const input = (event as Event).target;
         const next = input instanceof HTMLInputElement ? Number(input.value) : 0;
-        const bounds = rangeBounds(num(this.args.min, 0), num(this.args.max, 100), num(this.args.step, 1));
-        const ordered = clampRangeEdge(edge === 'end' ? 'end' : 'start', next, { start: num(this.state.start, bounds.min), end: num(this.state.end, bounds.max) }, bounds);
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const ordered = clampRangeEdge(
+          edge === 'end' ? 'end' : 'start',
+          next,
+          { start: num(this.state.start, bounds.min), end: num(this.state.end, bounds.max) },
+          bounds,
+        );
         this.state.start = ordered.start;
         this.state.end = ordered.end;
         bubble(event as Event, 'wpl-change', ordered);
@@ -321,14 +373,19 @@ export const FormField = glimmer(
   },
 );
 
-export const FormMessage = glimmer(`<p class={{this.className}} role={{this.role}}>{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}</p>`, {
-  getters: {
-    className: (host) => (str(host.args.tone) === 'error' ? 'wpl-field-error' : 'wpl-field-hint'),
-    role: (host) => (str(host.args.tone) === 'error' ? 'alert' : 'status'),
+export const FormMessage = glimmer(
+  `<p class={{this.className}} role={{this.role}}>{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}</p>`,
+  {
+    getters: {
+      className: (host) => (str(host.args.tone) === 'error' ? 'wpl-field-error' : 'wpl-field-hint'),
+      role: (host) => (str(host.args.tone) === 'error' ? 'alert' : 'status'),
+    },
   },
-});
+);
 
-export const ValidationMessage = glimmer(`<p class="wpl-field-error" role="alert">{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}</p>`);
+export const ValidationMessage = glimmer(
+  `<p class="wpl-field-error" role="alert">{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}</p>`,
+);
 
 export const SearchInput = glimmer(
   `<div class="wpl-search"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-search-control"><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.value}} placeholder={{this.placeholder}} aria-label={{this.label}} {{on "input" this.commit}} /></div></div>`,
@@ -342,7 +399,10 @@ export const SearchInput = glimmer(
     },
     methods: {
       commit(event) {
-        const value = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        const value =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -367,7 +427,10 @@ export const PasswordField = glimmer(
     },
     methods: {
       commit(event) {
-        const value = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        const value =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.value
+            : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
       },
@@ -441,9 +504,158 @@ export const Rating = glimmer(
     methods: {
       commit(event) {
         if (flag(this.args.readOnly)) return;
-        const value = event instanceof Event && event.target instanceof HTMLInputElement ? Number(event.target.value) : 0;
+        const value =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? Number(event.target.value)
+            : 0;
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
+      },
+    },
+  },
+);
+
+const minusPath = iconPaths.minus;
+const plusPath = iconPaths.plus;
+
+export const NumberField = glimmer(
+  `<div class="wpl-field"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-number"><button type="button" class="wpl-number-step" aria-label={{this.decreaseLabel}} disabled={{this.downDisabled}} {{on "click" this.down}}><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${minusPath}"></path></svg></button><input id={{this.fieldId}} class="wpl-input" type="number" name={{this.name}} min={{this.min}} max={{this.max}} step={{this.step}} value={{this.shown}} disabled={{this.disabled}} {{on "focus" this.focus}} {{on "blur" this.blur}} {{on "input" this.type}} {{on "wheel" this.wheel}} /><button type="button" class="wpl-number-step" aria-label={{this.increaseLabel}} disabled={{this.upDisabled}} {{on "click" this.up}}><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${plusPath}"></path></svg></button></div></div>`,
+  {
+    state: (args) => {
+      const bounds = rangeBounds(num(args.min, 0), num(args.max, 100), num(args.step, 1));
+      const value = numberFieldCommit(String(num(args.value, bounds.min)), bounds, bounds.min);
+      return {
+        value,
+        draft: numberFieldText(value, bounds),
+        focused: false,
+        fieldId: createId('number'),
+      };
+    },
+    getters: {
+      label: (host) => str(host.args.label, 'Number'),
+      fieldId: (host) => str(host.state.fieldId),
+      name: (host) => str(host.args.name),
+      disabled: (host) => flag(host.args.disabled),
+      min: (host) =>
+        rangeBounds(num(host.args.min, 0), num(host.args.max, 100), num(host.args.step, 1)).min,
+      max: (host) =>
+        rangeBounds(num(host.args.min, 0), num(host.args.max, 100), num(host.args.step, 1)).max,
+      step: (host) =>
+        rangeBounds(num(host.args.min, 0), num(host.args.max, 100), num(host.args.step, 1)).step,
+      shown(this: Host) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        return this.state.focused
+          ? str(this.state.draft)
+          : numberFieldText(num(this.state.value, bounds.min), bounds);
+      },
+      decreaseLabel() {
+        return message(
+          localeOf(typeof document === 'undefined' ? null : document.body),
+          'decrease',
+        );
+      },
+      increaseLabel() {
+        return message(
+          localeOf(typeof document === 'undefined' ? null : document.body),
+          'increase',
+        );
+      },
+      downDisabled(this: Host) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const shown = this.state.focused
+          ? str(this.state.draft)
+          : numberFieldText(num(this.state.value, bounds.min), bounds);
+        const parsed = numberFieldDraftValue(shown, bounds) ?? num(this.state.value, bounds.min);
+        return flag(this.args.disabled) || parsed <= bounds.min;
+      },
+      upDisabled(this: Host) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const shown = this.state.focused
+          ? str(this.state.draft)
+          : numberFieldText(num(this.state.value, bounds.min), bounds);
+        const parsed = numberFieldDraftValue(shown, bounds) ?? num(this.state.value, bounds.min);
+        return flag(this.args.disabled) || parsed >= bounds.max;
+      },
+    },
+    methods: {
+      commit(this: Host, next: number, event?: Event) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const value = numberFieldCommit(String(next), bounds, bounds.min);
+        this.state.value = value;
+        this.state.draft = numberFieldText(value, bounds);
+        if (event) bubble(event, 'wpl-change', { value });
+      },
+      down(this: Host, event: Event) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const current =
+          numberFieldDraftValue(str(this.state.draft), bounds) ?? num(this.state.value, bounds.min);
+        this.commit(numberFieldStep(current, -1, bounds), event);
+      },
+      up(this: Host, event: Event) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const current =
+          numberFieldDraftValue(str(this.state.draft), bounds) ?? num(this.state.value, bounds.min);
+        this.commit(numberFieldStep(current, 1, bounds), event);
+      },
+      focus(this: Host) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        this.state.focused = true;
+        this.state.draft = numberFieldText(num(this.state.value, bounds.min), bounds);
+      },
+      blur(this: Host, event: Event) {
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const raw =
+          event.target instanceof HTMLInputElement ? event.target.value : str(this.state.draft);
+        this.state.focused = false;
+        this.commit(numberFieldCommit(raw, bounds, num(this.state.value, bounds.min)), event);
+      },
+      type(this: Host, event: Event) {
+        const raw = event.target instanceof HTMLInputElement ? event.target.value : '';
+        this.state.draft = raw;
+        const bounds = rangeBounds(
+          num(this.args.min, 0),
+          num(this.args.max, 100),
+          num(this.args.step, 1),
+        );
+        const parsed = numberFieldDraftValue(raw, bounds);
+        if (parsed === null) return;
+        this.state.value = parsed;
+        bubble(event, 'wpl-change', { value: parsed });
+      },
+      wheel(event: Event) {
+        if (event.target instanceof HTMLInputElement) event.target.blur();
       },
     },
   },
@@ -469,7 +681,8 @@ export const FileUpload = glimmer(
         const reason = message(localeOf(input instanceof Element ? input : null), 'fileRejected');
         for (const file of files ? [...files] : []) {
           const allowed = !accept || accept.split(',').some((rule) => matches(file, rule.trim()));
-          if (!allowed || (maxSize > 0 && file.size > maxSize)) rejected.push({ name: file.name, reason });
+          if (!allowed || (maxSize > 0 && file.size > maxSize))
+            rejected.push({ name: file.name, reason });
           else accepted.push(file.name);
         }
         this.state.names = accepted;
@@ -487,4 +700,3 @@ function matches(file: File, rule: string): boolean {
   if (rule.endsWith('/*')) return file.type.startsWith(rule.slice(0, -1));
   return file.type === rule;
 }
-

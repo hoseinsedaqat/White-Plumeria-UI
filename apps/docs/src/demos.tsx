@@ -39,6 +39,7 @@ import {
   Navbar,
   NavigationMenu,
   Notification,
+  NumberField,
   PageHeader,
   OtpField,
   Pagination,
@@ -80,7 +81,13 @@ function ToastDemo() {
   const toast = useToast();
   return (
     <Button
-      onClick={() => toast.push({ title: 'Saved', description: 'Sample toast, not a server response.', variant: 'success' })}
+      onClick={() =>
+        toast.push({
+          title: 'Saved',
+          description: 'Sample toast, not a server response.',
+          variant: 'success',
+        })
+      }
     >
       Push toast
     </Button>
@@ -92,8 +99,16 @@ function DialogDemo() {
   return (
     <>
       <Button onClick={() => setOpen(true)}>Open dialog</Button>
-      <Dialog open={open} onOpenChange={setOpen} title="Discard draft?" description="Unsaved notes will be lost.">
-        <p>This dialog traps focus when the native dialog API is unavailable and restores it on close.</p>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Discard draft?"
+        description="Unsaved notes will be lost."
+      >
+        <p>
+          This dialog traps focus when the native dialog API is unavailable and restores it on
+          close.
+        </p>
       </Dialog>
     </>
   );
@@ -186,7 +201,11 @@ export function renderDemo(slug: string): ReactNode {
     case 'avatar':
       return <Avatar name="Laleh Karimi" status="online" statusLabel="Online" />;
     case 'card':
-      return <Card title="Analytics" description="Overview of recent activity">Updated today</Card>;
+      return (
+        <Card title="Analytics" description="Overview of recent activity">
+          Updated today
+        </Card>
+      );
     case 'divider':
       return <Divider label="Or" />;
     case 'separator':
@@ -204,7 +223,9 @@ export function renderDemo(slug: string): ReactNode {
     case 'progress':
       return <Progress label="Upload" value={40} />;
     case 'empty-state':
-      return <EmptyState title="No invoices" description="Create the first invoice to see it here." />;
+      return (
+        <EmptyState title="No invoices" description="Create the first invoice to see it here." />
+      );
     case 'alert':
       return (
         <Alert variant="warning" title="Review needed">
@@ -216,19 +237,42 @@ export function renderDemo(slug: string): ReactNode {
     case 'textarea':
       return <Textarea name="note" rows={3} placeholder="Note" />;
     case 'select':
-      return <Select name="currency" options={[{ value: 'eur', label: 'EUR' }, { value: 'usd', label: 'USD' }]} />;
+      return (
+        <Select
+          name="currency"
+          options={[
+            { value: 'eur', label: 'EUR' },
+            { value: 'usd', label: 'USD' },
+          ]}
+        />
+      );
     case 'checkbox':
       return <Checkbox label="Email me invoices" name="email" />;
     case 'radio-group':
-      return <RadioGroup label="Plan" name="plan" options={[{ value: 'annual', label: 'Annual' }, { value: 'month', label: 'Monthly' }]} />;
+      return (
+        <RadioGroup
+          label="Plan"
+          name="plan"
+          options={[
+            { value: 'annual', label: 'Annual' },
+            { value: 'month', label: 'Monthly' },
+          ]}
+        />
+      );
     case 'switch':
       return <Switch label="Reduced motion" />;
     case 'slider':
       return <Slider label="Volume" defaultValue={40} />;
     case 'range-slider':
-      return <RangeSlider label="Price" min={0} max={500} step={10} defaultStart={80} defaultEnd={320} />;
+      return (
+        <RangeSlider label="Price" min={0} max={500} step={10} defaultStart={80} defaultEnd={320} />
+      );
     case 'label':
-      return <Label htmlFor="demo-email" required>Email</Label>;
+      return (
+        <Label htmlFor="demo-email" required>
+          Email
+        </Label>
+      );
     case 'form-field':
       return (
         <FormField label="Email" error="Enter a valid email">
@@ -240,7 +284,15 @@ export function renderDemo(slug: string): ReactNode {
     case 'validation-message':
       return <ValidationMessage>Amount must be positive.</ValidationMessage>;
     case 'combobox':
-      return <Combobox label="City" options={[{ value: 'fra', label: 'Frankfurt' }, { value: 'ber', label: 'Berlin' }]} />;
+      return (
+        <Combobox
+          label="City"
+          options={[
+            { value: 'fra', label: 'Frankfurt' },
+            { value: 'ber', label: 'Berlin' },
+          ]}
+        />
+      );
     case 'search-input':
       return <SearchInput label="Search docs" />;
     case 'file-upload':
@@ -268,19 +320,45 @@ export function renderDemo(slug: string): ReactNode {
           label="Account"
           items={[
             { id: 'profile', label: 'Profile' },
-            { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }, { id: 'ink', label: 'Ink' }] },
+            {
+              id: 'theme',
+              label: 'Theme',
+              items: [
+                { id: 'ivory', label: 'Ivory' },
+                { id: 'ink', label: 'Ink' },
+              ],
+            },
             { id: 'out', label: 'Sign out' },
           ]}
         />
       );
     case 'tabs':
-      return <Tabs tabs={[{ id: 'overview', label: 'Overview', panel: 'Balances for the sample workspace.' }, { id: 'activity', label: 'Activity', panel: 'No live feed is connected.' }]} />;
+      return (
+        <Tabs
+          tabs={[
+            { id: 'overview', label: 'Overview', panel: 'Balances for the sample workspace.' },
+            { id: 'activity', label: 'Activity', panel: 'No live feed is connected.' },
+          ]}
+        />
+      );
     case 'accordion':
-      return <Accordion items={[{ id: 'fees', title: 'Fees', content: 'No monthly fee in this sample.' }, { id: 'fx', title: 'FX', content: 'Rates are fixtures.' }]} />;
+      return (
+        <Accordion
+          items={[
+            { id: 'fees', title: 'Fees', content: 'No monthly fee in this sample.' },
+            { id: 'fx', title: 'FX', content: 'Rates are fixtures.' },
+          ]}
+        />
+      );
     case 'toast':
       return <ToastDemo />;
     case 'notification':
-      return <Notification title="New statement" description="March is ready to review. Sample notice." />;
+      return (
+        <Notification
+          title="New statement"
+          description="March is ready to review. Sample notice."
+        />
+      );
     case 'command-palette':
       return <CommandDemo />;
     case 'context-menu':
@@ -288,7 +366,14 @@ export function renderDemo(slug: string): ReactNode {
         <ContextMenu
           items={[
             { id: 'copy', label: 'Copy label' },
-            { id: 'export', label: 'Export', items: [{ id: 'csv', label: 'CSV' }, { id: 'pdf', label: 'PDF' }] },
+            {
+              id: 'export',
+              label: 'Export',
+              items: [
+                { id: 'csv', label: 'CSV' },
+                { id: 'pdf', label: 'PDF' },
+              ],
+            },
           ]}
         >
           <Card title="Right-click or Shift+F10">This row has a supplemental menu.</Card>
@@ -318,9 +403,25 @@ export function renderDemo(slug: string): ReactNode {
           rows={sampleRows}
           columns={[
             { id: 'id', header: 'ID', accessor: (row) => row.id, text: (row) => row.id },
-            { id: 'merchant', header: 'Merchant', accessor: (row) => row.merchant, text: (row) => row.merchant },
-            { id: 'amount', header: 'Amount', accessor: (row) => row.amount, text: (row) => String(row.amount), sortValue: (row) => row.amount },
-            { id: 'status', header: 'Status', accessor: (row) => <Badge>{row.status}</Badge>, text: (row) => row.status },
+            {
+              id: 'merchant',
+              header: 'Merchant',
+              accessor: (row) => row.merchant,
+              text: (row) => row.merchant,
+            },
+            {
+              id: 'amount',
+              header: 'Amount',
+              accessor: (row) => row.amount,
+              text: (row) => String(row.amount),
+              sortValue: (row) => row.amount,
+            },
+            {
+              id: 'status',
+              header: 'Status',
+              accessor: (row) => <Badge>{row.status}</Badge>,
+              text: (row) => row.status,
+            },
           ]}
         />
       );
@@ -329,13 +430,26 @@ export function renderDemo(slug: string): ReactNode {
     case 'breadcrumb':
       return <Breadcrumb items={[{ href: '/', label: 'Home' }, { label: 'Button' }]} />;
     case 'list':
-      return <List items={[{ id: '1', title: 'Invoice 104', description: 'Sample row', meta: 'Sample' }]} />;
+      return (
+        <List
+          items={[{ id: '1', title: 'Invoice 104', description: 'Sample row', meta: 'Sample' }]}
+        />
+      );
     case 'tree-view':
-      return <TreeView label="Files" nodes={[{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }]} />;
+      return (
+        <TreeView
+          label="Files"
+          nodes={[{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }]}
+        />
+      );
     case 'stat-card':
       return <StatCard label="Open invoices" value="12" hint="Sample data" />;
     case 'timeline':
-      return <Timeline items={[{ id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40' }]} />;
+      return (
+        <Timeline
+          items={[{ id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40' }]}
+        />
+      );
     case 'calendar':
       return <Calendar />;
     case 'date-picker':
@@ -343,7 +457,16 @@ export function renderDemo(slug: string): ReactNode {
     case 'date-range-picker':
       return <DateRangeDemo />;
     case 'chart-container':
-      return <ChartContainer title="Sample volume" data={[{ label: 'Mon', value: 12 }, { label: 'Tue', value: 18 }, { label: 'Wed', value: 9 }]} />;
+      return (
+        <ChartContainer
+          title="Sample volume"
+          data={[
+            { label: 'Mon', value: 12 },
+            { label: 'Tue', value: 18 },
+            { label: 'Wed', value: 9 },
+          ]}
+        />
+      );
     case 'container':
       return <Container size="sm">Centered content width.</Container>;
     case 'grid':
@@ -381,16 +504,39 @@ export function renderDemo(slug: string): ReactNode {
         />
       );
     case 'sidebar':
-      return <Sidebar label="Docs" items={[{ href: '#button', label: 'Button', current: true }, { href: '#card', label: 'Card' }]} />;
+      return (
+        <Sidebar
+          label="Docs"
+          items={[
+            { href: '#button', label: 'Button', current: true },
+            { href: '#card', label: 'Card' },
+          ]}
+        />
+      );
     case 'navigation-menu':
-      return <NavigationMenu label="Primary" items={[{ href: '#start', label: 'Start', current: true }, { href: '#install', label: 'Install' }]} />;
+      return (
+        <NavigationMenu
+          label="Primary"
+          items={[
+            { href: '#start', label: 'Start', current: true },
+            { href: '#install', label: 'Install' },
+          ]}
+        />
+      );
     case 'page-header':
       return <PageHeader title="Invoices" description="Sample workspace" />;
     case 'footer':
       return <Footer note="MIT License" />;
     case 'responsive-layout':
       return (
-        <div className="wpl-layout" style={{ minBlockSize: '12rem', border: '1px solid var(--wpl-color-border)', borderRadius: 12 }}>
+        <div
+          className="wpl-layout"
+          style={{
+            minBlockSize: '12rem',
+            border: '1px solid var(--wpl-color-border)',
+            borderRadius: 12,
+          }}
+        >
           <Sidebar label="Docs" items={[{ href: '#button', label: 'Button', current: true }]} />
           <div className="wpl-layout-main">Main column</div>
         </div>
@@ -407,6 +553,8 @@ export function renderDemo(slug: string): ReactNode {
       return <OtpField label="Verification code" name="code" length={6} />;
     case 'rating':
       return <Rating label="Workspace quality" name="quality" defaultValue={4} />;
+    case 'number-field':
+      return <NumberField label="Guests" name="guests" min={1} max={8} defaultValue={2} />;
     case 'kbd':
       return <Kbd keys={['Ctrl', 'K']} />;
     default:
@@ -415,7 +563,12 @@ export function renderDemo(slug: string): ReactNode {
 }
 
 function DateRangeDemo() {
-  const [range, setRange] = useState({ start: '2026-10-12', end: '2026-10-18', startTime: '09:00', endTime: '18:00' });
+  const [range, setRange] = useState({
+    start: '2026-10-12',
+    end: '2026-10-18',
+    startTime: '09:00',
+    endTime: '18:00',
+  });
   return (
     <DateRangePicker
       label="Stay"
@@ -444,7 +597,10 @@ function DrawerDemo() {
         Open drawer
       </Button>
       <Drawer open={open} onOpenChange={setOpen} title="Filters" side="end">
-        <p>Filters would be real form fields in an application. This drawer is the component, not a mock image.</p>
+        <p>
+          Filters would be real form fields in an application. This drawer is the component, not a
+          mock image.
+        </p>
       </Drawer>
     </>
   );
@@ -484,7 +640,12 @@ function StepsDemo() {
     <div className="wpl-stack" style={{ width: '100%' }}>
       <Steps label="Checkout" items={checkoutSteps} value={value} onValueChange={setValue} />
       <div className="wpl-flex">
-        <Button variant="outline" size="sm" disabled={!previous} onClick={() => previous && setValue(previous.id)}>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!previous}
+          onClick={() => previous && setValue(previous.id)}
+        >
           Back
         </Button>
         <Button size="sm" disabled={!next} onClick={() => next && setValue(next.id)}>

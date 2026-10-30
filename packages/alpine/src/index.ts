@@ -12,6 +12,7 @@ export {
   IconButton,
   Input,
   Label,
+  NumberField,
   OtpField,
   PasswordField,
   RadioGroup,

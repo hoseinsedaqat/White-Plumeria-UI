@@ -10,11 +10,33 @@ export { Combobox } from './combobox.tsx';
 export type { ComboOption } from './combobox.tsx';
 export { CommandPalette } from './command.tsx';
 export type { CommandItem } from './command.tsx';
-export { Breadcrumb, ChartContainer, DataTable, List, Pagination, Table, Timeline, TreeView } from './data.tsx';
+export {
+  Breadcrumb,
+  ChartContainer,
+  DataTable,
+  List,
+  Pagination,
+  Table,
+  Timeline,
+  TreeView,
+} from './data.tsx';
 export type { ChartPoint, DataColumn, TimelineItem, TreeNode } from './data.tsx';
 export { Dialog, Drawer, Modal } from './dialog.tsx';
 export type { DialogProps } from './dialog.tsx';
-export { Alert, Avatar, Badge, Card, Divider, EmptyState, Link, Progress, Separator, Skeleton, Spinner, StatCard } from './display.tsx';
+export {
+  Alert,
+  Avatar,
+  Badge,
+  Card,
+  Divider,
+  EmptyState,
+  Link,
+  Progress,
+  Separator,
+  Skeleton,
+  Spinner,
+  StatCard,
+} from './display.tsx';
 export { FileUpload } from './file-upload.tsx';
 export type { RejectedFile } from './file-upload.tsx';
 export {
@@ -32,11 +54,23 @@ export {
   Textarea,
   ValidationMessage,
 } from './form.tsx';
-export { OtpField, PasswordField, Rating } from './fields.tsx';
+export { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
 export type { SelectOption } from './form.tsx';
 export { Icon, Mark } from './icon.tsx';
 export { Kbd } from './kbd.tsx';
-export { Container, Flex, Footer, Grid, Navbar, NavigationMenu, PageHeader, ResponsiveLayout, Sidebar, SplitPane, Stack } from './layout.tsx';
+export {
+  Container,
+  Flex,
+  Footer,
+  Grid,
+  Navbar,
+  NavigationMenu,
+  PageHeader,
+  ResponsiveLayout,
+  Sidebar,
+  SplitPane,
+  Stack,
+} from './layout.tsx';
 export type { NavItem } from './layout.tsx';
 export { ContextMenu, DropdownMenu, Popover, Tooltip } from './menu.tsx';
 export type { MenuItem } from './menu.tsx';

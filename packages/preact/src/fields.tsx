@@ -1,10 +1,15 @@
 import {
   clampInteger,
   inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   otpApply,
   otpCells,
   otpDelete,
   otpLength,
+  rangeBounds,
   readingDirection,
 } from '@white-plumeria/core';
 import type { JSX, TargetedInputEvent } from 'preact';
@@ -253,5 +258,106 @@ export function Rating({
         );
       })}
     </fieldset>
+  );
+}
+
+export function NumberField({
+  label,
+  min = 0,
+  max = 100,
+  step = 1,
+  value,
+  defaultValue,
+  onValueChange,
+  name,
+  disabled = false,
+  id,
+}: {
+  label: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+  name?: string;
+  disabled?: boolean;
+  id?: string;
+}) {
+  const { t } = useWhitePlumeria();
+  const uid = useId();
+  const inputId = id ?? uid;
+  const bounds = rangeBounds(min, max, step);
+  const [internal, setInternal] = useState(
+    numberFieldCommit(String(defaultValue ?? value ?? bounds.min), bounds, bounds.min),
+  );
+  const [draft, setDraft] = useState(numberFieldText(internal, bounds));
+  const [focused, setFocused] = useState(false);
+  const committed = numberFieldCommit(String(value ?? internal), bounds, bounds.min);
+  const shown = focused ? draft : numberFieldText(committed, bounds);
+  const parsed = numberFieldDraftValue(shown, bounds) ?? committed;
+
+  function commit(next: number) {
+    const snapped = numberFieldCommit(String(next), bounds, bounds.min);
+    setDraft(numberFieldText(snapped, bounds));
+    if (value === undefined) setInternal(snapped);
+    onValueChange?.(snapped);
+  }
+
+  return (
+    <div className="wpl-field">
+      <label className="wpl-label" htmlFor={inputId}>
+        {label}
+      </label>
+      <div className="wpl-number">
+        <button
+          type="button"
+          className="wpl-number-step"
+          aria-label={t('decrease')}
+          disabled={disabled || parsed <= bounds.min}
+          onClick={() => commit(numberFieldStep(parsed, -1, bounds))}
+        >
+          <Icon name="minus" />
+        </button>
+        <input
+          id={inputId}
+          className="wpl-input"
+          type="number"
+          name={name}
+          inputMode={bounds.step < 1 ? 'decimal' : 'numeric'}
+          min={bounds.min}
+          max={bounds.max}
+          step={bounds.step}
+          value={shown}
+          disabled={disabled}
+          onFocus={() => {
+            setFocused(true);
+            setDraft(numberFieldText(committed, bounds));
+          }}
+          onBlur={() => {
+            setFocused(false);
+            commit(numberFieldCommit(draft, bounds, committed));
+          }}
+          onInput={(event: TargetedInputEvent<HTMLInputElement>) => {
+            const next = event.currentTarget.value;
+            setDraft(next);
+            const parsedNext = numberFieldDraftValue(next, bounds);
+            if (parsedNext === null) return;
+            if (value === undefined) setInternal(parsedNext);
+            onValueChange?.(parsedNext);
+          }}
+          onWheel={(event) => event.currentTarget.blur()}
+        />
+        <button
+          type="button"
+          className="wpl-number-step"
+          aria-label={t('increase')}
+          disabled={disabled || parsed >= bounds.max}
+          onClick={() => commit(numberFieldStep(parsed, 1, bounds))}
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
+    </div>
   );
 }

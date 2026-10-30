@@ -15,10 +15,15 @@ import {
   clampInteger,
   createId,
   inputClassName,
+  numberFieldCommit,
+  numberFieldDraftValue,
+  numberFieldStep,
+  numberFieldText,
   otpApply,
   otpCells,
   otpDelete,
   otpLength,
+  rangeBounds,
   readingDirection,
 } from '@white-plumeria/core';
 import { Icon } from './icon';
@@ -73,7 +78,9 @@ export class PasswordField {
   readonly visible = signal(false);
   private readonly generatedId = createId('wpl-password');
   readonly inputId = computed(() => this.id() || this.generatedId);
-  readonly toggleLabel = computed(() => this.wpl.t(this.visible() ? 'hidePassword' : 'showPassword'));
+  readonly toggleLabel = computed(() =>
+    this.wpl.t(this.visible() ? 'hidePassword' : 'showPassword'),
+  );
 
   current(): string {
     return this.value() ?? this.internal() ?? this.defaultValue();
@@ -166,15 +173,24 @@ export class OtpField {
 
   onPaste(index: number, event: ClipboardEvent) {
     event.preventDefault();
-    const result = otpApply(this.current(), this.size(), this.numeric(), index, event.clipboardData?.getData('text') ?? '');
+    const result = otpApply(
+      this.current(),
+      this.size(),
+      this.numeric(),
+      index,
+      event.clipboardData?.getData('text') ?? '',
+    );
     this.commit(result.value, result.focus);
   }
 
   onKey(index: number, event: KeyboardEvent) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      const direction = readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null);
-      const delta = event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
+      const direction = readingDirection(
+        event.currentTarget instanceof HTMLElement ? event.currentTarget : null,
+      );
+      const delta =
+        event.key === 'ArrowRight' ? (direction === 'rtl' ? -1 : 1) : direction === 'rtl' ? 1 : -1;
       const next = Math.min(this.size() - 1, Math.max(0, index + delta));
       this.cellsRef()[next]?.nativeElement.focus();
     }
@@ -195,7 +211,10 @@ export class OtpField {
     @if (readOnly()) {
       <div class="wpl-rating" role="img" [attr.aria-label]="readLabel()">
         @for (score of scores(); track score) {
-          <span [class]="score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'" aria-hidden="true">
+          <span
+            [class]="score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'"
+            aria-hidden="true"
+          >
             <wpl-icon name="star" />
           </span>
         }
@@ -205,8 +224,17 @@ export class OtpField {
         <legend class="wpl-label">{{ label() }}</legend>
         @for (score of scores(); track score) {
           <label class="wpl-rating-option">
-            <input type="radio" [name]="groupName()" [value]="score" [checked]="current() === score" (change)="choose(score)" />
-            <span [class]="score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'" aria-hidden="true">
+            <input
+              type="radio"
+              [name]="groupName()"
+              [value]="score"
+              [checked]="current() === score"
+              (change)="choose(score)"
+            />
+            <span
+              [class]="score <= current() ? 'wpl-rating-icon is-on' : 'wpl-rating-icon'"
+              aria-hidden="true"
+            >
               <wpl-icon name="star" />
             </span>
             <span class="wpl-sr-only">{{ score }} {{ ofLabel() }} {{ count() }}</span>
@@ -246,5 +274,130 @@ export class Rating {
   choose(score: number) {
     if (this.value() === undefined) this.internal.set(score);
     this.valueChange.emit(score);
+  }
+}
+
+@Component({
+  selector: 'wpl-number-field',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  imports: [Icon],
+  template: `
+    <div class="wpl-field">
+      <label class="wpl-label" [attr.for]="uid">{{ label() }}</label>
+      <div class="wpl-number">
+        <button
+          type="button"
+          class="wpl-number-step"
+          [attr.aria-label]="decreaseLabel()"
+          [disabled]="disabled() || atMin()"
+          (click)="nudge(-1)"
+        >
+          <wpl-icon name="minus" />
+        </button>
+        <input
+          class="wpl-input"
+          type="number"
+          [id]="uid"
+          [name]="name()"
+          [attr.inputmode]="inputMode()"
+          [min]="bounds().min"
+          [max]="bounds().max"
+          [step]="bounds().step"
+          [value]="shown()"
+          [disabled]="disabled()"
+          (focus)="focus()"
+          (blur)="blur()"
+          (input)="type($event)"
+          (wheel)="wheel($event)"
+        />
+        <button
+          type="button"
+          class="wpl-number-step"
+          [attr.aria-label]="increaseLabel()"
+          [disabled]="disabled() || atMax()"
+          (click)="nudge(1)"
+        >
+          <wpl-icon name="plus" />
+        </button>
+      </div>
+    </div>
+  `,
+})
+export class NumberField {
+  readonly label = input.required<string>();
+  readonly min = input(0, { transform: numberAttribute });
+  readonly max = input(100, { transform: numberAttribute });
+  readonly step = input(1, { transform: numberAttribute });
+  readonly value = input<number>();
+  readonly defaultValue = input(0, { transform: numberAttribute });
+  readonly name = input<string>();
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly valueChange = output<number>();
+  private readonly wpl = injectWhitePlumeria();
+  private readonly internal = signal<number | null>(null);
+  private readonly draft = signal('');
+  private readonly focused = signal(false);
+  readonly uid = createId('wpl-number');
+  readonly bounds = computed(() => rangeBounds(this.min(), this.max(), this.step()));
+  readonly committed = computed(() =>
+    numberFieldCommit(
+      String(this.value() ?? this.internal() ?? this.defaultValue()),
+      this.bounds(),
+      this.bounds().min,
+    ),
+  );
+  readonly shown = computed(() =>
+    this.focused() ? this.draft() : numberFieldText(this.committed(), this.bounds()),
+  );
+  readonly parsed = computed(
+    () => numberFieldDraftValue(this.shown(), this.bounds()) ?? this.committed(),
+  );
+  readonly decreaseLabel = computed(() => this.wpl.t('decrease'));
+  readonly increaseLabel = computed(() => this.wpl.t('increase'));
+  readonly inputMode = computed(() => (this.bounds().step < 1 ? 'decimal' : 'numeric'));
+
+  atMin(): boolean {
+    return this.parsed() <= this.bounds().min;
+  }
+
+  atMax(): boolean {
+    return this.parsed() >= this.bounds().max;
+  }
+
+  commit(next: number) {
+    const snapped = numberFieldCommit(String(next), this.bounds(), this.bounds().min);
+    this.draft.set(numberFieldText(snapped, this.bounds()));
+    if (this.value() === undefined) this.internal.set(snapped);
+    this.valueChange.emit(snapped);
+  }
+
+  nudge(delta: -1 | 1) {
+    this.commit(numberFieldStep(this.parsed(), delta, this.bounds()));
+  }
+
+  focus() {
+    this.focused.set(true);
+    this.draft.set(numberFieldText(this.committed(), this.bounds()));
+  }
+
+  blur() {
+    this.focused.set(false);
+    this.commit(numberFieldCommit(this.draft(), this.bounds(), this.committed()));
+  }
+
+  type(event: Event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    this.draft.set(target.value);
+    const parsed = numberFieldDraftValue(target.value, this.bounds());
+    if (parsed === null) return;
+    if (this.value() === undefined) this.internal.set(parsed);
+    this.valueChange.emit(parsed);
+  }
+
+  wheel(event: Event) {
+    const target = event.target;
+    if (target instanceof HTMLInputElement) target.blur();
   }
 }

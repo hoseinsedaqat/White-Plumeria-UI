@@ -10,6 +10,7 @@ export {
   IconButton,
   Input,
   Label,
+  NumberField,
   OtpField,
   PasswordField,
   RadioGroup,
@@ -81,11 +82,87 @@ export {
   Stack,
 } from './layout.ts';
 
-import { Button, ButtonGroup, Checkbox, FileUpload, FormField, FormMessage, IconButton, Input, Label, OtpField, PasswordField, RadioGroup, RangeSlider, Rating, SearchInput, Select, Slider, Switch, Textarea, ValidationMessage } from './controls.ts';
-import { Accordion, Carousel, Combobox, CommandPalette, ContextMenu, Dialog, Drawer, DropdownMenu, Modal, Notification, Popover, Steps, Tabs, Toast, Tooltip } from './widgets.ts';
-import { Breadcrumb, Calendar, ChartContainer, DataTable, DatePicker, DateRangePicker, List, Pagination, StatCard, Table, Timeline, TreeView } from './data.ts';
-import { Alert, Avatar, Badge, Card, Divider, EmptyState, Kbd, Link, Progress, Separator, Skeleton, Spinner } from './display.ts';
-import { Container, Flex, Footer, Grid, Navbar, NavigationMenu, PageHeader, ResponsiveLayout, Sidebar, SplitPane, Stack } from './layout.ts';
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  FileUpload,
+  FormField,
+  FormMessage,
+  IconButton,
+  Input,
+  Label,
+  NumberField,
+  OtpField,
+  PasswordField,
+  RadioGroup,
+  RangeSlider,
+  Rating,
+  SearchInput,
+  Select,
+  Slider,
+  Switch,
+  Textarea,
+  ValidationMessage,
+} from './controls.ts';
+import {
+  Accordion,
+  Carousel,
+  Combobox,
+  CommandPalette,
+  ContextMenu,
+  Dialog,
+  Drawer,
+  DropdownMenu,
+  Modal,
+  Notification,
+  Popover,
+  Steps,
+  Tabs,
+  Toast,
+  Tooltip,
+} from './widgets.ts';
+import {
+  Breadcrumb,
+  Calendar,
+  ChartContainer,
+  DataTable,
+  DatePicker,
+  DateRangePicker,
+  List,
+  Pagination,
+  StatCard,
+  Table,
+  Timeline,
+  TreeView,
+} from './data.ts';
+import {
+  Alert,
+  Avatar,
+  Badge,
+  Card,
+  Divider,
+  EmptyState,
+  Kbd,
+  Link,
+  Progress,
+  Separator,
+  Skeleton,
+  Spinner,
+} from './display.ts';
+import {
+  Container,
+  Flex,
+  Footer,
+  Grid,
+  Navbar,
+  NavigationMenu,
+  PageHeader,
+  ResponsiveLayout,
+  Sidebar,
+  SplitPane,
+  Stack,
+} from './layout.ts';
 
 export const components = {
   Accordion,
@@ -128,6 +205,7 @@ export const components = {
   Navbar,
   NavigationMenu,
   Notification,
+  NumberField,
   OtpField,
   PageHeader,
   Pagination,

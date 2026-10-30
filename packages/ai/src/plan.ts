@@ -57,6 +57,7 @@ function detectIntent(prompt: string): string {
   if (/(dialog|modal|گفتگو)/i.test(prompt)) return 'dialog';
   if (/(price range|budget|range slider|slider range|two thumbs)/i.test(prompt))
     return 'number-range';
+  if (/(number field|stepper|quantity|guests)/i.test(prompt)) return 'quantity';
   if (/(range|بازه|start and end|from and to)/i.test(prompt)) return 'date-range';
   if (/(calendar|date|تاریخ|تقویم)/i.test(prompt)) return 'calendar';
   return 'general';
@@ -165,6 +166,7 @@ const layouts: Record<string, PreviewNode[]> = {
       },
     },
   ],
+  quantity: [{ component: 'NumberField', props: { label: 'Guests', min: 1, max: 8, value: 2 } }],
   'number-range': [
     {
       component: 'RangeSlider',
