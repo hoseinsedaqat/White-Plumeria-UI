@@ -2,7 +2,7 @@ import { analyzePrompt, buildLayout, renderCode } from './plan.ts';
 import type { AIProvider, AIRequest, FrameworkId, PlanResult } from './types.ts';
 import { validateGeneratedCode } from './validate.ts';
 
-const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'html'];
+const frameworks: FrameworkId[] = ['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'alpine', 'html'];
 
 export function planFromPrompt(request: AIRequest): PlanResult {
   const prompt = request.prompt.trim();
@@ -27,6 +27,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     preact: bundle('preact', renderCode(layout.nodes, 'preact')),
     qwik: bundle('qwik', renderCode(layout.nodes, 'qwik')),
     lit: bundle('lit', renderCode(layout.nodes, 'lit')),
+    alpine: bundle('alpine', renderCode(layout.nodes, 'alpine')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
@@ -38,14 +39,15 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     preact: validateGeneratedCode(code.preact.files[0]?.contents ?? '', 'preact'),
     qwik: validateGeneratedCode(code.qwik.files[0]?.contents ?? '', 'qwik'),
     lit: validateGeneratedCode(code.lit.files[0]?.contents ?? '', 'lit'),
+    alpine: validateGeneratedCode(code.alpine.files[0]?.contents ?? '', 'alpine'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };
 }
 
 function bundle(framework: FrameworkId, contents: string) {
-  const extension = framework === 'vue' ? 'vue' : framework === 'svelte' ? 'svelte' : framework === 'html' ? 'html' : framework === 'angular' || framework === 'lit' ? 'ts' : 'tsx';
-  const language = framework === 'html' ? 'html' : framework === 'vue' ? 'vue' : framework === 'angular' || framework === 'lit' ? 'ts' : 'tsx';
+  const extension = framework === 'vue' ? 'vue' : framework === 'svelte' ? 'svelte' : framework === 'html' ? 'html' : framework === 'angular' || framework === 'lit' || framework === 'alpine' ? 'ts' : 'tsx';
+  const language = framework === 'html' ? 'html' : framework === 'vue' ? 'vue' : framework === 'angular' || framework === 'lit' || framework === 'alpine' ? 'ts' : 'tsx';
   return {
     framework,
     files: [{ path: `Example.${extension}`, language, contents }],

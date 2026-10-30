@@ -1,3 +1,4 @@
+import { alpineExample } from './alpine.ts';
 import { angularCloseTag, angularOpenTag } from './angular.ts';
 import { litExample } from './lit.ts';
 import type { FrameworkExamples } from './types.ts';
@@ -16,6 +17,7 @@ export function examples(
     preact: preactExample(name, body.react),
     qwik: qwikExample(name, body.react),
     lit: litExample(name, body.react),
+    alpine: alpineExample(name, body.react),
   };
 }
 

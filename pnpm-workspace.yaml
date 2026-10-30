@@ -23,4 +23,5 @@ catalog:
   "@babel/core": 7.29.7
   "@qwik.dev/core": 2.0.0-rc.4
   lit: 3.3.3
+  alpinejs: 3.17.5
   zod: 4.6.7

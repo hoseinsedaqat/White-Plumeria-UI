@@ -19,6 +19,10 @@ describe('wpl cli', () => {
     expect(added.code).toBe(0);
     expect(added.stdout).toContain('@white-plumeria/vue');
     expect(added.stdout).toContain('does not copy');
+    const alpine = run(['add', 'button', '--framework', 'alpine']);
+    expect(alpine.code).toBe(0);
+    expect(alpine.stdout).toContain('@white-plumeria/alpine');
+    expect(alpine.stdout).toContain('whitePlumeria');
   });
 
   it('doctor fails on an old Node and theme rejects an unknown name', () => {

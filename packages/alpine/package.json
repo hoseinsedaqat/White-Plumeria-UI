@@ -1,0 +1,57 @@
+{
+  "name": "@white-plumeria/alpine",
+  "version": "0.1.0",
+  "description": "Alpine.js components for White Plumeria. Pair with @white-plumeria/styles.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "author": "hoseinsedaqat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
+    "directory": "packages/alpine"
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/alpine#readme",
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": ["white-plumeria", "alpine", "alpinejs", "design-system", "accessible"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@white-plumeria/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "alpinejs": "^3.17.0",
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@white-plumeria/styles": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "alpinejs": "catalog:",
+    "happy-dom": "21.0.4",
+    "tsdown": "0.23.2",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

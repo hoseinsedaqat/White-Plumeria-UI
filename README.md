@@ -5,7 +5,7 @@
 <h1 align="center">White Plumeria</h1>
 
 <p align="center">
-  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, and Lit.<br />
+  A design system for HTML, React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, and Alpine.<br />
   Its own tokens. Its own CSS. No Tailwind required.
 </p>
 
@@ -41,7 +41,7 @@ What you get:
 
 | | |
 | --- | --- |
-| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, and Lit |
+| **One contract** | The same component names in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, and Alpine |
 | **Own CSS** | Tokens, six themes, light and dark. `white` is the default |
 | **Direction** | Logical properties. `dir="rtl"` does not flip the page with a transform |
 | **Motion** | Dialogs, drawers, menus, and toasts move briefly. Reduced motion removes it |
@@ -191,6 +191,25 @@ if (root) {
 
 This is Lit 3.3 custom elements, not a React wrapper and not `@lit/react`. Call `defineWhitePlumeria()` once. It registers the tags and is safe to call again. Components render in light DOM, so the global `wpl-` stylesheet applies. `lit` is a peer dependency. Text, range, and date fields listen to `input` and emit `wpl-change`. SSR is not claimed until a server render is tested.
 
+### Alpine
+
+```ts
+import Alpine from "alpinejs";
+import { whitePlumeria } from "@white-plumeria/alpine";
+import "@white-plumeria/styles";
+
+Alpine.plugin(whitePlumeria);
+Alpine.start();
+```
+
+```html
+<div x-data="WhitePlumeriaProvider({ persist: false })">
+  <div x-data="Button({ variant: 'primary', label: 'Save changes' })"></div>
+</div>
+```
+
+This is Alpine.js 3.17, not a Vue wrapper and not a wrapper around `@white-plumeria/elements`. `whitePlumeria(Alpine)` registers one `Alpine.data` factory per catalog component and is safe to call again. A factory renders into its host during `init()`. `alpinejs` is a peer dependency. Text, range, and date fields listen to `input` or `change` and emit `wpl-change`. `pushToast` throws unless the node is inside `WhitePlumeriaProvider`. SSR is not claimed.
+
 ### HTML
 
 ```html
@@ -223,6 +242,7 @@ That command does not work today.
 | `@white-plumeria/preact` | Preact 11 components |
 | `@white-plumeria/qwik` | Qwik 2 components |
 | `@white-plumeria/lit` | Lit 3 custom elements |
+| `@white-plumeria/alpine` | Alpine.js 3.17 components |
 | `@white-plumeria/elements` | Light-DOM custom elements for a documented subset |
 | `@white-plumeria/ai` | Local planner and theme generator. No API key |
 | `@white-plumeria/mcp` | Catalog MCP server. It does not call a model |

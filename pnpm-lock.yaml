@@ -173,6 +173,9 @@ catalogs:
     '@qwik.dev/core':
       specifier: 2.0.0-rc.4
       version: 2.0.0-rc.4
+    alpinejs:
+      specifier: 3.17.5
+      version: 3.17.5
     lit:
       specifier: 3.3.3
       version: 3.3.3
@@ -335,6 +338,28 @@ importers:
       '@vitejs/plugin-react':
         specifier: 6.1.2
         version: 6.1.2(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(less@4.9.1(supports-color@7.2.0))(sass-embedded@1.106.1)(sass@1.106.1))
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(less@4.9.1(supports-color@7.2.0))(sass-embedded@1.106.1)(sass@1.106.1)
+
+  apps/example-alpine:
+    dependencies:
+      '@white-plumeria/alpine':
+        specifier: workspace:*
+        version: link:../../packages/alpine
+      '@white-plumeria/styles':
+        specifier: workspace:*
+        version: link:../../packages/styles
+      '@white-plumeria/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+      alpinejs:
+        specifier: 'catalog:'
+        version: 3.17.5
+    devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -551,6 +576,34 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+
+  packages/alpine:
+    dependencies:
+      '@white-plumeria/core':
+        specifier: workspace:*
+        version: link:../core
+      '@white-plumeria/styles':
+        specifier: workspace:*
+        version: link:../styles
+    devDependencies:
+      alpinejs:
+        specifier: 'catalog:'
+        version: 3.17.5
+      happy-dom:
+        specifier: 21.0.4
+        version: 21.0.4
+      tsdown:
+        specifier: 0.23.2
+        version: 0.23.2(typescript@6.0.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(less@4.9.1(supports-color@7.2.0))(sass-embedded@1.106.1)(sass@1.106.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.5(@types/node@26.6.5)(happy-dom@21.0.4)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(less@4.9.1(supports-color@7.2.0))(sass-embedded@1.106.1)(sass@1.106.1))
 
   packages/angular:
     dependencies:
@@ -2881,6 +2934,9 @@ packages:
 
   ajv@8.20.0:
     resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
+
+  alpinejs@3.17.5:
+    resolution: {integrity: sha512-XewMqRC6zjy8iaUPn86dxjvooAsNai3hUtQbdn0A5H2w7Jt10xHGZ1SczN5+Dvp3UKkuSEt9moy/UaUWOwKdnQ==}
 
   ansi-escapes@7.3.0:
     resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
@@ -6701,6 +6757,10 @@ snapshots:
       fast-uri: 3.1.9
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
+
+  alpinejs@3.17.5:
+    dependencies:
+      '@vue/reactivity': 3.5.44
 
   ansi-escapes@7.3.0:
     dependencies:
