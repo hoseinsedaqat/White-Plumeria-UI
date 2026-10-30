@@ -203,6 +203,7 @@ export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string
   if (framework === 'lit') return wrapLit(nodes);
   if (framework === 'alpine') return wrapAlpine(nodes);
   if (framework === 'marko') return wrapMarko(nodes);
+  if (framework === 'ember') return wrapEmber(nodes);
   if (framework === 'vue') return wrapVue(nodes.map((node) => renderVue(node, 1)).join('\n'));
   if (framework === 'angular') return wrapAngular(nodes);
   return wrapSvelte(nodes.map((node) => renderSvelte(node, 0)).join('\n'));
@@ -293,6 +294,21 @@ function renderMarko(node: PreviewNode, indent: number): string {
   return `${pad}<${node.component}${props}>\n${kids.join('\n')}\n${pad}</${node.component}>`;
 }
 
+function renderEmber(node: PreviewNode, indent: number): string {
+  const pad = ' '.repeat(indent);
+  const props = propString(node.props, 'ember');
+  const kids = [
+    node.text ? `${pad}  ${node.text}` : '',
+    ...(node.children ?? []).map((child) => renderEmber(child, indent + 2)),
+  ].filter(Boolean);
+  if (!kids.length) return `${pad}<${node.component}${props} />`;
+  return `${pad}<${node.component}${props}>\n${kids.join('\n')}\n${pad}</${node.component}>`;
+}
+
+function wrapEmber(nodes: PreviewNode[]): string {
+  return `import { ${names(nodes).join(', ')} } from "@white-plumeria/ember";\nimport "@white-plumeria/styles";\n\n<template>\n${nodes.map((node) => renderEmber(node, 2)).join('\n')}\n</template>\n`;
+}
+
 function wrapMarko(nodes: PreviewNode[]): string {
   const imports = names(nodes)
     .map(
@@ -357,6 +373,10 @@ function propString(props: PreviewNode['props'], framework: FrameworkId): string
         if (typeof value === 'boolean') return value ? ` ${key}` : ` ${key}=false`;
         if (typeof value === 'number') return ` ${key}=${value}`;
         return ` ${key}="${escapeAttr(String(value))}"`;
+      }
+      if (framework === 'ember') {
+        if (typeof value === 'boolean' || typeof value === 'number') return ` @${key}={{${value}}}`;
+        return ` @${key}="${escapeAttr(String(value))}"`;
       }
       if (typeof value === 'boolean') {
         if (framework === 'vue') return value ? ` ${key}` : '';

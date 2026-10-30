@@ -13,5 +13,7 @@ describe('mcp catalog tools', () => {
     expect(generateComponentExampleTool('button', 'alpine').text).toContain('whitePlumeria');
     expect(getFrameworkInstallationTool('marko').text).toContain('@white-plumeria/marko');
     expect(generateComponentExampleTool('button', 'marko').text).toContain('wpl-button.marko');
+    expect(getFrameworkInstallationTool('ember').text).toContain('@white-plumeria/ember');
+    expect(generateComponentExampleTool('button', 'ember').text).toContain('<template>');
   });
 });

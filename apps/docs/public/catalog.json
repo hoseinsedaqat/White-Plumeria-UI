@@ -228,7 +228,7 @@
     "summary": "Connects label, control, hint, and error by id.",
     "summaryFa": "برچسب، کنترل، راهنما و خطا را با شناسه وصل می‌کند.",
     "limitations": [
-      "Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko. HTML users set ids manually."
+      "Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember. HTML users set ids manually."
     ]
   },
   {
@@ -391,7 +391,7 @@
     "summaryFa": "دو دستگیره برای شروع و پایان عددی. دستگیره روی دستگیرهٔ دیگر نمی‌پرد.",
     "limitations": [
       "When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.",
-      "The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, and Marko components."
+      "The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember components."
     ]
   },
   {

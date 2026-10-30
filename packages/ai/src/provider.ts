@@ -13,6 +13,7 @@ const frameworks: FrameworkId[] = [
   'lit',
   'alpine',
   'marko',
+  'ember',
   'html',
 ];
 
@@ -41,6 +42,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     lit: bundle('lit', renderCode(layout.nodes, 'lit')),
     alpine: bundle('alpine', renderCode(layout.nodes, 'alpine')),
     marko: bundle('marko', renderCode(layout.nodes, 'marko')),
+    ember: bundle('ember', renderCode(layout.nodes, 'ember')),
     html: bundle('html', renderCode(layout.nodes, 'html')),
   };
   const validation = {
@@ -54,6 +56,7 @@ export function planFromPrompt(request: AIRequest): PlanResult {
     lit: validateGeneratedCode(code.lit.files[0]?.contents ?? '', 'lit'),
     alpine: validateGeneratedCode(code.alpine.files[0]?.contents ?? '', 'alpine'),
     marko: validateGeneratedCode(code.marko.files[0]?.contents ?? '', 'marko'),
+    ember: validateGeneratedCode(code.ember.files[0]?.contents ?? '', 'ember'),
     html: validateGeneratedCode(code.html.files[0]?.contents ?? '', 'html'),
   };
   return { analysis, layout, code, validation };
@@ -63,7 +66,9 @@ function bundle(framework: FrameworkId, contents: string) {
   const extension =
     framework === 'marko'
       ? 'marko'
-      : framework === 'vue'
+      : framework === 'ember'
+        ? 'gjs'
+        : framework === 'vue'
         ? 'vue'
         : framework === 'svelte'
           ? 'svelte'
@@ -75,7 +80,9 @@ function bundle(framework: FrameworkId, contents: string) {
   const language =
     framework === 'marko'
       ? 'marko'
-      : framework === 'html'
+      : framework === 'ember'
+        ? 'js'
+        : framework === 'html'
         ? 'html'
         : framework === 'vue'
           ? 'vue'

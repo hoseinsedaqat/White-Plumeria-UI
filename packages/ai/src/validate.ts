@@ -39,6 +39,8 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Alpine examples must import @white-plumeria/alpine.');
     } else if (framework === 'marko' && imported && imported[2] !== '@white-plumeria/marko') {
       errors.push('Marko examples must import @white-plumeria/marko.');
+    } else if (framework === 'ember' && imported && imported[2] !== '@white-plumeria/ember') {
+      errors.push('Ember examples must import @white-plumeria/ember.');
     } else if (imported && !imported[2]?.startsWith('@white-plumeria/')) {
       errors.push('Import source is outside the White Plumeria scope.');
     }
@@ -51,6 +53,7 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       if (framework === 'lit' && name === 'defineWhitePlumeria') continue;
       if (framework === 'alpine' && (name === 'whitePlumeria' || name === 'pushToast')) continue;
       if (framework === 'marko' && name === 'pushToast') continue;
+      if (framework === 'ember' && (name === 'pushToast' || name === 'WhitePlumeriaProvider')) continue;
       if (!known.has(name)) errors.push(`Imported name ${name} is not in the component catalog.`);
     }
     for (const match of markoTags) {
@@ -63,6 +66,7 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
     } else {
       for (const match of code.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)) {
         const name = match[1];
+        if (framework === 'ember' && name === 'WhitePlumeriaProvider') continue;
         if (name && !known.has(name)) errors.push(`JSX component ${name} is not in the catalog.`);
       }
     }

@@ -27,6 +27,10 @@ describe('wpl cli', () => {
     expect(marko.code).toBe(0);
     expect(marko.stdout).toContain('@white-plumeria/marko');
     expect(marko.stdout).toContain('wpl-button.marko');
+    const ember = run(['add', 'button', '--framework', 'ember']);
+    expect(ember.code).toBe(0);
+    expect(ember.stdout).toContain('@white-plumeria/ember');
+    expect(ember.stdout).toContain('<template>');
   });
 
   it('doctor fails on an old Node and theme rejects an unknown name', () => {
