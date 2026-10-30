@@ -1,4 +1,4 @@
-import { message } from "@white-plumeria/core";
+import { message, supportsModalDialog } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface Input {
@@ -21,11 +21,11 @@ export interface Input {
     class="wpl-btn wpl-btn-secondary"
     onClick() {
       open = true;
-      emit(host(), "wpl-close", { open: true });
+      emit(host(), "wpl-open", { open: true });
       input.onOpenChange?.(true);
     }
   >${input.trigger || "Open"}</button>
-  <dialog class="wpl-dialog" open=open aria-labelledby=titleId>
+  <dialog/frame class="wpl-dialog" open=open aria-labelledby=titleId onCancel(event) { event.preventDefault(); open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>
     <header class="wpl-dialog-header">
       <h2 class="wpl-dialog-title" id=titleId>${input.title || "Dialog"}</h2>
       <button
@@ -58,4 +58,12 @@ export interface Input {
       </footer>
     </if>
   </dialog>
+  <lifecycle
+    onUpdate() {
+      const node = frame();
+      if (!(node instanceof HTMLDialogElement)) return;
+      if (open && !node.open && supportsModalDialog()) node.showModal();
+      if (!open && node.open) node.close();
+    }
+  />
 </div>

@@ -5,6 +5,7 @@
     menuCommand,
     menuHasSubmenu,
     moveEnabledIndex,
+    typeaheadMove,
     placeOverlay,
     readingDirection,
     type MenuMotion,
@@ -29,6 +30,7 @@
   let subActive = $state<number | null>(null);
   let root = $state<HTMLElement>();
   let menu = $state<HTMLElement>();
+  const typeahead = { query: '', at: 0 };
   const menuId = $props.id();
   const parent = $derived(items[active]);
   const childrenItems = $derived(parent?.items ?? []);
@@ -91,7 +93,17 @@
       submenuOpen: subActive !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command || command === 'open') return;
+    if (!command) {
+      const pool = subActive === null ? items : childrenItems;
+      const from = subActive === null ? active : subActive;
+      const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive === null) active = next;
+      else subActive = next;
+      return;
+    }
+    if (command === 'open') return;
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'close') {

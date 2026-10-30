@@ -5,6 +5,7 @@
     menuCommand,
     menuHasSubmenu,
     moveEnabledIndex,
+    typeaheadMove,
     readingDirection,
     type MenuMotion,
   } from '@white-plumeria/core';
@@ -23,6 +24,7 @@
   let active = $state(0);
   let subActive = $state<number | null>(null);
   let root = $state<HTMLElement>();
+  const typeahead = { query: '', at: 0 };
   const menuId = $props.id();
   const parent = $derived(items[active]);
   const children = $derived(parent?.items ?? []);
@@ -64,7 +66,17 @@
       submenuOpen: subActive !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command) return;
+    if (!command) {
+      if (!open) return;
+      const pool = subActive === null ? items : children;
+      const from = subActive === null ? active : subActive;
+      const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (subActive === null) active = next;
+      else subActive = next;
+      return;
+    }
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'open') {

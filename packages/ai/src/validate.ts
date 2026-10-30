@@ -27,15 +27,15 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
       errors.push('Generated code must import from an @white-plumeria package.');
     } else if (imported && framework === 'angular' && imported[2] !== '@white-plumeria/angular') {
       errors.push('Angular examples must import @white-plumeria/angular.');
-    } else if (framework === 'solid' && imported[2] !== '@white-plumeria/solid') {
+    } else if (framework === 'solid' && imported?.[2] !== '@white-plumeria/solid') {
       errors.push('Solid examples must import @white-plumeria/solid.');
-    } else if (framework === 'preact' && imported[2] !== '@white-plumeria/preact') {
+    } else if (framework === 'preact' && imported?.[2] !== '@white-plumeria/preact') {
       errors.push('Preact examples must import @white-plumeria/preact.');
-    } else if (framework === 'qwik' && imported[2] !== '@white-plumeria/qwik') {
+    } else if (framework === 'qwik' && imported?.[2] !== '@white-plumeria/qwik') {
       errors.push('Qwik examples must import @white-plumeria/qwik.');
-    } else if (framework === 'lit' && imported[2] !== '@white-plumeria/lit') {
+    } else if (framework === 'lit' && imported?.[2] !== '@white-plumeria/lit') {
       errors.push('Lit examples must import @white-plumeria/lit.');
-    } else if (framework === 'alpine' && imported[2] !== '@white-plumeria/alpine') {
+    } else if (framework === 'alpine' && imported?.[2] !== '@white-plumeria/alpine') {
       errors.push('Alpine examples must import @white-plumeria/alpine.');
     } else if (framework === 'marko' && imported && imported[2] !== '@white-plumeria/marko') {
       errors.push('Marko examples must import @white-plumeria/marko.');

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { RangeSlider } from './form.tsx';
 import { ContextMenu, DropdownMenu } from './menu.tsx';
@@ -116,6 +116,30 @@ describe('new controls', () => {
     await user.keyboard('{ArrowDown}{Enter}');
     expect(selected).toBe('ivory');
     expect(screen.queryByRole('menu', { name: 'Account' })).toBeNull();
+  });
+
+  it('typeahead jumps to a matching label and cycles the same letter', async () => {
+    vi.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(
+      <DropdownMenu
+        label="Account"
+        items={[
+          { id: 'profile', label: 'Profile' },
+          { id: 'prefs', label: 'Preferences' },
+          { id: 'theme', label: 'Theme' },
+        ]}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Account' }));
+    await user.keyboard('t');
+    expect(screen.getByRole('menuitem', { name: 'Theme' }).getAttribute('data-active')).toBe('true');
+    vi.advanceTimersByTime(600);
+    await user.keyboard('p');
+    expect(screen.getByRole('menuitem', { name: 'Profile' }).getAttribute('data-active')).toBe('true');
+    await user.keyboard('p');
+    expect(screen.getByRole('menuitem', { name: 'Preferences' }).getAttribute('data-active')).toBe('true');
+    vi.useRealTimers();
   });
 
   it('closes the submenu before the root menu', async () => {

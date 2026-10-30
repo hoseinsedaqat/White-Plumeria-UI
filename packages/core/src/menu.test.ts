@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex } from './menu.ts';
+import { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex, typeaheadMove } from './menu.ts';
 
 const items = [
   { id: 'profile', disabled: false },
@@ -17,6 +17,23 @@ describe('menu commands', () => {
     expect(menuCommand({ key: 'Escape', direction: 'ltr', open: true, submenuOpen: false, hasSubmenu: false })).toBe('close');
     expect(menuCommand({ key: 'Enter', direction: 'ltr', open: true, submenuOpen: false, hasSubmenu: false })).toBe('activate');
     expect(menuCommand({ key: ' ', direction: 'ltr', open: false, submenuOpen: false, hasSubmenu: false })).toBe('open');
+  });
+
+  it('jumps to a label prefix and cycles a repeated letter', () => {
+    const labels = [
+      { label: 'Profile' },
+      { label: 'Preferences' },
+      { label: 'Sign out', disabled: true },
+      { label: 'Theme' },
+    ];
+    const buffer = { query: '', at: 0 };
+    expect(typeaheadMove(buffer, labels, 'p', 1_000, -1)).toBe(0);
+    expect(typeaheadMove(buffer, labels, 'p', 1_200, 0)).toBe(1);
+    expect(typeaheadMove(buffer, labels, 'r', 1_300, 1)).toBe(0);
+    expect(typeaheadMove(buffer, labels, 't', 3_000, 0)).toBe(3);
+    expect(typeaheadMove(buffer, labels, 's', 3_100, 3)).toBeNull();
+    expect(typeaheadMove(buffer, labels, 's', 4_000, 3)).toBeNull();
+    expect(typeaheadMove(buffer, labels, ' ', 4_100, 3)).toBeNull();
   });
 
   it('skips disabled items when moving', () => {

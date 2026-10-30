@@ -138,7 +138,7 @@ export const interactionCatalog: ComponentDoc[] = [
     events: [{ name: 'select', react: 'onSelect', vue: '@select', svelte: 'onselect', description: 'A leaf item was activated. Opening a submenu does not select it.' }],
     a11y: ['aria-haspopup=menu, aria-expanded, and aria-activedescendant. Arrow keys, Home, End, and Escape. The inline-end arrow opens a submenu. Escape closes the submenu before the root.'],
     rtl: ['The submenu and its caret follow writing direction.'],
-    limitations: ['One submenu level. Deeper items are not opened.', 'Typeahead is not implemented.'],
+    limitations: ['One submenu level. Deeper items are not opened.', 'Typeahead matches a label prefix. Letters typed within half a second narrow it; the same letter cycles.'],
     element: false,
     examples: examples('DropdownMenu', {
       react: '<DropdownMenu label="Account" items={[{ id: "profile", label: "Profile" }, { id: "theme", label: "Theme", items: [{ id: "ivory", label: "Ivory" }] }]} onSelect={() => {}} />',

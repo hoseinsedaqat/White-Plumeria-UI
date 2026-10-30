@@ -4,6 +4,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -31,6 +32,7 @@ export const DropdownMenu = defineComponent({
     const active = ref(0);
     const subActive = ref<number | null>(null);
     const root = ref<HTMLElement | null>(null);
+    const typeahead = { query: '', at: 0 };
     const menuId = useId();
     let stop: (() => void) | undefined;
 
@@ -76,7 +78,17 @@ export const DropdownMenu = defineComponent({
         submenuOpen: subActive.value !== null,
         hasSubmenu: menuHasSubmenu(current),
       });
-      if (!command) return;
+      if (!command) {
+        if (!open.value) return;
+        const pool = subActive.value === null ? props.items : children;
+        const from = subActive.value === null ? active.value : subActive.value;
+        const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+        if (next === null) return;
+        event.preventDefault();
+        if (subActive.value === null) active.value = next;
+        else subActive.value = next;
+        return;
+      }
       event.preventDefault();
       if (command === 'close' || command === 'close-submenu') event.stopPropagation();
       if (command === 'open') {
@@ -266,6 +278,7 @@ export const ContextMenu = defineComponent({
     const point = ref<{ x: number; y: number } | null>(null);
     const active = ref(0);
     const subActive = ref<number | null>(null);
+    const typeahead = { query: '', at: 0 };
     const root = ref<HTMLElement | null>(null);
     const menu = ref<HTMLElement | null>(null);
     const menuId = useId();
@@ -336,7 +349,17 @@ export const ContextMenu = defineComponent({
         submenuOpen: subActive.value !== null,
         hasSubmenu: menuHasSubmenu(current),
       });
-      if (!command || command === 'open') return;
+      if (!command) {
+        const pool = subActive.value === null ? props.items : children;
+        const from = subActive.value === null ? active.value : subActive.value;
+        const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+        if (next === null) return;
+        event.preventDefault();
+        if (subActive.value === null) active.value = next;
+        else subActive.value = next;
+        return;
+      }
+      if (command === 'open') return;
       event.preventDefault();
       if (command === 'close' || command === 'close-submenu') event.stopPropagation();
       if (command === 'close') {

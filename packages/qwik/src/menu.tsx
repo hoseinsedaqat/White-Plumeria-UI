@@ -4,6 +4,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -29,6 +30,7 @@ export const DropdownMenu = component$<{
   const subActive = useSignal<number | null>(null);
   const buttonRef = useSignal<HTMLButtonElement>();
   const menuRef = useSignal<HTMLDivElement>();
+  const typeahead = useSignal({ query: '', at: 0 });
   const menuId = useId();
   const parent = props.items[active.value];
   const children = parent?.items ?? [];
@@ -87,7 +89,17 @@ export const DropdownMenu = component$<{
             submenuOpen: subActive.value !== null,
             hasSubmenu: menuHasSubmenu(current),
           });
-          if (!command) return;
+          if (!command) {
+            if (!open.value) return;
+            const pool = subActive.value === null ? props.items : children;
+            const from = subActive.value === null ? active.value : subActive.value;
+            const next = typeaheadMove(typeahead.value, pool, event.key, Date.now(), from);
+            if (next === null) return;
+            event.preventDefault();
+            if (subActive.value === null) active.value = next;
+            else subActive.value = next;
+            return;
+          }
           event.preventDefault();
           if (command === 'close' || command === 'close-submenu') event.stopPropagation();
           if (command === 'open') {
@@ -208,6 +220,7 @@ export const ContextMenu = component$<{ items: MenuItem[]; label?: string; onSel
   const subActive = useSignal<number | null>(null);
   const menuRef = useSignal<HTMLDivElement>();
   const rootRef = useSignal<HTMLDivElement>();
+  const typeahead = useSignal({ query: '', at: 0 });
   const menuId = useId();
   const label = props.label ?? 'Context menu';
   const parent = props.items[active.value];
@@ -278,7 +291,17 @@ export const ContextMenu = component$<{ items: MenuItem[]; label?: string; onSel
           submenuOpen: subActive.value !== null,
           hasSubmenu: menuHasSubmenu(current),
         });
-        if (!command || command === 'open') return;
+        if (!command) {
+          const pool = subActive.value === null ? props.items : childrenItems;
+          const from = subActive.value === null ? active.value : (subActive.value ?? 0);
+          const next = typeaheadMove(typeahead.value, pool, event.key, Date.now(), from);
+          if (next === null) return;
+          event.preventDefault();
+          if (subActive.value === null) active.value = next;
+          else subActive.value = next;
+          return;
+        }
+        if (command === 'open') return;
         event.preventDefault();
         if (command === 'close') {
           subActive.value = null;

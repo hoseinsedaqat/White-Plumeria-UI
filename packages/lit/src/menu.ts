@@ -5,6 +5,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   moveEnabledIndex,
+  typeaheadMove,
   nextIndex,
   placeOverlay,
   readingDirection,
@@ -82,6 +83,7 @@ export class DropdownMenu extends WplElement {
   private open = false;
   private active = 0;
   private subActive: number | null = null;
+  private readonly typeahead = { query: '', at: 0 };
   private readonly menuId = createId('wpl-menu');
   private dismiss: (() => void) | null = null;
 
@@ -128,7 +130,19 @@ export class DropdownMenu extends WplElement {
       submenuOpen: this.subActive !== null,
       hasSubmenu: menuHasSubmenu(current),
     });
-    if (!command) return;
+    if (!command) {
+      if (!this.open) return;
+      const parent = this.items[this.active];
+      const pool = this.subActive === null ? this.items : (parent?.items ?? []);
+      const from = this.subActive === null ? this.active : this.subActive;
+      const next = typeaheadMove(this.typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (this.subActive === null) this.active = next;
+      else this.subActive = next;
+      this.requestUpdate();
+      return;
+    }
     event.preventDefault();
     if (command === 'close' || command === 'close-submenu') event.stopPropagation();
     if (command === 'open') {
@@ -261,6 +275,7 @@ export class ContextMenu extends WplElement {
   private point: { x: number; y: number } | null = null;
   private active = 0;
   private subActive: number | null = null;
+  private readonly typeahead = { query: '', at: 0 };
   private readonly menuId = createId('wpl-context');
   private dismiss: (() => void) | null = null;
 
@@ -362,7 +377,19 @@ export class ContextMenu extends WplElement {
           submenuOpen: this.subActive !== null,
           hasSubmenu: menuHasSubmenu(current),
         });
-        if (!command || command === 'open') return;
+        if (!command) {
+          const parent = this.items[this.active];
+          const pool = this.subActive === null ? this.items : (parent?.items ?? []);
+          const from = this.subActive === null ? this.active : this.subActive;
+          const next = typeaheadMove(this.typeahead, pool, event.key, Date.now(), from);
+          if (next === null) return;
+          event.preventDefault();
+          if (this.subActive === null) this.active = next;
+          else this.subActive = next;
+          this.requestUpdate();
+          return;
+        }
+        if (command === 'open') return;
         event.preventDefault();
         if (command === 'close') {
           this.close();
