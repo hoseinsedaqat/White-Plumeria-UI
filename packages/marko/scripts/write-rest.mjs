@@ -191,6 +191,7 @@ export interface Input { label?: string; checked?: boolean; onChange?: (checked:
 <id/fieldId/>
 <label/host class="wpl-switch" for=fieldId>
   <input id=fieldId type="checkbox" role="switch" aria-checked=String(checked) checked=checked checkedChange(next) { checked = Boolean(next); emit(host(), "wpl-change", { checked }); input.onChange?.(checked); }>
+  <span class="wpl-switch-control" aria-hidden="true"></span>
   \${input.label || "Switch"}
 </label>
 `,

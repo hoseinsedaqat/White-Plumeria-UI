@@ -29,7 +29,7 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
               type="button"
               role="tab"
               aria-selected={tab === item}
-              className={tab === item ? 'wpl-btn wpl-btn-primary wpl-btn-sm' : 'wpl-btn wpl-btn-ghost wpl-btn-sm'}
+              className="docs-usage-tab"
               onClick={() => setTab(item)}
             >
               {item}

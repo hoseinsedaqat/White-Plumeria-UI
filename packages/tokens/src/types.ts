@@ -17,6 +17,7 @@ export const colorKeys = [
   'primaryFg',
   'primarySubtle',
   'accent',
+  'accentFg',
   'success',
   'successFg',
   'successSubtle',

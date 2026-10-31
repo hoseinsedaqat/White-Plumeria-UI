@@ -75,6 +75,7 @@
   --wpl-color-primary-fg: #FFFFFF;
   --wpl-color-primary-subtle: #F4F4F5;
   --wpl-color-accent: #3F3F46;
+  --wpl-color-accent-fg: #FFFFFF;
   --wpl-color-success: #166534;
   --wpl-color-success-fg: #FFFFFF;
   --wpl-color-success-subtle: #DCFCE7;
@@ -113,6 +114,7 @@
   --wpl-color-primary-fg: #09090B;
   --wpl-color-primary-subtle: #27272A;
   --wpl-color-accent: #D4D4D8;
+  --wpl-color-accent-fg: #09090B;
   --wpl-color-success: #86EFAC;
   --wpl-color-success-fg: #052E16;
   --wpl-color-success-subtle: #14532D;
@@ -151,6 +153,7 @@
   --wpl-color-primary-fg: #FFF9F0;
   --wpl-color-primary-subtle: #F3E6D0;
   --wpl-color-accent: #A9782E;
+  --wpl-color-accent-fg: #1C1915;
   --wpl-color-success: #1E5A43;
   --wpl-color-success-fg: #F3FBF7;
   --wpl-color-success-subtle: #E5F3EC;
@@ -189,6 +192,7 @@
   --wpl-color-primary-fg: #1C1408;
   --wpl-color-primary-subtle: #3A2C18;
   --wpl-color-accent: #C4843A;
+  --wpl-color-accent-fg: #1C1408;
   --wpl-color-success: #8FCBB0;
   --wpl-color-success-fg: #04140E;
   --wpl-color-success-subtle: #17332C;
@@ -227,6 +231,7 @@
   --wpl-color-primary-fg: #F7F3EA;
   --wpl-color-primary-subtle: #E7E2D8;
   --wpl-color-accent: #8A5A12;
+  --wpl-color-accent-fg: #F7F3EA;
   --wpl-color-success: #1B4F3C;
   --wpl-color-success-fg: #F3FBF7;
   --wpl-color-success-subtle: #E3F0EA;
@@ -265,6 +270,7 @@
   --wpl-color-primary-fg: #12110F;
   --wpl-color-primary-subtle: #2A2723;
   --wpl-color-accent: #D7B17A;
+  --wpl-color-accent-fg: #12110F;
   --wpl-color-success: #8FCBB0;
   --wpl-color-success-fg: #04140E;
   --wpl-color-success-subtle: #16302A;
@@ -303,6 +309,7 @@
   --wpl-color-primary-fg: #FFF8E8;
   --wpl-color-primary-subtle: #F6E4B8;
   --wpl-color-accent: #C98A12;
+  --wpl-color-accent-fg: #1A1408;
   --wpl-color-success: #1E5A43;
   --wpl-color-success-fg: #F3FBF7;
   --wpl-color-success-subtle: #E5F3EC;
@@ -341,6 +348,7 @@
   --wpl-color-primary-fg: #1A1408;
   --wpl-color-primary-subtle: #3A2E14;
   --wpl-color-accent: #C98A12;
+  --wpl-color-accent-fg: #1A1408;
   --wpl-color-success: #8FCBB0;
   --wpl-color-success-fg: #04140E;
   --wpl-color-success-subtle: #17332C;
@@ -379,6 +387,7 @@
   --wpl-color-primary-fg: #F4FBFA;
   --wpl-color-primary-subtle: #D7EBE8;
   --wpl-color-accent: #1F7A74;
+  --wpl-color-accent-fg: #F4FBFA;
   --wpl-color-success: #1B5A40;
   --wpl-color-success-fg: #F3FBF7;
   --wpl-color-success-subtle: #E3F2EA;
@@ -417,6 +426,7 @@
   --wpl-color-primary-fg: #06201E;
   --wpl-color-primary-subtle: #1A3330;
   --wpl-color-accent: #7EB8B2;
+  --wpl-color-accent-fg: #06201E;
   --wpl-color-success: #8FCBB0;
   --wpl-color-success-fg: #04140E;
   --wpl-color-success-subtle: #16332C;
@@ -455,6 +465,7 @@
   --wpl-color-primary-fg: #FFF8F6;
   --wpl-color-primary-subtle: #F6E0DB;
   --wpl-color-accent: #C46B5A;
+  --wpl-color-accent-fg: #241614;
   --wpl-color-success: #1E5A43;
   --wpl-color-success-fg: #F3FBF7;
   --wpl-color-success-subtle: #E5F3EC;
@@ -493,6 +504,7 @@
   --wpl-color-primary-fg: #2A1210;
   --wpl-color-primary-subtle: #3A2420;
   --wpl-color-accent: #E7A094;
+  --wpl-color-accent-fg: #2A1210;
   --wpl-color-success: #8FCBB0;
   --wpl-color-success-fg: #04140E;
   --wpl-color-success-subtle: #17332C;
@@ -533,6 +545,7 @@
     --wpl-color-primary-fg: #09090B;
     --wpl-color-primary-subtle: #27272A;
     --wpl-color-accent: #D4D4D8;
+    --wpl-color-accent-fg: #09090B;
     --wpl-color-success: #86EFAC;
     --wpl-color-success-fg: #052E16;
     --wpl-color-success-subtle: #14532D;
@@ -571,6 +584,7 @@
     --wpl-color-primary-fg: #1C1408;
     --wpl-color-primary-subtle: #3A2C18;
     --wpl-color-accent: #C4843A;
+    --wpl-color-accent-fg: #1C1408;
     --wpl-color-success: #8FCBB0;
     --wpl-color-success-fg: #04140E;
     --wpl-color-success-subtle: #17332C;
@@ -609,6 +623,7 @@
     --wpl-color-primary-fg: #12110F;
     --wpl-color-primary-subtle: #2A2723;
     --wpl-color-accent: #D7B17A;
+    --wpl-color-accent-fg: #12110F;
     --wpl-color-success: #8FCBB0;
     --wpl-color-success-fg: #04140E;
     --wpl-color-success-subtle: #16302A;
@@ -647,6 +662,7 @@
     --wpl-color-primary-fg: #1A1408;
     --wpl-color-primary-subtle: #3A2E14;
     --wpl-color-accent: #C98A12;
+    --wpl-color-accent-fg: #1A1408;
     --wpl-color-success: #8FCBB0;
     --wpl-color-success-fg: #04140E;
     --wpl-color-success-subtle: #17332C;
@@ -685,6 +701,7 @@
     --wpl-color-primary-fg: #06201E;
     --wpl-color-primary-subtle: #1A3330;
     --wpl-color-accent: #7EB8B2;
+    --wpl-color-accent-fg: #06201E;
     --wpl-color-success: #8FCBB0;
     --wpl-color-success-fg: #04140E;
     --wpl-color-success-subtle: #16332C;
@@ -723,6 +740,7 @@
     --wpl-color-primary-fg: #2A1210;
     --wpl-color-primary-subtle: #3A2420;
     --wpl-color-accent: #E7A094;
+    --wpl-color-accent-fg: #2A1210;
     --wpl-color-success: #8FCBB0;
     --wpl-color-success-fg: #04140E;
     --wpl-color-success-subtle: #17332C;

@@ -436,27 +436,47 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-tab-body .wpl-switch:nth-child(1)[aria-checked='true'] .wpl-switch-control {
   background: var(--wpl-color-primary);
-  border-color: var(--wpl-color-primary);
+  border-color: color-mix(in srgb, var(--wpl-color-primary-fg) 42%, var(--wpl-color-primary));
+}
+
+.home-tab-body .wpl-switch:nth-child(1)[aria-checked='true'] .wpl-switch-control::after {
+  background: var(--wpl-color-primary-fg);
 }
 
 .home-tab-body .wpl-switch:nth-child(2)[aria-checked='true'] .wpl-switch-control {
   background: var(--wpl-color-danger);
-  border-color: var(--wpl-color-danger);
+  border-color: color-mix(in srgb, var(--wpl-color-danger-fg) 42%, var(--wpl-color-danger));
+}
+
+.home-tab-body .wpl-switch:nth-child(2)[aria-checked='true'] .wpl-switch-control::after {
+  background: var(--wpl-color-danger-fg);
 }
 
 .home-tab-body .wpl-switch:nth-child(3)[aria-checked='true'] .wpl-switch-control {
   background: var(--wpl-color-success);
-  border-color: var(--wpl-color-success);
+  border-color: color-mix(in srgb, var(--wpl-color-success-fg) 42%, var(--wpl-color-success));
+}
+
+.home-tab-body .wpl-switch:nth-child(3)[aria-checked='true'] .wpl-switch-control::after {
+  background: var(--wpl-color-success-fg);
 }
 
 .home-tab-body .wpl-switch:nth-child(4)[aria-checked='true'] .wpl-switch-control {
   background: var(--wpl-color-info);
-  border-color: var(--wpl-color-info);
+  border-color: color-mix(in srgb, var(--wpl-color-info-fg) 42%, var(--wpl-color-info));
+}
+
+.home-tab-body .wpl-switch:nth-child(4)[aria-checked='true'] .wpl-switch-control::after {
+  background: var(--wpl-color-info-fg);
 }
 
 .home-tab-body .wpl-switch:nth-child(5)[aria-checked='true'] .wpl-switch-control {
   background: var(--wpl-color-accent);
-  border-color: var(--wpl-color-accent);
+  border-color: color-mix(in srgb, var(--wpl-color-accent-fg) 42%, var(--wpl-color-accent));
+}
+
+.home-tab-body .wpl-switch:nth-child(5)[aria-checked='true'] .wpl-switch-control::after {
+  background: var(--wpl-color-accent-fg);
 }
 
 .home-sizes {
@@ -620,8 +640,9 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   max-height: 22rem;
   padding: 1rem;
   border-radius: 1rem;
-  background: var(--wpl-color-bg-muted);
+  background: var(--wpl-color-surface);
   color: var(--wpl-color-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 24%, transparent);
   font-family: var(--wpl-font-mono);
   font-size: 0.75rem;
   line-height: 1.5;
@@ -643,6 +664,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   padding: 1.3rem;
   border-radius: 1rem;
   background: var(--wpl-color-bg-muted);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 28%, transparent);
 }
 
 .home-meter {
@@ -711,7 +733,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   background: var(--wpl-color-bg);
   color: var(--wpl-color-text);
   text-align: left;
-  box-shadow: inset 0 0 0 1px var(--wpl-color-border);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 28%, transparent);
 }
 
 .home-preview .home-colors {
@@ -740,7 +762,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   font: inherit;
   text-align: left;
   cursor: pointer;
-  box-shadow: inset 0 0 0 1px var(--wpl-color-border);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 34%, transparent);
 }
 
 .home-theme-card[aria-pressed="true"] {
@@ -1198,14 +1220,15 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   overflow: hidden;
   height: 1.7rem;
   border-radius: 999px;
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 28%, transparent);
 }
 
 .home-bar i {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: color-mix(in srgb, var(--wpl-color-text) 22%, var(--wpl-color-bg-muted));
+  background: color-mix(in srgb, var(--wpl-color-text) 40%, var(--wpl-color-bg));
 }
 
 .home-bar.is-short i {
@@ -1225,7 +1248,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   place-items: center;
   padding: 0.9rem;
   border-radius: 1.15rem;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 22%, transparent);
   font-size: 1.05rem;
   font-weight: 750;
   text-align: center;
