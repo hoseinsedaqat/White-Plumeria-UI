@@ -9,6 +9,9 @@ describe('docs app', () => {
     render(<App />);
     expect(screen.getByRole('heading', { level: 1, name: /faster, cleaner, easier/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'See all components' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /from xs to xl/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /highly customizable/i })).toBeInTheDocument();
+    expect(screen.getByText('Written natively')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'github.com/hoseinsedaqat', exact: true })).toHaveAttribute(
       'href',
       'https://github.com/hoseinsedaqat',
