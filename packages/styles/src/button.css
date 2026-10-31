@@ -255,12 +255,19 @@
 }
 
 .wpl-spinner {
-  inline-size: 1em;
-  block-size: 1em;
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
   border: 2px solid currentColor;
   border-inline-end-color: transparent;
   border-radius: var(--wpl-radius-full);
+  color: var(--wpl-color-primary);
   animation: wpl-spin 700ms linear infinite;
+}
+
+.wpl-btn .wpl-spinner {
+  inline-size: 0.85em;
+  block-size: 0.85em;
+  color: currentColor;
 }
 
 .wpl-spinner-sm {

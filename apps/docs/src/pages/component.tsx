@@ -17,8 +17,8 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       <p className="docs-kicker">{categoryLabels[component.category].en}</p>
       <h1 className="docs-title">{component.name}</h1>
       <p className="docs-lede">{component.summary}</p>
-      <ClassTable names={component.classes} />
       <Showcase slug={component.slug} />
+      <ClassTable names={component.classes} />
 
       <section className="docs-block" id="usage">
         <h2>Usage</h2>

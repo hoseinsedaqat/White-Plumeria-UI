@@ -1,6 +1,7 @@
 import { buttonAppearances, buttonSizes, buttonVariants, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
 import {
   Alert,
+  Avatar,
   Badge,
   Button,
   ButtonGroup,
@@ -9,41 +10,24 @@ import {
   ContextMenu,
   DatePicker,
   DateRangePicker,
+  IconButton,
   Input,
   DropdownMenu,
+  Kbd,
   Navbar,
   Progress,
   RangeSlider,
   Select,
+  Skeleton,
+  Spinner,
   Switch,
+  Table,
   Tabs,
   ToggleGroup,
 } from '@white-plumeria/react';
 import { useState, type ReactNode } from 'react';
 import { renderDemo, ThemeCarousel, themeCarouselCode } from './demos.tsx';
 import { Preview } from './preview.tsx';
-
-function Choice<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: readonly T[];
-  onChange: (next: T) => void;
-}) {
-  return (
-    <ToggleGroup
-      hideLabel
-      label={label}
-      value={value}
-      onValueChange={(next) => onChange(next as T)}
-      options={options.map((option) => ({ value: option, label: option }))}
-    />
-  );
-}
 
 function ButtonLab() {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
@@ -53,14 +37,43 @@ function ButtonLab() {
   const code = `<Button variant="${variant}" size="${size}"${appearance === 'solid' ? '' : ` appearance="${appearance}"`}${loading ? ' loading' : ''}>\n  Save changes\n</Button>`;
   return (
     <Preview title="Interactive button" code={code} open>
-      <div className="docs-builder">
-        <Choice label="Variant" value={variant} options={buttonVariants} onChange={setVariant} />
-        <Choice label="Appearance" value={appearance} options={buttonAppearances} onChange={setAppearance} />
-        <Choice label="Size" value={size} options={buttonSizes} onChange={setSize} />
-        <Switch label="Loading" checked={loading} onCheckedChange={setLoading} />
-        <Button variant={variant} size={size} appearance={appearance} loading={loading}>
-          Save changes
-        </Button>
+      <div className="docs-lab">
+        <div className="docs-lab-controls">
+          <label className="wpl-field">
+            <span className="wpl-label">Variant</span>
+            <Select
+              aria-label="Variant"
+              value={variant}
+              onChange={(event) => {
+                const next = event.currentTarget.value;
+                if ((buttonVariants as readonly string[]).includes(next)) setVariant(next as ButtonVariant);
+              }}
+              options={buttonVariants.map((item) => ({ value: item, label: item }))}
+            />
+          </label>
+          <ToggleGroup
+            label="Appearance"
+            value={appearance}
+            onValueChange={(next) => {
+              if ((buttonAppearances as readonly string[]).includes(next)) setAppearance(next as ButtonAppearance);
+            }}
+            options={buttonAppearances.map((item) => ({ value: item, label: item }))}
+          />
+          <ToggleGroup
+            label="Size"
+            value={size}
+            onValueChange={(next) => {
+              if ((buttonSizes as readonly string[]).includes(next)) setSize(next as ButtonSize);
+            }}
+            options={buttonSizes.map((item) => ({ value: item, label: item }))}
+          />
+          <Switch label="Loading" checked={loading} onCheckedChange={setLoading} />
+        </div>
+        <div className="docs-lab-stage">
+          <Button variant={variant} size={size} appearance={appearance} loading={loading}>
+            Save changes
+          </Button>
+        </div>
       </div>
     </Preview>
   );
@@ -340,6 +353,54 @@ const sections: Record<string, ReactNode> = {
   'range-slider': <RangeLab />,
   'dropdown-menu': <MenuLab />,
   'context-menu': <ContextLab />,
+  avatar: (
+    <Preview title="Sizes and status" open code={`<Avatar name="Laleh Karimi" size="lg" status="online" statusLabel="Online" />`}>
+      <Avatar name="Laleh Karimi" size="sm" />
+      <Avatar name="Laleh Karimi" status="online" statusLabel="Online" />
+      <Avatar name="Laleh Karimi" size="lg" status="busy" statusLabel="Busy" />
+    </Preview>
+  ),
+  spinner: (
+    <Preview title="Sizes" open code={`<Spinner label="Saving" />`}>
+      <Spinner label="Saving" size="sm" />
+      <Spinner label="Saving" />
+      <Spinner label="Saving" size="lg" />
+    </Preview>
+  ),
+  skeleton: (
+    <Preview title="Placeholder" open code={`<Skeleton width="12rem" height="1rem" />`}>
+      <div className="wpl-stack" style={{ width: 'min(100%, 18rem)' }}>
+        <Skeleton width="40%" height="0.8rem" />
+        <Skeleton width="100%" height="0.8rem" />
+        <Skeleton width="100%" height="4.5rem" />
+      </div>
+    </Preview>
+  ),
+  'icon-button': (
+    <Preview title="Icon button" open code={`<IconButton label="Close" />`}>
+      <IconButton label="Close" />
+      <IconButton label="Close" variant="outline" />
+      <IconButton label="Close" variant="danger" />
+    </Preview>
+  ),
+  kbd: (
+    <Preview title="Shortcut" open code={`<Kbd keys={["Ctrl", "K"]} />`}>
+      <Kbd keys={['Ctrl', 'K']} />
+      <Kbd keys={['Shift', 'F10']} />
+    </Preview>
+  ),
+  'button-group': (
+    <Preview title="Joined and separate" open>
+      <ButtonGroup label="Save options">
+        <Button>Save</Button>
+        <Button variant="secondary">Draft</Button>
+      </ButtonGroup>
+      <ButtonGroup label="Joined actions" joined>
+        <Button>Save</Button>
+        <Button variant="secondary">Draft</Button>
+      </ButtonGroup>
+    </Preview>
+  ),
 };
 
 export function Showcase({ slug }: { slug: string }) {
@@ -353,5 +414,23 @@ export function MiniPreview({ slug }: { slug: string }) {
   if (slug === 'input') return <Input aria-label="Email" placeholder="ada@example.com" />;
   if (slug === 'switch') return <Switch label="Enabled" defaultChecked />;
   if (slug === 'checkbox') return <Checkbox label="Remember me" defaultChecked />;
+  if (slug === 'data-table') {
+    return (
+      <Table caption="Sample rates">
+        <thead>
+          <tr>
+            <th>Pair</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EUR/USD</td>
+            <td>1.08</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+  }
   return renderDemo(slug);
 }

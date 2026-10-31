@@ -134,6 +134,8 @@
 
 .wpl-divider,
 .wpl-separator {
+  inline-size: 100%;
+  min-inline-size: 0;
   border: 0;
   border-block-start: 1px solid var(--wpl-color-border);
   margin-block: var(--wpl-space-4);
@@ -144,9 +146,9 @@
   align-self: stretch;
   inline-size: 1px;
   block-size: auto;
-  min-block-size: 1rem;
+  min-block-size: 1.75rem;
   border-block-start: 0;
-  border-inline-start: 1px solid var(--wpl-color-border);
+  border-inline-start: 1px solid var(--wpl-color-border-strong);
   margin: 0;
 }
 
@@ -170,9 +172,9 @@
   border-radius: var(--wpl-radius-sm);
   background: linear-gradient(
     100deg,
-    var(--wpl-color-bg-muted) 20%,
-    var(--wpl-color-bg-subtle) 40%,
-    var(--wpl-color-bg-muted) 60%
+    color-mix(in srgb, var(--wpl-color-text) 8%, var(--wpl-color-bg)) 20%,
+    color-mix(in srgb, var(--wpl-color-text) 18%, var(--wpl-color-bg)) 40%,
+    color-mix(in srgb, var(--wpl-color-text) 8%, var(--wpl-color-bg)) 60%
   );
   background-size: 200% 100%;
   animation: wpl-shimmer 1.4s ease-in-out infinite;
@@ -190,13 +192,13 @@
   block-size: 0.45rem;
   border: 0;
   border-radius: var(--wpl-radius-full);
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
   overflow: hidden;
   appearance: none;
 }
 
 .wpl-progress::-webkit-progress-bar {
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
 }
 
 .wpl-progress::-webkit-progress-value,
@@ -207,9 +209,10 @@
 
 .wpl-progress-track {
   inline-size: 100%;
-  block-size: 0.45rem;
+  min-inline-size: 8rem;
+  block-size: 0.5rem;
   border-radius: var(--wpl-radius-full);
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
   overflow: hidden;
 }
 
@@ -365,6 +368,16 @@
   position: relative;
 }
 
+.wpl-timeline-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.28rem;
+  inset-block-start: 1.15rem;
+  inline-size: 1px;
+  block-size: calc(100% + var(--wpl-space-4) - 0.55rem);
+  background: var(--wpl-color-border);
+}
+
 .wpl-timeline-item::before {
   content: "";
   inline-size: 0.65rem;
@@ -401,8 +414,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--wpl-space-3);
+  min-inline-size: 0;
   padding-block: var(--wpl-space-3);
   border-block-end: 1px solid var(--wpl-color-border);
+}
+
+.wpl-list-item:last-child {
+  border-block-end: 0;
 }
 
 .wpl-mark {

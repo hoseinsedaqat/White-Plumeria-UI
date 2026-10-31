@@ -386,7 +386,7 @@
 .wpl-slider::-webkit-slider-runnable-track {
   block-size: 0.35rem;
   border-radius: var(--wpl-radius-full);
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
 }
 
 .wpl-slider::-webkit-slider-thumb {
@@ -402,7 +402,7 @@
 .wpl-slider::-moz-range-track {
   block-size: 0.35rem;
   border-radius: var(--wpl-radius-full);
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
 }
 
 .wpl-slider::-moz-range-thumb {
@@ -443,7 +443,7 @@
 
 .wpl-range-track {
   inset-inline: 0;
-  background: var(--wpl-color-bg-muted);
+  background: color-mix(in srgb, var(--wpl-color-text) 14%, var(--wpl-color-bg));
 }
 
 .wpl-range-fill {
