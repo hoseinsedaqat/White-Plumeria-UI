@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Docs previews for list, timeline, tree, table, chart, empty state, and page header show a finished sample instead of one lonely row. ResponsiveLayout stacks at 40rem of its own width, not 64rem of the viewport.
 - Docs previews sit on the theme background, so tracks, skeletons, and badges stay visible. Navbar menus stay open after the toggle, and a narrow layout shows its sidebar from its own width.
 - ToggleGroup is a joined single-choice control in every adapter. Arrow keys follow reading direction and skip disabled choices. It is not RadioGroup, and it is not published.
 - Carousel pictures fill the frame. The slide track is sized by the viewport, not by the image, so a photo is visible instead of an empty box.
