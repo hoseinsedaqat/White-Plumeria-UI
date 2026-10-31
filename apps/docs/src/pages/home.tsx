@@ -51,14 +51,14 @@ const adapters = [
   ['Ember', '@white-plumeria/ember', 'Glimmer', 'Native Glimmer components for Ember 7.4. Rendered on the client. Server render is not claimed.'],
 ] as const;
 const swatches = [
-  ['primary', 'var(--wpl-color-primary)'],
-  ['accent', 'var(--wpl-color-accent)'],
-  ['success', 'var(--wpl-color-success)'],
-  ['warning', 'var(--wpl-color-warning)'],
-  ['danger', 'var(--wpl-color-danger)'],
-  ['info', 'var(--wpl-color-info)'],
-  ['surface', 'var(--wpl-color-surface)'],
-  ['text', 'var(--wpl-color-text)'],
+  ['primary', 'var(--wpl-color-primary)', 'var(--wpl-color-primary-fg)'],
+  ['accent', 'var(--wpl-color-accent)', ''],
+  ['success', 'var(--wpl-color-success)', 'var(--wpl-color-success-fg)'],
+  ['warning', 'var(--wpl-color-warning)', 'var(--wpl-color-warning-fg)'],
+  ['danger', 'var(--wpl-color-danger)', 'var(--wpl-color-danger-fg)'],
+  ['info', 'var(--wpl-color-info)', 'var(--wpl-color-info-fg)'],
+  ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
+  ['text', 'var(--wpl-color-text)', 'var(--wpl-color-bg)'],
 ] as const;
 const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const satisfies readonly ButtonSize[];
 const radii = [
@@ -86,8 +86,12 @@ const palette = [
   ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
   ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
 ] as const;
-const marks = ['primary', 'accent', 'info', 'success', 'warning', 'danger'] as const;
 const cleanShare = Math.max(8, Math.round((cleanForm.length / verboseForm.length) * 100));
+const verboseDecls = (verboseForm.match(/;/g) ?? []).length;
+const cleanTokens = [...cleanForm.matchAll(/class="([^"]*)"/g)].reduce((count, match) => count + match[1].split(/\s+/).filter(Boolean).length, 0);
+const declShare = Math.max(8, Math.round((cleanTokens / Math.max(verboseDecls, 1)) * 100));
+const declFewer = Math.round((1 - cleanTokens / Math.max(verboseDecls, 1)) * 100);
+const semantic = palette.filter(([name]) => name !== 'canvas' && name !== 'muted' && name !== 'surface');
 
 export function HomePage({ onNavigate }: { onNavigate: (href: string) => void }) {
   const heroRef = useRef<HTMLElement>(null);
@@ -100,7 +104,8 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   const [outline, setOutline] = useState(false);
   const [soft, setSoft] = useState(false);
   const [large, setLarge] = useState(false);
-  const customClass = ['wpl-btn', outline ? 'wpl-btn-outline' : 'wpl-btn-primary', soft ? 'wpl-btn-soft' : '', large ? 'wpl-btn-lg' : '']
+  const [round, setRound] = useState(true);
+  const customClass = ['wpl-btn', outline ? 'wpl-btn-outline' : 'wpl-btn-primary', soft ? 'wpl-btn-soft' : '', large ? 'wpl-btn-lg' : '', round ? 'wpl-btn-pill' : '']
     .filter(Boolean)
     .join(' ');
   const { preferences, setPreferences } = useWhitePlumeria();
@@ -273,8 +278,9 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                     <div className="home-tab-body">
                       {tab === 'Features' ? (
                         <>
-                          <Switch label="Faster to read" defaultChecked />
-                          <Switch label="Cleaner markup" defaultChecked />
+                          <Switch label="Faster development" defaultChecked />
+                          <Switch label="Cleaner HTML" defaultChecked />
+                          <Switch label="Customizable" defaultChecked />
                           <Switch label="Themeable" defaultChecked />
                           <Switch label="Pure CSS" defaultChecked />
                           <div className="home-sizes" aria-label="Button sizes">
@@ -302,10 +308,9 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                       ) : null}
                     </div>
                     <div className="home-colors" aria-label="Semantic colors">
-                      {swatches.map(([name, background]) => (
-                        <div key={name}>
-                          <i style={{ background }} />
-                          {name}
+                      {swatches.map(([name, background, foreground]) => (
+                        <div key={name} style={{ background, color: foreground || undefined }}>
+                          {foreground ? name : <span>{name}</span>}
                         </div>
                       ))}
                     </div>
@@ -388,6 +393,18 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>from xs to xl</span>
         </h2>
         <p>Height, radius, and space come from the same tokens. A control does not invent a second scale.</p>
+        <div className="home-rulers" aria-label="Size scale">
+          {[0, 1].map((row) => (
+            <div key={row} className="home-ruler" aria-hidden={row === 1 || undefined}>
+              {sizes.map((size) => (
+                <div key={size} className={`home-ruler-item is-${size}`}>
+                  <i />
+                  <small>{size}</small>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
         <div className="home-scale-board">
           {sizes.map((size) => (
             <div key={size} className="home-scale-item">
@@ -419,6 +436,18 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="home-section" aria-labelledby="semantic-title">
+        <h2 id="semantic-title">Semantic colors</h2>
+        <p>The name sits on the color it describes. A theme change repaints the block, not the class.</p>
+        <div className="home-semantic">
+          {semantic.map(([name, background, foreground]) => (
+            <div key={name} style={{ background, color: foreground || undefined }}>
+              {foreground ? name : <span>{name}</span>}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -467,24 +496,51 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             <span>shorter in this example</span>
           </div>
         </div>
-        <div className="home-bars" aria-label="Markup length">
-          <div>
-            <div className="home-bar-label">
+      </section>
+
+      <section className="home-section" aria-labelledby="fewer-title">
+        <h2 id="fewer-title">
+          Fewer class names
+          <br />
+          <span>shorter markup</span>
+        </h2>
+        <p>This example writes {declFewer}% fewer style declarations. The markup is {fewer}% shorter. The counts are this form, not a download chart.</p>
+        <div className="home-charts">
+          <div className="home-chart">
+            <h3>Style declarations</h3>
+            <div className="home-chart-row">
               <span>Long style</span>
-              <strong>{verboseForm.length} characters</strong>
+              <div className="home-bar">
+                <i style={{ inlineSize: '100%' }} />
+              </div>
+              <strong>{verboseDecls}</strong>
             </div>
-            <div className="home-bar">
-              <i style={{ inlineSize: '100%' }} />
-            </div>
-          </div>
-          <div>
-            <div className="home-bar-label">
+            <div className="home-chart-row">
               <span>Class names</span>
-              <strong>{cleanForm.length} characters</strong>
+              <div className="home-bar is-short">
+                <i style={{ inlineSize: `${declShare}%` }} />
+              </div>
+              <strong>{cleanTokens}</strong>
             </div>
-            <div className="home-bar is-short">
-              <i style={{ inlineSize: `${cleanShare}%` }} />
+            <p>{declFewer}% fewer declarations</p>
+          </div>
+          <div className="home-chart" aria-label="Markup length">
+            <h3>HTML size</h3>
+            <div className="home-chart-row">
+              <span>Long style</span>
+              <div className="home-bar">
+                <i style={{ inlineSize: '100%' }} />
+              </div>
+              <strong>{verboseForm.length}</strong>
             </div>
+            <div className="home-chart-row">
+              <span>Class names</span>
+              <div className="home-bar is-short">
+                <i style={{ inlineSize: `${cleanShare}%` }} />
+              </div>
+              <strong>{cleanForm.length}</strong>
+            </div>
+            <p>{fewer}% shorter</p>
           </div>
         </div>
       </section>
@@ -506,11 +562,12 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <pre className="home-code">
             <code>
               {'<button class="'}
-              {customClass.split(' ').map((token) => {
+              {customClass.split(' ').map((token, index) => {
                 const added = token !== 'wpl-btn' && token !== 'wpl-btn-primary';
                 return (
-                  <span key={token} className={added ? 'is-added' : undefined}>
-                    {token === 'wpl-btn' ? token : ` ${token}`}
+                  <span key={token}>
+                    {index > 0 ? ' ' : null}
+                    <span className={added ? 'is-added' : undefined}>{token}</span>
                   </span>
                 );
               })}
@@ -518,13 +575,14 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             </code>
           </pre>
           <div className="home-morph-live">
-            <Button variant={outline ? 'outline' : 'primary'} appearance={soft ? 'soft' : 'solid'} size={large ? 'lg' : 'md'}>
+            <Button variant={outline ? 'outline' : 'primary'} appearance={soft ? 'soft' : 'solid'} size={large ? 'lg' : 'md'} className={round ? 'wpl-btn-pill' : undefined}>
               Save
             </Button>
             <div className="home-morph-switches">
               <Switch label="Outline" checked={outline} onCheckedChange={setOutline} />
               <Switch label="Soft" checked={soft} onCheckedChange={setSoft} />
               <Switch label="Large" checked={large} onCheckedChange={setLarge} />
+              <Switch label="Round" checked={round} onCheckedChange={setRound} />
             </div>
           </div>
         </div>
@@ -586,15 +644,8 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           </div>
           <div className="home-palette" aria-label={`${selected.label} semantic colors`}>
             {palette.map(([name, background, foreground]) => (
-              <div key={name} className="home-swatch" style={{ background, color: foreground || 'transparent' }}>
-                {foreground ? (
-                  <span>
-                    <strong>{name}</strong>
-                    <small>text</small>
-                  </span>
-                ) : (
-                  <span className="home-swatch-caption">{name}</span>
-                )}
+              <div key={name} className="home-swatch" style={{ background, color: foreground || undefined }}>
+                {foreground ? <span>{name}</span> : <span className="home-swatch-caption">{name}</span>}
               </div>
             ))}
           </div>
@@ -638,11 +689,8 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <div className="home-marquee-track">
             {[0, 1].map((copy) => (
               <ul key={copy} aria-hidden={copy === 1}>
-                {adapters.map(([name], index) => (
-                  <li key={`${copy}-${name}`} style={{ '--tone': `var(--wpl-color-${marks[index % marks.length]})` } as CSSProperties}>
-                    <i aria-hidden="true">{name.slice(0, 1)}</i>
-                    {name}
-                  </li>
+                {adapters.map(([name]) => (
+                  <li key={`${copy}-${name}`}>{name}</li>
                 ))}
               </ul>
             ))}

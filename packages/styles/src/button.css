@@ -61,6 +61,10 @@
   font-size: var(--wpl-font-size-md);
 }
 
+.wpl-btn-pill {
+  border-radius: var(--wpl-radius-full);
+}
+
 .wpl-btn-primary:hover:not(:disabled) {
   background: var(--wpl-color-primary-hover);
 }
