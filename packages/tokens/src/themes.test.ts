@@ -20,6 +20,7 @@ describe('theme surfaces', () => {
         expect(contrastRatio(colors.text, colors.bg), `${theme.name} ${scheme} text on canvas`).toBeGreaterThanOrEqual(4.5);
         expect(contrastRatio(colors.text, colors.surface), `${theme.name} ${scheme} text on surface`).toBeGreaterThanOrEqual(4.5);
         expect(contrastRatio(colors.primaryFg, colors.primary), `${theme.name} ${scheme} primary text`).toBeGreaterThanOrEqual(4.5);
+        expect(contrastRatio(colors.accentFg, colors.accent), `${theme.name} ${scheme} accent text`).toBeGreaterThanOrEqual(4.5);
       }
     }
   });
