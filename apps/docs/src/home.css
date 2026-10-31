@@ -1202,21 +1202,44 @@ html[data-wpl-scheme='dark'] .home-spec {
 
 .home-semantic {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem;
-  margin-top: 2rem;
+  gap: 1.35rem;
+  width: min(54rem, 100%);
+  margin: 2.4rem auto 0;
 }
 
-.home-semantic div {
+.home-semantic h3 {
+  margin: 0 0 0.7rem;
+  color: var(--wpl-color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-semantic-roles,
+.home-semantic-neutrals {
   display: grid;
-  min-height: 8.8rem;
-  place-items: center;
-  padding: 0.9rem;
-  border-radius: 1.15rem;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 22%, transparent);
-  font-size: 1.05rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.home-semantic-swatch {
+  display: flex;
+  min-height: 6.6rem;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: 1.1rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 32%, transparent);
+  font-size: 1.12rem;
   font-weight: 750;
-  text-align: center;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-align: start;
+}
+
+.home-semantic-neutrals .home-semantic-swatch {
+  min-height: 4.7rem;
 }
 
 .home-morph {
@@ -1387,8 +1410,12 @@ html[data-wpl-scheme='dark'] .home-spec {
     grid-template-columns: 1fr 1fr;
   }
 
-  .home-semantic {
+  .home-semantic-roles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-semantic-neutrals {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .home-palette {
@@ -1401,7 +1428,7 @@ html[data-wpl-scheme='dark'] .home-spec {
 }
 
 @media (min-width: 1040px) {
-  .home-semantic {
+  .home-semantic-roles {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
@@ -1442,7 +1469,8 @@ html[data-wpl-scheme='dark'] .home-spec {
 
   .home-theme-cards,
   .home-palette,
-  .home-semantic {
+  .home-semantic-roles,
+  .home-semantic-neutrals {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
