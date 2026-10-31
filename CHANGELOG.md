@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage size rows, semantic color blocks, markup charts, class customizer, and adapter names follow the daisyUI homepage more closely. Counts stay honest. Packages are still not published.
 - The homepage adds the daisyUI-style stats, size scale, markup bars, class customizer, semantic color board, adapter marquee, and a live component stage. Counts come from the catalog. Packages are still not published.
 - Sort marks and dismiss controls use the shared arrow and close icons. A text arrow or multiplication sign is not the control. Packages are still not published.
 - Theme changes recolor component previews without painting the docs chrome the same color. Surface, muted, and status colors stay apart in every theme, so a control does not disappear into its background. Packages are still not published.
