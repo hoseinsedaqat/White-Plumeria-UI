@@ -8,7 +8,9 @@ import {
   normalizeRange,
   rangeBounds,
   rangeFill,
+  readingDirection,
   selectClassName,
+  toggleGroupMove,
   textareaClassName,
   valueFromPointer,
   type NumberRange,
@@ -22,6 +24,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type InputHTMLAttributes,
   type ReactNode,
@@ -545,6 +548,95 @@ export function SearchInput({
           </button>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+export function ToggleGroup({
+  label,
+  options,
+  value,
+  defaultValue = '',
+  onValueChange,
+  name,
+  hideLabel = false,
+  disabled = false,
+}: {
+  label: string;
+  options: SelectOption[];
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  name?: string;
+  hideLabel?: boolean;
+  disabled?: boolean;
+}) {
+  const labelId = useId();
+  const [internal, setInternal] = useState(defaultValue);
+  const current = value !== undefined ? value : internal;
+  const selected = options.findIndex((option) => option.value === current);
+  const firstEnabled = options.findIndex((option) => !option.disabled);
+
+  function commit(next: string) {
+    if (value === undefined) setInternal(next);
+    onValueChange?.(next);
+  }
+
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    const next = toggleGroupMove(
+      options,
+      selected,
+      event.key,
+      readingDirection(event.currentTarget),
+    );
+    if (next === null) return;
+    const option = options[next];
+    if (!option) return;
+    event.preventDefault();
+    commit(option.value);
+    const group = event.currentTarget.parentElement;
+    queueMicrotask(() => {
+      group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus();
+    });
+  }
+
+  const group = (
+    <div
+      className="wpl-toggle"
+      role="radiogroup"
+      aria-label={hideLabel ? label : undefined}
+      aria-labelledby={hideLabel ? undefined : labelId}
+    >
+      {options.map((option, index) => {
+        const checked = option.value === current;
+        const tabbable =
+          !option.disabled && !disabled && (checked || (selected < 0 && index === firstEnabled));
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            className="wpl-toggle-item"
+            aria-checked={checked}
+            disabled={disabled || option.disabled}
+            tabIndex={tabbable ? 0 : -1}
+            onClick={() => commit(option.value)}
+            onKeyDown={onKeyDown}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+      {name ? <input type="hidden" name={name} value={current} /> : null}
+    </div>
+  );
+  if (hideLabel) return group;
+  return (
+    <div className="wpl-field">
+      <span id={labelId} className="wpl-label">
+        {label}
+      </span>
+      {group}
     </div>
   );
 }

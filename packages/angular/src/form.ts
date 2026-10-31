@@ -23,7 +23,9 @@ import {
   normalizeRange,
   rangeBounds,
   rangeFill,
+  readingDirection,
   selectClassName,
+  toggleGroupMove,
   textareaClassName,
   valueFromPointer,
   type ControlSize,
@@ -614,5 +616,93 @@ export class SearchInput {
 
   onKey(event: KeyboardEvent) {
     if (event.key === 'Enter') this.search.emit(this.current());
+  }
+}
+
+@Component({
+  selector: 'wpl-toggle-group',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  template: `
+    <div class="wpl-field">
+      <span class="wpl-label" [id]="labelId" [class.wpl-sr-only]="hideLabel()">{{ label() }}</span>
+      <div class="wpl-toggle" role="radiogroup" [attr.aria-labelledby]="labelId">
+        @for (option of options(); track option.value; let index = $index) {
+          <button
+            type="button"
+            class="wpl-toggle-item"
+            role="radio"
+            [attr.aria-checked]="option.value === current()"
+            [disabled]="disabled() || option.disabled"
+            [attr.tabindex]="tabbable(option, index) ? 0 : -1"
+            (click)="choose(option.value)"
+            (keydown)="onKey($event)"
+          >
+            {{ option.label }}
+          </button>
+        }
+        @if (name()) {
+          <input type="hidden" [name]="name()" [value]="current()" />
+        }
+      </div>
+    </div>
+  `,
+})
+export class ToggleGroup {
+  readonly label = input.required<string>();
+  readonly options = input<SelectOption[]>([]);
+  readonly value = input<string>();
+  readonly defaultValue = input('');
+  readonly name = input('');
+  readonly hideLabel = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly valueChange = output<string>();
+  readonly labelId = createId('wpl-toggle');
+  private readonly internal = signal<string | null>(null);
+
+  constructor() {
+    queueMicrotask(() => {
+      if (this.internal() === null) this.internal.set(this.defaultValue());
+    });
+  }
+
+  current(): string {
+    return this.value() ?? this.internal() ?? this.defaultValue();
+  }
+
+  tabbable(option: SelectOption, index: number): boolean {
+    if (this.disabled() || option.disabled) return false;
+    if (option.value === this.current()) return true;
+    const selected = this.options().findIndex(
+      (item) => item.value === this.current() && !item.disabled,
+    );
+    return selected < 0 && index === this.options().findIndex((item) => !item.disabled);
+  }
+
+  choose(next: string) {
+    if (this.disabled()) return;
+    if (this.value() === undefined) this.internal.set(next);
+    this.valueChange.emit(next);
+  }
+
+  onKey(event: KeyboardEvent) {
+    const options = this.options();
+    const selected = options.findIndex((option) => option.value === this.current());
+    const next = toggleGroupMove(
+      options,
+      selected,
+      event.key,
+      readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null),
+    );
+    if (next === null) return;
+    const option = options[next];
+    if (!option) return;
+    event.preventDefault();
+    this.choose(option.value);
+    const group =
+      event.currentTarget instanceof HTMLElement ? event.currentTarget.parentElement : null;
+    queueMicrotask(() =>
+      group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus(),
+    );
   }
 }

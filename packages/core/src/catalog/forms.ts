@@ -219,6 +219,84 @@ export const formCatalog: ComponentDoc[] = [
     }),
   },
   {
+    name: 'ToggleGroup',
+    slug: 'toggle-group',
+    category: 'form',
+    summary:
+      'Joined buttons for one choice. Arrow keys follow reading direction. This is not RadioGroup.',
+    summaryFa:
+      'دکمه‌های به‌هم‌پیوسته برای یک انتخاب. کلیدهای جهت، جهت نوشتار را دنبال می‌کنند. این رادیو نیست.',
+    tags: ['toggle', 'segmented', 'choice', 'appearance'],
+    classes: ['wpl-toggle', 'wpl-toggle-item'],
+    props: [
+      {
+        name: 'label',
+        type: 'string',
+        description: 'Accessible name. Visible unless hideLabel is set.',
+        descriptionFa: 'نام دسترس‌پذیر. مگر اینکه hideLabel باشد، دیده می‌شود.',
+      },
+      {
+        name: 'options',
+        type: 'Array<{ value: string; label: string; disabled?: boolean }>',
+        description: 'Choices. A disabled choice is skipped by the arrow keys.',
+        descriptionFa: 'گزینه‌ها. گزینهٔ غیرفعال با کلید جهت رد می‌شود.',
+      },
+      {
+        name: 'value',
+        type: 'string',
+        description: 'Selected value. Vue uses modelValue.',
+        descriptionFa: 'مقدار انتخاب‌شده. Vue از modelValue استفاده می‌کند.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        description: 'Optional hidden input name for form submit.',
+        descriptionFa: 'نام اختیاری ورودی پنهان برای ارسال فرم.',
+      },
+      {
+        name: 'hideLabel',
+        type: 'boolean',
+        defaultValue: 'false',
+        description: 'Keep the label for assistive tech only.',
+        descriptionFa: 'برچسب فقط برای فناوری کمکی می‌ماند.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        defaultValue: 'false',
+        description: 'Disables every choice.',
+        descriptionFa: 'همهٔ گزینه‌ها را غیرفعال می‌کند.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        react: 'onValueChange',
+        vue: '@update:modelValue',
+        svelte: 'bind:value',
+        description: 'Selection changed.',
+      },
+    ],
+    a11y: [
+      'The group is a radiogroup. Each choice is a radio button. Arrow keys select and follow reading direction. Home and End jump to the enabled ends. Choosing the current value again does not clear it.',
+    ],
+    rtl: ['ArrowLeft and ArrowRight swap with writing direction. The group is not mirrored.'],
+    limitations: [
+      'One value. It does not select several items.',
+      'Not a set of independent switches. Use Checkbox or Switch for that.',
+      'Not a labeled radio list. Use RadioGroup when the choice should look like a radio.',
+    ],
+    element: false,
+    examples: examples('ToggleGroup', {
+      react:
+        '<ToggleGroup label="Appearance" name="appearance" value="light" options={[{ value: "light", label: "Light" }, { value: "dark", label: "Dark" }]} />',
+      vue: '<ToggleGroup label="Appearance" name="appearance" model-value="light" :options="[{ value: \'light\', label: \'Light\' }, { value: \'dark\', label: \'Dark\' }]" />',
+      svelte:
+        '<ToggleGroup label="Appearance" name="appearance" value="light" options={[{ value: "light", label: "Light" }, { value: "dark", label: "Dark" }]} />',
+      html: '<div class="wpl-field"><span class="wpl-label" id="appearance">Appearance</span><div class="wpl-toggle" role="radiogroup" aria-labelledby="appearance"><button type="button" class="wpl-toggle-item" role="radio" aria-checked="true">Light</button><button type="button" class="wpl-toggle-item" role="radio" aria-checked="false">Dark</button></div></div>',
+    }),
+  },
+  {
     name: 'Switch',
     slug: 'switch',
     category: 'form',

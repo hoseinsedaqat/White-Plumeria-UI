@@ -21,6 +21,7 @@ export {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './controls.ts';
 export {
@@ -103,6 +104,7 @@ import {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './controls.ts';
 import {
@@ -229,6 +231,7 @@ export const components = {
   Steps,
   Switch,
   Table,
+  ToggleGroup,
   Tabs,
   Textarea,
   Timeline,

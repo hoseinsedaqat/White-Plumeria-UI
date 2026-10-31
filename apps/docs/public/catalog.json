@@ -560,6 +560,17 @@
     ]
   },
   {
+    "name": "ToggleGroup",
+    "slug": "toggle-group",
+    "summary": "Joined buttons for one choice. Arrow keys follow reading direction. This is not RadioGroup.",
+    "summaryFa": "دکمه‌های به‌هم‌پیوسته برای یک انتخاب. کلیدهای جهت، جهت نوشتار را دنبال می‌کنند. این رادیو نیست.",
+    "limitations": [
+      "One value. It does not select several items.",
+      "Not a set of independent switches. Use Checkbox or Switch for that.",
+      "Not a labeled radio list. Use RadioGroup when the choice should look like a radio."
+    ]
+  },
+  {
     "name": "Tooltip",
     "slug": "tooltip",
     "summary": "Supplemental hint on hover and keyboard focus.",

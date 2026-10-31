@@ -49,6 +49,7 @@ export { default as Popover } from './Popover.svelte';
 export { default as Progress } from './Progress.svelte';
 export { default as WhitePlumeriaProvider } from './Provider.svelte';
 export { default as RadioGroup } from './RadioGroup.svelte';
+export { default as ToggleGroup } from './ToggleGroup.svelte';
 export { default as RangeSlider } from './RangeSlider.svelte';
 export { default as Rating } from './Rating.svelte';
 export { default as ResponsiveLayout } from './ResponsiveLayout.svelte';

@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
-import { RangeSlider } from './form.tsx';
+import { RangeSlider, ToggleGroup } from './form.tsx';
 import { ContextMenu, DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
@@ -384,6 +384,33 @@ describe('new controls', () => {
     await user.click(screen.getByRole('radio', { name: /3 of 5/ }));
     expect(screen.getByRole('radio', { name: /3 of 5/ })).toBeChecked();
     expect(screen.getByText('Ctrl')).toBeInTheDocument();
+  });
+
+  it('selects a toggle with the pointer and the arrow keys', async () => {
+    const user = userEvent.setup();
+    const values: string[] = [];
+    render(
+      <ToggleGroup
+        label="Appearance"
+        defaultValue="light"
+        onValueChange={(value) => values.push(value)}
+        options={[
+          { value: 'light', label: 'Light' },
+          { value: 'dark', label: 'Dark', disabled: true },
+          { value: 'system', label: 'System' },
+        ]}
+      />,
+    );
+    const light = screen.getByRole('radio', { name: 'Light' });
+    expect(light).toBeChecked();
+    light.focus();
+    await user.keyboard('{ArrowRight}');
+    const system = screen.getByRole('radio', { name: 'System' });
+    expect(system).toBeChecked();
+    expect(system).toHaveFocus();
+    await user.click(light);
+    expect(light).toBeChecked();
+    expect(values).toEqual(['system', 'light']);
   });
 
   it('steps a number field and stops at the bounds', async () => {

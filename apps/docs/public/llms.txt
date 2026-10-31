@@ -73,6 +73,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Textarea (textarea): Multi-line text field.
 - Timeline (timeline): Ordered events with time elements.
 - Toast (toast): Transient message in a live region.
+- ToggleGroup (toggle-group): Joined buttons for one choice. Arrow keys follow reading direction. This is not RadioGroup.
 - Tooltip (tooltip): Supplemental hint on hover and keyboard focus.
 - TreeView (tree-view): Expandable tree with arrow-key navigation.
 - ValidationMessage (validation-message): Alias of FormMessage with tone="error".

@@ -1,6 +1,6 @@
 import { brand, catalog } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
-import { Button, Checkbox, Input, Switch, useWhitePlumeria } from '@white-plumeria/react';
+import { Button, Checkbox, Input, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
 import '../home.css';
@@ -333,14 +333,16 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           ugly HTML
         </h2>
         <p>The same form. One version is a style attribute. The other uses classes from this library.</p>
-        <div className="home-switch" role="group" aria-label="Markup style">
-          <button type="button" aria-pressed={mode === 'verbose'} onClick={() => setMode('verbose')}>
-            Long style
-          </button>
-          <button type="button" aria-pressed={mode === 'clean'} onClick={() => setMode('clean')}>
-            White Plumeria
-          </button>
-        </div>
+        <ToggleGroup
+          hideLabel
+          label="Markup style"
+          value={mode}
+          onValueChange={(next) => setMode(next === 'verbose' ? 'verbose' : 'clean')}
+          options={[
+            { value: 'verbose', label: 'Long style' },
+            { value: 'clean', label: 'White Plumeria' },
+          ]}
+        />
         <div className="home-compare">
           <pre className="home-code">
             <code>{mode === 'clean' ? cleanForm : verboseForm}</code>
@@ -378,19 +380,21 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>with zero extra classes</span>
         </h2>
         <p>Pick a theme. The preview and the rest of this page use the same CSS variables.</p>
-        <div className="home-switch" role="group" aria-label="Color scheme">
-          {(['light', 'dark', 'system'] as const).map((appearance) => (
-            <button
-              key={appearance}
-              type="button"
-              aria-pressed={preferences.appearance === appearance}
-              onClick={() => setPreferences({ appearance })}
-            >
-              {appearance[0]?.toUpperCase()}
-              {appearance.slice(1)}
-            </button>
-          ))}
-        </div>
+        <ToggleGroup
+          hideLabel
+          label="Color scheme"
+          value={preferences.appearance}
+          onValueChange={(appearance) => {
+            if (appearance === 'light' || appearance === 'dark' || appearance === 'system') {
+              setPreferences({ appearance });
+            }
+          }}
+          options={[
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+            { value: 'system', label: 'System' },
+          ]}
+        />
         <div className="home-theme-row" role="group" aria-label="Themes">
           {themes.map((theme) => (
             <button

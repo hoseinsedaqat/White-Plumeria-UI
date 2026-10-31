@@ -18,6 +18,8 @@ import {
   otpLength,
   rangeBounds,
   rangeFill,
+  readingDirection,
+  toggleGroupMove,
   selectClassName,
   textareaClassName,
   type ButtonAppearance,
@@ -808,4 +810,100 @@ export function FormMessage(config: Config = {}) {
 
 export function ValidationMessage(config: Config = {}) {
   return FormMessage({ ...config, tone: 'error' });
+}
+
+interface ToggleOption {
+  value?: string;
+  label?: string;
+  disabled?: boolean;
+}
+
+export function ToggleGroup(config: Config = {}) {
+  return {
+    init(this: Magic) {
+      const options = list<ToggleOption>(config.options).map((option) => ({
+        value: text(option.value),
+        label: text(option.label, text(option.value)),
+        disabled: Boolean(option.disabled),
+      }));
+      let value = text(config.value, text(config.defaultValue));
+      const label = text(config.label, 'Choices');
+      const hideLabel = flag(config.hideLabel);
+      const disabled = flag(config.disabled);
+      const labelId = uid('toggle');
+      const group = h('div', {
+        className: 'wpl-toggle',
+        attrs: {
+          role: 'radiogroup',
+          'aria-label': hideLabel ? label : undefined,
+          'aria-labelledby': hideLabel ? undefined : labelId,
+        },
+      });
+      const paint = () => {
+        const selected = options.findIndex((option) => option.value === value);
+        const firstEnabled = options.findIndex((option) => !option.disabled);
+        const buttons: HTMLElement[] = options.map((option, index) => {
+          const checked = option.value === value;
+          const tabbable =
+            !option.disabled && !disabled && (checked || (selected < 0 && index === firstEnabled));
+          return h(
+            'button',
+            {
+              className: 'wpl-toggle-item',
+              attrs: {
+                type: 'button',
+                role: 'radio',
+                'aria-checked': String(checked),
+                disabled: disabled || option.disabled || undefined,
+                tabindex: tabbable ? '0' : '-1',
+              },
+              on: {
+                click: () => choose(option.value),
+                keydown: (event) => onKey(event as KeyboardEvent),
+              },
+            },
+            [option.label],
+          );
+        });
+        if (text(config.name)) {
+          buttons.push(h('input', { attrs: { type: 'hidden', name: text(config.name), value } }));
+        }
+        group.replaceChildren(...buttons);
+      };
+      const choose = (next: string) => {
+        if (disabled) return;
+        value = next;
+        paint();
+        emit(this, 'wpl-change', { value });
+      };
+      const onKey = (event: KeyboardEvent) => {
+        const selected = options.findIndex((option) => option.value === value);
+        const next = toggleGroupMove(
+          options,
+          selected,
+          event.key,
+          readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null),
+        );
+        if (next === null) return;
+        const option = options[next];
+        if (!option) return;
+        event.preventDefault();
+        choose(option.value);
+        queueMicrotask(() =>
+          group.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus(),
+        );
+      };
+      paint();
+      if (hideLabel) {
+        this.$el.replaceChildren(group);
+        return;
+      }
+      this.$el.replaceChildren(
+        h('div', { className: 'wpl-field' }, [
+          h('span', { className: 'wpl-label', attrs: { id: labelId }, text: label }),
+          group,
+        ]),
+      );
+    },
+  };
 }

@@ -17,6 +17,7 @@ import {
   Select,
   Switch,
   Tabs,
+  ToggleGroup,
 } from '@white-plumeria/react';
 import { useState, type ReactNode } from 'react';
 import { renderDemo, ThemeCarousel, themeCarouselCode } from './demos.tsx';
@@ -34,13 +35,13 @@ function Choice<T extends string>({
   onChange: (next: T) => void;
 }) {
   return (
-    <div className="docs-choice" role="group" aria-label={label}>
-      {options.map((option) => (
-        <button key={option} type="button" aria-pressed={value === option} onClick={() => onChange(option)}>
-          {option}
-        </button>
-      ))}
-    </div>
+    <ToggleGroup
+      hideLabel
+      label={label}
+      value={value}
+      onValueChange={(next) => onChange(next as T)}
+      options={options.map((option) => ({ value: option, label: option }))}
+    />
   );
 }
 

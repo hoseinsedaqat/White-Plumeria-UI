@@ -11,6 +11,7 @@ import {
   rangeFill,
   readingDirection,
   selectClassName,
+  toggleGroupMove,
   textareaClassName,
   valueFromPointer,
   type ControlSize,
@@ -490,6 +491,119 @@ export class RadioGroup extends WplElement {
   }
 }
 
+export class ToggleGroup extends WplElement {
+  static override properties = {
+    label: { type: String },
+    name: { type: String },
+    value: { type: String },
+    defaultValue: { type: String, attribute: 'default-value' },
+    hideLabel: { type: Boolean, attribute: 'hide-label' },
+    disabled: { type: Boolean },
+    options: { attribute: false },
+  };
+
+  declare label: string;
+  declare name: string;
+  declare value: string | undefined;
+  declare defaultValue: string;
+  declare hideLabel: boolean;
+  declare disabled: boolean;
+  declare options: SelectOption[];
+  private internal = '';
+  private seeded = false;
+  private readonly labelId = createId('wpl-toggle');
+
+  constructor() {
+    super();
+    this.label = '';
+    this.name = '';
+    this.value = undefined;
+    this.defaultValue = '';
+    this.hideLabel = false;
+    this.disabled = false;
+    this.options = [];
+  }
+
+  protected override willUpdate(): void {
+    if (this.seeded) return;
+    this.seeded = true;
+    if (this.value === undefined) this.internal = this.defaultValue;
+  }
+
+  private current(): string {
+    return this.value !== undefined ? this.value : this.internal;
+  }
+
+  private choose(next: string): void {
+    if (this.disabled) return;
+    if (this.value === undefined) {
+      this.internal = next;
+      this.requestUpdate();
+    }
+    this.emit('wpl-change', { value: next });
+  }
+
+  private onKey = (event: KeyboardEvent): void => {
+    const selected = this.options.findIndex((option) => option.value === this.current());
+    const next = toggleGroupMove(
+      this.options,
+      selected,
+      event.key,
+      readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null),
+    );
+    if (next === null) return;
+    const option = this.options[next];
+    if (!option) return;
+    event.preventDefault();
+    this.choose(option.value);
+    const group =
+      event.currentTarget instanceof HTMLElement ? event.currentTarget.parentElement : null;
+    queueMicrotask(() =>
+      group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus(),
+    );
+  };
+
+  protected override render(): RenderResult {
+    const selected = this.current();
+    const selectedIndex = this.options.findIndex(
+      (option) => option.value === selected && !option.disabled,
+    );
+    const firstEnabled = this.options.findIndex((option) => !option.disabled);
+    const buttons = this.options.map((option, index) => {
+      const checked = option.value === selected;
+      const tabbable =
+        !option.disabled &&
+        !this.disabled &&
+        (checked || (selectedIndex < 0 && index === firstEnabled));
+      return html`<button
+        type="button"
+        class="wpl-toggle-item"
+        role="radio"
+        aria-checked=${String(checked)}
+        ?disabled=${this.disabled || Boolean(option.disabled)}
+        tabindex=${tabbable ? 0 : -1}
+        @click=${() => this.choose(option.value)}
+        @keydown=${this.onKey}
+      >
+        ${option.label}
+      </button>`;
+    });
+    const group = html`<div
+      class="wpl-toggle"
+      role="radiogroup"
+      aria-label=${this.hideLabel ? this.label : nothing}
+      aria-labelledby=${this.hideLabel ? nothing : this.labelId}
+    >
+      ${buttons}
+      ${this.name ? html`<input type="hidden" name=${this.name} .value=${selected} />` : nothing}
+    </div>`;
+    if (this.hideLabel) return group;
+    return html`<div class="wpl-field">
+      <span id=${this.labelId} class="wpl-label">${this.label}</span>${group}
+    </div>`;
+  }
+}
+
 export class Switch extends WplElement {
   static override properties = {
     label: { type: String },
@@ -857,6 +971,7 @@ defineTag('wpl-textarea', Textarea);
 defineTag('wpl-select', Select);
 defineTag('wpl-checkbox', Checkbox);
 defineTag('wpl-radio-group', RadioGroup);
+defineTag('wpl-toggle-group', ToggleGroup);
 defineTag('wpl-switch', Switch);
 defineTag('wpl-slider', Slider);
 defineTag('wpl-range-slider', RangeSlider);

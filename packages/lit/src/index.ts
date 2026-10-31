@@ -46,6 +46,7 @@ import {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './form';
 import { NumberField, OtpField, PasswordField, Rating } from './fields';
@@ -121,6 +122,7 @@ export {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './form';
 export type { SelectOption } from './form';
@@ -206,6 +208,7 @@ const tags: Array<[string, CustomElementConstructor]> = [
   ['wpl-progress', Progress],
   ['wpl-provider', WhitePlumeriaProvider],
   ['wpl-radio-group', RadioGroup],
+  ['wpl-toggle-group', ToggleGroup],
   ['wpl-range-slider', RangeSlider],
   ['wpl-rating', Rating],
   ['wpl-responsive-layout', ResponsiveLayout],

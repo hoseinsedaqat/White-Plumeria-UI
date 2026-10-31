@@ -27,3 +27,38 @@ export function readingDirection(element?: HTMLElement | null): Direction {
   if (!element || typeof getComputedStyle === 'undefined') return 'ltr';
   return getComputedStyle(element).direction === 'rtl' ? 'rtl' : 'ltr';
 }
+
+/** Arrow, Home, and End movement for a single-select toggle group. Disabled options are skipped. */
+export function toggleGroupMove(
+  options: readonly { disabled?: boolean }[],
+  index: number,
+  key: string,
+  direction: Direction,
+): number | null {
+  const enabled = options.flatMap((option, item) => (option.disabled ? [] : [item]));
+  if (enabled.length === 0) return null;
+  const motion =
+    key === 'Home'
+      ? 'first'
+      : key === 'End'
+        ? 'last'
+        : key === 'ArrowRight'
+          ? direction === 'rtl'
+            ? 'prev'
+            : 'next'
+          : key === 'ArrowLeft'
+            ? direction === 'rtl'
+              ? 'next'
+              : 'prev'
+            : null;
+  if (!motion) return null;
+  if (motion === 'first') return enabled[0] === index ? null : (enabled[0] ?? null);
+  if (motion === 'last') {
+    const last = enabled[enabled.length - 1] ?? null;
+    return last === index ? null : last;
+  }
+  const at = enabled.indexOf(index);
+  const from = at < 0 ? (motion === 'prev' ? enabled.length : -1) : at;
+  const next = enabled[(from + (motion === 'next' ? 1 : -1) + enabled.length) % enabled.length];
+  return next === undefined || next === index ? null : next;
+}

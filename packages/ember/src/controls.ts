@@ -18,6 +18,8 @@ import {
   otpDelete,
   otpLength,
   rangeBounds,
+  readingDirection,
+  toggleGroupMove,
   rangeFill,
   selectClassName,
   textareaClassName,
@@ -689,6 +691,85 @@ export const FileUpload = glimmer(
         this.state.reason = rejected.map((item) => `${item.name}: ${item.reason}`).join(' ');
         if (accepted.length) bubble(event as Event, 'wpl-change', { files: accepted });
         if (rejected.length) bubble(event as Event, 'wpl-reject', { files: rejected });
+      },
+    },
+  },
+);
+
+export const ToggleGroup = glimmer(
+  `<div class="wpl-field"><span class="wpl-label {{this.labelClass}}" id={{this.labelId}}>{{this.label}}</span><div class="wpl-toggle" role="radiogroup" aria-labelledby={{this.labelId}}>{{#each this.choices as |option|}}<button type="button" class="wpl-toggle-item" role="radio" data-value={{option.value}} aria-checked={{option.checked}} disabled={{option.disabled}} tabindex={{option.tab}} {{on "click" this.choose}} {{on "keydown" this.key}}>{{option.label}}</button>{{/each}}{{#if this.name}}<input type="hidden" name={{this.name}} value={{this.value}} />{{/if}}</div></div>`,
+  {
+    state: (args) => ({
+      value: str(args.value, str(args.defaultValue)),
+      labelId: createId('toggle'),
+    }),
+    getters: {
+      label: (host) => str(host.args.label, 'Choices'),
+      labelId: (host) => str(host.state.labelId),
+      labelClass: (host) => (flag(host.args.hideLabel) ? 'wpl-sr-only' : ''),
+      name: (host) => str(host.args.name),
+      value: (host) => str(host.state.value, str(host.args.value)),
+      disabled: (host) => flag(host.args.disabled),
+      choices(this: Host) {
+        const current = str(this.state.value, str(this.args.value));
+        const options = list<{ value?: string; label?: string; disabled?: boolean }>(
+          this.args.options,
+        );
+        const selected = options.findIndex(
+          (option) => str(option.value) === current && !option.disabled,
+        );
+        const firstEnabled = options.findIndex((option) => !option.disabled);
+        return options.map((option, index) => {
+          const value = str(option.value);
+          const checked = value === current;
+          const itemDisabled = flag(this.args.disabled) || Boolean(option.disabled);
+          const tabbable = !itemDisabled && (checked || (selected < 0 && index === firstEnabled));
+          return {
+            value,
+            label: str(option.label, value),
+            checked: String(checked),
+            disabled: itemDisabled,
+            tab: tabbable ? '0' : '-1',
+          };
+        });
+      },
+    },
+    methods: {
+      choose(this: Host, event: Event) {
+        if (flag(this.args.disabled)) return;
+        const next =
+          event.currentTarget instanceof HTMLButtonElement
+            ? (event.currentTarget.dataset.value ?? '')
+            : '';
+        this.state.value = next;
+        bubble(event, 'wpl-change', { value: next });
+      },
+      key(this: Host, event: Event) {
+        if (!(event instanceof KeyboardEvent)) return;
+        const options = list<{ value?: string; label?: string; disabled?: boolean }>(
+          this.args.options,
+        ).map((option) => ({
+          value: str(option.value),
+          disabled: Boolean(option.disabled),
+        }));
+        const selected = options.findIndex((option) => option.value === str(this.state.value));
+        const next = toggleGroupMove(
+          options,
+          selected,
+          event.key,
+          readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null),
+        );
+        if (next === null) return;
+        const option = options[next];
+        if (!option) return;
+        event.preventDefault();
+        this.state.value = option.value;
+        bubble(event, 'wpl-change', { value: option.value });
+        const group =
+          event.currentTarget instanceof HTMLElement ? event.currentTarget.parentElement : null;
+        queueMicrotask(() =>
+          group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus(),
+        );
       },
     },
   },

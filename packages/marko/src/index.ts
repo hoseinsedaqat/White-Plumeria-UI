@@ -72,6 +72,7 @@ export const tagNames = [
   'wpl-textarea',
   'wpl-timeline',
   'wpl-toast',
+  'wpl-toggle-group',
   'wpl-tooltip',
   'wpl-tree-view',
   'wpl-validation-message',
