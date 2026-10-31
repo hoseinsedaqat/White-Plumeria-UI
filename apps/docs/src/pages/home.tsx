@@ -448,7 +448,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             <div className="home-space">
               {spaces.map(([name, size]) => (
                 <div key={name}>
-                  <i style={{ inlineSize: size, blockSize: size }} />
+                  <i style={{ inlineSize: `max(1.6rem, calc(${size} * 3.5))` }} />
                   <small>{name}</small>
                 </div>
               ))}
