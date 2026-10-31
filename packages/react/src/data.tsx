@@ -44,6 +44,8 @@ export function DataTable<T>({
   rows,
   pageSize = 8,
   filterable = true,
+  defaultSortId,
+  defaultSortDirection = 'asc',
   onSortChange,
 }: {
   caption: string;
@@ -51,12 +53,14 @@ export function DataTable<T>({
   rows: T[];
   pageSize?: number;
   filterable?: boolean;
+  defaultSortId?: string;
+  defaultSortDirection?: 'asc' | 'desc';
   onSortChange?: (sort: { sortId?: string; sortDirection: 'asc' | 'desc' }) => void;
 }) {
   const { t, locale } = useWhitePlumeria();
   const [filter, setFilter] = useState('');
-  const [sortId, setSortId] = useState<string | undefined>();
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortId, setSortId] = useState<string | undefined>(defaultSortId);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(defaultSortDirection);
   const [page, setPage] = useState(1);
   const specs: ColumnSpec<T>[] = columns.map((column) => ({
     id: column.id,
@@ -122,7 +126,11 @@ export function DataTable<T>({
                       onClick={() => applySort(toggleSort({ sortId, sortDirection }, column.id))}
                     >
                       {column.header}
-                      {active ? <span className="wpl-sort-mark">{sortDirection === 'asc' ? '↑' : '↓'}</span> : null}
+                      {active ? (
+                        <span className="wpl-sort-mark">
+                          <Icon name={sortDirection === 'asc' ? 'arrowUp' : 'arrowDown'} />
+                        </span>
+                      ) : null}
                       <span className="wpl-sr-only">{t('sort')}</span>
                     </button>
                   </th>

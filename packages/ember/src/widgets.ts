@@ -1,6 +1,7 @@
 import { capabilities, setModifierManager } from '@ember/modifier';
 import {
   createId,
+  iconMarkup,
   iconPaths,
   firstEnabledIndex,
   menuCommand,
@@ -448,7 +449,7 @@ export const Toast = glimmer(
 );
 
 export const Notification = glimmer(
-  `<div class={{this.className}} role={{this.role}}><div><p class="wpl-toast-title">{{this.title}}</p>{{#if @description}}<p class="wpl-toast-description">{{@description}}</p>{{/if}}{{yield}}</div>{{#if this.dismissible}}<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={{this.dismissLabel}} {{on "click" this.dismiss}}>×</button>{{/if}}</div>`,
+  `<div class={{this.className}} role={{this.role}}><div><p class="wpl-toast-title">{{this.title}}</p>{{#if @description}}<p class="wpl-toast-description">{{@description}}</p>{{/if}}{{yield}}</div>{{#if this.dismissible}}<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={{this.dismissLabel}} {{on "click" this.dismiss}}>${iconMarkup('close')}</button>{{/if}}</div>`,
   {
     getters: {
       title: (host) => str(host.args.title, 'Notice'),

@@ -106,7 +106,7 @@ export const DataTable = defineComponent({
                       },
                       [
                         column.header,
-                        active ? h('span', { class: 'wpl-sort-mark' }, sortDirection.value === 'asc' ? '↑' : '↓') : null,
+                        active ? h('span', { class: 'wpl-sort-mark' }, [h(Icon, { name: sortDirection.value === 'asc' ? 'arrowUp' : 'arrowDown' })]) : null,
                         h('span', { class: 'wpl-sr-only' }, t('sort')),
                       ],
                     ),

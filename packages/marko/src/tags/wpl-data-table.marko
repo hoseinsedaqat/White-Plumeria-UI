@@ -1,4 +1,4 @@
-import { queryTable, toggleSort } from "@white-plumeria/core";
+import { iconPaths, queryTable, toggleSort } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface Column {
@@ -56,7 +56,7 @@ static function cell(column: Column, row: Record<string, unknown>): string {
                   emit(host(), "wpl-sort", next);
                   input.onSortChange?.(next);
                 }
-              >${column.header}</button>
+              >${column.header}<if=(sortId === column.id)><span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=(direction === "desc" ? iconPaths.arrowDown : iconPaths.arrowUp)/></svg></span></if></button>
             </th>
           </for>
         </tr>

@@ -7,6 +7,7 @@ import {
   readStoredPreferences,
   sanitizePreferences,
   storePreferences,
+  iconMarkup,
   toastClassName,
   type Locale,
   type MessageKey,
@@ -130,8 +131,9 @@ export function mountProvider(host: HTMLElement, input: ProviderInput = {}): () 
       }
       const dismiss = document.createElement('button');
       dismiss.type = 'button';
-      dismiss.className = 'wpl-btn wpl-btn-ghost wpl-btn-sm';
-      dismiss.textContent = message(preferences.locale, 'dismiss');
+      dismiss.className = 'wpl-icon-btn wpl-btn-ghost';
+      dismiss.setAttribute('aria-label', message(preferences.locale, 'dismiss'));
+      dismiss.innerHTML = iconMarkup('close');
       const remove = () => {
         window.clearTimeout(timer);
         article.remove();

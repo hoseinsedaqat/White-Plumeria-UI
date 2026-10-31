@@ -104,7 +104,11 @@ export const DataTable = component$<{
                       }}
                     >
                       {column.header}
-                      {active ? <span class="wpl-sort-mark">{sortDirection.value === 'asc' ? '↑' : '↓'}</span> : null}
+                      {active ? (
+                        <span class="wpl-sort-mark">
+                          <Icon name={sortDirection.value === 'asc' ? 'arrowUp' : 'arrowDown'} />
+                        </span>
+                      ) : null}
                       <span class="wpl-sr-only">{wpl.t('sort')}</span>
                     </button>
                   </th>

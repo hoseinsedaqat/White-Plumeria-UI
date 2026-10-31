@@ -98,7 +98,7 @@ export function DataTable(config: Config = {}) {
                       emit(this, 'wpl-sort', next);
                     },
                   },
-                }, [column.header, active ? h('span', { className: 'wpl-sort-mark', text: query.sortDirection === 'asc' ? '↑' : '↓' }) : null, h('span', { className: 'wpl-sr-only', text: translate(host, 'sort') })]),
+                }, [column.header, active ? h('span', { className: 'wpl-sort-mark' }, [svgIcon(query.sortDirection === 'asc' ? 'arrowUp' : 'arrowDown')]) : null, h('span', { className: 'wpl-sr-only', text: translate(host, 'sort') })]),
               ]);
             })),
           ]),

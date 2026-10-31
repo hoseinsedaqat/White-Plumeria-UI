@@ -126,7 +126,9 @@ export function DataTable<T>({
                     >
                       {column.header}
                       {active ? (
-                        <span className="wpl-sort-mark">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                        <span className="wpl-sort-mark">
+                          <Icon name={sortDirection === 'asc' ? 'arrowUp' : 'arrowDown'} />
+                        </span>
                       ) : null}
                       <span className="wpl-sr-only">{t('sort')}</span>
                     </button>

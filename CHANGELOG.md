@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Sort marks and dismiss controls use the shared arrow and close icons. A text arrow or multiplication sign is not the control. Packages are still not published.
 - Theme changes recolor component previews without painting the docs chrome the same color. Surface, muted, and status colors stay apart in every theme, so a control does not disappear into its background. Packages are still not published.
 - Search fields and comboboxes use the shared search and close icons. The clear control is an icon button, and the combobox text is no longer indented into an empty gap. Packages are still not published.
 - Calendar and date controls use the shared icon set instead of placeholder glyphs. The docs month starts open so the selected day and range are visible. Packages are still not published.

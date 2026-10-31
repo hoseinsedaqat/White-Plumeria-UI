@@ -70,8 +70,13 @@
 }
 
 .wpl-sort-mark {
+  display: inline-flex;
   color: var(--wpl-color-primary);
-  font-size: 0.75em;
+}
+
+.wpl-sort-mark .wpl-icon {
+  inline-size: 0.85rem;
+  block-size: 0.85rem;
 }
 
 .wpl-sort {

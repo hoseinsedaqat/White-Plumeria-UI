@@ -1,4 +1,4 @@
-import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, isButtonAppearance, isButtonSize, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
+import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
 
 export const elementTags = [
   'wpl-button',
@@ -90,7 +90,7 @@ class WplIconButton extends HTMLElement {
     if (!this.button) {
       const button = document.createElement('button');
       button.type = 'button';
-      if (!this.childNodes.length) button.textContent = '×';
+      if (!this.childNodes.length) button.innerHTML = iconMarkup('close');
       while (this.firstChild) button.append(this.firstChild);
       this.append(button);
       this.button = button;
@@ -332,7 +332,7 @@ class WplDialog extends HTMLElement {
       close.type = 'button';
       close.className = 'wpl-icon-btn wpl-btn-ghost';
       close.setAttribute('aria-label', 'Close');
-      close.textContent = '×';
+      close.innerHTML = iconMarkup('close');
       close.addEventListener('click', () => this.removeAttribute('open'));
       const header = document.createElement('header');
       header.className = 'wpl-dialog-header';

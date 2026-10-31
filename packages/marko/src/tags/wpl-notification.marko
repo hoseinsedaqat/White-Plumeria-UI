@@ -1,4 +1,4 @@
-import { message, notificationClassName, type AlertVariant } from "@white-plumeria/core";
+import { iconPaths, message, notificationClassName, type AlertVariant } from "@white-plumeria/core";
 import { emit, oneOf } from "../emit.ts";
 
 export interface Input {
@@ -31,6 +31,6 @@ static const variants = ["neutral", "info", "success", "warning", "danger"] as c
         emit(host(), "wpl-dismiss", {});
         input.onDismiss?.();
       }
-    >×</button>
+    ><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.close/></svg></button>
   </if>
 </div>

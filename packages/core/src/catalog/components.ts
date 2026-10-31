@@ -59,10 +59,10 @@ export const catalog: ComponentDoc[] = [
     limitations: [],
     element: true,
     examples: examples('IconButton', {
-      react: '<IconButton label="Close" variant="ghost">×</IconButton>',
-      vue: '<IconButton label="Close" variant="ghost">×</IconButton>',
-      svelte: '<IconButton label="Close" variant="ghost">×</IconButton>',
-      html: '<button class="wpl-icon-btn wpl-btn-ghost" type="button" aria-label="Close">×</button>',
+      react: '<IconButton label="Close" variant="ghost" />',
+      vue: '<IconButton label="Close" variant="ghost" />',
+      svelte: '<IconButton label="Close" variant="ghost" />',
+      html: '<button class="wpl-icon-btn wpl-btn-ghost" type="button" aria-label="Close"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7 7 17"/></svg></button>',
     }),
   },
   {

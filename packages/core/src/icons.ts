@@ -19,6 +19,8 @@ export const iconPaths = {
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',
   arrowRight: 'M5 12h14M13 6l6 6-6 6',
+  arrowUp: 'M12 19V5M6 11l6-6 6 6',
+  arrowDown: 'M12 5v14M6 13l6 6 6-6',
   external: 'M14 5h5v5M19 5 10 14M9 6H6v12h12v-3',
   star: 'M12 3.2 14.4 8.4 20 9.1 15.8 13.1 16.9 18.8 12 16 7.1 18.8 8.2 13.1 4 9.1 9.6 8.4 12 3.2z',
   eye: 'M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12zM12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
@@ -28,3 +30,8 @@ export const iconPaths = {
 export type IconName = keyof typeof iconPaths;
 
 export const directionalIcons = new Set<IconName>(['chevronRight', 'chevronLeft', 'arrowRight', 'external']);
+
+export function iconMarkup(name: IconName, className = 'wpl-icon'): string {
+  const classes = directionalIcons.has(name) ? `${className} wpl-icon-dir` : className;
+  return `<svg class="${classes}" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths[name]}"/></svg>`;
+}

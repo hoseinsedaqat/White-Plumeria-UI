@@ -60,7 +60,7 @@ export const Table = glimmer(
 );
 
 export const DataTable = glimmer(
-  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.mark}}<span class="wpl-sort-mark">{{column.mark}}</span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}</tbody></table></div></div>`,
+  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}</tbody></table></div></div>`,
   {
     state: (args) => ({
       sortId: str(args.sortId),
@@ -99,7 +99,8 @@ export const DataTable = glimmer(
           id: column.id,
           header: column.header,
           sort: sortId === column.id ? (direction === 'desc' ? 'descending' : 'ascending') : 'none',
-          mark: sortId === column.id ? (direction === 'desc' ? '↓' : '↑') : '',
+          sorted: sortId === column.id,
+          sortPath: iconPaths[direction === 'desc' ? 'arrowDown' : 'arrowUp'],
         }));
       },
       body(this: Host) {
