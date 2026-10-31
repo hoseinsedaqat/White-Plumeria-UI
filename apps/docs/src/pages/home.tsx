@@ -109,6 +109,12 @@ const cleanTokens = [...cleanForm.matchAll(/class="([^"]*)"/g)].reduce((count, m
 const declShare = Math.max(8, Math.round((cleanTokens / Math.max(verboseDecls, 1)) * 100));
 const declFewer = Math.round((1 - cleanTokens / Math.max(verboseDecls, 1)) * 100);
 const semantic = palette.filter(([name]) => name !== 'canvas' && name !== 'muted' && name !== 'surface');
+const surfaces = [
+  ['canvas', 'var(--wpl-color-bg)', 'var(--wpl-color-text)'],
+  ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
+  ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
+  ['text', 'var(--wpl-color-text)', 'var(--wpl-color-bg)'],
+] as const;
 
 export function HomePage({ onNavigate }: { onNavigate: (href: string) => void }) {
   const heroRef = useRef<HTMLElement>(null);
@@ -453,11 +459,26 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         <h2 id="semantic-title">Semantic colors</h2>
         <p>The name sits on the color it describes. A theme change repaints the block, not the class.</p>
         <div className="home-semantic">
-          {semantic.map(([name, background, foreground]) => (
-            <div key={name} style={{ background, color: foreground || 'var(--wpl-color-primary-fg)' }}>
-              {name}
+          <div>
+            <h3>Roles</h3>
+            <div className="home-semantic-roles">
+              {semantic.map(([name, background, foreground]) => (
+                <div key={name} className="home-semantic-swatch" style={{ background, color: foreground || 'var(--wpl-color-primary-fg)' }}>
+                  {name}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div>
+            <h3>Surfaces</h3>
+            <div className="home-semantic-neutrals">
+              {surfaces.map(([name, background, foreground]) => (
+                <div key={name} className="home-semantic-swatch" style={{ background, color: foreground }}>
+                  {name}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
