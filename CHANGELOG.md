@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example. Packages are still not published.
 - Semantic colors are a palette board: role chips and surface chips, with the name on the color. The six empty rectangles are gone. Packages are still not published.
 - The homepage design-system block is a token board: real size buttons, radius shapes, and space insets. The duplicate gray bars are gone. Packages are still not published.
 - Accent has its own foreground, so a label or switch thumb on that color stays readable when the theme changes. Homepage code, charts, and theme frames stay visible on the dark canvas. Component usage examples use a tab strip instead of a row of action buttons. Packages are still not published.
