@@ -13,6 +13,7 @@ import {
   IconButton,
   Input,
   DropdownMenu,
+  Grid,
   Kbd,
   Navbar,
   Progress,
@@ -271,6 +272,36 @@ const sections: Record<string, ReactNode> = {
       <Card title="Analytics" description="Overview of recent activity" footer={<Button size="sm">Open</Button>}>
         Updated today. This card is the real component.
       </Card>
+    </Preview>
+  ),
+  grid: (
+    <Preview
+      title="Width, not viewport"
+      open
+      code={`<Grid columns={3}>\n  <Card title="One" description="Ledger" />\n  <Card title="Two" description="Fees" />\n  <Card title="Three" description="Notes" />\n</Grid>`}
+    >
+      <div className="wpl-stack" style={{ width: '100%', minWidth: 0 }}>
+        <div style={{ width: '100%', minWidth: 0 }}>
+          <p className="wpl-muted" style={{ margin: '0 0 0.4rem', fontSize: '0.82rem' }}>
+            Wide frame
+          </p>
+          <Grid columns={3}>
+            <Card title="One" description="Ledger" />
+            <Card title="Two" description="Fees" />
+            <Card title="Three" description="Notes" />
+          </Grid>
+        </div>
+        <div style={{ width: 'min(100%, 18rem)', minWidth: 0 }}>
+          <p className="wpl-muted" style={{ margin: '0 0 0.4rem', fontSize: '0.82rem' }}>
+            Narrow frame
+          </p>
+          <Grid columns={3}>
+            <Card title="One" description="Ledger" />
+            <Card title="Two" description="Fees" />
+            <Card title="Three" description="Notes" />
+          </Grid>
+        </div>
+      </div>
     </Preview>
   ),
   switch: (

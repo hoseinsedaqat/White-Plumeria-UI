@@ -55,32 +55,73 @@
 .wpl-grid {
   display: grid;
   gap: var(--wpl-space-4);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.wpl-grid-2,
+.wpl-grid-3,
+.wpl-grid-4 {
+  container: wpl-grid / inline-size;
 }
 
 .wpl-grid-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Six tracks so three columns can become two equal columns. The grid cannot query itself. */
 .wpl-grid-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.wpl-grid-3 > * {
+  grid-column: span 2;
 }
 
 .wpl-grid-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-@media (max-width: 48rem) {
-  .wpl-grid-2,
-  .wpl-grid-3,
-  .wpl-grid-4 {
-    grid-template-columns: 1fr;
+@container wpl-grid (max-width: 48rem) {
+  .wpl-grid-2 > *,
+  .wpl-grid-3 > *,
+  .wpl-grid-4 > * {
+    grid-column: 1 / -1;
   }
 }
 
-@media (min-width: 48rem) and (max-width: 64rem) {
-  .wpl-grid-3,
-  .wpl-grid-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@container wpl-grid (min-width: 48rem) and (max-width: 64rem) {
+  .wpl-grid-3 > * {
+    grid-column: span 3;
+  }
+
+  .wpl-grid-4 > * {
+    grid-column: span 2;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 48rem) {
+    .wpl-grid-2,
+    .wpl-grid-3,
+    .wpl-grid-4 {
+      grid-template-columns: 1fr;
+    }
+
+    .wpl-grid-3 > * {
+      grid-column: auto;
+    }
+  }
+
+  @media (min-width: 48rem) and (max-width: 64rem) {
+    .wpl-grid-3,
+    .wpl-grid-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wpl-grid-3 > * {
+      grid-column: auto;
+    }
   }
 }
 
