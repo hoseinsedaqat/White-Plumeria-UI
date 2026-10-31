@@ -30,6 +30,18 @@ const cleanForm = `<form class="wpl-stack">
 </form>`;
 
 const fewer = Math.round((1 - cleanForm.length / verboseForm.length) * 100);
+
+function markAttr(source: string, attr: 'style' | 'class') {
+  return source.split(new RegExp(`(${attr}="[^"]*")`, 'g')).map((part, index) =>
+    part.startsWith(`${attr}="`) ? (
+      <span key={index} className={attr === 'style' ? 'is-long' : 'is-short'}>
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
 const chips = ['badge', 'card', 'input', 'select', 'dialog', 'tabs', 'alert', 'table'];
 const principles = [
   ['One vocabulary', 'Class names stay wpl-. Tokens stay --wpl-. A theme change does not fork the markup.'],
@@ -123,7 +135,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   const [panel, setPanel] = useState('Dashboard');
   const [tab, setTab] = useState('Features');
   const [view, setView] = useState<'auto' | 'dashboard' | 'markup'>('auto');
-  const [mode, setMode] = useState<'verbose' | 'clean'>('clean');
   const [outline, setOutline] = useState(false);
   const [soft, setSoft] = useState(false);
   const [large, setLarge] = useState(false);
@@ -488,44 +499,70 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           ugly <span>HTML</span>
         </h2>
-        <p>The same form. One version is a style attribute. The other uses classes from this library.</p>
-        <ToggleGroup
-          hideLabel
-          label="Markup style"
-          value={mode}
-          onValueChange={(next) => setMode(next === 'verbose' ? 'verbose' : 'clean')}
-          options={[
-            { value: 'verbose', label: 'Long style' },
-            { value: 'clean', label: 'White Plumeria' },
-          ]}
-        />
-        <div className="home-compare">
-          <pre className="home-code">
-            <code>{mode === 'clean' ? cleanForm : verboseForm}</code>
-          </pre>
-          <div className="home-eq" aria-hidden="true">
-            =
-          </div>
-          <div className="home-form">
-            <Input placeholder="Email" aria-label="Email" />
-            <Checkbox label="Submit to newsletter" defaultChecked />
-            <Checkbox label="Accept terms of use" />
-            <Button>Save</Button>
-          </div>
-        </div>
-        <div className="home-meter">
-          <div>
-            <strong>{verboseForm.length}</strong>
-            <span>characters, long style</span>
-          </div>
-          <div>
-            <strong>{cleanForm.length}</strong>
-            <span>characters, class names</span>
-          </div>
-          <div>
-            <strong>{fewer}%</strong>
-            <span>shorter in this example</span>
-          </div>
+        <p>The same form. The long version writes the color into the markup. The class version lets the theme paint it.</p>
+        <div className="home-compare" aria-label="Markup comparison">
+          <article className="home-compare-card">
+            <header>
+              <h3>Long style</h3>
+              <p>The color is stuck in the markup. A theme change does not reach it.</p>
+            </header>
+            <div
+              className="home-ugly"
+              style={{ width: '20rem', maxWidth: '100%', borderRadius: 12, background: '#f6f1e8', padding: '1.3rem' }}
+            >
+              <input
+                placeholder="Email"
+                aria-label="Email"
+                style={{ width: '100%', border: '1px solid #e0d5c6', borderRadius: 8, padding: '0.55rem 0.75rem' }}
+              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.7rem' }}>
+                <input type="checkbox" defaultChecked /> Submit to newsletter
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.7rem' }}>
+                <input type="checkbox" /> Accept terms of use
+              </label>
+              <button
+                type="button"
+                style={{
+                  marginTop: '0.7rem',
+                  border: 0,
+                  borderRadius: 8,
+                  background: '#1c1915',
+                  color: '#fff',
+                  padding: '0.6rem 1rem',
+                  fontWeight: 650,
+                }}
+              >
+                Save
+              </button>
+            </div>
+            <pre className="home-code">
+              <code>{markAttr(verboseForm, 'style')}</code>
+            </pre>
+            <footer>
+              <strong>{verboseForm.length}</strong>
+              <span>characters</span>
+            </footer>
+          </article>
+          <article className="home-compare-card">
+            <header>
+              <h3>White Plumeria</h3>
+              <p>The class names the control. The selected theme paints it.</p>
+            </header>
+            <div className="home-form">
+              <Input placeholder="Email" aria-label="Email" />
+              <Checkbox label="Submit to newsletter" defaultChecked />
+              <Checkbox label="Accept terms of use" />
+              <Button>Save</Button>
+            </div>
+            <pre className="home-code">
+              <code>{markAttr(cleanForm, 'class')}</code>
+            </pre>
+            <footer>
+              <strong>{cleanForm.length}</strong>
+              <span>{fewer}% shorter</span>
+            </footer>
+          </article>
         </div>
       </section>
 
