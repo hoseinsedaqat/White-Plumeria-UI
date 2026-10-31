@@ -86,6 +86,23 @@ const palette = [
   ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
   ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
 ] as const;
+const colorBoard = [
+  ['primary', 'var(--wpl-color-primary)', 'var(--wpl-color-primary-fg)'],
+  ['success', 'var(--wpl-color-success)', 'var(--wpl-color-success-fg)'],
+  ['warning', 'var(--wpl-color-warning)', 'var(--wpl-color-warning-fg)'],
+  ['danger', 'var(--wpl-color-danger)', 'var(--wpl-color-danger-fg)'],
+  ['primary text', 'var(--wpl-color-primary-fg)', 'var(--wpl-color-primary)'],
+  ['success text', 'var(--wpl-color-success-fg)', 'var(--wpl-color-success)'],
+  ['warning text', 'var(--wpl-color-warning-fg)', 'var(--wpl-color-warning)'],
+  ['danger text', 'var(--wpl-color-danger-fg)', 'var(--wpl-color-danger)'],
+  ['info', 'var(--wpl-color-info)', 'var(--wpl-color-info-fg)'],
+  ['accent', 'var(--wpl-color-accent)', 'var(--wpl-color-primary-fg)'],
+  ['canvas', 'var(--wpl-color-bg)', 'var(--wpl-color-text)'],
+  ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
+  ['info text', 'var(--wpl-color-info-fg)', 'var(--wpl-color-info)'],
+  ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
+  ['text', 'var(--wpl-color-text)', 'var(--wpl-color-bg)'],
+] as const;
 const cleanShare = Math.max(8, Math.round((cleanForm.length / verboseForm.length) * 100));
 const verboseDecls = (verboseForm.match(/;/g) ?? []).length;
 const cleanTokens = [...cleanForm.matchAll(/class="([^"]*)"/g)].reduce((count, match) => count + match[1].split(/\s+/).filter(Boolean).length, 0);
@@ -308,9 +325,10 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                       ) : null}
                     </div>
                     <div className="home-colors" aria-label="Semantic colors">
-                      {swatches.map(([name, background, foreground]) => (
-                        <div key={name} style={{ background, color: foreground || undefined }}>
-                          {foreground ? name : <span>{name}</span>}
+                      {swatches.map(([name, background]) => (
+                        <div key={name}>
+                          <i style={{ background }} />
+                          <span>{name}</span>
                         </div>
                       ))}
                     </div>
@@ -444,8 +462,8 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         <p>The name sits on the color it describes. A theme change repaints the block, not the class.</p>
         <div className="home-semantic">
           {semantic.map(([name, background, foreground]) => (
-            <div key={name} style={{ background, color: foreground || undefined }}>
-              {foreground ? name : <span>{name}</span>}
+            <div key={name} style={{ background, color: foreground || 'var(--wpl-color-primary-fg)' }}>
+              {name}
             </div>
           ))}
         </div>
@@ -453,9 +471,9 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
 
       <section className="home-section">
         <h2>
-          No more
+          No <span>more</span>
           <br />
-          ugly HTML
+          ugly <span>HTML</span>
         </h2>
         <p>The same form. One version is a style attribute. The other uses classes from this library.</p>
         <ToggleGroup
@@ -643,7 +661,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             </Button>
           </div>
           <div className="home-palette" aria-label={`${selected.label} semantic colors`}>
-            {palette.map(([name, background, foreground]) => (
+            {colorBoard.map(([name, background, foreground]) => (
               <div key={name} className="home-swatch" style={{ background, color: foreground || undefined }}>
                 {foreground ? <span>{name}</span> : <span className="home-swatch-caption">{name}</span>}
               </div>

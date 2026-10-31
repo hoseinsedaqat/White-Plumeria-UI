@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Homepage type, size bars, named color blocks, and the preview toggles sit closer to the daisyUI homepage without moving the existing sections. Counts stay honest. Packages are still not published.
 - The homepage size rows, semantic color blocks, markup charts, class customizer, and adapter names follow the daisyUI homepage more closely. Counts stay honest. Packages are still not published.
 - The homepage adds the daisyUI-style stats, size scale, markup bars, class customizer, semantic color board, adapter marquee, and a live component stage. Counts come from the catalog. Packages are still not published.
 - Sort marks and dismiss controls use the shared arrow and close icons. A text arrow or multiplication sign is not the control. Packages are still not published.
