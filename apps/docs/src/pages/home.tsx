@@ -572,44 +572,58 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>shorter markup</span>
         </h2>
-        <p>This example writes {declFewer}% fewer style declarations. The markup is {fewer}% shorter. The counts are this form, not a download chart.</p>
+        <p>These counts are this form, not a download chart.</p>
         <div className="home-charts">
-          <div className="home-chart">
-            <h3>Style declarations</h3>
-            <div className="home-chart-row">
-              <span>Long style</span>
-              <div className="home-bar">
-                <i style={{ inlineSize: '100%' }} />
+          <article className="home-chart">
+            <header>
+              <h3>Style declarations</h3>
+              <p>
+                <strong>{declFewer}%</strong> fewer
+              </p>
+            </header>
+            <div className="home-chart-cols">
+              <div className="home-chart-col">
+                <strong>{verboseDecls}</strong>
+                <div className="home-chart-track" aria-hidden="true">
+                  <i style={{ blockSize: '100%' }} />
+                </div>
+                <span>Long style</span>
               </div>
-              <strong>{verboseDecls}</strong>
-            </div>
-            <div className="home-chart-row">
-              <span>Class names</span>
-              <div className="home-bar is-short">
-                <i style={{ inlineSize: `${declShare}%` }} />
+              <div className="home-chart-col is-short">
+                <strong>{cleanTokens}</strong>
+                <div className="home-chart-track" aria-hidden="true">
+                  <i style={{ blockSize: `${declShare}%` }} />
+                </div>
+                <span>Class names</span>
               </div>
-              <strong>{cleanTokens}</strong>
             </div>
-            <p>{declFewer}% fewer declarations</p>
-          </div>
-          <div className="home-chart" aria-label="Markup length">
-            <h3>HTML size</h3>
-            <div className="home-chart-row">
-              <span>Long style</span>
-              <div className="home-bar">
-                <i style={{ inlineSize: '100%' }} />
+          </article>
+          <article className="home-chart" aria-label="Markup length">
+            <header>
+              <h3>
+                HTML size <span>characters</span>
+              </h3>
+              <p>
+                <strong>{fewer}%</strong> shorter
+              </p>
+            </header>
+            <div className="home-chart-cols">
+              <div className="home-chart-col">
+                <strong>{verboseForm.length}</strong>
+                <div className="home-chart-track" aria-hidden="true">
+                  <i style={{ blockSize: '100%' }} />
+                </div>
+                <span>Long style</span>
               </div>
-              <strong>{verboseForm.length}</strong>
-            </div>
-            <div className="home-chart-row">
-              <span>Class names</span>
-              <div className="home-bar is-short">
-                <i style={{ inlineSize: `${cleanShare}%` }} />
+              <div className="home-chart-col is-short">
+                <strong>{cleanForm.length}</strong>
+                <div className="home-chart-track" aria-hidden="true">
+                  <i style={{ blockSize: `${cleanShare}%` }} />
+                </div>
+                <span>Class markup</span>
               </div>
-              <strong>{cleanForm.length}</strong>
             </div>
-            <p>{fewer}% shorter</p>
-          </div>
+          </article>
         </div>
       </section>
 
