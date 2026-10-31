@@ -228,7 +228,9 @@ export function renderDemo(slug: string): ReactNode {
       return <Progress label="Upload" value={40} />;
     case 'empty-state':
       return (
-        <EmptyState title="No invoices" description="Create the first invoice to see it here." />
+        <EmptyState title="No invoices" description="Create the first invoice to see it here.">
+          <Button size="sm">New invoice</Button>
+        </EmptyState>
       );
     case 'alert':
       return (
@@ -363,7 +365,12 @@ export function renderDemo(slug: string): ReactNode {
         <Accordion
           items={[
             { id: 'fees', title: 'Fees', content: 'No monthly fee in this sample.' },
-            { id: 'fx', title: 'FX', content: 'Rates are fixtures.' },
+            { id: 'fx', title: 'FX', content: 'Rates are fixtures, not a live market.' },
+            {
+              id: 'close',
+              title: 'Closing',
+              content: 'Statements close on the last business day.',
+            },
           ]}
         />
       );
@@ -410,6 +417,14 @@ export function renderDemo(slug: string): ReactNode {
               <td>EUR/USD</td>
               <td>1.08</td>
             </tr>
+            <tr>
+              <td>GBP/USD</td>
+              <td>1.27</td>
+            </tr>
+            <tr>
+              <td>USD/JPY</td>
+              <td>149.2</td>
+            </tr>
           </tbody>
         </Table>
       );
@@ -445,18 +460,41 @@ export function renderDemo(slug: string): ReactNode {
     case 'pagination':
       return <PaginationDemo />;
     case 'breadcrumb':
-      return <Breadcrumb items={[{ href: '/', label: 'Home' }, { label: 'Button' }]} />;
+      return (
+        <Breadcrumb
+          items={[
+            { href: '/', label: 'Home' },
+            { href: '/components', label: 'Components' },
+            { label: 'Button' },
+          ]}
+        />
+      );
     case 'list':
       return (
         <List
-          items={[{ id: '1', title: 'Invoice 104', description: 'Sample row', meta: 'Sample' }]}
+          items={[
+            { id: '1', title: 'Invoice 1042', description: 'Paper Press', meta: 'Paid' },
+            { id: '2', title: 'Invoice 1043', description: 'Lagoon Freight', meta: 'Due' },
+            { id: '3', title: 'Invoice 1044', description: 'Saffron Ledger', meta: 'Review' },
+          ]}
         />
       );
     case 'tree-view':
       return (
         <TreeView
           label="Files"
-          nodes={[{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }]}
+          defaultExpanded={['src']}
+          nodes={[
+            {
+              id: 'src',
+              label: 'src',
+              children: [
+                { id: 'button', label: 'Button.tsx' },
+                { id: 'card', label: 'Card.tsx' },
+              ],
+            },
+            { id: 'package', label: 'package.json' },
+          ]}
         />
       );
     case 'stat-card':
@@ -464,7 +502,11 @@ export function renderDemo(slug: string): ReactNode {
     case 'timeline':
       return (
         <Timeline
-          items={[{ id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40' }]}
+          items={[
+            { id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40' },
+            { id: '2', title: 'Sent for review', time: '11:15', dateTime: '2026-10-27T11:15' },
+            { id: '3', title: 'Marked paid', time: '16:02', dateTime: '2026-10-27T16:02' },
+          ]}
         />
       );
     case 'calendar':
@@ -477,15 +519,22 @@ export function renderDemo(slug: string): ReactNode {
       return (
         <ChartContainer
           title="Sample volume"
+          description="Fixture values for the docs preview."
           data={[
             { label: 'Mon', value: 12 },
             { label: 'Tue', value: 18 },
             { label: 'Wed', value: 9 },
+            { label: 'Thu', value: 15 },
+            { label: 'Fri', value: 21 },
           ]}
         />
       );
     case 'container':
-      return <Container size="sm">Centered content width.</Container>;
+      return (
+        <Container size="sm">
+          <Card title="Small measure">The column stops at the small content width.</Card>
+        </Container>
+      );
     case 'grid':
       return (
         <Grid columns={3}>
@@ -527,6 +576,8 @@ export function renderDemo(slug: string): ReactNode {
           items={[
             { href: '#button', label: 'Button', current: true },
             { href: '#card', label: 'Card' },
+            { href: '#input', label: 'Input' },
+            { href: '#table', label: 'Table' },
           ]}
         />
       );
@@ -541,9 +592,19 @@ export function renderDemo(slug: string): ReactNode {
         />
       );
     case 'page-header':
-      return <PageHeader title="Invoices" description="Sample workspace" />;
+      return (
+        <PageHeader
+          title="Invoices"
+          description="Sample workspace"
+          actions={<Button size="sm">New invoice</Button>}
+        />
+      );
     case 'footer':
-      return <Footer note="MIT License" />;
+      return (
+        <Footer note="MIT License">
+          <span>Sample workspace</span>
+        </Footer>
+      );
     case 'responsive-layout':
       return (
         <ResponsiveLayout

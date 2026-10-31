@@ -912,10 +912,21 @@ body {
   grid-template-columns: 1fr;
 }
 
-.docs-canvas > .wpl-sidebar {
+.docs-canvas > .wpl-sidebar,
+.docs-tile-preview > .wpl-sidebar {
   border: 1px solid var(--wpl-color-border);
   border-radius: var(--wpl-radius-lg);
   min-block-size: 8rem;
+}
+
+.docs-canvas > .wpl-tree,
+.docs-tile-preview > .wpl-tree {
+  flex: 1 1 16rem;
+  max-width: 22rem;
+  padding: 0.35rem;
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
 }
 
 .docs-canvas > .wpl-layout,

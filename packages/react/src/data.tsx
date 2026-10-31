@@ -1,6 +1,7 @@
 import {
   formatNumber,
   queryTable,
+  readingDirection,
   toggleSort,
   type ColumnSpec,
 } from '@white-plumeria/core';
@@ -291,12 +292,14 @@ export function TreeView({
   nodes,
   label,
   onSelect,
+  defaultExpanded = [],
 }: {
   nodes: TreeNode[];
   label: string;
   onSelect?: (id: string) => void;
+  defaultExpanded?: string[];
 }) {
-  const [expanded, setExpanded] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string[]>(defaultExpanded);
   const [selected, setSelected] = useState<string | null>(null);
 
   function toggle(id: string) {
@@ -350,13 +353,17 @@ function TreeNodeView({
           if (hasChildren) onToggle(node.id);
         }}
         onKeyDown={(event) => {
-          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-            event.preventDefault();
-            if (hasChildren) onToggle(node.id);
-          }
+          const direction = readingDirection(event.currentTarget);
+          const openKey = direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+          const closeKey = direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+          if (event.key !== openKey && event.key !== closeKey) return;
+          if (!hasChildren) return;
+          event.preventDefault();
+          if (event.key === openKey && !isOpen) onToggle(node.id);
+          if (event.key === closeKey && isOpen) onToggle(node.id);
         }}
       >
-        {hasChildren ? <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} /> : <span style={{ inlineSize: '1.1em' }} />}
+        {hasChildren ? <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} /> : <span className="wpl-tree-spacer" aria-hidden="true" />}
         {node.label}
       </button>
       {hasChildren && isOpen ? (

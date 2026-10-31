@@ -418,10 +418,10 @@
   {
     "name": "ResponsiveLayout",
     "slug": "responsive-layout",
-    "summary": "Sidebar plus main. Sidebar stacks below 64rem.",
-    "summaryFa": "نوار کناری به‌علاوهٔ بدنه. زیر ۶۴rem پشته می‌شود.",
+    "summary": "Sidebar plus main. The sidebar stacks when this layout is narrower than 40rem.",
+    "summaryFa": "نوار کناری به‌علاوهٔ بدنه. اگر خودِ چیدمان از ۴۰rem باریک‌تر شود، پشته می‌شود.",
     "limitations": [
-      "The 64rem collapse is CSS. The open flag only matters in that collapsed state."
+      "Collapse is a 40rem container query on the layout, not the viewport. The open flag only shows the sidebar while it is stacked."
     ]
   },
   {

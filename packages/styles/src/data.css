@@ -102,6 +102,7 @@
   display: flex;
   align-items: center;
   gap: var(--wpl-space-2);
+  inline-size: 100%;
   min-block-size: 2.25rem;
   padding-inline: var(--wpl-space-2);
   border-radius: var(--wpl-radius-sm);
@@ -111,6 +112,16 @@
   font: inherit;
   text-align: start;
   cursor: pointer;
+}
+
+.wpl-tree-row:hover {
+  background: var(--wpl-color-bg-subtle);
+}
+
+.wpl-tree-spacer {
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  flex: none;
 }
 
 .wpl-tree-row[aria-selected="true"] {
@@ -267,6 +278,12 @@
   border: 1px solid var(--wpl-color-border);
   border-radius: var(--wpl-radius-md);
   overflow: hidden;
+}
+
+.wpl-chart-table th,
+.wpl-chart-table td {
+  padding: 0.4rem 0.7rem;
+  font-size: var(--wpl-font-size-xs);
 }
 
 .wpl-sort-field {

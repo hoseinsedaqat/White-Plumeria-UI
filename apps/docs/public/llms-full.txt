@@ -55,7 +55,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - RadioGroup (radio-group): Named native radios with a legend.
 - RangeSlider (range-slider): Two thumbs for a numeric start and end. A thumb stops at the other thumb.
 - Rating (rating): Star rating as a radio group. It does not submit a review by itself.
-- ResponsiveLayout (responsive-layout): Sidebar plus main. Sidebar stacks below 64rem.
+- ResponsiveLayout (responsive-layout): Sidebar plus main. The sidebar stacks when this layout is narrower than 40rem.
 - SearchInput (search-input): Search field with a clear button.
 - Select (select): Styled native select. Use Combobox for a custom listbox.
 - Separator (separator): Orientation-aware non-text separator.
@@ -120,7 +120,7 @@ AI tools may only name components from this list.
 - RangeSlider: The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember components.
 - Rating: Does not submit a review by itself. Read the value from your form.
 - Rating: max is clamped from 1 to 10.
-- ResponsiveLayout: The 64rem collapse is CSS. The open flag only matters in that collapsed state.
+- ResponsiveLayout: Collapse is a 40rem container query on the layout, not the viewport. The open flag only shows the sidebar while it is stacked.
 - Select: Not a custom-styled popup. That is Combobox.
 - Skeleton: Not a content layout detector. You size each placeholder.
 - Slider: Single thumb only. Use RangeSlider for a start and end value.

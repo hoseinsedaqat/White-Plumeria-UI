@@ -124,11 +124,33 @@
   font-weight: var(--wpl-font-weight-medium);
 }
 
+.wpl-breadcrumb .wpl-icon {
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+  color: var(--wpl-color-text-subtle);
+}
+
+.wpl-breadcrumb a {
+  color: var(--wpl-color-text-muted);
+  text-decoration: none;
+}
+
+.wpl-breadcrumb a:hover {
+  color: var(--wpl-color-text);
+  text-decoration: underline;
+}
+
 .wpl-pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--wpl-space-1);
+}
+
+.wpl-pagination [aria-hidden="true"] {
+  min-inline-size: 1.25rem;
+  color: var(--wpl-color-text-muted);
+  text-align: center;
 }
 
 .wpl-page {
