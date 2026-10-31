@@ -1,10 +1,36 @@
-import Toast from "./wpl-toast.marko";
+import { message, notificationClassName, type AlertVariant } from "@white-plumeria/core";
+import { emit, oneOf } from "../emit.ts";
 
 export interface Input {
   title?: string;
   description?: string;
-  variant?: "neutral" | "success" | "warning" | "danger";
+  variant?: AlertVariant;
+  dismissable?: boolean;
   onDismiss?: () => void;
+  content?: Marko.Body;
 }
 
-<Toast title=input.title description=input.description variant=input.variant onDismiss=input.onDismiss/>
+static const variants = ["neutral", "info", "success", "warning", "danger"] as const;
+<const/variant=oneOf(input.variant, variants, "neutral")>
+<const/dismissable=Boolean(input.dismissable || input.onDismiss)>
+
+<div class=notificationClassName(variant) role=(variant === "danger" ? "alert" : "status")>
+  <div>
+    <p class="wpl-toast-title">${input.title || "Notice"}</p>
+    <if=input.description>
+      <p class="wpl-toast-description">${input.description}</p>
+    </if>
+    <${input.content}/>
+  </div>
+  <if=dismissable>
+    <button/host
+      type="button"
+      class="wpl-icon-btn wpl-btn-ghost"
+      aria-label=message("en", "dismiss")
+      onClick() {
+        emit(host(), "wpl-dismiss", {});
+        input.onDismiss?.();
+      }
+    >×</button>
+  </if>
+</div>

@@ -4,13 +4,15 @@ import {
   badgeClassName,
   cardClassName,
   cx,
+  notificationClassName,
   spinnerClassName,
   type AlertVariant,
   type AvatarSize,
   type BadgeVariant,
   type ControlSize,
 } from '@white-plumeria/core';
-import { component$, Slot, useSignal } from '@qwik.dev/core';
+import { component$, Slot, useSignal, type QRL } from '@qwik.dev/core';
+import { IconButton } from './button';
 import { Icon } from './icon';
 import { useWhitePlumeria } from './provider';
 
@@ -181,5 +183,32 @@ export const StatCard = component$<{ label: string; value: string; hint?: string
       <p class="wpl-stat-value">{props.value}</p>
       {props.hint ? <p class="wpl-stat-hint">{props.hint}</p> : null}
     </article>
+  );
+});
+
+export const Notification = component$<{
+  title: string;
+  description?: string;
+  variant?: AlertVariant;
+  onDismiss$?: QRL<() => void>;
+}>((props) => {
+  const wpl = useWhitePlumeria();
+  const variant = props.variant ?? 'neutral';
+  return (
+    <div class={notificationClassName(variant)} role={variant === 'danger' ? 'alert' : 'status'}>
+      <div>
+        <p class="wpl-toast-title">{props.title}</p>
+        {props.description ? <p class="wpl-toast-description">{props.description}</p> : null}
+        <Slot />
+      </div>
+      {props.onDismiss$ ? (
+        <IconButton
+          label={wpl.t('dismiss')}
+          onClick$={() => {
+            void props.onDismiss$?.();
+          }}
+        />
+      ) : null}
+    </div>
   );
 });

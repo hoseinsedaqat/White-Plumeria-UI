@@ -15,6 +15,7 @@ export {
   selectClassName,
   spinnerClassName,
   stackClassName,
+  notificationClassName,
   textareaClassName,
   toastClassName,
 } from './classes.ts';

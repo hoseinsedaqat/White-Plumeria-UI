@@ -1,4 +1,4 @@
-import { toastClassName, type ToastVariant } from '@white-plumeria/core';
+import { notificationClassName, toastClassName, type ToastVariant } from '@white-plumeria/core';
 import { createEffect, onCleanup, type JSX } from 'solid-js';
 import { IconButton } from './button.tsx';
 import { useWhitePlumeria, type ToastRecord } from './provider.tsx';
@@ -51,7 +51,7 @@ export function Notification(props: {
 }) {
   const { t } = useWhitePlumeria();
   return (
-    <div class="wpl-notification" role={props.variant === 'danger' ? 'alert' : 'status'}>
+    <div class={notificationClassName(props.variant)} role={props.variant === 'danger' ? 'alert' : 'status'}>
       <div>
         <p class="wpl-toast-title">{props.title}</p>
         {props.description ? <p class="wpl-toast-description">{props.description}</p> : null}

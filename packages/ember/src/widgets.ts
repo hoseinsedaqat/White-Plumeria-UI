@@ -5,6 +5,7 @@ import {
   menuCommand,
   menuHasSubmenu,
   message,
+  notificationClassName,
   moveEnabledIndex,
   moveIndex,
   readingDirection,
@@ -446,25 +447,29 @@ export const Toast = glimmer(
 );
 
 export const Notification = glimmer(
-  `<div class={{this.className}} role="status"><div><strong>{{this.title}}</strong>{{#if @description}}<p>{{@description}}</p>{{/if}}</div>{{#if this.dismissible}}<button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.dismiss}}>{{this.dismissLabel}}</button>{{/if}}</div>`,
+  `<div class={{this.className}} role={{this.role}}><div><p class="wpl-toast-title">{{this.title}}</p>{{#if @description}}<p class="wpl-toast-description">{{@description}}</p>{{/if}}{{yield}}</div>{{#if this.dismissible}}<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={{this.dismissLabel}} {{on "click" this.dismiss}}>×</button>{{/if}}</div>`,
   {
-    state: () => ({ hidden: false }),
     getters: {
       title: (host) => str(host.args.title, 'Notice'),
-      className: (host) =>
-        host.state.hidden ? 'wpl-notification wpl-sr-only' : 'wpl-notification',
-      dismissible: (host) => host.args.dismissible !== false,
+      className: (host) => notificationClassName(notificationTone(host.args.variant)),
+      role: (host) => (notificationTone(host.args.variant) === 'danger' ? 'alert' : 'status'),
+      dismissible: (host) => flag(host.args.dismissible) || typeof host.args.onDismiss === 'function',
       dismissLabel: () =>
         message(localeOf(typeof document === 'undefined' ? null : document.body), 'dismiss'),
     },
     methods: {
       dismiss(event) {
-        this.state.hidden = true;
         bubble(event as Event, 'wpl-dismiss', {});
+        const handler = this.args.onDismiss;
+        if (typeof handler === 'function') handler();
       },
     },
   },
 );
+
+function notificationTone(value: unknown): 'neutral' | 'info' | 'success' | 'warning' | 'danger' {
+  return value === 'info' || value === 'success' || value === 'warning' || value === 'danger' ? value : 'neutral';
+}
 
 export const CommandPalette = glimmer(
   `<div class="wpl-command"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.query}} placeholder={{this.label}} role="combobox" aria-expanded="true" aria-controls={{this.listId}} {{on "input" this.filter}} /><ul class="wpl-command-list" id={{this.listId}} role="listbox">{{#each this.matches as |item|}}<li><button type="button" role="option" {{on "click" (fn this.pick item)}}>{{item.label}}</button></li>{{/each}}</ul></div>`,

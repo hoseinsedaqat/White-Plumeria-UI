@@ -10,6 +10,7 @@ import {
   DateRangePicker,
   DropdownMenu,
   FileUpload,
+  Notification,
   pushToast,
   Slider,
   Steps,
@@ -37,6 +38,28 @@ describe('Ember adapter', () => {
     }
     expect(catalog.find((item) => item.name === 'Button')?.examples.ember).toContain('Save changes');
     expect(catalog.find((item) => item.name === 'Toast')?.examples.ember).toContain('pushToast');
+  });
+
+  it('renders a notification in the status color and does not hide it on dismiss', async () => {
+    const quiet = mount(Notification, { title: 'Saved', variant: 'success', description: 'Local only' });
+    await renderSettled();
+    const notice = quiet.querySelector('.wpl-notification');
+    expect(notice?.className).toContain('wpl-notification-success');
+    expect(notice?.getAttribute('role')).toBe('status');
+    expect(quiet.querySelector('button')).toBeNull();
+
+    const dismissed: unknown[] = [];
+    const loud = mount(Notification, {
+      title: 'Blocked',
+      variant: 'danger',
+      onDismiss: () => dismissed.push('closed'),
+    });
+    loud.addEventListener('wpl-dismiss', () => dismissed.push('event'));
+    await renderSettled();
+    loud.querySelector('button')?.click();
+    await renderSettled();
+    expect(loud.querySelector('[role="alert"]')?.className).toContain('wpl-notification-danger');
+    expect(dismissed).toEqual(['event', 'closed']);
   });
 
   it('blocks a loading button and emits a click otherwise', async () => {

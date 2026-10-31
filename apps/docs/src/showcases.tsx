@@ -351,6 +351,15 @@ const sections: Record<string, ReactNode> = {
   ),
   'date-range-picker': <DateRangeLab />,
   'range-slider': <RangeLab />,
+  notification: (
+    <Preview
+      title="Tones"
+      open
+      code={`<Notification variant="info" title="New statement" description="March is ready to review." />\n<Notification variant="success" title="Saved" description="The sample stayed in this tab." />\n<Notification variant="warning" title="Review" description="Two fields are incomplete." />\n<Notification variant="danger" title="Blocked" description="This action did not run." onDismiss={() => {}} />`}
+    >
+      {renderDemo('notification')}
+    </Preview>
+  ),
   'dropdown-menu': <MenuLab />,
   'context-menu': <ContextLab />,
   avatar: (

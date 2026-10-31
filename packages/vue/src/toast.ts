@@ -1,5 +1,5 @@
-import { toastClassName, type ToastVariant } from '@white-plumeria/core';
-import { defineComponent, h, onMounted, onUnmounted } from 'vue';
+import { notificationClassName, toastClassName, type ToastVariant } from '@white-plumeria/core';
+import { defineComponent, getCurrentInstance, h, onMounted, onUnmounted } from 'vue';
 import { IconButton } from './button.ts';
 import { useWhitePlumeria } from './provider.ts';
 
@@ -56,14 +56,17 @@ export const Notification = defineComponent({
   emits: ['dismiss'],
   setup(props, { slots, emit }) {
     const { t } = useWhitePlumeria();
-    return () =>
-      h('div', { class: 'wpl-notification', role: props.variant === 'danger' ? 'alert' : 'status' }, [
+    const instance = getCurrentInstance();
+    return () => {
+      const dismissable = Boolean(instance?.vnode.props?.onDismiss);
+      return h('div', { class: notificationClassName(props.variant), role: props.variant === 'danger' ? 'alert' : 'status' }, [
         h('div', [
           h('p', { class: 'wpl-toast-title' }, props.title),
           props.description ? h('p', { class: 'wpl-toast-description' }, props.description) : null,
           slots.default?.(),
         ]),
-        h(IconButton, { label: t('dismiss'), onClick: () => emit('dismiss') }),
+        dismissable ? h(IconButton, { label: t('dismiss'), onClick: () => emit('dismiss') }) : null,
       ]);
+    };
   },
 });

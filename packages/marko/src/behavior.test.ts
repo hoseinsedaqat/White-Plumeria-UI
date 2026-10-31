@@ -9,6 +9,7 @@ import DataTable from './tags/wpl-data-table.marko';
 import DateRange from './tags/wpl-date-range-picker.marko';
 import Dropdown from './tags/wpl-dropdown-menu.marko';
 import FileUpload from './tags/wpl-file-upload.marko';
+import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Slider from './tags/wpl-slider.marko';
 import Steps from './tags/wpl-steps.marko';
@@ -59,6 +60,27 @@ describe('Marko adapter', () => {
     );
     ready.container.querySelector('button')?.click();
     expect(clicks).toEqual([{ variant: 'primary' }]);
+  });
+
+  it('renders a notification as an inline notice, not a toast', async () => {
+    const quiet = await render(Notification, { title: 'Saved', variant: 'success', description: 'Local only' });
+    const notice = quiet.container.querySelector('.wpl-notification');
+    expect(notice?.className).toContain('wpl-notification-success');
+    expect(notice?.getAttribute('role')).toBe('status');
+    expect(quiet.container.querySelector('.wpl-toast')).toBeNull();
+    expect(quiet.container.querySelector('button')).toBeNull();
+
+    const dismissed: unknown[] = [];
+    const loud = await render(Notification, {
+      title: 'Blocked',
+      variant: 'danger',
+      onDismiss: () => dismissed.push('closed'),
+    });
+    loud.container.addEventListener('wpl-dismiss', () => dismissed.push('event'));
+    loud.container.querySelector('button')?.click();
+    expect(loud.container.querySelector('[role="alert"]')?.className).toContain('wpl-notification-danger');
+    expect(dismissed).toEqual(['event', 'closed']);
+    expect(loud.container.querySelector('.wpl-notification')).toBeTruthy();
   });
 
   it('requires a provider before a toast can be pushed', async () => {

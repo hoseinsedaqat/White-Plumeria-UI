@@ -33,6 +33,7 @@ export {
   Link,
   Progress,
   Separator,
+  Notification,
   Skeleton,
   Spinner,
   StatCard,

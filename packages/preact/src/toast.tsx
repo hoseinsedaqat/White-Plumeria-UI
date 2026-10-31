@@ -1,4 +1,4 @@
-import { toastClassName, type ToastVariant } from '@white-plumeria/core';
+import { notificationClassName, toastClassName, type ToastVariant } from '@white-plumeria/core';
 import { type ComponentChildren } from 'preact';
 import { useEffect } from 'preact/hooks';
 import { IconButton } from './button.tsx';
@@ -61,7 +61,7 @@ export function Notification({
 }) {
   const { t } = useWhitePlumeria();
   return (
-    <div className="wpl-notification" role={variant === 'danger' ? 'alert' : 'status'}>
+    <div className={notificationClassName(variant)} role={variant === 'danger' ? 'alert' : 'status'}>
       <div>
         <p className="wpl-toast-title">{title}</p>
         {description ? <p className="wpl-toast-description">{description}</p> : null}

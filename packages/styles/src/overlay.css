@@ -290,6 +290,31 @@
   border-inline-start: 3px solid var(--wpl-color-primary);
   border-radius: var(--wpl-radius-md);
   background: var(--wpl-color-surface);
+  color: var(--wpl-color-text);
+}
+
+.wpl-notification-info {
+  background: var(--wpl-color-info-subtle);
+  border-color: color-mix(in srgb, var(--wpl-color-info) 42%, var(--wpl-color-border));
+  border-inline-start-color: var(--wpl-color-info);
+}
+
+.wpl-notification-success {
+  background: var(--wpl-color-success-subtle);
+  border-color: color-mix(in srgb, var(--wpl-color-success) 42%, var(--wpl-color-border));
+  border-inline-start-color: var(--wpl-color-success);
+}
+
+.wpl-notification-warning {
+  background: var(--wpl-color-warning-subtle);
+  border-color: color-mix(in srgb, var(--wpl-color-warning) 42%, var(--wpl-color-border));
+  border-inline-start-color: var(--wpl-color-warning);
+}
+
+.wpl-notification-danger {
+  background: var(--wpl-color-danger-subtle);
+  border-color: color-mix(in srgb, var(--wpl-color-danger) 42%, var(--wpl-color-border));
+  border-inline-start-color: var(--wpl-color-danger);
 }
 
 .wpl-command {

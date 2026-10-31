@@ -4,6 +4,7 @@ import {
   badgeClassName,
   cardClassName,
   cx,
+  notificationClassName,
   spinnerClassName,
   type AlertVariant,
   type AvatarSize,
@@ -352,32 +353,36 @@ export class Notification extends WplElement {
     title: { type: String },
     description: { type: String },
     variant: { type: String },
+    dismissable: { type: Boolean },
   };
 
   declare title: string;
   declare description: string;
   declare variant: ToastVariant | 'info';
+  declare dismissable: boolean;
 
   constructor() {
     super();
     this.title = '';
     this.description = '';
     this.variant = 'neutral';
+    this.dismissable = false;
   }
 
   private dismiss = (): void => {
     this.emit('wpl-dismiss');
-    this.remove();
   };
 
   protected override render(): RenderResult {
-    return html`<div class="wpl-notification" role=${this.variant === 'danger' ? 'alert' : 'status'}>
+    return html`<div class=${notificationClassName(this.variant)} role=${this.variant === 'danger' ? 'alert' : 'status'}>
       <div>
         <p class="wpl-toast-title">${this.title}</p>
         ${this.description ? html`<p class="wpl-toast-description">${this.description}</p>` : nothing}
         <span data-wpl-slot="" style="display:contents"></span>
       </div>
-      <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'dismiss')} @click=${this.dismiss}>×</button>
+      ${this.dismissable
+        ? html`<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'dismiss')} @click=${this.dismiss}>×</button>`
+        : nothing}
     </div>`;
   }
 }

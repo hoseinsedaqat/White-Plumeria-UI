@@ -7,7 +7,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { toastClassName, type ToastVariant } from '@white-plumeria/core';
+import { notificationClassName, toastClassName, type ToastVariant } from '@white-plumeria/core';
 import { IconButton } from './button';
 import { injectWhitePlumeria, type ToastRecord } from './provider';
 
@@ -80,7 +80,7 @@ export class ToastView {
   encapsulation: ViewEncapsulation.None,
   imports: [IconButton],
   template: `
-    <div class="wpl-notification" [attr.role]="role()">
+    <div [class]="classes()" [attr.role]="role()">
       <div>
         <p class="wpl-toast-title">{{ title() }}</p>
         @if (description()) {
@@ -102,5 +102,6 @@ export class Notification {
   readonly dismiss = output<void>();
   private readonly wpl = injectWhitePlumeria();
   readonly dismissLabel = () => this.wpl.t('dismiss');
+  readonly classes = () => notificationClassName(this.variant());
   readonly role = () => (this.variant() === 'danger' ? 'alert' : 'status');
 }
