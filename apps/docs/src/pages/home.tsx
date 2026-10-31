@@ -1,4 +1,4 @@
-import { brand, catalog, resolveDirection } from '@white-plumeria/core';
+import { brand, buttonClassName, catalog, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { Alert, Badge, Button, Checkbox, Input, Kbd, Mark, Progress, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import type { ButtonSize } from '@white-plumeria/core';
@@ -98,23 +98,6 @@ const palette = [
   ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
   ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
 ] as const;
-const colorBoard = [
-  ['primary', 'var(--wpl-color-primary)', 'var(--wpl-color-primary-fg)'],
-  ['success', 'var(--wpl-color-success)', 'var(--wpl-color-success-fg)'],
-  ['warning', 'var(--wpl-color-warning)', 'var(--wpl-color-warning-fg)'],
-  ['danger', 'var(--wpl-color-danger)', 'var(--wpl-color-danger-fg)'],
-  ['primary text', 'var(--wpl-color-primary-fg)', 'var(--wpl-color-primary)'],
-  ['success text', 'var(--wpl-color-success-fg)', 'var(--wpl-color-success)'],
-  ['warning text', 'var(--wpl-color-warning-fg)', 'var(--wpl-color-warning)'],
-  ['danger text', 'var(--wpl-color-danger-fg)', 'var(--wpl-color-danger)'],
-  ['info', 'var(--wpl-color-info)', 'var(--wpl-color-info-fg)'],
-  ['accent', 'var(--wpl-color-accent)', 'var(--wpl-color-accent-fg)'],
-  ['canvas', 'var(--wpl-color-bg)', 'var(--wpl-color-text)'],
-  ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
-  ['info text', 'var(--wpl-color-info-fg)', 'var(--wpl-color-info)'],
-  ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
-  ['text', 'var(--wpl-color-text)', 'var(--wpl-color-bg)'],
-] as const;
 const cleanShare = Math.max(8, Math.round((cleanForm.length / verboseForm.length) * 100));
 const verboseDecls = (verboseForm.match(/;/g) ?? []).length;
 const cleanTokens = [...cleanForm.matchAll(/class="([^"]*)"/g)].reduce((count, match) => count + match[1].split(/\s+/).filter(Boolean).length, 0);
@@ -150,7 +133,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   ] as const;
   const { preferences, setPreferences } = useWhitePlumeria();
   const scheme = useScheme(preferences.appearance);
-  const selected = themes.find((theme) => theme.name === preferences.theme);
   const showMarkup = view === 'auto' ? progress > 24 : view === 'markup';
   const typed = sliceByProgress(progress, longStyle, shortClass);
 
@@ -679,7 +661,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>with zero extra classes</span>
         </h2>
-        <p>Pick a theme. The preview and the rest of this page use the same CSS variables.</p>
+        <p>Pick a theme. Each card uses the same button classes. Only the CSS variables change, and the rest of this page follows.</p>
         <ToggleGroup
           hideLabel
           label="Color scheme"
@@ -695,66 +677,36 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             { value: 'system', label: 'System' },
           ]}
         />
-        <div className="home-theme-row" role="group" aria-label="Themes">
-          {themes.map((theme) => (
-            <button
-              key={theme.name}
-              type="button"
-              aria-pressed={preferences.theme === theme.name}
-              onClick={() => setPreferences({ theme: theme.name })}
-            >
-              <span className="docs-swatch" aria-hidden="true">
-                <i style={{ background: theme.light.primary }} />
-                <i style={{ background: theme.light.danger }} />
-                <i style={{ background: theme.light.success }} />
-                <i style={{ background: theme.light.info }} />
-              </span>
-              {theme.label}
-            </button>
-          ))}
-        </div>
-        {selected ? (
-        <div className="home-preview" style={cssVars(selected, scheme)}>
-          <div className="home-sizes">
-            <Button size="sm">Primary</Button>
-            <Button size="sm" variant="outline">
-              Outline
-            </Button>
-            <Button size="sm" variant="danger">
-              Danger
-            </Button>
-            <Button size="sm" variant="ghost">
-              Ghost
-            </Button>
-          </div>
-          <div className="home-palette" aria-label={`${selected.label} semantic colors`}>
-            {colorBoard.map(([name, background, foreground]) => (
-              <div key={name} className="home-swatch" style={{ background, color: foreground || undefined }}>
-                {foreground ? <span>{name}</span> : <span className="home-swatch-caption">{name}</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-        ) : null}
-        <div className="home-theme-cards">
-          {themes.map((theme) => (
-            <button
-              key={theme.name}
-              type="button"
-              className="home-theme-card"
-              style={cssVars(theme, scheme)}
-              aria-pressed={preferences.theme === theme.name}
-              onClick={() => setPreferences({ theme: theme.name })}
-            >
-              <strong>{theme.label}</strong>
-              <span>
-                <i style={{ background: 'var(--wpl-color-primary)' }} />
-                <i style={{ background: 'var(--wpl-color-accent)' }} />
-                <i style={{ background: 'var(--wpl-color-success)' }} />
-                <i style={{ background: 'var(--wpl-color-danger)' }} />
-              </span>
-            </button>
-          ))}
+        <div className="home-theme-cards" role="group" aria-label="Themes">
+          {themes.map((theme) => {
+            const on = preferences.theme === theme.name;
+            return (
+              <button
+                key={theme.name}
+                type="button"
+                className="home-theme-card"
+                style={cssVars(theme, scheme)}
+                aria-pressed={on}
+                aria-label={on ? `${theme.label}, selected` : `Use ${theme.label}`}
+                onClick={() => setPreferences({ theme: theme.name })}
+              >
+                <span className="home-theme-card-top">
+                  <strong>{theme.label}</strong>
+                  {on ? <em>Selected</em> : null}
+                </span>
+                <span className="home-theme-sample" aria-hidden="true">
+                  <span className={buttonClassName({ size: 'sm' })}>Save</span>
+                  <span className={buttonClassName({ size: 'sm', variant: 'outline' })}>Cancel</span>
+                </span>
+                <span className="home-theme-dots" aria-hidden="true">
+                  <i style={{ background: 'var(--wpl-color-accent)' }} />
+                  <i style={{ background: 'var(--wpl-color-success)' }} />
+                  <i style={{ background: 'var(--wpl-color-warning)' }} />
+                  <i style={{ background: 'var(--wpl-color-danger)' }} />
+                </span>
+              </button>
+            );
+          })}
         </div>
         <div className="home-ctas">
           <A className="home-cta" href="/themes" onNavigate={onNavigate}>
