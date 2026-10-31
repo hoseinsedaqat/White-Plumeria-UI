@@ -1,6 +1,7 @@
 import { brand, catalog, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
-import { Button, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
+import { Alert, Badge, Button, Checkbox, Input, Kbd, Mark, Progress, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
+import type { ButtonSize } from '@white-plumeria/core';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
 import '../home.css';
@@ -59,6 +60,34 @@ const swatches = [
   ['surface', 'var(--wpl-color-surface)'],
   ['text', 'var(--wpl-color-text)'],
 ] as const;
+const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const satisfies readonly ButtonSize[];
+const radii = [
+  ['sm', 'var(--wpl-radius-sm)'],
+  ['md', 'var(--wpl-radius-md)'],
+  ['lg', 'var(--wpl-radius-lg)'],
+  ['xl', 'var(--wpl-radius-xl)'],
+  ['full', 'var(--wpl-radius-full)'],
+] as const;
+const spaces = [
+  ['2', 'var(--wpl-space-2)'],
+  ['3', 'var(--wpl-space-3)'],
+  ['4', 'var(--wpl-space-4)'],
+  ['6', 'var(--wpl-space-6)'],
+  ['8', 'var(--wpl-space-8)'],
+] as const;
+const palette = [
+  ['primary', 'var(--wpl-color-primary)', 'var(--wpl-color-primary-fg)'],
+  ['success', 'var(--wpl-color-success)', 'var(--wpl-color-success-fg)'],
+  ['warning', 'var(--wpl-color-warning)', 'var(--wpl-color-warning-fg)'],
+  ['danger', 'var(--wpl-color-danger)', 'var(--wpl-color-danger-fg)'],
+  ['info', 'var(--wpl-color-info)', 'var(--wpl-color-info-fg)'],
+  ['accent', 'var(--wpl-color-accent)', ''],
+  ['canvas', 'var(--wpl-color-bg)', 'var(--wpl-color-text)'],
+  ['muted', 'var(--wpl-color-bg-muted)', 'var(--wpl-color-text)'],
+  ['surface', 'var(--wpl-color-surface)', 'var(--wpl-color-text)'],
+] as const;
+const marks = ['primary', 'accent', 'info', 'success', 'warning', 'danger'] as const;
+const cleanShare = Math.max(8, Math.round((cleanForm.length / verboseForm.length) * 100));
 
 export function HomePage({ onNavigate }: { onNavigate: (href: string) => void }) {
   const heroRef = useRef<HTMLElement>(null);
@@ -68,6 +97,12 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   const [tab, setTab] = useState('Features');
   const [view, setView] = useState<'auto' | 'dashboard' | 'markup'>('auto');
   const [mode, setMode] = useState<'verbose' | 'clean'>('clean');
+  const [outline, setOutline] = useState(false);
+  const [soft, setSoft] = useState(false);
+  const [large, setLarge] = useState(false);
+  const customClass = ['wpl-btn', outline ? 'wpl-btn-outline' : 'wpl-btn-primary', soft ? 'wpl-btn-soft' : '', large ? 'wpl-btn-lg' : '']
+    .filter(Boolean)
+    .join(' ');
   const { preferences, setPreferences } = useWhitePlumeria();
   const scheme = useScheme(preferences.appearance);
   const selected = themes.find((theme) => theme.name === preferences.theme);
@@ -139,6 +174,23 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               </A>
             </div>
             <p className="home-note">Not on npm yet. The pill copies the intended install command.</p>
+            <ul className="home-stats">
+              <li>
+                <small>In this repository</small>
+                <strong>{catalog.length}</strong>
+                <span>components</span>
+              </li>
+              <li>
+                <small>Written natively</small>
+                <strong>{adapters.length}</strong>
+                <span>adapters</span>
+              </li>
+              <li>
+                <small>Light and dark</small>
+                <strong>{themes.length}</strong>
+                <span>themes</span>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -329,6 +381,47 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
+      <section className="home-section" aria-labelledby="scale-title">
+        <h2 id="scale-title">
+          Design system
+          <br />
+          <span>from xs to xl</span>
+        </h2>
+        <p>Height, radius, and space come from the same tokens. A control does not invent a second scale.</p>
+        <div className="home-scale-board">
+          {sizes.map((size) => (
+            <div key={size} className="home-scale-item">
+              <Button size={size}>{size}</Button>
+              <small>{size}</small>
+            </div>
+          ))}
+        </div>
+        <div className="home-token-rows">
+          <div>
+            <h3>Radius</h3>
+            <div className="home-radius">
+              {radii.map(([name, radius]) => (
+                <div key={name}>
+                  <i style={{ borderRadius: radius }} />
+                  <small>{name}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3>Space</h3>
+            <div className="home-space">
+              {spaces.map(([name, size]) => (
+                <div key={name}>
+                  <i style={{ inlineSize: size, blockSize: size }} />
+                  <small>{name}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="home-section">
         <h2>
           No more
@@ -372,6 +465,67 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <div>
             <strong>{fewer}%</strong>
             <span>shorter in this example</span>
+          </div>
+        </div>
+        <div className="home-bars" aria-label="Markup length">
+          <div>
+            <div className="home-bar-label">
+              <span>Long style</span>
+              <strong>{verboseForm.length} characters</strong>
+            </div>
+            <div className="home-bar">
+              <i style={{ inlineSize: '100%' }} />
+            </div>
+          </div>
+          <div>
+            <div className="home-bar-label">
+              <span>Class names</span>
+              <strong>{cleanForm.length} characters</strong>
+            </div>
+            <div className="home-bar is-short">
+              <i style={{ inlineSize: `${cleanShare}%` }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="home-section" aria-labelledby="customize-title">
+        <h2 id="customize-title">
+          Highly customizable
+          <br />
+          <span>without a second stylesheet</span>
+        </h2>
+        <p>Add a class. The same button changes shape, and the theme stays where it is.</p>
+        <div className="home-morph">
+          <pre className="home-code">
+            <code>{'<button class="wpl-btn wpl-btn-primary">Save</button>'}</code>
+          </pre>
+          <div className="home-eq" aria-hidden="true">
+            ↓
+          </div>
+          <pre className="home-code">
+            <code>
+              {'<button class="'}
+              {customClass.split(' ').map((token) => {
+                const added = token !== 'wpl-btn' && token !== 'wpl-btn-primary';
+                return (
+                  <span key={token} className={added ? 'is-added' : undefined}>
+                    {token === 'wpl-btn' ? token : ` ${token}`}
+                  </span>
+                );
+              })}
+              {'">Save</button>'}
+            </code>
+          </pre>
+          <div className="home-morph-live">
+            <Button variant={outline ? 'outline' : 'primary'} appearance={soft ? 'soft' : 'solid'} size={large ? 'lg' : 'md'}>
+              Save
+            </Button>
+            <div className="home-morph-switches">
+              <Switch label="Outline" checked={outline} onCheckedChange={setOutline} />
+              <Switch label="Soft" checked={soft} onCheckedChange={setSoft} />
+              <Switch label="Large" checked={large} onCheckedChange={setLarge} />
+            </div>
           </div>
         </div>
       </section>
@@ -430,11 +584,17 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               Ghost
             </Button>
           </div>
-          <div className="home-colors">
-            {swatches.map(([name, background]) => (
-              <div key={name}>
-                <i style={{ background }} />
-                {name}
+          <div className="home-palette" aria-label={`${selected.label} semantic colors`}>
+            {palette.map(([name, background, foreground]) => (
+              <div key={name} className="home-swatch" style={{ background, color: foreground || 'transparent' }}>
+                {foreground ? (
+                  <span>
+                    <strong>{name}</strong>
+                    <small>text</small>
+                  </span>
+                ) : (
+                  <span className="home-swatch-caption">{name}</span>
+                )}
               </div>
             ))}
           </div>
@@ -474,6 +634,20 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>Works everywhere.</span>
         </h2>
         <p>The stylesheet does not require a framework. Each adapter is native, and they share one set of names.</p>
+        <div className="home-marquee">
+          <div className="home-marquee-track">
+            {[0, 1].map((copy) => (
+              <ul key={copy} aria-hidden={copy === 1}>
+                {adapters.map(([name], index) => (
+                  <li key={`${copy}-${name}`} style={{ '--tone': `var(--wpl-color-${marks[index % marks.length]})` } as CSSProperties}>
+                    <i aria-hidden="true">{name.slice(0, 1)}</i>
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
         <div className="home-ctas">
           <a className="home-cta" href="#frameworks">
             See the adapters
@@ -487,7 +661,26 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>One catalog.</span>
         </h2>
-        <p>Every name below is a real component.</p>
+        <p>Every name below is a real component. Mix the same classes into a page without restyling each one.</p>
+        <div className="home-stage">
+          <div className="home-stage-top">
+            <Badge variant="success">Paid</Badge>
+            <Badge variant="warning">Review</Badge>
+            <Badge>Due</Badge>
+            <Kbd keys={['⌘', 'K']} />
+          </div>
+          <Alert variant="info" title="Statement ready">
+            March stayed in this tab.
+          </Alert>
+          <Input placeholder="Search merchants" aria-label="Search merchants" />
+          <Progress value={64} label="Collected" />
+          <div className="home-sizes">
+            <Button size="sm">Save</Button>
+            <Button size="sm" variant="outline">
+              Export
+            </Button>
+          </div>
+        </div>
         <div className="home-chips">
           {chips.map((slug) => {
             const item = catalog.find((entry) => entry.slug === slug);
