@@ -8,6 +8,15 @@ describe('docs app', () => {
     const user = userEvent.setup();
     render(<App />);
     expect(screen.getByRole('heading', { level: 1, name: /faster, cleaner, easier/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'See all components' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'github.com/hoseinsedaqat', exact: true })).toHaveAttribute(
+      'href',
+      'https://github.com/hoseinsedaqat',
+    );
+    expect(screen.getByRole('link', { name: 'github.com/hoseinsedaqat/White-Plumeria-UI' })).toHaveAttribute(
+      'href',
+      'https://github.com/hoseinsedaqat/White-Plumeria-UI',
+    );
     await user.click(screen.getByRole('link', { name: /^Button\b/ }));
     expect(await screen.findByRole('heading', { level: 1, name: 'Button' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
@@ -16,7 +25,7 @@ describe('docs app', () => {
   it('opens the component gallery without dropping a catalog entry', async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole('link', { name: 'Components' }));
+    await user.click(screen.getAllByRole('link', { name: 'Components' })[0]);
     expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /^DatePicker/ }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /^Dialog/ }).length).toBeGreaterThan(0);
@@ -25,7 +34,7 @@ describe('docs app', () => {
   it('shows a grid that can stack inside a narrow frame', async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole('link', { name: 'Components' }));
+    await user.click(screen.getAllByRole('link', { name: 'Components' })[0]);
     expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
     await user.click(screen.getAllByRole('link', { name: /^Grid\b/ })[0]);
     expect(await screen.findByRole('heading', { level: 1, name: 'Grid' })).toBeInTheDocument();

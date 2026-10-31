@@ -1,6 +1,6 @@
 import { brand, catalog, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
-import { Button, Checkbox, Input, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
+import { Button, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
 import '../home.css';
@@ -536,10 +536,100 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
-      <p className="home-foot">
-        {brand.productName} {brand.version} · {brand.license}. Packages are not published to npm yet.
-      </p>
+      <HomeFooter onNavigate={onNavigate} />
     </div>
+  );
+}
+
+const footGroups = [
+  {
+    label: 'Product',
+    links: [
+      { href: '/components', label: 'Components' },
+      { href: '/blocks', label: 'Blocks' },
+      { href: '/playground', label: 'Playground' },
+      { href: '/ai', label: 'AI studio' },
+      { href: '/themes', label: 'Theme lab' },
+    ],
+  },
+  {
+    label: 'Learn',
+    links: [
+      { href: '/start', label: 'Quick start' },
+      { href: '/install', label: 'Install' },
+      { href: '/direction', label: 'Direction' },
+      { href: '/accessibility', label: 'Accessibility' },
+    ],
+  },
+  {
+    label: 'Project',
+    links: [
+      { href: brand.repository, label: 'Repository', external: true },
+      { href: brand.bugs, label: 'Issues', external: true },
+      { href: '/changelog', label: 'Changelog' },
+      { href: '/security', label: 'Security' },
+    ],
+  },
+] as const;
+
+function plainAddress(url: string) {
+  return url.replace(/^https?:\/\//, '');
+}
+
+function HomeFooter({ onNavigate }: { onNavigate: (href: string) => void }) {
+  const author = 'https://github.com/hoseinsedaqat';
+  return (
+    <footer className="home-foot">
+      <div className="home-foot-inner">
+        <div className="home-foot-top">
+          <div className="home-foot-brand">
+            <Mark />
+            <div>
+              <strong>{brand.productName}</strong>
+              <p>
+                {brand.version} ·{' '}
+                <a href={`${brand.repository}/blob/${brand.defaultBranch}/LICENSE`} rel="noreferrer">
+                  {brand.license}
+                </a>
+                . Not published to npm yet.
+              </p>
+            </div>
+          </div>
+          <div className="home-foot-nav">
+            {footGroups.map((group) => (
+              <nav key={group.label} aria-label={group.label}>
+                <h2>{group.label}</h2>
+                {group.links.map((link) =>
+                  'external' in link && link.external ? (
+                    <a key={link.href} href={link.href} rel="noreferrer" target="_blank">
+                      {link.label}
+                    </a>
+                  ) : (
+                    <A key={link.href} href={link.href} onNavigate={onNavigate}>
+                      {link.label}
+                    </A>
+                  ),
+                )}
+              </nav>
+            ))}
+          </div>
+        </div>
+        <div className="home-foot-base">
+          <p>
+            <span>GitHub</span>
+            <a className="home-foot-address" href={author} rel="noreferrer" target="_blank">
+              {plainAddress(author)}
+            </a>
+          </p>
+          <p>
+            <span>Repository</span>
+            <a className="home-foot-address" href={brand.repository} rel="noreferrer" target="_blank">
+              {plainAddress(brand.repository)}
+            </a>
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 }
 
