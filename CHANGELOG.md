@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage customizer is one plate: the button, the class string it actually uses, and a chip for each class. Outline replaces primary. The other chips add a class. Packages are still not published.
 - The homepage class-count section uses two comparison plates instead of thin bars. The counts stay on this form. Packages are still not published.
 - The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example. Packages are still not published.
 - Semantic colors are a palette board: role chips and surface chips, with the name on the color. The six empty rectangles are gone. Packages are still not published.

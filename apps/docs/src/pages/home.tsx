@@ -142,6 +142,12 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   const customClass = ['wpl-btn', outline ? 'wpl-btn-outline' : 'wpl-btn-primary', soft ? 'wpl-btn-soft' : '', large ? 'wpl-btn-lg' : '', round ? 'wpl-btn-pill' : '']
     .filter(Boolean)
     .join(' ');
+  const classChoices = [
+    { key: 'outline', label: 'Outline', note: 'replaces primary', token: 'wpl-btn-outline', on: outline, toggle: () => setOutline((value) => !value) },
+    { key: 'soft', label: 'Soft', note: 'adds a class', token: 'wpl-btn-soft', on: soft, toggle: () => setSoft((value) => !value) },
+    { key: 'large', label: 'Large', note: 'adds a class', token: 'wpl-btn-lg', on: large, toggle: () => setLarge((value) => !value) },
+    { key: 'round', label: 'Round', note: 'adds a class', token: 'wpl-btn-pill', on: round, toggle: () => setRound((value) => !value) },
+  ] as const;
   const { preferences, setPreferences } = useWhitePlumeria();
   const scheme = useScheme(preferences.appearance);
   const selected = themes.find((theme) => theme.name === preferences.theme);
@@ -633,13 +639,12 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <br />
           <span>without a second stylesheet</span>
         </h2>
-        <p>Add a class. The same button changes shape, and the theme stays where it is.</p>
+        <p>Turn a class on. The same button changes, and the theme stays where it is.</p>
         <div className="home-morph">
-          <pre className="home-code">
-            <code>{'<button class="wpl-btn wpl-btn-primary">Save</button>'}</code>
-          </pre>
-          <div className="home-eq" aria-hidden="true">
-            ↓
+          <div className="home-morph-stage">
+            <Button variant={outline ? 'outline' : 'primary'} appearance={soft ? 'soft' : 'solid'} size={large ? 'lg' : 'md'} className={round ? 'wpl-btn-pill' : undefined}>
+              Save
+            </Button>
           </div>
           <pre className="home-code">
             <code>
@@ -656,16 +661,14 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               {'">Save</button>'}
             </code>
           </pre>
-          <div className="home-morph-live">
-            <Button variant={outline ? 'outline' : 'primary'} appearance={soft ? 'soft' : 'solid'} size={large ? 'lg' : 'md'} className={round ? 'wpl-btn-pill' : undefined}>
-              Save
-            </Button>
-            <div className="home-morph-switches">
-              <Switch label="Outline" checked={outline} onCheckedChange={setOutline} />
-              <Switch label="Soft" checked={soft} onCheckedChange={setSoft} />
-              <Switch label="Large" checked={large} onCheckedChange={setLarge} />
-              <Switch label="Round" checked={round} onCheckedChange={setRound} />
-            </div>
+          <div className="home-morph-choices" role="group" aria-label="Button classes">
+            {classChoices.map((choice) => (
+              <button key={choice.key} type="button" className={choice.on ? 'home-morph-choice is-on' : 'home-morph-choice'} aria-pressed={choice.on} onClick={choice.toggle}>
+                <strong>{choice.label}</strong>
+                <code>{choice.token}</code>
+                <span>{choice.note}</span>
+              </button>
+            ))}
           </div>
         </div>
       </section>
