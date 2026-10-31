@@ -21,8 +21,9 @@ export interface Input {
 <let/index=Number.isFinite(input.index) ? Number(input.index) : 0>
 <const/slides=input.slides ?? []>
 <const/slide=slides[index]>
+<const/media=slides.some((item) => Boolean(item.src))>
 
-<div/host class="wpl-carousel" aria-roledescription="carousel" aria-label=input.label || "Carousel" data-index=index>
+<div/host class=`wpl-carousel${media ? " wpl-carousel-media" : ""}` aria-roledescription="carousel" aria-label=input.label || "Carousel" data-index=index>
   <div class="wpl-carousel-bar">
     <button
       type="button"
@@ -36,6 +37,7 @@ export interface Input {
       }
     >‹</button>
     <div class="wpl-carousel-viewport">
+      <div class="wpl-carousel-track">
       <div class="wpl-carousel-slide" aria-label=slide?.label>
         <if=slide?.src>
           <figure class="wpl-carousel-figure">
@@ -48,6 +50,7 @@ export interface Input {
         </if>
         <if=slide?.content><div class="wpl-carousel-copy">${slide.content}</div></if>
         <if=!slide?.src && !slide?.content><p class="wpl-carousel-copy">${slide?.label || ""}</p></if>
+      </div>
       </div>
     </div>
     <button

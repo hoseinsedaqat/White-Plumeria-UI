@@ -77,6 +77,7 @@
     "limitations": [
       "Does not autoplay.",
       "Does not download or optimize images. Pass a src your app already serves.",
+      "The picture covers a 3:2 frame. The image file does not set the carousel height.",
       "A pointer drag moves one slide. It is not a physics scroller.",
       "The HTML class snapshot does not include the behavior."
     ]

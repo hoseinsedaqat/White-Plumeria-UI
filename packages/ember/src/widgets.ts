@@ -12,7 +12,17 @@ import {
   stepState,
   typeaheadMove,
 } from '@white-plumeria/core';
-import { bubble, flag, glimmer, list, localeOf, num, registerHelper, str, type Host } from './runtime.ts';
+import {
+  bubble,
+  flag,
+  glimmer,
+  list,
+  localeOf,
+  num,
+  registerHelper,
+  str,
+  type Host,
+} from './runtime.ts';
 
 const dialogFrame = setModifierManager(
   () => ({
@@ -27,7 +37,12 @@ const dialogFrame = setModifierManager(
     },
     updateModifier() {},
     destroyModifier(_state: unknown, element: Element) {
-      if (element instanceof HTMLDialogElement && element.open && typeof element.close === 'function') element.close();
+      if (
+        element instanceof HTMLDialogElement &&
+        element.open &&
+        typeof element.close === 'function'
+      )
+        element.close();
     },
   }),
   class DialogFrame {},
@@ -88,7 +103,9 @@ function menuKey(host: Host, event: Event, closeOnLeaf: boolean): void {
   const current = sub === null ? parent : children[sub];
   const command = menuCommand({
     key: keyEvent.key,
-    direction: readingDirection(keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null),
+    direction: readingDirection(
+      keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null,
+    ),
     open: Boolean(host.state.open),
     submenuOpen: sub !== null,
     hasSubmenu: menuHasSubmenu(current),
@@ -206,7 +223,8 @@ export const Drawer = glimmer(
       trigger: (host) => str(host.args.trigger, 'Open'),
       title: (host) => str(host.args.title, 'Drawer'),
       openState: (host) => Boolean(host.state.open),
-      className: (host) => (str(host.args.side) === 'start' ? 'wpl-drawer wpl-drawer-start' : 'wpl-drawer'),
+      className: (host) =>
+        str(host.args.side) === 'start' ? 'wpl-drawer wpl-drawer-start' : 'wpl-drawer',
     },
     methods: {
       open(event) {
@@ -263,7 +281,13 @@ export const Tooltip = glimmer(
 export const DropdownMenu = glimmer(
   `<div class="wpl-menu-root" {{on "keydown" this.onKey}}><button type="button" class="wpl-btn wpl-btn-secondary" aria-haspopup="menu" aria-expanded={{this.expanded}} aria-controls={{this.menuId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} aria-haspopup={{item.popup}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}{{#if item.shortcut}}<span class="wpl-menu-shortcut">{{item.shortcut}}</span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
   {
-    state: () => ({ open: false, active: 0, sub: null, menuId: createId('menu'), typeahead: { query: '', at: 0 } }),
+    state: () => ({
+      open: false,
+      active: 0,
+      sub: null,
+      menuId: createId('menu'),
+      typeahead: { query: '', at: 0 },
+    }),
     getters: {
       label: (host) => str(host.args.label, 'Open menu'),
       menuId: (host) => str(host.state.menuId),
@@ -344,18 +368,25 @@ export const Tabs = glimmer(
       label: (host) => str(host.args.label, 'Tabs'),
       items(this: Host) {
         const current = str(this.state.value, str(this.args.value));
-        return list<{ id?: string; label?: string; panel?: string; content?: string }>(this.args.items).map((item, index) => {
+        return list<{ id?: string; label?: string; panel?: string; content?: string }>(
+          this.args.items,
+        ).map((item, index) => {
           const id = str(item.id, String(index));
           return {
             id,
             label: str(item.label, id),
             panel: str(item.panel, str(item.content)),
-            selected: (current || str(list<{ id?: string }>(this.args.items)[0]?.id, '0')) === id ? 'true' : 'false',
+            selected:
+              (current || str(list<{ id?: string }>(this.args.items)[0]?.id, '0')) === id
+                ? 'true'
+                : 'false',
           };
         });
       },
       panel(this: Host) {
-        const items = list<{ id?: string; panel?: string; content?: string; label?: string }>(this.args.items);
+        const items = list<{ id?: string; panel?: string; content?: string; label?: string }>(
+          this.args.items,
+        );
         const current = str(this.state.value, str(this.args.value, str(items[0]?.id)));
         const found = items.find((item) => str(item.id) === current) ?? items[0];
         return found ? str(found.panel, str(found.content, str(found.label))) : '';
@@ -378,7 +409,9 @@ export const Accordion = glimmer(
     getters: {
       items(this: Host) {
         const open = str(this.state.open, str(this.args.value));
-        return list<{ id?: string; title?: string; label?: string; content?: string }>(this.args.items).map((item, index) => {
+        return list<{ id?: string; title?: string; label?: string; content?: string }>(
+          this.args.items,
+        ).map((item, index) => {
           const id = str(item.id, String(index));
           const isOpen = open === id;
           return {
@@ -405,7 +438,8 @@ export const Toast = glimmer(
   {
     getters: {
       title: (host) => str(host.args.title, 'Notice'),
-      className: (host) => `wpl-toast${str(host.args.variant) && str(host.args.variant) !== 'neutral' ? ` wpl-toast-${str(host.args.variant)}` : ''}`,
+      className: (host) =>
+        `wpl-toast${str(host.args.variant) && str(host.args.variant) !== 'neutral' ? ` wpl-toast-${str(host.args.variant)}` : ''}`,
       role: (host) => (str(host.args.variant) === 'danger' ? 'alert' : 'status'),
     },
   },
@@ -417,9 +451,11 @@ export const Notification = glimmer(
     state: () => ({ hidden: false }),
     getters: {
       title: (host) => str(host.args.title, 'Notice'),
-      className: (host) => (host.state.hidden ? 'wpl-notification wpl-sr-only' : 'wpl-notification'),
+      className: (host) =>
+        host.state.hidden ? 'wpl-notification wpl-sr-only' : 'wpl-notification',
       dismissible: (host) => host.args.dismissible !== false,
-      dismissLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'dismiss'),
+      dismissLabel: () =>
+        message(localeOf(typeof document === 'undefined' ? null : document.body), 'dismiss'),
     },
     methods: {
       dismiss(event) {
@@ -441,15 +477,20 @@ export const CommandPalette = glimmer(
       listId: (host) => str(host.state.listId),
       matches(this: Host) {
         const query = str(this.state.query).toLocaleLowerCase();
-        return list<{ id?: string; label?: string }>(this.args.items).filter((item) => str(item.label, str(item.id)).toLocaleLowerCase().includes(query)).map((item) => ({
-          id: str(item.id),
-          label: str(item.label, str(item.id)),
-        }));
+        return list<{ id?: string; label?: string }>(this.args.items)
+          .filter((item) => str(item.label, str(item.id)).toLocaleLowerCase().includes(query))
+          .map((item) => ({
+            id: str(item.id),
+            label: str(item.label, str(item.id)),
+          }));
       },
     },
     methods: {
       filter(event) {
-        this.state.query = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        this.state.query =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.value
+            : '';
       },
       pick(item, event) {
         const chosen = item as { id: string; label: string };
@@ -494,11 +535,15 @@ export const Steps = glimmer(
 );
 
 export const Carousel = glimmer(
-  `<div class="wpl-carousel" aria-roledescription="carousel" aria-label={{this.label}}><div class="wpl-carousel-bar"><button type="button" class="wpl-carousel-control" aria-label="Previous" disabled={{this.atStart}} {{on "click" this.previous}}>Previous</button><div class="wpl-carousel-viewport"><div class="wpl-carousel-slide" aria-label={{this.slideLabel}}>{{#if this.slideSrc}}<figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src={{this.slideSrc}} alt={{this.slideAlt}} /><figcaption class="wpl-carousel-caption"><strong>{{this.slideLabel}}</strong>{{#if this.slideCaption}}<span>{{this.slideCaption}}</span>{{/if}}</figcaption></figure>{{/if}}{{#if this.slideCopy}}<div class="wpl-carousel-copy">{{this.slideCopy}}</div>{{/if}}{{#if this.showFallback}}<p class="wpl-carousel-copy">{{this.slideLabel}}</p>{{/if}}</div></div><button type="button" class="wpl-carousel-control" aria-label="Next" disabled={{this.atEnd}} {{on "click" this.next}}>Next</button></div></div>`,
+  `<div class="wpl-carousel {{this.mediaClass}}" aria-roledescription="carousel" aria-label={{this.label}}><div class="wpl-carousel-bar"><button type="button" class="wpl-carousel-control" aria-label="Previous" disabled={{this.atStart}} {{on "click" this.previous}}>Previous</button><div class="wpl-carousel-viewport"><div class="wpl-carousel-track"><div class="wpl-carousel-slide" aria-label={{this.slideLabel}}>{{#if this.slideSrc}}<figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src={{this.slideSrc}} alt={{this.slideAlt}} /><figcaption class="wpl-carousel-caption"><strong>{{this.slideLabel}}</strong>{{#if this.slideCaption}}<span>{{this.slideCaption}}</span>{{/if}}</figcaption></figure>{{/if}}{{#if this.slideCopy}}<div class="wpl-carousel-copy">{{this.slideCopy}}</div>{{/if}}{{#if this.showFallback}}<p class="wpl-carousel-copy">{{this.slideLabel}}</p>{{/if}}</div></div></div><button type="button" class="wpl-carousel-control" aria-label="Next" disabled={{this.atEnd}} {{on "click" this.next}}>Next</button></div></div>`,
   {
     state: () => ({ index: 0 }),
     getters: {
       label: (host) => str(host.args.label, 'Slides'),
+      mediaClass: (host) =>
+        list<Slide>(host.args.slides).some((slide) => Boolean(slide.src))
+          ? 'wpl-carousel-media'
+          : '',
       slides: (host) => list<Slide>(host.args.slides),
       index: (host) => num(host.state.index, 0),
       slide(this: Host) {
@@ -541,7 +586,12 @@ export const Carousel = glimmer(
       },
       go(delta, event) {
         const count = list(this.args.slides).length;
-        this.state.index = moveIndex(num(this.state.index, 0), Number(delta), count, flag(this.args.loop));
+        this.state.index = moveIndex(
+          num(this.state.index, 0),
+          Number(delta),
+          count,
+          flag(this.args.loop),
+        );
         bubble(event as Event, 'wpl-change', { index: this.state.index });
       },
     },
@@ -551,7 +601,12 @@ export const Carousel = glimmer(
 export const Combobox = glimmer(
   `<div class="wpl-field"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" role="combobox" aria-expanded={{this.expanded}} aria-controls={{this.listId}} value={{this.query}} {{on "input" this.filter}} {{on "focus" this.open}} />{{#if this.openState}}<ul class="wpl-menu" id={{this.listId}} role="listbox">{{#each this.matches as |option|}}<li><button type="button" role="option" {{on "click" (fn this.pick option)}}>{{option.label}}</button></li>{{/each}}</ul>{{/if}}</div>`,
   {
-    state: (args) => ({ query: str(args.value), open: false, fieldId: createId('combo'), listId: createId('combo-list') }),
+    state: (args) => ({
+      query: str(args.value),
+      open: false,
+      fieldId: createId('combo'),
+      listId: createId('combo-list'),
+    }),
     getters: {
       label: (host) => str(host.args.label, 'Choose'),
       query: (host) => str(host.state.query),
@@ -561,10 +616,14 @@ export const Combobox = glimmer(
       expanded: (host) => (host.state.open ? 'true' : 'false'),
       matches(this: Host) {
         const query = str(this.state.query).toLocaleLowerCase();
-        return list<{ value?: string; label?: string }>(this.args.options).filter((option) => str(option.label, str(option.value)).toLocaleLowerCase().includes(query)).map((option) => ({
-          value: str(option.value),
-          label: str(option.label, str(option.value)),
-        }));
+        return list<{ value?: string; label?: string }>(this.args.options)
+          .filter((option) =>
+            str(option.label, str(option.value)).toLocaleLowerCase().includes(query),
+          )
+          .map((option) => ({
+            value: str(option.value),
+            label: str(option.label, str(option.value)),
+          }));
       },
     },
     methods: {
@@ -573,7 +632,10 @@ export const Combobox = glimmer(
       },
       filter(event) {
         this.state.open = true;
-        this.state.query = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        this.state.query =
+          event instanceof Event && event.target instanceof HTMLInputElement
+            ? event.target.value
+            : '';
       },
       pick(option, event) {
         const chosen = option as { value: string; label: string };

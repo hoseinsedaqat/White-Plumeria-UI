@@ -86,6 +86,7 @@ AI tools may only name components from this list.
 - Calendar: Local timezone only. No time of day. Persian conversion is tested against Intl.
 - Carousel: Does not autoplay.
 - Carousel: Does not download or optimize images. Pass a src your app already serves.
+- Carousel: The picture covers a 3:2 frame. The image file does not set the carousel height.
 - Carousel: A pointer drag moves one slide. It is not a physics scroller.
 - Carousel: The HTML class snapshot does not include the behavior.
 - ChartContainer: No line, pie, zoom, or canvas chart. Children can replace the bar view, but the table remains.
