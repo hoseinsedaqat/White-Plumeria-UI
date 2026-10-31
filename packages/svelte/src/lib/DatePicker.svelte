@@ -1,6 +1,7 @@
 <script lang="ts">
   import { formatDate, parseIsoDate, parseTimeValue, toIsoDate, type CalendarSystem } from '@white-plumeria/core';
   import Calendar from './Calendar.svelte';
+  import Icon from './Icon.svelte';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
 
@@ -91,7 +92,7 @@
       aria-describedby={error ? `${id}-error` : undefined}
       oninput={(event) => commit((event.currentTarget as HTMLInputElement).value)}
     />
-    <IconButton label={wpl.t('chooseDate')} onclick={() => (open = !open)}>▦</IconButton>
+    <IconButton label={wpl.t('chooseDate')} onclick={() => (open = !open)}><Icon name="calendar" /></IconButton>
   </div>
   {#if showTime}
     <div class="wpl-field wpl-time">

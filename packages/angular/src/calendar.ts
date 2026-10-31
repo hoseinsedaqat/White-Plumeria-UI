@@ -25,6 +25,7 @@ import {
   type DateTimeRangeValue,
 } from '@white-plumeria/core';
 import { IconButton } from './button';
+import { Icon } from './icon';
 import { injectWhitePlumeria } from './provider';
 
 export type { DateRangeValue, DateTimeRangeValue };
@@ -33,13 +34,13 @@ export type { DateRangeValue, DateTimeRangeValue };
   selector: 'wpl-calendar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [IconButton],
+  imports: [Icon, IconButton],
   template: `
     <div class="wpl-calendar">
       <div class="wpl-calendar-head">
-        <button wplIconButton [label]="previousLabel()" [hasIcon]="true" (click)="shift(-1)">‹</button>
+        <button wplIconButton [label]="previousLabel()" [hasIcon]="true" (click)="shift(-1)"><wpl-icon name="chevronLeft" /></button>
         <strong>{{ grid().title }}</strong>
-        <button wplIconButton [label]="nextLabel()" [hasIcon]="true" (click)="shift(1)">›</button>
+        <button wplIconButton [label]="nextLabel()" [hasIcon]="true" (click)="shift(1)"><wpl-icon name="chevronRight" /></button>
       </div>
       <div class="wpl-calendar-grid" role="grid" [attr.aria-label]="grid().title">
         @for (day of grid().weekdays; track day) {
@@ -126,7 +127,7 @@ export class Calendar {
   selector: 'wpl-date-picker',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [Calendar, IconButton],
+  imports: [Calendar, Icon, IconButton],
   template: `
     <div class="wpl-date">
       <label class="wpl-label" [attr.for]="inputId">{{ label() }}</label>
@@ -141,7 +142,7 @@ export class Calendar {
           [attr.aria-describedby]="error() ? inputId + '-error' : null"
           (input)="commit($any($event.target).value)"
         />
-        <button wplIconButton [label]="chooseLabel()" [hasIcon]="true" (click)="open.set(!open())">▦</button>
+        <button wplIconButton [label]="chooseLabel()" [hasIcon]="true" (click)="open.set(!open())"><wpl-icon name="calendar" /></button>
       </div>
       @if (showTime()) {
         <div class="wpl-field wpl-time">
@@ -267,7 +268,7 @@ export class DatePicker {
   selector: 'wpl-date-range-picker',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [Calendar, IconButton],
+  imports: [Calendar, Icon, IconButton],
   template: `
     <div class="wpl-date">
       <span class="wpl-label">{{ label() }}</span>
@@ -280,7 +281,7 @@ export class DatePicker {
           <label class="wpl-label" [attr.for]="endId">{{ endLabel() }}</label>
           <input class="wpl-input" [id]="endId" [value]="endText()" inputmode="numeric" placeholder="YYYY-MM-DD" [attr.aria-invalid]="error() ? true : null" (input)="commit('end', $any($event.target).value)" />
         </div>
-        <button wplIconButton [label]="chooseLabel()" [attr.aria-expanded]="open()" [hasIcon]="true" (click)="open.set(!open())">▦</button>
+        <button wplIconButton [label]="chooseLabel()" [attr.aria-expanded]="open()" [hasIcon]="true" (click)="open.set(!open())"><wpl-icon name="calendar" /></button>
       </div>
       @if (showTime()) {
         <div class="wpl-date-row">

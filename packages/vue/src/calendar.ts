@@ -17,6 +17,7 @@ import {
 } from '@white-plumeria/core';
 import { defineComponent, h, ref, useId, type PropType } from 'vue';
 import { IconButton } from './button.ts';
+import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
 
 export const Calendar = defineComponent({
@@ -46,9 +47,9 @@ export const Calendar = defineComponent({
       const today = new Date();
       return h('div', { class: 'wpl-calendar' }, [
         h('div', { class: 'wpl-calendar-head' }, [
-          h(IconButton, { label: context.t('previous'), onClick: () => (anchor.value = addMonths(anchor.value, -1, props.calendar)) }, () => '‹'),
+          h(IconButton, { label: context.t('previous'), onClick: () => (anchor.value = addMonths(anchor.value, -1, props.calendar)) }, () => h(Icon, { name: 'chevronLeft' })),
           h('strong', grid.title),
-          h(IconButton, { label: context.t('next'), onClick: () => (anchor.value = addMonths(anchor.value, 1, props.calendar)) }, () => '›'),
+          h(IconButton, { label: context.t('next'), onClick: () => (anchor.value = addMonths(anchor.value, 1, props.calendar)) }, () => h(Icon, { name: 'chevronRight' })),
         ]),
         h(
           'div',
@@ -155,7 +156,7 @@ export const DatePicker = defineComponent({
             'aria-describedby': error.value ? `${id}-error` : undefined,
             onInput: (event: Event) => commit((event.target as HTMLInputElement).value),
           }),
-          h(IconButton, { label: t('chooseDate'), onClick: () => (open.value = !open.value) }, () => '▦'),
+          h(IconButton, { label: t('chooseDate'), onClick: () => (open.value = !open.value) }, () => h(Icon, { name: 'calendar' })),
         ]),
         props.showTime
           ? h('div', { class: 'wpl-field wpl-time' }, [
@@ -340,7 +341,7 @@ export const DateRangePicker = defineComponent({
             label: t('chooseDate'),
             'aria-expanded': open.value,
             onClick: () => (open.value = !open.value),
-          }, () => '▦'),
+          }, () => h(Icon, { name: 'calendar' })),
         ]),
         props.showTime
           ? h('div', { class: 'wpl-date-row' }, [

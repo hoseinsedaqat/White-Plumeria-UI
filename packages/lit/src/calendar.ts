@@ -17,6 +17,7 @@ import {
   type DateTimeRangeValue,
 } from '@white-plumeria/core';
 import { defineTag, html, nothing, WplElement, type RenderResult } from './element';
+import { iconSvg } from './icon';
 import { localeOf, translate } from './provider';
 
 export type { DateRangeValue, DateTimeRangeValue };
@@ -94,9 +95,9 @@ export class Calendar extends WplElement {
     const today = new Date();
     return html`<div class="wpl-calendar">
       <div class="wpl-calendar-head">
-        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'previous')} @click=${() => { this.anchor = addMonths(this.anchor, -1, calendar); this.requestUpdate(); }}>‹</button>
+        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'previous')} @click=${() => { this.anchor = addMonths(this.anchor, -1, calendar); this.requestUpdate(); }}>${iconSvg('chevronLeft')}</button>
         <strong>${grid.title}</strong>
-        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'next')} @click=${() => { this.anchor = addMonths(this.anchor, 1, calendar); this.requestUpdate(); }}>›</button>
+        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'next')} @click=${() => { this.anchor = addMonths(this.anchor, 1, calendar); this.requestUpdate(); }}>${iconSvg('chevronRight')}</button>
       </div>
       <div class="wpl-calendar-grid" role="grid" aria-label=${grid.title}>
         ${grid.weekdays.map((day) => html`<div class="wpl-calendar-weekday" role="columnheader">${day}</div>`)}
@@ -226,7 +227,7 @@ export class DatePicker extends WplElement {
             if (element) this.commitDate(element.value);
           }}
         />
-        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'chooseDate')} aria-expanded=${this.open ? 'true' : 'false'} @click=${() => { this.open = !this.open; this.requestUpdate(); }}>▦</button>
+        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'chooseDate')} aria-expanded=${this.open ? 'true' : 'false'} @click=${() => { this.open = !this.open; this.requestUpdate(); }}>${iconSvg('calendar')}</button>
       </div>
       ${this.showTime
         ? html`<div class="wpl-field wpl-time">
@@ -371,7 +372,7 @@ export class DateRangePicker extends WplElement {
             if (element) this.apply(this.startText, element.value, this.startTimeText, this.endTimeText, 'end', element.value);
           }} />
         </div>
-        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'chooseDate')} aria-expanded=${this.open ? 'true' : 'false'} @click=${() => { this.open = !this.open; this.requestUpdate(); }}>▦</button>
+        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'chooseDate')} aria-expanded=${this.open ? 'true' : 'false'} @click=${() => { this.open = !this.open; this.requestUpdate(); }}>${iconSvg('calendar')}</button>
       </div>
       ${this.showTime
         ? html`<div class="wpl-date-row">

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { addMonths, buildMonthGrid, calendarDayClass, formatNumber, sameDay, toParts, type CalendarSystem } from '@white-plumeria/core';
+  import Icon from './Icon.svelte';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
 
@@ -38,9 +39,9 @@
 
 <div class="wpl-calendar">
   <div class="wpl-calendar-head">
-    <IconButton label={wpl.t('previous')} onclick={() => (anchor = addMonths(anchor, -1, calendar))}>‹</IconButton>
+    <IconButton label={wpl.t('previous')} onclick={() => (anchor = addMonths(anchor, -1, calendar))}><Icon name="chevronLeft" /></IconButton>
     <strong>{grid.title}</strong>
-    <IconButton label={wpl.t('next')} onclick={() => (anchor = addMonths(anchor, 1, calendar))}>›</IconButton>
+    <IconButton label={wpl.t('next')} onclick={() => (anchor = addMonths(anchor, 1, calendar))}><Icon name="chevronRight" /></IconButton>
   </div>
   <div class="wpl-calendar-grid" role="grid" aria-label={grid.title}>
     {#each grid.weekdays as day (day)}

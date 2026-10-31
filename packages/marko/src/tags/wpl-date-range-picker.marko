@@ -3,6 +3,7 @@ import {
   buildMonthGrid,
   calendarDayClass,
   formatDate,
+  iconPaths,
   message,
   parseIsoDate,
   type CalendarSystem,
@@ -90,9 +91,9 @@ static function publish(
   </p>
   <div class="wpl-calendar">
     <div class="wpl-calendar-head">
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "previous") onClick() { anchor = addMonths(anchor, -1, calendar) }>‹</button>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "previous") onClick() { anchor = addMonths(anchor, -1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg></button>
       <strong>${month.title}</strong>
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "next") onClick() { anchor = addMonths(anchor, 1, calendar) }>›</button>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "next") onClick() { anchor = addMonths(anchor, 1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg></button>
     </div>
     <div class="wpl-calendar-grid" role="grid" aria-label=month.title>
       <for|day| of=month.weekdays>

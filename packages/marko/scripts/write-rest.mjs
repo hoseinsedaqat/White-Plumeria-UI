@@ -464,7 +464,7 @@ export interface Input {
 `,
 };
 
-files['wpl-calendar.marko'] = `import { addMonths, buildMonthGrid, calendarDayClass, formatDate, parseIsoDate, toIsoDate, type CalendarSystem } from "@white-plumeria/core";
+files['wpl-calendar.marko'] = `import { addMonths, buildMonthGrid, calendarDayClass, formatDate, iconPaths, parseIsoDate, toIsoDate, type CalendarSystem } from "@white-plumeria/core";
 import { emit, oneOf } from "../emit.ts";
 export interface Input { value?: string; calendar?: CalendarSystem; label?: string; onChange?: (value: string) => void; }
 static const calendars = ["gregory", "persian"] as const;
@@ -474,9 +474,9 @@ static const calendars = ["gregory", "persian"] as const;
 <const/month=buildMonthGrid({ anchor, calendar, locale: "en" })>
 <div/host class="wpl-calendar" aria-label=input.label || month.title>
   <div class="wpl-calendar-head">
-    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Previous" onClick() { anchor = addMonths(anchor, -1, calendar); }>‹</button>
+    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Previous" onClick() { anchor = addMonths(anchor, -1, calendar); }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg></button>
     <strong>\${month.title}</strong>
-    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Next" onClick() { anchor = addMonths(anchor, 1, calendar); }>›</button>
+    <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Next" onClick() { anchor = addMonths(anchor, 1, calendar); }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg></button>
   </div>
   <div class="wpl-calendar-grid" role="grid" aria-label=month.title>
     <for|day| of=month.weekdays><div class="wpl-calendar-weekday" role="columnheader">\${day}</div></for>

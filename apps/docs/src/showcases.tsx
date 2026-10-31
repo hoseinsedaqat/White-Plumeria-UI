@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   ButtonGroup,
+  Calendar,
   Card,
   Checkbox,
   ContextMenu,
@@ -98,6 +99,7 @@ function DateRangeLab() {
           showTime={showTime}
           startTime={range.startTime}
           endTime={range.endTime}
+          defaultOpen
           onValueChange={(next) =>
             setRange({
               start: next.start,
@@ -370,10 +372,15 @@ const sections: Record<string, ReactNode> = {
       />
     </Preview>
   ),
+  calendar: (
+    <Preview title="Selected day" open code={`<Calendar value={new Date(2026, 9, 27)} />`}>
+      <Calendar value={new Date(2026, 9, 27)} />
+    </Preview>
+  ),
   'date-picker': (
     <>
       <Preview title="ISO date" open code={`<DatePicker label="From" value="2026-10-27" />`}>
-        <DatePicker label="From" value="2026-10-27" />
+        <DatePicker label="From" value="2026-10-27" defaultOpen />
       </Preview>
       <Preview title="With time" code={`<DatePicker label="From" value="2026-10-27" showTime time="09:30" />`}>
         <DatePicker label="From" value="2026-10-27" showTime time="09:30" />

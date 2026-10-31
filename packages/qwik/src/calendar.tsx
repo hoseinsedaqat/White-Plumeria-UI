@@ -63,9 +63,9 @@ export const Calendar = component$<{
   return (
     <div class="wpl-calendar">
       <div class="wpl-calendar-head">
-        <IconButton label={context.t('previous')} onClick$={() => { anchor.value = addMonths(anchor.value, -1, calendar); }}>‹</IconButton>
+        <IconButton label={context.t('previous')} icon="chevronLeft" onClick$={() => { anchor.value = addMonths(anchor.value, -1, calendar); }} />
         <strong>{grid.title}</strong>
-        <IconButton label={context.t('next')} onClick$={() => { anchor.value = addMonths(anchor.value, 1, calendar); }}>›</IconButton>
+        <IconButton label={context.t('next')} icon="chevronRight" onClick$={() => { anchor.value = addMonths(anchor.value, 1, calendar); }} />
       </div>
       <div class="wpl-calendar-grid" role="grid" aria-label={grid.title}>
         {grid.weekdays.map((day) => (
@@ -148,7 +148,7 @@ export const DatePicker = component$<{
             void props.onValueChange$?.(next);
           }}
         />
-        <IconButton label={wpl.t('chooseDate')} onClick$={() => { open.value = !open.value; }}>▦</IconButton>
+        <IconButton label={wpl.t('chooseDate')} icon="calendar" onClick$={() => { open.value = !open.value; }} />
       </div>
       {props.showTime ? (
         <div class="wpl-field wpl-time">
@@ -301,7 +301,7 @@ export const DateRangePicker = component$<{
             }}
           />
         </div>
-        <IconButton label={wpl.t('chooseDate')} aria-expanded={open.value} onClick$={() => { open.value = !open.value; }}>▦</IconButton>
+        <IconButton label={wpl.t('chooseDate')} icon="calendar" aria-expanded={open.value} onClick$={() => { open.value = !open.value; }} />
       </div>
       {props.showTime ? (
         <div class="wpl-date-row">

@@ -17,6 +17,7 @@ import {
 } from '@white-plumeria/core';
 import { createSignal , createUniqueId } from 'solid-js';
 import { IconButton } from './button.tsx';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export function Calendar(props: {
@@ -41,11 +42,11 @@ export function Calendar(props: {
     <div class="wpl-calendar">
       <div class="wpl-calendar-head">
         <IconButton label={t('previous')} onClick={() => setAnchor(addMonths(anchor(), -1, calendar()))}>
-          ‹
+          <Icon name="chevronLeft" />
         </IconButton>
         <strong>{grid().title}</strong>
         <IconButton label={t('next')} onClick={() => setAnchor(addMonths(anchor(), 1, calendar()))}>
-          ›
+          <Icon name="chevronRight" />
         </IconButton>
       </div>
       <div class="wpl-calendar-grid" role="grid" aria-label={grid().title}>
@@ -153,7 +154,7 @@ export function DatePicker(props: {
           onInput={(event) => commit(event.currentTarget.value)}
         />
         <IconButton label={t('chooseDate')} onClick={() => setOpen((current) => !current)}>
-          ▦
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {props.showTime ? (
@@ -342,7 +343,7 @@ export function DateRangePicker(props: {
           />
         </div>
         <IconButton label={t('chooseDate')} aria-expanded={open()} onClick={() => setOpen((current) => !current)}>
-          ▦
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {props.showTime ? (
