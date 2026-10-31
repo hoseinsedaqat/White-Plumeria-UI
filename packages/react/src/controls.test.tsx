@@ -81,6 +81,18 @@ describe('new controls', () => {
     expect(screen.getByRole('alert').textContent).toContain('Use a 24-hour time: HH:mm.');
   });
 
+  it('draws date controls with icons instead of placeholder glyphs', async () => {
+    const user = userEvent.setup();
+    render(<DatePicker label="From" value="2026-10-27" />);
+    const choose = screen.getByRole('button', { name: 'Choose date' });
+    expect(choose.querySelector('svg')).toBeTruthy();
+    expect(choose.textContent).not.toMatch(/[▦‹›]/);
+    await user.click(choose);
+    expect(screen.getByRole('button', { name: 'Previous' }).querySelector('svg')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Next' }).querySelector('svg')).toBeTruthy();
+    expect(screen.getByRole('grid')).toBeTruthy();
+  });
+
   it('rejects an invalid single date in English', async () => {
     const user = userEvent.setup();
     render(<DatePicker label="From" />);

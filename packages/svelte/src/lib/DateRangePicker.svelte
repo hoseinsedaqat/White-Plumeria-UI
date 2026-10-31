@@ -11,6 +11,7 @@
     type DateTimeRangeValue,
   } from '@white-plumeria/core';
   import Calendar from './Calendar.svelte';
+  import Icon from './Icon.svelte';
   import IconButton from './IconButton.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
 
@@ -151,7 +152,7 @@
         oninput={(event) => commit('end', (event.currentTarget as HTMLInputElement).value)}
       />
     </div>
-    <IconButton label={wpl.t('chooseDate')} onclick={() => (open = !open)}>▦</IconButton>
+    <IconButton label={wpl.t('chooseDate')} onclick={() => (open = !open)}><Icon name="calendar" /></IconButton>
   </div>
   {#if showTime}
     <div class="wpl-date-row">

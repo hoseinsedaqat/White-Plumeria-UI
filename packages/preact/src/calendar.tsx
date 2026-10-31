@@ -17,6 +17,7 @@ import {
 } from '@white-plumeria/core';
 import { useId, useState } from 'preact/hooks';
 import { IconButton } from './button.tsx';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export function Calendar({
@@ -52,11 +53,11 @@ export function Calendar({
           label={t('previous')}
           onClick={() => setAnchor(addMonths(anchor, -1, calendar))}
         >
-          ‹
+          <Icon name="chevronLeft" />
         </IconButton>
         <strong>{grid.title}</strong>
         <IconButton label={t('next')} onClick={() => setAnchor(addMonths(anchor, 1, calendar))}>
-          ›
+          <Icon name="chevronRight" />
         </IconButton>
       </div>
       <div className="wpl-calendar-grid" role="grid" aria-label={grid.title}>
@@ -179,7 +180,7 @@ export function DatePicker({
           onInput={(event) => commit(event.currentTarget.value)}
         />
         <IconButton label={t('chooseDate')} onClick={() => setOpen((current) => !current)}>
-          ▦
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {showTime ? (
@@ -402,7 +403,7 @@ export function DateRangePicker({
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
         >
-          ▦
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {showTime ? (

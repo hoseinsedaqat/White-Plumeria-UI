@@ -153,6 +153,24 @@
   gap: var(--wpl-space-2);
 }
 
+.wpl-calendar-head strong {
+  min-inline-size: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--wpl-font-size-sm);
+  font-weight: var(--wpl-font-weight-semibold);
+}
+
+.wpl-calendar-head .wpl-icon-btn,
+.wpl-calendar-head .wpl-btn {
+  flex: none;
+  min-inline-size: 2rem;
+  min-block-size: 2rem;
+}
+
 .wpl-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -168,8 +186,11 @@
 }
 
 .wpl-calendar-weekday {
+  overflow: hidden;
   color: var(--wpl-color-text-muted);
   font-weight: var(--wpl-font-weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wpl-day {
@@ -190,8 +211,16 @@
   color: var(--wpl-color-primary-fg);
 }
 
+.wpl-day[aria-selected="true"].wpl-day-outside {
+  color: var(--wpl-color-primary-fg);
+}
+
 .wpl-day[aria-current="date"] {
   box-shadow: inset 0 0 0 1px var(--wpl-color-accent);
+}
+
+.wpl-day[aria-current="date"][aria-selected="true"] {
+  box-shadow: inset 0 0 0 1px var(--wpl-color-primary-fg);
 }
 
 .wpl-day:disabled {
@@ -219,8 +248,17 @@
 .wpl-date-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: var(--wpl-space-2);
   min-inline-size: 0;
+}
+
+.wpl-date > .wpl-flex > .wpl-icon-btn,
+.wpl-date-row > .wpl-icon-btn {
+  flex: none;
+  align-self: flex-end;
+  border: 1px solid var(--wpl-color-border-strong);
+  background: var(--wpl-color-surface);
 }
 
 .wpl-date-row > .wpl-field {

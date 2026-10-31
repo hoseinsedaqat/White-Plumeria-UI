@@ -17,6 +17,7 @@ import {
 } from '@white-plumeria/core';
 import { useId, useState } from 'react';
 import { IconButton } from './button.tsx';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export function Calendar({
@@ -49,11 +50,11 @@ export function Calendar({
     <div className="wpl-calendar">
       <div className="wpl-calendar-head">
         <IconButton label={t('previous')} onClick={() => setAnchor(addMonths(anchor, -1, calendar))}>
-          ‹
+          <Icon name="chevronLeft" />
         </IconButton>
         <strong>{grid.title}</strong>
         <IconButton label={t('next')} onClick={() => setAnchor(addMonths(anchor, 1, calendar))}>
-          ›
+          <Icon name="chevronRight" />
         </IconButton>
       </div>
       <div className="wpl-calendar-grid" role="grid" aria-label={grid.title}>
@@ -98,6 +99,7 @@ export function DatePicker({
   showTime = false,
   time = '',
   onTimeChange,
+  defaultOpen = false,
 }: {
   label: string;
   value?: string;
@@ -108,11 +110,12 @@ export function DatePicker({
   showTime?: boolean;
   time?: string;
   onTimeChange?: (time: string) => void;
+  defaultOpen?: boolean;
 }) {
   const id = useId();
   const timeId = useId();
   const { t, locale } = useWhitePlumeria();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [text, setText] = useState(value);
   const [timeText, setTimeText] = useState(time);
   const [error, setError] = useState('');
@@ -170,8 +173,8 @@ export function DatePicker({
           aria-describedby={error ? `${id}-error` : undefined}
           onChange={(event) => commit(event.currentTarget.value)}
         />
-        <IconButton label={t('chooseDate')} onClick={() => setOpen((current) => !current)}>
-          ▦
+        <IconButton label={t('chooseDate')} aria-expanded={open} onClick={() => setOpen((current) => !current)}>
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {showTime ? (
@@ -231,6 +234,7 @@ export function DateRangePicker({
   calendar = 'gregory',
   min,
   max,
+  defaultOpen = false,
 }: {
   label: string;
   start?: string;
@@ -242,13 +246,14 @@ export function DateRangePicker({
   calendar?: CalendarSystem;
   min?: string;
   max?: string;
+  defaultOpen?: boolean;
 }) {
   const startId = useId();
   const endId = useId();
   const startTimeId = useId();
   const endTimeId = useId();
   const { t, locale } = useWhitePlumeria();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [startText, setStartText] = useState(start);
   const [endText, setEndText] = useState(end);
   const [startTimeText, setStartTimeText] = useState(startTime);
@@ -369,7 +374,7 @@ export function DateRangePicker({
           />
         </div>
         <IconButton label={t('chooseDate')} aria-expanded={open} onClick={() => setOpen((current) => !current)}>
-          ▦
+          <Icon name="calendar" />
         </IconButton>
       </div>
       {showTime ? (

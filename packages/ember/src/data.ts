@@ -16,6 +16,7 @@ import {
   type CalendarSystem,
   type ColumnSpec,
   type TableQuery,
+  iconPaths,
 } from '@white-plumeria/core';
 import { bubble, flag, glimmer, list, localeOf, num, rowId, str, type Host } from './runtime.ts';
 
@@ -239,8 +240,11 @@ export const Timeline = glimmer(
   },
 );
 
+const calendarChevron = (name: 'chevronLeft' | 'chevronRight') =>
+  `<svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths[name]}"></path></svg>`;
+
 export const Calendar = glimmer(
-  `<div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>{{this.previousLabel}}</button><strong>{{this.title}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>{{this.nextLabel}}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.title}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} aria-label={{day.aria}} disabled={{day.disabled}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div>`,
+  `<div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>${calendarChevron('chevronLeft')}</button><strong>{{this.title}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>${calendarChevron('chevronRight')}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.title}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} aria-label={{day.aria}} disabled={{day.disabled}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div>`,
   {
     state: (args) => ({ anchor: str(args.value) || toIsoDate(new Date()), value: str(args.value) }),
     getters: {

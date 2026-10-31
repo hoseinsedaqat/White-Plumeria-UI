@@ -528,7 +528,7 @@ export function renderDemo(slug: string): ReactNode {
         />
       );
     case 'calendar':
-      return <Calendar />;
+      return <Calendar value={new Date(2026, 9, 27)} />;
     case 'date-picker':
       return <DatePicker label="From" value="2026-10-27" />;
     case 'date-range-picker':
