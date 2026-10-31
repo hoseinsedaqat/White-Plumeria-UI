@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage theme section is six cards. Each card paints the same button classes with that theme’s variables. The duplicate theme list and the extra color board are gone. Packages are still not published.
 - The homepage customizer is one plate: the button, the class string it actually uses, and a chip for each class. Outline replaces primary. The other chips add a class. Packages are still not published.
 - The homepage class-count section uses two comparison plates instead of thin bars. The counts stay on this form. Packages are still not published.
 - The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example. Packages are still not published.
