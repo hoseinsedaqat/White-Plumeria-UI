@@ -411,44 +411,36 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>from xs to xl</span>
         </h2>
         <p>Height, radius, and space come from the same tokens. A control does not invent a second scale.</p>
-        <div className="home-rulers" aria-label="Size scale">
-          {[0, 1].map((row) => (
-            <div key={row} className="home-ruler" aria-hidden={row === 1 || undefined}>
+        <div className="home-spec" aria-label="Token scale">
+          <div className="home-spec-band">
+            <h3>Size</h3>
+            <div className="home-spec-track home-spec-sizes">
               {sizes.map((size) => (
-                <div key={size} className={`home-ruler-item is-${size}`}>
-                  <i />
-                  <small>{size}</small>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-        <div className="home-scale-board">
-          {sizes.map((size) => (
-            <div key={size} className="home-scale-item">
-              <Button size={size}>{size}</Button>
-              <small>{size}</small>
-            </div>
-          ))}
-        </div>
-        <div className="home-token-rows">
-          <div>
-            <h3>Radius</h3>
-            <div className="home-radius">
-              {radii.map(([name, radius]) => (
-                <div key={name}>
-                  <i style={{ borderRadius: radius }} />
-                  <small>{name}</small>
-                </div>
+                <Button key={size} size={size}>
+                  {size}
+                </Button>
               ))}
             </div>
           </div>
-          <div>
+          <div className="home-spec-band">
+            <h3>Radius</h3>
+            <div className="home-spec-track">
+              {radii.map(([name, radius]) => (
+                <i key={name} className="home-spec-radius" style={{ borderRadius: radius }}>
+                  {name}
+                </i>
+              ))}
+            </div>
+          </div>
+          <div className="home-spec-band">
             <h3>Space</h3>
-            <div className="home-space">
+            <div className="home-spec-track">
               {spaces.map(([name, size]) => (
-                <div key={name}>
-                  <i style={{ inlineSize: `max(1.6rem, calc(${size} * 3.5))` }} />
+                <div key={name} className="home-spec-cell">
+                  <i className="home-spec-space">
+                    <b style={{ marginInlineEnd: `calc(${size} * 1.4)` }} />
+                    <b />
+                  </i>
                   <small>{name}</small>
                 </div>
               ))}
