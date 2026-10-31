@@ -58,10 +58,10 @@ export function DocsApp() {
   }, []);
 
   useEffect(() => {
-    if (preferences.locale !== 'en' || preferences.direction !== 'ltr') {
-      setPreferences({ locale: 'en', direction: 'ltr' });
-    }
-  }, [preferences.locale, preferences.direction, setPreferences]);
+    document.documentElement.lang = 'en';
+    document.documentElement.dir = 'ltr';
+    if (preferences.locale !== 'en') setPreferences({ locale: 'en' });
+  }, [preferences, setPreferences]);
 
   useEffect(() => {
     function onPointer(event: PointerEvent) {
@@ -182,8 +182,10 @@ export function DocsApp() {
               <span className="docs-theme-name">{theme?.label}</span>
             </button>
             {themeOpen ? (
-              <div className="docs-pop-panel" role="dialog" aria-label="Theme">
-                <p className="docs-note-line">Light and dark follow this choice. Themes color the components.</p>
+              <div className="docs-pop-panel" role="dialog" aria-label="Theme, direction, and motion">
+                <p className="docs-note-line">
+                  Themes color the components. Direction and motion change previews only. This page stays left to right.
+                </p>
                 <h2>Appearance</h2>
                 <div className="docs-segment" role="group" aria-label="Appearance">
                   {(['light', 'dark', 'system'] as const).map((item) => (
@@ -194,6 +196,38 @@ export function DocsApp() {
                       onClick={() => setPreferences({ appearance: item })}
                     >
                       {item}
+                    </button>
+                  ))}
+                </div>
+                <h2>Direction</h2>
+                <div className="docs-segment" role="group" aria-label="Direction">
+                  {(['auto', 'ltr', 'rtl'] as const).map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      aria-pressed={preferences.direction === item}
+                      onClick={() => setPreferences({ direction: item })}
+                    >
+                      {item === 'auto' ? 'Auto' : item.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+                <h2>Motion</h2>
+                <div className="docs-segment" role="group" aria-label="Motion">
+                  {(
+                    [
+                      ['system', 'System'],
+                      ['reduce', 'Reduce'],
+                      ['no-preference', 'Allow'],
+                    ] as const
+                  ).map(([item, label]) => (
+                    <button
+                      key={item}
+                      type="button"
+                      aria-pressed={preferences.reducedMotion === item}
+                      onClick={() => setPreferences({ reducedMotion: item })}
+                    >
+                      {label}
                     </button>
                   ))}
                 </div>

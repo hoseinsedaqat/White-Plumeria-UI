@@ -36,6 +36,11 @@
           root.setAttribute("data-wpl-appearance", appearance);
           if (appearance === "system") root.removeAttribute("data-wpl-scheme");
           else root.setAttribute("data-wpl-scheme", appearance);
+          if (prefs.reducedMotion === "reduce" || prefs.reducedMotion === "no-preference") {
+            root.setAttribute("data-wpl-motion", prefs.reducedMotion);
+          } else {
+            root.removeAttribute("data-wpl-motion");
+          }
           root.lang = "en";
           root.dir = "ltr";
         } catch (error) {}

@@ -49,11 +49,14 @@ export function WhitePlumeriaProvider({
   preferences: controlled,
   onPreferencesChange,
   target,
+  documentDirection,
 }: {
   children: ReactNode;
   preferences?: Preferences;
   onPreferencesChange?: (next: Preferences) => void;
   target?: HTMLElement | null;
+  /** Keep the document element on this direction even when preview preferences differ. */
+  documentDirection?: 'ltr' | 'rtl';
 }) {
   const [internal, setInternal] = useState<Preferences>(defaultPreferences);
   const [ready, setReady] = useState(false);
@@ -69,8 +72,9 @@ export function WhitePlumeriaProvider({
     if (!ready || typeof document === 'undefined') return;
     const element = target ?? document.documentElement;
     applyPreferences(element, preferences);
+    if (documentDirection) element.dir = documentDirection;
     if (!controlled) storePreferences(preferences);
-  }, [preferences, ready, target, controlled]);
+  }, [documentDirection, preferences, ready, target, controlled]);
 
   const setPreferences = useCallback(
     (next: Partial<Preferences>) => {

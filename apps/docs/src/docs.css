@@ -213,6 +213,12 @@ body {
   cursor: pointer;
 }
 
+.docs-segment button {
+  padding-inline: 0.2rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
 .docs-segment button[aria-pressed='true'],
 .docs-theme-row[aria-pressed='true'] {
   border-color: var(--wpl-color-primary);

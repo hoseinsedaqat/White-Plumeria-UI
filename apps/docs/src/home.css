@@ -954,3 +954,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
     transform: none !important;
   }
 }
+
+[data-wpl-motion='reduce'] .home-window {
+  transform: none !important;
+}
