@@ -11,6 +11,7 @@ import { HomePage } from './pages/home.tsx';
 import { NotFoundPage } from './pages/not-found.tsx';
 import { PlaygroundPage } from './pages/playground.tsx';
 import { ThemeLabPage } from './pages/theme-lab.tsx';
+import { useDocsScheme } from './preview.tsx';
 import { A, useRoute } from './router.tsx';
 
 const startLinks = [
@@ -43,6 +44,8 @@ export function DocsApp() {
   const componentSlug = path.match(/^\/components\/([a-z0-9-]+)$/)?.[1];
   const showSide = path !== '/';
   const theme = themes.find((item) => item.name === preferences.theme) ?? themes[0];
+  const scheme = useDocsScheme(preferences.appearance);
+  // Component pages keep the chrome on White. The selected theme stays on the preview, so a color change cannot paint the page and the component the same color.
 
   useEffect(() => {
     document.title = componentSlug ? `${componentSlug} · ${brand.productName}` : brand.productName;
@@ -101,7 +104,12 @@ export function DocsApp() {
   else if (guidePaths.includes(path)) page = <GuidePage path={path} />;
 
   return (
-    <div className="docs-app wpl-root wpl-reset" data-home={showSide ? 'false' : 'true'}>
+    <div
+      className="docs-app wpl-root wpl-reset"
+      data-home={showSide ? 'false' : 'true'}
+      data-wpl-theme={path === '/' ? preferences.theme : 'white'}
+      data-wpl-scheme={scheme}
+    >
       <a className="docs-skip wpl-btn wpl-btn-primary" href="#content">
         Skip to content
       </a>

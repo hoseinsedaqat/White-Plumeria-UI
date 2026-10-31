@@ -56,6 +56,25 @@ describe('docs app', () => {
     expect(document.querySelector('.home-window')).toHaveAttribute('data-wpl-motion', 'reduce');
   });
 
+  it('keeps a theme change on the component stage, not the page chrome', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: /Theme:/ }));
+    await user.click(screen.getByRole('option', { name: 'Saffron' }));
+    expect(document.querySelector('.docs-app')).toHaveAttribute('data-wpl-theme', 'saffron');
+    expect(document.querySelector('.home-window')).toHaveAttribute('data-wpl-theme', 'saffron');
+    await user.click(screen.getAllByRole('link', { name: 'Components' })[0]);
+    expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
+    expect(document.querySelector('.docs-app')).toHaveAttribute('data-wpl-theme', 'white');
+    expect(document.querySelector('.docs-tile-preview')).toHaveAttribute('data-wpl-theme', 'saffron');
+    await user.click(screen.getByRole('button', { name: /Theme:/ }));
+    await user.click(screen.getByRole('button', { name: 'dark' }));
+    expect(document.querySelector('.docs-app')).toHaveAttribute('data-wpl-scheme', 'dark');
+    expect(document.querySelector('.docs-app')).toHaveAttribute('data-wpl-theme', 'white');
+    expect(document.querySelector('.docs-tile-preview')).toHaveAttribute('data-wpl-scheme', 'dark');
+    expect(document.querySelector('.docs-tile-preview')).toHaveAttribute('data-wpl-theme', 'saffron');
+  });
+
   it('searches the catalog without inventing a component', async () => {
     const user = userEvent.setup();
     render(<App />);

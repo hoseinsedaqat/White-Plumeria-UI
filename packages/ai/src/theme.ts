@@ -79,10 +79,10 @@ export function generateTheme(description: string): GeneratedTheme {
 function paint(bg: string, text: string, primary: string, primaryFg: string, accent: string, dark: boolean): Record<string, string> {
   const tokens: Record<ColorKey, string> = {
     bg,
-    bgMuted: dark ? lighten(bg, 0.06) : darken(bg, 0.04),
-    bgSubtle: dark ? lighten(bg, 0.1) : darken(bg, 0.02),
-    surface: dark ? lighten(bg, 0.05) : '#FFFCF7',
-    surfaceRaised: dark ? lighten(bg, 0.08) : '#FFFFFF',
+    bgMuted: dark ? lighten(bg, 0.05) : darken(bg, 0.045),
+    bgSubtle: dark ? lighten(bg, 0.08) : darken(bg, 0.02),
+    surface: dark ? lighten(bg, 0.12) : '#FFFCF7',
+    surfaceRaised: dark ? lighten(bg, 0.18) : '#FFFFFF',
     text,
     textMuted: dark ? darken(text, 0.12) : lighten(text, 0.28),
     textSubtle: dark ? darken(text, 0.2) : lighten(text, 0.38),
