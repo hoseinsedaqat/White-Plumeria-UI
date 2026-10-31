@@ -1,4 +1,4 @@
-import { brand, catalog } from '@white-plumeria/core';
+import { brand, catalog, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { Button, Checkbox, Input, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
@@ -145,8 +145,11 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         <div className="home-rail-col">
           <div
             className="home-window"
+            dir={resolveDirection(preferences)}
+            lang="en"
             data-wpl-theme={preferences.theme}
             data-wpl-scheme={scheme}
+            data-wpl-motion={preferences.reducedMotion === 'system' ? undefined : preferences.reducedMotion}
             style={{ '--home-tilt': String(tilt) } as CSSProperties}
             aria-label="Live component preview"
           >

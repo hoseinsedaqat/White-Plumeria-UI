@@ -3,7 +3,7 @@ import { DocsApp } from './shell.tsx';
 
 export function App() {
   return (
-    <WhitePlumeriaProvider>
+    <WhitePlumeriaProvider documentDirection="ltr">
       <DocsApp />
     </WhitePlumeriaProvider>
   );

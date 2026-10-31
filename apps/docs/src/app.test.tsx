@@ -33,6 +33,20 @@ describe('docs app', () => {
     expect(screen.getAllByText('Ledger').length).toBe(2);
   });
 
+  it('sets preview direction without flipping the docs chrome', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: /Theme:/ }));
+    await user.click(screen.getByRole('button', { name: 'RTL' }));
+    expect(screen.getByRole('heading', { level: 1, name: /faster, cleaner, easier/i })).toBeInTheDocument();
+    expect(document.documentElement).toHaveAttribute('dir', 'ltr');
+    expect(document.querySelector('.docs-app')).not.toHaveAttribute('dir', 'rtl');
+    expect(document.querySelector('.home-window')).toHaveAttribute('dir', 'rtl');
+    await user.click(screen.getByRole('button', { name: 'Reduce' }));
+    expect(document.documentElement).toHaveAttribute('data-wpl-motion', 'reduce');
+    expect(document.querySelector('.home-window')).toHaveAttribute('data-wpl-motion', 'reduce');
+  });
+
   it('searches the catalog without inventing a component', async () => {
     const user = userEvent.setup();
     render(<App />);

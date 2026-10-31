@@ -49,11 +49,11 @@ export function Example() {
   },
   '/direction': {
     title: 'Direction',
-    body: 'This documentation site is English and left to right. Components use CSS logical properties, so a host page can set dir="rtl" without flipping the whole product with a transform. Directional icons opt in with wpl-icon-dir. Dates stored by DatePicker and DateRangePicker are Gregorian ISO strings. Optional times are 24-hour HH:mm values and do not include seconds. RangeSlider fill starts at the inline start, so a host dir="rtl" moves the track with the native range control.',
+    body: 'This documentation site stays English, and the page chrome stays left to right. The theme menu sets direction and reduced motion on component previews. Components use CSS logical properties, so a host page can set dir="rtl" without flipping the whole product with a transform. Directional icons opt in with wpl-icon-dir. Dates stored by DatePicker and DateRangePicker are Gregorian ISO strings. Optional times are 24-hour HH:mm values and do not include seconds. RangeSlider fill starts at the inline start, so a host dir="rtl" moves the track with the native range control.',
   },
   '/accessibility': {
     title: 'Accessibility',
-    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. Dialogs, drawers, menus, and toasts use a short transition. prefers-reduced-motion and data-wpl-motion="reduce" remove it. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
+    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. Dialogs, drawers, menus, and toasts use a short transition. prefers-reduced-motion and data-wpl-motion="reduce" remove it. The theme menu can set that attribute. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
   },
   '/changelog': {
     title: 'Changelog',

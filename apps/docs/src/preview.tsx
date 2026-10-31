@@ -1,3 +1,4 @@
+import { resolveDirection } from '@white-plumeria/core';
 import { useWhitePlumeria } from '@white-plumeria/react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { CodeBlock } from './copy.tsx';
@@ -19,7 +20,14 @@ export function ThemedFrame({ className, children }: { className?: string; child
   const { preferences } = useWhitePlumeria();
   const scheme = useDocsScheme(preferences.appearance);
   return (
-    <div className={className} data-wpl-theme={preferences.theme} data-wpl-scheme={scheme}>
+    <div
+      className={className}
+      dir={resolveDirection(preferences)}
+      lang="en"
+      data-wpl-theme={preferences.theme}
+      data-wpl-scheme={scheme}
+      data-wpl-motion={preferences.reducedMotion === 'system' ? undefined : preferences.reducedMotion}
+    >
       {children}
     </div>
   );

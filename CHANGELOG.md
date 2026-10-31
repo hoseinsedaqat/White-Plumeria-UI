@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The docs theme menu sets direction and reduced motion on component previews. The page chrome stays English and left to right.
 - Grid column count follows the grid width, not the viewport. A narrow grid stacks on a wide page. It is not a masonry layout.
 - Notification follows the status color of its variant in every adapter. It stays on the page, and the close button appears only when a dismiss handler is passed. It is not a toast.
 - Docs previews for list, timeline, tree, table, chart, empty state, and page header show a finished sample instead of one lonely row. ResponsiveLayout stacks at 40rem of its own width, not 64rem of the viewport.
