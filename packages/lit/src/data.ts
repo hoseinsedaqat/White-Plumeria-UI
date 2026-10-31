@@ -177,7 +177,7 @@ export class DataTable extends WplElement {
                     }}
                   >
                     ${column.header}
-                    ${active ? html`<span class="wpl-sort-mark">${this.sortDirection === 'asc' ? '↑' : '↓'}</span>` : nothing}
+                    ${active ? html`<span class="wpl-sort-mark">${iconSvg(this.sortDirection === 'asc' ? 'arrowUp' : 'arrowDown')}</span>` : nothing}
                     <span class="wpl-sr-only">${translate(this, 'sort')}</span>
                   </button>
                 </th>`;

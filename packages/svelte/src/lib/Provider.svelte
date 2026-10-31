@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import Icon from './Icon.svelte';
   import type { Preferences } from '@white-plumeria/core';
   import { message } from '@white-plumeria/core';
   import {
@@ -51,7 +52,9 @@
     <div class="wpl-toast" role={toast.variant === 'danger' ? 'alert' : 'status'}>
       <p class="wpl-toast-title">{toast.title}</p>
       {#if toast.description}<p class="wpl-toast-description">{toast.description}</p>{/if}
-      <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label="Dismiss" onclick={() => (toasts = toasts.filter((_, item) => item !== index))}>×</button>
+      <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={message(preferences.locale, 'dismiss')} onclick={() => (toasts = toasts.filter((_, item) => item !== index))}>
+        <Icon name="close" />
+      </button>
     </div>
   {/each}
 </div>

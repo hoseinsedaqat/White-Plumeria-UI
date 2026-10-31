@@ -381,7 +381,7 @@ export class Notification extends WplElement {
         <span data-wpl-slot="" style="display:contents"></span>
       </div>
       ${this.dismissable
-        ? html`<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'dismiss')} @click=${this.dismiss}>×</button>`
+        ? html`<button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${translate(this, 'dismiss')} @click=${this.dismiss}>${iconSvg('close')}</button>`
         : nothing}
     </div>`;
   }

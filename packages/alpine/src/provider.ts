@@ -16,6 +16,7 @@ import {
   onDestroy,
   registerProvider,
   text,
+  svgIcon,
   translate,
   uid,
   unregisterProvider,
@@ -81,9 +82,8 @@ export function WhitePlumeriaProvider(config: Config = {}) {
               h('strong', { className: 'wpl-toast-title', text: toast.title }),
               toast.description ? h('p', { className: 'wpl-toast-description', text: toast.description }) : null,
               h('button', {
-                className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
-                text: translate(host, 'dismiss'),
-                attrs: { type: 'button' },
+                className: 'wpl-icon-btn wpl-btn-ghost',
+                attrs: { type: 'button', 'aria-label': translate(host, 'dismiss') },
                 on: {
                   click: () => {
                     window.clearTimeout(timer);
@@ -91,7 +91,7 @@ export function WhitePlumeriaProvider(config: Config = {}) {
                     host.dispatchEvent(new CustomEvent('wpl-dismiss', { detail: { id }, bubbles: true }));
                   },
                 },
-              }),
+              }, [svgIcon('close')]),
             ],
           );
           region.append(article);

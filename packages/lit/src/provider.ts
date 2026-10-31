@@ -12,6 +12,7 @@ import {
 } from '@white-plumeria/core';
 import { render, type PropertyValues } from 'lit';
 import { emit, html, nothing, WplHost } from './element';
+import { iconSvg } from './icon';
 
 export interface ToastInput {
   title: string;
@@ -136,7 +137,7 @@ export class WhitePlumeriaProvider extends WplHost {
           <article class=${toastClassName(toast.variant)} role=${toast.variant === 'danger' ? 'alert' : 'status'}>
             <strong>${toast.title}</strong>
             ${toast.description ? html`<p>${toast.description}</p>` : nothing}
-            <button type="button" class="wpl-toast-dismiss" @click=${() => this.dismissToast(toast.id)}>${dismissLabel}</button>
+            <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=${dismissLabel} @click=${() => this.dismissToast(toast.id)}>${iconSvg('close')}</button>
           </article>
         `,
       )}`,

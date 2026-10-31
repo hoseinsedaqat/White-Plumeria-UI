@@ -285,6 +285,9 @@ describe('new controls', () => {
     expect(screen.getAllByRole('cell')[1]?.getAttribute('data-label')).toBe('Merchant');
     await user.click(screen.getByRole('button', { name: /Merchant/ }));
     expect(screen.getAllByRole('cell')[1]?.textContent).toContain('Alpha');
+    const header = screen.getByRole('columnheader', { name: /Merchant/ });
+    expect(header.querySelector('.wpl-sort-mark svg')).toBeTruthy();
+    expect(header.textContent).not.toMatch(/[↑↓×]/);
   });
 
   it('blocks a future step until the current value moves', async () => {

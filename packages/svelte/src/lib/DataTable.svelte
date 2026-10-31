@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+  import Icon from './Icon.svelte';
   import EmptyState from './EmptyState.svelte';
   import Pagination from './Pagination.svelte';
   import SearchInput from './SearchInput.svelte';
@@ -83,7 +84,7 @@
                 }}
               >
                 {column.header}
-                {#if sortId === column.id}<span class="wpl-sort-mark">{sortDirection === 'asc' ? '↑' : '↓'}</span>{/if}
+                {#if sortId === column.id}<span class="wpl-sort-mark"><Icon name={sortDirection === 'asc' ? 'arrowUp' : 'arrowDown'} /></span>{/if}
               </button>
             </th>
           {/each}

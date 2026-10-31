@@ -9,6 +9,7 @@ import {
   type ToastVariant,
 } from '@white-plumeria/core';
 import { $, component$, createContextId, Slot, useContext, useContextProvider, useStore, useVisibleTask$, type QRL } from '@qwik.dev/core';
+import { Icon } from './icon';
 
 export interface ToastInput {
   title: string;
@@ -98,8 +99,8 @@ export const WhitePlumeriaProvider = component$<{
           <article key={toast.id} class={`wpl-toast${toast.variant ? ` wpl-toast-${toast.variant}` : ''}`} role="status">
             <strong>{toast.title}</strong>
             {toast.description ? <p>{toast.description}</p> : null}
-            <button type="button" class="wpl-toast-dismiss" onClick$={() => dismissToast(toast.id)}>
-              {message(state.preferences.locale, 'dismiss')}
+            <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={message(state.preferences.locale, 'dismiss')} onClick$={() => dismissToast(toast.id)}>
+              <Icon name="close" />
             </button>
           </article>
         ))}

@@ -115,7 +115,7 @@ export class Pagination {
   selector: 'wpl-data-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [SearchInput, EmptyState, Pagination],
+  imports: [SearchInput, EmptyState, Pagination, Icon],
   template: `
     <div class="wpl-data-table">
       @if (filterable()) {
@@ -143,7 +143,7 @@ export class Pagination {
                   <button type="button" class="wpl-sort" (click)="applySort(toggle(column.id))">
                     {{ column.header }}
                     @if (sortId() === column.id) {
-                      <span class="wpl-sort-mark">{{ sortDirection() === 'asc' ? '↑' : '↓' }}</span>
+                      <span class="wpl-sort-mark"><wpl-icon [name]="sortDirection() === 'asc' ? 'arrowUp' : 'arrowDown'" /></span>
                     }
                     <span class="wpl-sr-only">{{ sortLabel() }}</span>
                   </button>

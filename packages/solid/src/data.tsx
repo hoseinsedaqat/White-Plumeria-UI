@@ -102,7 +102,11 @@ export function DataTable<T>(props: {
                   <th scope="col" aria-sort={active() ? (sortDirection() === 'asc' ? 'ascending' : 'descending') : 'none'}>
                     <button type="button" class="wpl-sort" onClick={() => applySort(toggleSort({ sortId: sortId(), sortDirection: sortDirection() }, column.id))}>
                       {column.header}
-                      {active() ? <span class="wpl-sort-mark">{sortDirection() === 'asc' ? '↑' : '↓'}</span> : null}
+                      {active() ? (
+                        <span class="wpl-sort-mark">
+                          <Icon name={sortDirection() === 'asc' ? 'arrowUp' : 'arrowDown'} />
+                        </span>
+                      ) : null}
                       <span class="wpl-sr-only">{t('sort')}</span>
                     </button>
                   </th>

@@ -451,6 +451,8 @@ export function renderDemo(slug: string): ReactNode {
       return (
         <DataTable
           caption="Sample transactions"
+          defaultSortId="amount"
+          defaultSortDirection="desc"
           rows={sampleRows}
           columns={[
             { id: 'id', header: 'ID', accessor: (row) => row.id, text: (row) => row.id },
