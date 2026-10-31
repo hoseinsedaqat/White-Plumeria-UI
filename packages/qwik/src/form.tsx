@@ -17,6 +17,7 @@ import {
   type NumberRange,
 } from '@white-plumeria/core';
 import { component$, createContextId, Slot, useContext, useContextProvider, useId, useSignal, type QRL } from '@qwik.dev/core';
+import { Icon } from './icon';
 import { useWhitePlumeria } from './provider';
 
 interface FieldContextValue {
@@ -468,7 +469,7 @@ export const SearchInput = component$<{
     <div class="wpl-search">
       <label class={cx('wpl-label', props.visuallyHiddenLabel && 'wpl-sr-only')} for={id}>{props.label}</label>
       <div class="wpl-search-control">
-        <span class="wpl-search-icon" aria-hidden="true">⌕</span>
+        <span class="wpl-search-icon" aria-hidden="true"><Icon name="search" /></span>
         <input
           id={id}
           class="wpl-input"
@@ -493,7 +494,7 @@ export const SearchInput = component$<{
               void props.onValueChange$?.('');
             }}
           >
-            ×
+            <Icon name="close" />
           </button>
         ) : null}
       </div>

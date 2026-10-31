@@ -635,7 +635,7 @@ export const formCatalog: ComponentDoc[] = [
     summary: 'Filterable single-select listbox.',
     summaryFa: 'فهرست تک‌انتخابی قابل فیلتر.',
     tags: ['autocomplete', 'select', 'combobox'],
-    classes: ['wpl-combo', 'wpl-listbox', 'wpl-listbox-item'],
+    classes: ['wpl-combo', 'wpl-combo-control', 'wpl-combo-icon', 'wpl-listbox', 'wpl-listbox-item'],
     props: [
       {
         name: 'label',
@@ -675,7 +675,7 @@ export const formCatalog: ComponentDoc[] = [
       react: '<Combobox label="City" options={[{ value: "fra", label: "Frankfurt" }]} />',
       vue: '<Combobox label="City" :options="[{ value: \'fra\', label: \'Frankfurt\' }]" />',
       svelte: '<Combobox label="City" options={[{ value: "fra", label: "Frankfurt" }]} />',
-      html: '<!-- Combobox needs the framework or elements behavior. The class contract is wpl-combo + wpl-listbox. -->',
+      html: '<!-- Combobox needs the framework or elements behavior. The class contract is wpl-combo, wpl-combo-control, wpl-combo-icon, and wpl-listbox. -->',
     }),
   },
   {
@@ -685,7 +685,7 @@ export const formCatalog: ComponentDoc[] = [
     summary: 'Search field with a clear button.',
     summaryFa: 'فیلد جستجو با دکمهٔ پاک‌کردن.',
     tags: ['search', 'filter', 'جستجو'],
-    classes: ['wpl-search'],
+    classes: ['wpl-search', 'wpl-search-control', 'wpl-search-icon', 'wpl-search-clear'],
     props: [
       {
         name: 'label',
@@ -713,7 +713,7 @@ export const formCatalog: ComponentDoc[] = [
       react: '<SearchInput label="Search docs" />',
       vue: '<SearchInput label="Search docs" />',
       svelte: '<SearchInput label="Search docs" />',
-      html: '<label class="wpl-search">Search docs <input class="wpl-input" type="search" /></label>',
+      html: '<div class="wpl-search"><label class="wpl-label" for="q">Search docs</label><div class="wpl-search-control"><input id="q" class="wpl-input" type="search" /></div></div>',
     }),
   },
   {

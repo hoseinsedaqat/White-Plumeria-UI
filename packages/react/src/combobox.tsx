@@ -1,5 +1,6 @@
 import { bindDismissable, nextIndex } from '@white-plumeria/core';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export interface ComboOption {
@@ -13,19 +14,21 @@ export function Combobox({
   value,
   onValueChange,
   placeholder,
+  defaultOpen = false,
 }: {
   label: string;
   options: ComboOption[];
   value?: string;
   onValueChange?: (value: string) => void;
   placeholder?: string;
+  defaultOpen?: boolean;
 }) {
   const id = useId();
   const listId = `${id}-list`;
   const { t } = useWhitePlumeria();
   const selected = options.find((option) => option.value === value);
   const [query, setQuery] = useState(selected?.label ?? '');
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [active, setActive] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const filtered = useMemo(() => {
@@ -50,7 +53,11 @@ export function Combobox({
       <label className="wpl-label" htmlFor={id}>
         {label}
       </label>
-      <input
+      <div className="wpl-combo-control">
+        <span className="wpl-combo-icon" aria-hidden="true">
+          <Icon name="search" />
+        </span>
+        <input
         id={id}
         className="wpl-input"
         role="combobox"
@@ -81,6 +88,7 @@ export function Combobox({
           if (event.key === 'Escape') setOpen(false);
         }}
       />
+      </div>
       {open ? (
         <ul id={listId} role="listbox" className="wpl-listbox">
           {filtered.length === 0 ? (

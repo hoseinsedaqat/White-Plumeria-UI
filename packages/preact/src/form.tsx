@@ -28,6 +28,7 @@ import {
   type TextareaHTMLAttributes,
 } from 'preact';
 import { useContext, useId, useRef, useState } from 'preact/hooks';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 interface FieldContextValue {
@@ -556,7 +557,7 @@ export function SearchInput({
       </label>
       <div className="wpl-search-control">
         <span className="wpl-search-icon" aria-hidden="true">
-          ⌕
+          <Icon name="search" />
         </span>
         <input
           id={id}
@@ -576,7 +577,7 @@ export function SearchInput({
             aria-label={t('clear')}
             onClick={() => commit('')}
           >
-            ×
+            <Icon name="close" />
           </button>
         ) : null}
       </div>

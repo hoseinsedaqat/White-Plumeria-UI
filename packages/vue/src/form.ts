@@ -16,6 +16,7 @@ import {
   type NumberRange,
 } from '@white-plumeria/core';
 import { defineComponent, h, inject, provide, reactive, ref, useId, type InjectionKey, type PropType } from 'vue';
+import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
 
 export interface SelectOption {
@@ -473,20 +474,36 @@ export const SearchInput = defineComponent({
   emits: ['update:modelValue', 'search'],
   setup(props, { emit }) {
     const id = useId();
+    const { t } = useWhitePlumeria();
     return () =>
       h('div', { class: 'wpl-search' }, [
         h('label', { class: 'wpl-sr-only', for: id }, props.label),
-        h('input', {
-          id,
-          class: 'wpl-input',
-          type: 'search',
-          value: props.modelValue,
-          placeholder: props.placeholder || props.label,
-          onInput: (event: Event) => emit('update:modelValue', (event.target as HTMLInputElement).value),
-          onKeydown: (event: KeyboardEvent) => {
-            if (event.key === 'Enter') emit('search', (event.target as HTMLInputElement).value);
-          },
-        }),
+        h('div', { class: 'wpl-search-control' }, [
+          h('span', { class: 'wpl-search-icon', 'aria-hidden': 'true' }, [h(Icon, { name: 'search' })]),
+          h('input', {
+            id,
+            class: 'wpl-input',
+            type: 'search',
+            value: props.modelValue,
+            placeholder: props.placeholder || props.label,
+            onInput: (event: Event) => emit('update:modelValue', (event.target as HTMLInputElement).value),
+            onKeydown: (event: KeyboardEvent) => {
+              if (event.key === 'Enter') emit('search', (event.target as HTMLInputElement).value);
+            },
+          }),
+          props.modelValue
+            ? h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear',
+                  'aria-label': t('clear'),
+                  onClick: () => emit('update:modelValue', ''),
+                },
+                [h(Icon, { name: 'close' })],
+              )
+            : null,
+        ]),
       ]);
   },
 });

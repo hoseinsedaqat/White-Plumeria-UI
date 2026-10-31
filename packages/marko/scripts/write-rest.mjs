@@ -224,12 +224,23 @@ export interface Input { label?: string; invalid?: boolean; hint?: string; conte
 <p class="wpl-field-error" role="alert">\${input.message || "Check this field."}</p>
 `,
   'wpl-search-input.marko': `import { emit } from "../emit.ts";
+import { iconPaths } from "@white-plumeria/core";
 export interface Input { label?: string; value?: string; placeholder?: string; onChange?: (value: string) => void; }
 <let/value=input.value ?? "">
 <id/fieldId/>
-<div/host class="wpl-field">
+<div/host class="wpl-search">
   <label class="wpl-label" for=fieldId>\${input.label || "Search"}</label>
-  <input id=fieldId class="wpl-input" type="search" placeholder=input.placeholder || "Search" value=value valueChange(next) { value = String(next); emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+  <div class="wpl-search-control">
+    <span class="wpl-search-icon" aria-hidden="true">
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.search/></svg>
+    </span>
+    <input id=fieldId class="wpl-input" type="search" placeholder=input.placeholder || "Search" value=value valueChange(next) { value = String(next); emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+    <if=value>
+      <button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label="Clear" onClick() { value = ""; emit(host(), "wpl-change", { value: "" }); input.onChange?.(""); }>
+        <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.close/></svg>
+      </button>
+    </if>
+  </div>
 </div>
 `,
   'wpl-password-field.marko': `import { emit } from "../emit.ts";
@@ -279,15 +290,22 @@ export interface Input { label?: string; value?: number; max?: number; name?: st
 </div>
 `,
   'wpl-combobox.marko': `import { emit } from "../emit.ts";
+import { iconPaths } from "@white-plumeria/core";
 export interface Option { value: string; label: string; disabled?: boolean; }
 export interface Input { label?: string; value?: string; options?: Option[]; onChange?: (value: string) => void; }
 <let/query=input.value ?? "">
 <let/open=false>
 <const/options=(input.options ?? []).filter((option) => option.label.toLowerCase().includes(query.trim().toLowerCase()))>
+<id/fieldId/>
 <id/listId/>
-<div/host class="wpl-field">
-  <label class="wpl-label">\${input.label || "Choose"}</label>
-  <input class="wpl-input" role="combobox" aria-expanded=String(open) aria-controls=listId aria-autocomplete="list" value=query valueChange(next) { query = String(next); open = true; }>
+<div/host class="wpl-combo">
+  <label class="wpl-label" for=fieldId>\${input.label || "Choose"}</label>
+  <div class="wpl-combo-control">
+    <span class="wpl-combo-icon" aria-hidden="true">
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.search/></svg>
+    </span>
+    <input id=fieldId class="wpl-input" role="combobox" aria-expanded=String(open) aria-controls=listId aria-autocomplete="list" value=query valueChange(next) { query = String(next); open = true; }>
+  </div>
   <ul id=listId class="wpl-menu" role="listbox" hidden=!open>
     <for|option| of=options>
       <li><button type="button" class="wpl-menu-item" role="option" disabled=option.disabled onClick() { if (option.disabled) return; query = option.label; open = false; emit(host(), "wpl-change", { value: option.value }); input.onChange?.(option.value); }>\${option.label}</button></li>

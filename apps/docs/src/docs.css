@@ -85,9 +85,31 @@ body {
   min-width: 0;
 }
 
-.docs-search .wpl-input {
+.docs-search-field {
+  position: relative;
+}
+
+.docs-search-icon {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.65rem;
+  display: grid;
+  color: var(--wpl-color-text-muted);
+  line-height: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.docs-search-icon .wpl-icon {
+  inline-size: 0.95rem;
+  block-size: 0.95rem;
+}
+
+.docs-search .wpl-input,
+.docs-side-search .wpl-input {
   width: 100%;
   min-width: 0;
+  padding-inline-start: 2rem;
 }
 
 .docs-search-results {

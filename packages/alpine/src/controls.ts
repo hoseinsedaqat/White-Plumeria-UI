@@ -230,21 +230,49 @@ export function SearchInput(config: Config = {}) {
   return {
     init(this: Magic) {
       const id = uid('search');
+      const initial = text(config.value);
+      let clear: HTMLButtonElement;
       const input = h('input', {
         className: 'wpl-input',
         attrs: {
           id,
           type: 'search',
           placeholder: text(config.placeholder, translate(this.$el, 'search')),
-          value: text(config.value),
+          value: initial,
           'aria-label': text(config.label, translate(this.$el, 'search')),
         },
-        on: { input: (event) => changeValue(this, (event.target as HTMLInputElement).value) },
+        on: {
+          input: (event) => {
+            const value = (event.target as HTMLInputElement).value;
+            clear.hidden = value.length === 0;
+            changeValue(this, value);
+          },
+        },
       });
+      clear = h(
+        'button',
+        {
+          className: 'wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear',
+          attrs: {
+            type: 'button',
+            'aria-label': translate(this.$el, 'clear'),
+            hidden: initial ? undefined : true,
+          },
+          on: {
+            click: () => {
+              input.value = '';
+              clear.hidden = true;
+              changeValue(this, '');
+            },
+          },
+        },
+        [svgIcon('close')],
+      );
       const wrap = h('div', { className: 'wpl-search' }, [
         h('div', { className: 'wpl-search-control' }, [
           svgIcon('search', 'wpl-icon wpl-search-icon'),
           input,
+          clear,
         ]),
       ]);
       this.$el.replaceChildren(wrap);

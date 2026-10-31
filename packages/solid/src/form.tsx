@@ -489,7 +489,7 @@ export function SearchInput(props: {
       </label>
       <div class="wpl-search-control">
         <span class="wpl-search-icon" aria-hidden="true">
-          ⌕
+          <Icon name="search" />
         </span>
         <input
           id={id}
@@ -504,7 +504,7 @@ export function SearchInput(props: {
         />
         {current() ? (
           <button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={t('clear')} onClick={() => commit('')}>
-            ×
+            <Icon name="close" />
           </button>
         ) : null}
       </div>

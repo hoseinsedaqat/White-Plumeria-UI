@@ -14,6 +14,7 @@ import {
 import type { PropertyValues } from 'lit';
 import { defineTag, html, nothing, WplElement, type RenderResult } from './element';
 import { buttonClassName } from '@white-plumeria/core';
+import { iconSvg } from './icon';
 import { translate } from './provider';
 
 export interface MenuItem {
@@ -644,7 +645,9 @@ export class Combobox extends WplElement {
     const inputId = `${this.listId}-input`;
     return html`<div class="wpl-combo">
       <label class="wpl-label" for=${inputId}>${this.label}</label>
-      <input
+      <div class="wpl-combo-control">
+        <span class="wpl-combo-icon" aria-hidden="true">${iconSvg('search')}</span>
+        <input
         id=${inputId}
         class="wpl-input"
         role="combobox"
@@ -688,6 +691,7 @@ export class Combobox extends WplElement {
           }
         }}
       />
+      </div>
       ${this.open
         ? html`<ul id=${this.listId} role="listbox" class="wpl-listbox">
             ${filtered.length === 0

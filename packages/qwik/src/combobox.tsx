@@ -1,5 +1,6 @@
 import { bindDismissable, nextIndex } from '@white-plumeria/core';
 import { $, component$, useId, useSignal, useVisibleTask$, type QRL } from '@qwik.dev/core';
+import { Icon } from './icon';
 import { useWhitePlumeria } from './provider';
 
 export interface ComboOption {
@@ -44,7 +45,11 @@ export const Combobox = component$<{
   return (
     <div class="wpl-combo" ref={rootRef}>
       <label class="wpl-label" for={id}>{props.label}</label>
-      <input
+      <div class="wpl-combo-control">
+        <span class="wpl-combo-icon" aria-hidden="true">
+          <Icon name="search" />
+        </span>
+        <input
         id={id}
         class="wpl-input"
         role="combobox"
@@ -75,6 +80,7 @@ export const Combobox = component$<{
           if (event.key === 'Escape') open.value = false;
         }}
       />
+      </div>
       {open.value ? (
         <ul id={listId} role="listbox" class="wpl-listbox">
           {filtered.length === 0 ? (

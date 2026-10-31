@@ -1,5 +1,6 @@
 import { bindDismissable, nextIndex } from '@white-plumeria/core';
 import { createEffect, createMemo, createSignal, onCleanup , createUniqueId } from 'solid-js';
+import { Icon } from './icon.tsx';
 import { useWhitePlumeria } from './provider.tsx';
 
 export interface ComboOption {
@@ -46,7 +47,11 @@ export function Combobox(props: {
       <label class="wpl-label" for={id}>
         {props.label}
       </label>
-      <input
+      <div class="wpl-combo-control">
+        <span class="wpl-combo-icon" aria-hidden="true">
+          <Icon name="search" />
+        </span>
+        <input
         id={id}
         class="wpl-input"
         role="combobox"
@@ -77,6 +82,7 @@ export function Combobox(props: {
           if (event.key === 'Escape') setOpen(false);
         }}
       />
+      </div>
       {open() ? (
         <ul id={listId} role="listbox" class="wpl-listbox">
           {filtered().length === 0 ? (

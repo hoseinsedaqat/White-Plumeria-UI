@@ -1,5 +1,5 @@
 import { brand, catalog, categoryLabels, isThemeName, searchComponents } from '@white-plumeria/core';
-import { Mark, useWhitePlumeria } from '@white-plumeria/react';
+import { Icon, Mark, useWhitePlumeria } from '@white-plumeria/react';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AiPage } from './pages/ai.tsx';
@@ -132,16 +132,21 @@ export function DocsApp() {
           <label className="wpl-sr-only" htmlFor="docs-search">
             Search docs
           </label>
-          <input
-            id="docs-search"
-            className="wpl-input wpl-input-sm"
-            placeholder="Search components"
-            value={query}
-            onChange={(event) => setQuery(event.currentTarget.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
-            }}
-          />
+          <div className="docs-search-field">
+            <span className="docs-search-icon" aria-hidden="true">
+              <Icon name="search" />
+            </span>
+            <input
+              id="docs-search"
+              className="wpl-input wpl-input-sm"
+              placeholder="Search components"
+              value={query}
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
+              }}
+            />
+          </div>
           {query.trim() ? (
             <div className="docs-search-results" role="listbox" aria-label="Search results">
               {results.length === 0 ? <p className="docs-search-empty">No components match.</p> : null}
@@ -268,16 +273,21 @@ export function DocsApp() {
             <label className="wpl-sr-only" htmlFor="docs-search-mobile">
               Search components
             </label>
-            <input
-              id="docs-search-mobile"
-              className="wpl-input wpl-input-sm"
-              placeholder="Search components"
-              value={query}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
-              }}
-            />
+            <div className="docs-search-field">
+              <span className="docs-search-icon" aria-hidden="true">
+                <Icon name="search" />
+              </span>
+              <input
+                id="docs-search-mobile"
+                className="wpl-input wpl-input-sm"
+                placeholder="Search components"
+                value={query}
+                onChange={(event) => setQuery(event.currentTarget.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && results[0]) go(`/components/${results[0].slug}`);
+                }}
+              />
+            </div>
             {query.trim() ? (
               <div className="docs-side-results">
                 {results.length === 0 ? <p>No components match.</p> : null}
