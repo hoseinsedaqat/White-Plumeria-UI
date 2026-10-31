@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage design-system block is a token board: real size buttons, radius shapes, and space insets. The duplicate gray bars are gone. Packages are still not published.
 - Accent has its own foreground, so a label or switch thumb on that color stays readable when the theme changes. Homepage code, charts, and theme frames stay visible on the dark canvas. Component usage examples use a tab strip instead of a row of action buttons. Packages are still not published.
 - Switch no longer paints a filled button behind the track when the theme changes. The thumb uses the text or primary-foreground color so it stays visible on the track. The homepage size section stacks radius and space, and the samples keep contrast on the dark canvas. Packages are still not published.
 - Homepage type, size bars, named color blocks, and the preview toggles sit closer to the daisyUI homepage without moving the existing sections. Counts stay honest. Packages are still not published.
