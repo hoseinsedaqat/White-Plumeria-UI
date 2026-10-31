@@ -71,7 +71,8 @@
   .wpl-carousel-dot,
   .wpl-carousel-control,
   .wpl-otp-cell,
-  .wpl-password .wpl-icon-btn
+  .wpl-password .wpl-icon-btn,
+  .wpl-toggle-item
 ):focus-visible {
   outline: 2px solid var(--wpl-color-focus);
   outline-offset: 2px;

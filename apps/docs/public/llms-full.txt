@@ -73,6 +73,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Textarea (textarea): Multi-line text field.
 - Timeline (timeline): Ordered events with time elements.
 - Toast (toast): Transient message in a live region.
+- ToggleGroup (toggle-group): Joined buttons for one choice. Arrow keys follow reading direction. This is not RadioGroup.
 - Tooltip (tooltip): Supplemental hint on hover and keyboard focus.
 - TreeView (tree-view): Expandable tree with arrow-key navigation.
 - ValidationMessage (validation-message): Alias of FormMessage with tone="error".
@@ -128,6 +129,9 @@ AI tools may only name components from this list.
 - Steps: Does not validate a form or persist progress. Move the value from your own Next control.
 - Table: Static markup. Sorting and filtering are DataTable.
 - Toast: Requires WhitePlumeriaProvider or ToastProvider. Auto-dismiss default is 5 seconds and is cancelled under reduced motion.
+- ToggleGroup: One value. It does not select several items.
+- ToggleGroup: Not a set of independent switches. Use Checkbox or Switch for that.
+- ToggleGroup: Not a labeled radio list. Use RadioGroup when the choice should look like a radio.
 - Tooltip: Not shown as the only path on touch. Delay is 400ms. Escape dismisses.
 - TreeView: No drag and drop. No virtualization.
 - ValidationMessage: Preset of FormMessage, not a second validation engine.

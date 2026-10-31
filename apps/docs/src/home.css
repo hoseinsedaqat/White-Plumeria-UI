@@ -189,7 +189,6 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-cta:focus-visible,
 .home-install:focus-visible,
-.home-switch button:focus-visible,
 .home-theme-row button:focus-visible,
 .home-theme-card:focus-visible {
   outline: 2px solid var(--wpl-color-focus);
@@ -560,31 +559,8 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   font-weight: 650;
 }
 
-.home-switch {
-  display: inline-flex;
-  gap: 0.25rem;
+.home-section > .wpl-toggle {
   margin: 1.5rem 0 1rem;
-  padding: 0.25rem;
-  border-radius: 999px;
-  background: var(--wpl-color-bg-muted);
-}
-
-.home-switch button {
-  min-height: 2.2rem;
-  padding: 0 0.9rem;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--wpl-color-text-muted);
-  font: inherit;
-  font-size: 0.88rem;
-  cursor: pointer;
-}
-
-.home-switch button[aria-pressed="true"] {
-  background: var(--wpl-color-surface);
-  color: var(--wpl-color-text);
-  box-shadow: var(--wpl-shadow-sm);
 }
 
 .home-compare {

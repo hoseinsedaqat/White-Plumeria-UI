@@ -8,7 +8,9 @@ import {
   normalizeRange,
   rangeBounds,
   rangeFill,
+  readingDirection,
   selectClassName,
+  toggleGroupMove,
   textareaClassName,
   valueFromPointer,
   type ControlSize,
@@ -506,6 +508,90 @@ export function SearchInput(props: {
           </button>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+export function ToggleGroup(props: {
+  label: string;
+  options: SelectOption[];
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  name?: string;
+  hideLabel?: boolean;
+  disabled?: boolean;
+}) {
+  const labelId = createUniqueId();
+  const [internal, setInternal] = createSignal(props.defaultValue ?? '');
+  const current = () => (props.value !== undefined ? props.value : internal());
+  function commit(next: string) {
+    if (props.value === undefined) setInternal(next);
+    props.onValueChange?.(next);
+  }
+  function onKey(event: KeyboardEvent) {
+    const options = props.options;
+    const selected = options.findIndex((option) => option.value === current());
+    const next = toggleGroupMove(
+      options,
+      selected,
+      event.key,
+      readingDirection(event.currentTarget instanceof HTMLElement ? event.currentTarget : null),
+    );
+    if (next === null) return;
+    const option = options[next];
+    if (!option) return;
+    event.preventDefault();
+    commit(option.value);
+    const group =
+      event.currentTarget instanceof HTMLElement ? event.currentTarget.parentElement : null;
+    queueMicrotask(() =>
+      group?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[next]?.focus(),
+    );
+  }
+  const group = (
+    <div
+      class="wpl-toggle"
+      role="radiogroup"
+      aria-label={props.hideLabel ? props.label : undefined}
+      aria-labelledby={props.hideLabel ? undefined : labelId}
+    >
+      {props.options.map((option, index) => {
+        const checked = () => option.value === current();
+        const tabbable = () => {
+          if (option.disabled || props.disabled) return false;
+          if (checked()) return true;
+          const selected = props.options.findIndex(
+            (item) => item.value === current() && !item.disabled,
+          );
+          return selected < 0 && index === props.options.findIndex((item) => !item.disabled);
+        };
+        return (
+          <button
+            type="button"
+            class="wpl-toggle-item"
+            role="radio"
+            aria-checked={checked()}
+            disabled={props.disabled || option.disabled}
+            tabIndex={tabbable() ? 0 : -1}
+            onClick={() => commit(option.value)}
+            onKeyDown={onKey}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+      {props.name ? <input type="hidden" name={props.name} value={current()} /> : null}
+    </div>
+  );
+  return props.hideLabel ? (
+    group
+  ) : (
+    <div class="wpl-field">
+      <span id={labelId} class="wpl-label">
+        {props.label}
+      </span>
+      {group}
     </div>
   );
 }

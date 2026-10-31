@@ -48,6 +48,7 @@ import {
   Progress,
   RadioGroup,
   RangeSlider,
+  ToggleGroup,
   Rating,
   SearchInput,
   Select,
@@ -258,6 +259,19 @@ export function renderDemo(slug: string): ReactNode {
           options={[
             { value: 'annual', label: 'Annual' },
             { value: 'month', label: 'Monthly' },
+          ]}
+        />
+      );
+    case 'toggle-group':
+      return (
+        <ToggleGroup
+          label="Appearance"
+          name="appearance"
+          defaultValue="light"
+          options={[
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+            { value: 'system', label: 'System', disabled: true },
           ]}
         />
       );

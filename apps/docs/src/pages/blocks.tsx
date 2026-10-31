@@ -11,6 +11,7 @@ import {
   Select,
   StatCard,
   Switch,
+  ToggleGroup,
 } from '@white-plumeria/react';
 import { useState } from 'react';
 import { CodeBlock } from '../copy.tsx';
@@ -26,6 +27,7 @@ export function BlocksPage() {
   const [plan, setPlan] = useState<(typeof plans)[number]['name']>('Team');
   const [signedIn, setSignedIn] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [billing, setBilling] = useState('monthly');
   const [hasRows, setHasRows] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -158,6 +160,16 @@ export function BlocksPage() {
               }}
             >
               <NumberField label="Copies" name="copies" min={1} max={12} defaultValue={1} />
+              <ToggleGroup
+                label="Billing"
+                name="billing"
+                value={billing}
+                onValueChange={setBilling}
+                options={[
+                  { value: 'monthly', label: 'Monthly' },
+                  { value: 'annual', label: 'Annual' },
+                ]}
+              />
               <Switch label="Email invoices" defaultChecked />
               <label className="wpl-label" htmlFor="block-week">
                 Week start

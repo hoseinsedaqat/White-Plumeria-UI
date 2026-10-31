@@ -36,6 +36,7 @@ import {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './controls.ts';
 import {
@@ -158,6 +159,7 @@ export const components = {
   Table,
   Tabs,
   Textarea,
+  ToggleGroup,
   Timeline,
   Toast,
   Tooltip,

@@ -23,6 +23,7 @@ export {
   Slider,
   Switch,
   Textarea,
+  ToggleGroup,
   ValidationMessage,
 } from './controls.ts';
 export type { ButtonConfig } from './controls.ts';

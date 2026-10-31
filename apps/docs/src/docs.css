@@ -737,31 +737,6 @@ body {
   width: 100%;
 }
 
-.docs-choice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  justify-content: center;
-}
-
-.docs-choice button {
-  border: 1px solid var(--wpl-color-border);
-  background: var(--wpl-color-surface);
-  color: var(--wpl-color-text);
-  border-radius: 999px;
-  min-height: 2rem;
-  padding: 0 0.7rem;
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.docs-choice button[aria-pressed='true'] {
-  background: var(--wpl-color-text);
-  color: var(--wpl-color-bg);
-  border-color: transparent;
-}
-
 .docs-tabs {
   display: flex;
   flex-wrap: wrap;

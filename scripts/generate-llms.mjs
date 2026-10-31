@@ -1,15 +1,20 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-const files = readdirSync('packages/core/src/catalog').filter((name) => name.endsWith('.ts') && !['types.ts', 'examples.ts', 'alpine.ts', 'marko.ts', 'ember.ts', 'index.ts'].includes(name));
+const files = readdirSync('packages/core/src/catalog').filter(
+  (name) =>
+    name.endsWith('.ts') &&
+    !['types.ts', 'examples.ts', 'alpine.ts', 'marko.ts', 'ember.ts', 'index.ts'].includes(name),
+);
 const components = [];
 for (const file of files) {
   const source = readFileSync(`packages/core/src/catalog/${file}`, 'utf8');
   const blocks = source.split(/\n  \{\n/).slice(1);
   for (const block of blocks) {
-    const name = /name: '([^']+)'/.exec(block)?.[1];
-    const slug = /slug: '([^']+)'/.exec(block)?.[1];
-    const summary = /summary: '([^']+)'/.exec(block)?.[1];
-    const summaryFa = /summaryFa: '([^']+)'/.exec(block)?.[1];
+    const field = (key) => new RegExp(`${key}:\\s*'([^']*)'`).exec(block)?.[1];
+    const name = field('name');
+    const slug = field('slug');
+    const summary = field('summary');
+    const summaryFa = field('summaryFa');
     if (!name || !slug || !summary) continue;
     const limitations = [...block.matchAll(/limitations: \[([^\]]*)\]/g)].flatMap((match) =>
       [...(match[1] ?? '').matchAll(/'([^']+)'/g)].map((item) => item[1]),
@@ -19,7 +24,9 @@ for (const file of files) {
 }
 components.sort((left, right) => left.name.localeCompare(right.name));
 if (components.length < 50) {
-  throw new Error(`Expected the catalog parser to find the component set, found ${components.length}.`);
+  throw new Error(
+    `Expected the catalog parser to find the component set, found ${components.length}.`,
+  );
 }
 const themeSource = readFileSync('packages/tokens/src/themes.ts', 'utf8');
 const themeNames = [...themeSource.matchAll(/name: '([a-z]+)'/g)].map((match) => match[1]);

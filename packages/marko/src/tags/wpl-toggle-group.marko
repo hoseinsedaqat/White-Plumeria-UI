@@ -1,0 +1,63 @@
+import { readingDirection, toggleGroupMove } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface ToggleOption {
+  value?: string;
+  label?: string;
+  disabled?: boolean;
+}
+
+export interface Input {
+  label?: string;
+  options?: ToggleOption[];
+  value?: string;
+  name?: string;
+  hideLabel?: boolean;
+  disabled?: boolean;
+  onValueChange?: (value: string) => void;
+}
+
+<let/value=input.value || "">
+<const/options=(input.options ?? []).map((option) => ({
+  value: option.value || "",
+  label: option.label || option.value || "",
+  disabled: Boolean(option.disabled),
+}))>
+<const/label=input.label || "Choices">
+<id/labelId/>
+
+<div/host class="wpl-field">
+  <span id=labelId class=(input.hideLabel ? "wpl-label wpl-sr-only" : "wpl-label")>${label}</span>
+  <div class="wpl-toggle" role="radiogroup" aria-labelledby=labelId>
+    <for|option, index| of=options>
+      <button
+        type="button"
+        class="wpl-toggle-item"
+        role="radio"
+        aria-checked=String(value === option.value)
+        disabled=Boolean(input.disabled) || option.disabled
+        tabindex=(value === option.value || (!value && index === 0) ? 0 : -1)
+        onClick() {
+          if (input.disabled || option.disabled) return;
+          value = option.value;
+          emit(host(), "wpl-change", { value });
+          input.onValueChange?.(value);
+        }
+        onKeyDown(event) {
+          const selected = options.findIndex((item) => item.value === value);
+          const next = toggleGroupMove(options, selected, event.key, readingDirection(event.currentTarget));
+          if (next === null) return;
+          const choice = options[next];
+          if (!choice) return;
+          event.preventDefault();
+          value = choice.value;
+          emit(host(), "wpl-change", { value });
+          input.onValueChange?.(value);
+          const group = event.currentTarget?.parentElement;
+          queueMicrotask(() => group?.querySelectorAll("[role='radio']")[next]?.focus());
+        }
+      >${option.label}</button>
+    </for>
+    <if=input.name><input type="hidden" name=input.name value=value></if>
+  </div>
+</div>

@@ -31,6 +31,9 @@ const synonyms: Record<string, string[]> = {
   quantity: ['numberfield', 'number-field'],
   guests: ['numberfield', 'number-field'],
   stepper: ['numberfield', 'number-field'],
+  segmented: ['togglegroup', 'toggle-group'],
+  appearance: ['togglegroup', 'toggle-group'],
+  toggle: ['togglegroup', 'toggle-group', 'switch'],
   kbd: ['kbd'],
 };
 
