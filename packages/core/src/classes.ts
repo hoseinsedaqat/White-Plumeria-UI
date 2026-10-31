@@ -1,16 +1,17 @@
 import { cx } from './cx.ts';
-import type {
-  AlertVariant,
-  AvatarSize,
-  BadgeVariant,
-  ButtonAppearance,
-  ButtonSize,
-  ButtonVariant,
-  ContainerSize,
-  ControlSize,
-  GridColumns,
-  StackGap,
-  ToastVariant,
+import {
+  alertVariants,
+  type AlertVariant,
+  type AvatarSize,
+  type BadgeVariant,
+  type ButtonAppearance,
+  type ButtonSize,
+  type ButtonVariant,
+  type ContainerSize,
+  type ControlSize,
+  type GridColumns,
+  type StackGap,
+  type ToastVariant,
 } from './variants.ts';
 
 export function buttonClassName(
@@ -96,6 +97,11 @@ export function selectClassName(
 
 export function toastClassName(variant: ToastVariant = 'neutral', className?: string): string {
   return cx('wpl-toast', variant !== 'neutral' && `wpl-toast-${variant}`, className);
+}
+
+export function notificationClassName(variant: string = 'neutral', className?: string): string {
+  const tone = (alertVariants as readonly string[]).includes(variant) ? variant : 'neutral';
+  return cx('wpl-notification', tone !== 'neutral' && `wpl-notification-${tone}`, className);
 }
 
 export function containerClassName(size: ContainerSize = 'lg', className?: string): string {

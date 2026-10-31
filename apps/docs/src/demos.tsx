@@ -79,6 +79,29 @@ const sampleRows = [
   { id: '1044', merchant: 'Saffron Ledger', amount: 40, status: 'Review' },
 ];
 
+function NotificationDemo() {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="wpl-stack" style={{ width: '100%' }}>
+      <Notification variant="info" title="New statement" description="March is ready to review." />
+      <Notification variant="success" title="Saved" description="The sample stayed in this tab." />
+      <Notification variant="warning" title="Review" description="Two fields are incomplete." />
+      {open ? (
+        <Notification
+          variant="danger"
+          title="Blocked"
+          description="This action did not run."
+          onDismiss={() => setOpen(false)}
+        />
+      ) : (
+        <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
+          Show blocked notice
+        </Button>
+      )}
+    </div>
+  );
+}
+
 function ToastDemo() {
   const toast = useToast();
   return (
@@ -377,12 +400,7 @@ export function renderDemo(slug: string): ReactNode {
     case 'toast':
       return <ToastDemo />;
     case 'notification':
-      return (
-        <Notification
-          title="New statement"
-          description="March is ready to review. Sample notice."
-        />
-      );
+      return <NotificationDemo />;
     case 'command-palette':
       return <CommandDemo />;
     case 'context-menu':

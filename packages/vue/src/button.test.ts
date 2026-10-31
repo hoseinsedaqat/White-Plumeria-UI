@@ -2,9 +2,39 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Button, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
+import { Button, Notification, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('colors a notification and shows dismiss only when requested', async () => {
+    const user = userEvent.setup();
+    const dismissed: string[] = [];
+    render(
+      defineComponent({
+        setup() {
+          return () =>
+            h(WhitePlumeriaProvider, () =>
+              h('div', [
+                h(Notification, { title: 'Saved', variant: 'success', description: 'Local only' }),
+                h(Notification, {
+                  title: 'Blocked',
+                  variant: 'danger',
+                  onDismiss: () => dismissed.push('closed'),
+                }),
+              ]),
+            );
+        },
+      }),
+    );
+    const saved = screen.getByRole('status');
+    expect(saved.className).toContain('wpl-notification-success');
+    expect(saved.querySelector('button')).toBeNull();
+    const blocked = screen.getByRole('alert');
+    expect(blocked.className).toContain('wpl-notification-danger');
+    await user.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(dismissed).toEqual(['closed']);
+    expect(blocked.isConnected).toBe(true);
+  });
+
   it('does not activate a loading button', async () => {
     const user = userEvent.setup();
     let clicks = 0;

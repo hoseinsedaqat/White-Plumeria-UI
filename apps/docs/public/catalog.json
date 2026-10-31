@@ -322,10 +322,10 @@
   {
     "name": "Notification",
     "slug": "notification",
-    "summary": "Persistent inline notice with an optional dismiss action.",
-    "summaryFa": "اعلان ماندگار درون صفحه با بستن اختیاری.",
+    "summary": "Persistent inline notice. Its tone follows the theme, and dismiss is optional.",
+    "summaryFa": "اعلان ماندگار درون صفحه. لحن از تم می‌آید و بستن اختیاری است.",
     "limitations": [
-      "Not a push-notification service."
+      "Not a push-notification service and not a toast. The close button appears only when a dismiss handler is passed. Angular and Lit use the dismissable prop for that button."
     ]
   },
   {

@@ -44,7 +44,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Modal (modal): Dialog preset that is always modal.
 - Navbar (navbar): Sticky header with a collapsible menu.
 - NavigationMenu (navigation-menu): Horizontal list of links.
-- Notification (notification): Persistent inline notice with an optional dismiss action.
+- Notification (notification): Persistent inline notice. Its tone follows the theme, and dismiss is optional.
 - NumberField (number-field): Numeric field with decrease and increase buttons. The value snaps to the step.
 - OtpField (otp-field): One-time-code field. It does not send or verify a code.
 - PageHeader (page-header): Title, description, and action row.

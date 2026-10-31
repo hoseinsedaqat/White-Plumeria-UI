@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
+import { Notification } from './toast.tsx';
 import { RangeSlider, ToggleGroup } from './form.tsx';
 import { ContextMenu, DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
@@ -435,5 +436,24 @@ describe('new controls', () => {
     expect(input).toHaveValue(1);
     expect(screen.getByRole('button', { name: 'Decrease' })).toBeDisabled();
     expect(values).toEqual([3, 2, 1]);
+  });
+
+  it('colors a notification and keeps dismiss optional', async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    render(
+      <>
+        <Notification title="Saved" description="Local only" variant="success" />
+        <Notification title="Blocked" variant="danger" onDismiss={onDismiss} />
+      </>,
+    );
+    const saved = screen.getByRole('status');
+    expect(saved.className).toContain('wpl-notification-success');
+    expect(saved.querySelector('button')).toBeNull();
+    const blocked = screen.getByRole('alert');
+    expect(blocked.className).toContain('wpl-notification-danger');
+    await user.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(onDismiss).toHaveBeenCalledOnce();
+    expect(blocked.isConnected).toBe(true);
   });
 });

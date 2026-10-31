@@ -10,6 +10,7 @@ import {
   stepIndex,
   stepState,
   supportsModalDialog,
+  notificationClassName,
   toastClassName,
   type MenuMotion,
 } from '@white-plumeria/core';
@@ -20,6 +21,7 @@ import {
   labelOf,
   list,
   num,
+  oneOf,
   onDestroy,
   svgIcon,
   text,
@@ -945,8 +947,45 @@ export function Toast(config: Config = {}) {
   };
 }
 
+const notificationTones = ['neutral', 'info', 'success', 'warning', 'danger'] as const;
+
 export function Notification(config: Config = {}) {
-  return Toast(config);
+  return {
+    init(this: Magic) {
+      const variant = oneOf(config.variant, notificationTones, 'neutral');
+      const dismissable = config.dismissable === true || typeof config.onDismiss === 'function';
+      const panel = h(
+        'div',
+        {
+          className: notificationClassName(variant),
+          attrs: { role: variant === 'danger' ? 'alert' : 'status' },
+        },
+        [
+          h('div', {}, [
+            h('p', { className: 'wpl-toast-title', text: text(config.title, 'Notice') }),
+            text(config.description) ? h('p', { className: 'wpl-toast-description', text: text(config.description) }) : null,
+          ]),
+          dismissable
+            ? h(
+                'button',
+                {
+                  className: 'wpl-icon-btn wpl-btn-ghost',
+                  attrs: { type: 'button', 'aria-label': translate(this.$el, 'dismiss') },
+                  on: {
+                    click: () => {
+                      emit(this, 'wpl-dismiss', {});
+                      if (typeof config.onDismiss === 'function') config.onDismiss();
+                    },
+                  },
+                },
+                [svgIcon('close')],
+              )
+            : null,
+        ],
+      );
+      this.$el.replaceChildren(panel);
+    },
+  };
 }
 
 function oneVariant(value: unknown): 'neutral' | 'success' | 'warning' | 'danger' {

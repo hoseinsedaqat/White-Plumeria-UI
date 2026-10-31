@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, Slider, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { DataTable, DateRangePicker, DropdownMenu, FileUpload, Notification, Slider, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -170,6 +170,23 @@ describe('Alpine adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('renders a notification as an inline notice, not a toast', () => {
+    const quiet = mount(Notification, { title: 'Saved', variant: 'success', description: 'Local only' });
+    const notice = quiet.querySelector('.wpl-notification');
+    expect(notice?.className).toContain('wpl-notification-success');
+    expect(notice?.getAttribute('role')).toBe('status');
+    expect(quiet.querySelector('.wpl-toast')).toBeNull();
+    expect(quiet.querySelector('button')).toBeNull();
+
+    const dismissed: unknown[] = [];
+    const loud = mount(Notification, { title: 'Blocked', variant: 'danger', onDismiss: () => dismissed.push('closed') });
+    expect(loud.querySelector('[role="alert"]')?.className).toContain('wpl-notification-danger');
+    loud.addEventListener('wpl-dismiss', () => dismissed.push('event'));
+    loud.querySelector('button')?.click();
+    expect(dismissed).toEqual(['event', 'closed']);
+    expect(loud.querySelector('.wpl-notification')).toBeTruthy();
   });
 
   it('publishes an Alpine example for every catalog component', () => {
