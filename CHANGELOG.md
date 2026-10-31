@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage centers a lone call-to-action, and the footer names the GitHub profile, the repository, and the docs paths. Packages are still not published.
 - The docs theme menu sets direction and reduced motion on component previews. The page chrome stays English and left to right.
 - Grid column count follows the grid width, not the viewport. A narrow grid stacks on a wide page. It is not a masonry layout.
 - Notification follows the status color of its variant in every adapter. It stays on the page, and the close button appears only when a dismiss handler is passed. It is not a toast.
