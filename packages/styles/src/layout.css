@@ -86,8 +86,14 @@
 
 .wpl-layout {
   display: grid;
-  grid-template-columns: 16rem minmax(0, 1fr);
-  min-block-size: 100%;
+  grid-template-columns: minmax(9rem, 16rem) minmax(0, 1fr);
+  min-block-size: 12rem;
+  container-type: inline-size;
+  container-name: wpl-layout;
+  overflow: hidden;
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
 }
 
 .wpl-layout-main {
@@ -95,20 +101,27 @@
   padding: var(--wpl-space-5);
 }
 
-@media (max-width: 64rem) {
+@container wpl-layout (max-width: 40rem) {
   .wpl-layout {
     grid-template-columns: 1fr;
   }
 
   .wpl-layout > .wpl-sidebar {
     display: none;
+    inline-size: auto;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--wpl-color-border);
   }
 
   .wpl-layout[data-open="true"] > .wpl-sidebar {
     display: flex;
-    position: sticky;
-    inset-block-start: 0;
+    position: static;
   }
+}
+
+.wpl-measure {
+  inline-size: min(100%, 28rem);
+  max-inline-size: 28rem;
 }
 
 .wpl-split {

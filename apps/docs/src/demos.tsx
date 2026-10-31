@@ -41,6 +41,7 @@ import {
   Notification,
   NumberField,
   PageHeader,
+  ResponsiveLayout,
   OtpField,
   Pagination,
   PasswordField,
@@ -502,10 +503,10 @@ export function renderDemo(slug: string): ReactNode {
       );
     case 'flex':
       return (
-        <Flex justify="between">
+        <div className="wpl-flex wpl-flex-between" style={{ width: '100%' }}>
           <span>Total</span>
           <strong>EUR 120</strong>
-        </Flex>
+        </div>
       );
     case 'navbar':
       return (
@@ -545,17 +546,19 @@ export function renderDemo(slug: string): ReactNode {
       return <Footer note="MIT License" />;
     case 'responsive-layout':
       return (
-        <div
-          className="wpl-layout"
-          style={{
-            minBlockSize: '12rem',
-            border: '1px solid var(--wpl-color-border)',
-            borderRadius: 12,
-          }}
+        <ResponsiveLayout
+          sidebar={
+            <Sidebar
+              label="Docs"
+              items={[
+                { href: '#button', label: 'Button', current: true },
+                { href: '#card', label: 'Card' },
+              ]}
+            />
+          }
         >
-          <Sidebar label="Docs" items={[{ href: '#button', label: 'Button', current: true }]} />
-          <div className="wpl-layout-main">Main column</div>
-        </div>
+          Main column
+        </ResponsiveLayout>
       );
     case 'split-pane':
       return <SplitPane label="Resize editor" start={<p>Notes</p>} end={<p>Preview</p>} />;
