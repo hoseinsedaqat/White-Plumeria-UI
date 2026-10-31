@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage class-count section uses two comparison plates instead of thin bars. The counts stay on this form. Packages are still not published.
 - The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example. Packages are still not published.
 - Semantic colors are a palette board: role chips and surface chips, with the name on the color. The six empty rectangles are gone. Packages are still not published.
 - The homepage design-system block is a token board: real size buttons, radius shapes, and space insets. The duplicate gray bars are gone. Packages are still not published.
