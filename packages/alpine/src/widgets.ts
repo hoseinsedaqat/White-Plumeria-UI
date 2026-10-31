@@ -69,7 +69,10 @@ function openDialog(kind: 'dialog' | 'drawer' | 'modal', config: Config, magic: 
   const title = text(config.title, kind === 'drawer' ? 'Drawer' : 'Dialog');
   const description = text(config.description || config.body);
   const dialog = document.createElement('dialog');
-  dialog.className = kind === 'drawer' ? `wpl-drawer${config.side === 'start' ? ' wpl-drawer-start' : ''}` : 'wpl-dialog';
+  dialog.className =
+    kind === 'drawer'
+      ? `wpl-drawer${config.side === 'start' ? ' wpl-drawer-start' : ''}`
+      : 'wpl-dialog';
   const titleId = uid('title');
   const close = () => {
     if (dialog.open && typeof dialog.close === 'function') dialog.close();
@@ -98,9 +101,12 @@ function openDialog(kind: 'dialog' | 'drawer' | 'modal', config: Config, magic: 
         on: { click: close },
       }),
     ]),
-    h('div', { className: 'wpl-dialog-body' }, [description ? h('p', { className: 'wpl-dialog-description', text: description }) : null]),
+    h('div', { className: 'wpl-dialog-body' }, [
+      description ? h('p', { className: 'wpl-dialog-description', text: description }) : null,
+    ]),
   );
-  if (text(config.confirm)) dialog.append(h('footer', { className: 'wpl-dialog-footer' }, [confirm]));
+  if (text(config.confirm))
+    dialog.append(h('footer', { className: 'wpl-dialog-footer' }, [confirm]));
   dialog.setAttribute('aria-labelledby', titleId);
   const trigger = h('button', {
     className: 'wpl-btn wpl-btn-secondary',
@@ -129,31 +135,51 @@ function openDialog(kind: 'dialog' | 'drawer' | 'modal', config: Config, magic: 
 }
 
 export function Dialog(config: Config = {}) {
-  return { init(this: Magic) { openDialog('dialog', config, this); } };
+  return {
+    init(this: Magic) {
+      openDialog('dialog', config, this);
+    },
+  };
 }
 
 export function Modal(config: Config = {}) {
-  return { init(this: Magic) { openDialog('modal', config, this); } };
+  return {
+    init(this: Magic) {
+      openDialog('modal', config, this);
+    },
+  };
 }
 
 export function Drawer(config: Config = {}) {
-  return { init(this: Magic) { openDialog('drawer', config, this); } };
+  return {
+    init(this: Magic) {
+      openDialog('drawer', config, this);
+    },
+  };
 }
 
-function menuButton(item: MenuItem, active: boolean, onChoose: (item: MenuItem) => void): HTMLButtonElement {
-  return h('button', {
-    className: 'wpl-menu-item',
-    text: item.label,
-    attrs: {
-      type: 'button',
-      role: 'menuitem',
-      disabled: item.disabled || undefined,
-      'data-active': active ? 'true' : undefined,
-      'aria-disabled': item.disabled ? 'true' : undefined,
-      'aria-haspopup': item.items?.length ? 'menu' : undefined,
+function menuButton(
+  item: MenuItem,
+  active: boolean,
+  onChoose: (item: MenuItem) => void,
+): HTMLButtonElement {
+  return h(
+    'button',
+    {
+      className: 'wpl-menu-item',
+      text: item.label,
+      attrs: {
+        type: 'button',
+        role: 'menuitem',
+        disabled: item.disabled || undefined,
+        'data-active': active ? 'true' : undefined,
+        'aria-disabled': item.disabled ? 'true' : undefined,
+        'aria-haspopup': item.items?.length ? 'menu' : undefined,
+      },
+      on: { click: () => onChoose(item) },
     },
-    on: { click: () => onChoose(item) },
-  }, [item.shortcut ? h('span', { className: 'wpl-menu-shortcut', text: item.shortcut }) : null]);
+    [item.shortcut ? h('span', { className: 'wpl-menu-shortcut', text: item.shortcut }) : null],
+  );
 }
 
 export function DropdownMenu(config: Config = {}) {
@@ -175,11 +201,19 @@ function menu(config: Config, mode: 'click' | 'context') {
       const typeahead = { query: '', at: 0 };
       let stop: (() => void) | undefined;
       const menuId = uid('menu');
-      const panel = h('div', { className: 'wpl-menu wpl-menu-panel', attrs: { id: menuId, role: 'menu', hidden: true } });
+      const panel = h('div', {
+        className: 'wpl-menu wpl-menu-panel',
+        attrs: { id: menuId, role: 'menu', hidden: true },
+      });
       const trigger = h('button', {
         className: 'wpl-btn wpl-btn-secondary',
         text: text(config.label, translate(host, 'openMenu')),
-        attrs: { type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-controls': menuId },
+        attrs: {
+          type: 'button',
+          'aria-haspopup': 'menu',
+          'aria-expanded': 'false',
+          'aria-controls': menuId,
+        },
         on: {
           click: () => setOpen(!open),
           keydown: (event) => onKey(event as KeyboardEvent),
@@ -196,16 +230,20 @@ function menu(config: Config, mode: 'click' | 'context') {
         panel.hidden = !open;
         panel.replaceChildren();
         items.forEach((item, index) => {
-          const row = menuButton(item, index === active && sub === null, (chosen) => choose(chosen, index));
+          const row = menuButton(item, index === active && sub === null, (chosen) =>
+            choose(chosen, index),
+          );
           panel.append(row);
           if (item.items?.length && sub !== null && index === active) {
             const nested = h('div', { className: 'wpl-menu-sub', attrs: { role: 'menu' } });
             item.items.forEach((child, childIndex) => {
-              nested.append(menuButton(child, childIndex === sub, (chosen) => {
-                if (chosen.disabled) return;
-                emit(this, 'wpl-select', { id: chosen.id });
-                setOpen(false);
-              }));
+              nested.append(
+                menuButton(child, childIndex === sub, (chosen) => {
+                  if (chosen.disabled) return;
+                  emit(this, 'wpl-select', { id: chosen.id });
+                  setOpen(false);
+                }),
+              );
             });
             panel.append(nested);
           }
@@ -307,9 +345,11 @@ export function Popover(config: Config = {}) {
       const host = this.$el;
       let open = false;
       let stop: (() => void) | undefined;
-      const panel = h('div', { className: 'wpl-popover', attrs: { role: 'dialog', hidden: true } }, [
-        h('p', { text: text(config.content, labelOf(this, config, 'Details')) }),
-      ]);
+      const panel = h(
+        'div',
+        { className: 'wpl-popover', attrs: { role: 'dialog', hidden: true } },
+        [h('p', { text: text(config.content, labelOf(this, config, 'Details')) })],
+      );
       const trigger = h('button', {
         className: 'wpl-btn wpl-btn-secondary wpl-btn-sm',
         text: text(config.label, 'Details'),
@@ -334,7 +374,11 @@ export function Tooltip(config: Config = {}) {
     init(this: Magic) {
       const id = uid('tip');
       let open = false;
-      const tip = h('span', { className: 'wpl-tooltip', text: text(config.content, 'Tip'), attrs: { id, role: 'tooltip', hidden: true } });
+      const tip = h('span', {
+        className: 'wpl-tooltip',
+        text: text(config.content, 'Tip'),
+        attrs: { id, role: 'tooltip', hidden: true },
+      });
       const trigger = h('button', {
         className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
         text: text(config.label, 'Info'),
@@ -363,28 +407,52 @@ export function Tabs(config: Config = {}) {
     init(this: Magic) {
       const tabs = list<TabItem>(config.tabs);
       let value = text(config.value, tabs[0]?.id ?? '');
-      const tablist = h('div', { className: 'wpl-tablist', attrs: { role: 'tablist', 'aria-label': text(config.label, 'Tabs') } });
-      const panel = h('div', { className: 'wpl-tabpanel', attrs: { role: 'tabpanel', tabindex: '0' } });
+      const tablist = h('div', {
+        className: 'wpl-tablist',
+        attrs: { role: 'tablist', 'aria-label': text(config.label, 'Tabs') },
+      });
+      const panel = h('div', {
+        className: 'wpl-tabpanel',
+        attrs: { role: 'tabpanel', tabindex: '0' },
+      });
       const paint = () => {
         tablist.replaceChildren();
         tabs.forEach((tab, index) => {
           const selected = tab.id === value;
-          tablist.append(h('button', {
-            className: 'wpl-tab',
-            text: tab.label,
-            attrs: { type: 'button', role: 'tab', 'aria-selected': String(selected), tabindex: selected ? '0' : '-1' },
-            on: {
-              click: () => select(tab.id),
-              keydown: (event) => {
-                const key = (event as KeyboardEvent).key;
-                if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return;
-                event.preventDefault();
-                const next = key === 'Home' ? 0 : key === 'End' ? tabs.length - 1 : moveIndex(index, key === 'ArrowRight' ? 1 : -1, tabs.length, true);
-                const item = tabs[next];
-                if (item) select(item.id);
+          tablist.append(
+            h('button', {
+              className: 'wpl-tab',
+              text: tab.label,
+              attrs: {
+                type: 'button',
+                role: 'tab',
+                'aria-selected': String(selected),
+                tabindex: selected ? '0' : '-1',
               },
-            },
-          }));
+              on: {
+                click: () => select(tab.id),
+                keydown: (event) => {
+                  const key = (event as KeyboardEvent).key;
+                  if (
+                    key !== 'ArrowRight' &&
+                    key !== 'ArrowLeft' &&
+                    key !== 'Home' &&
+                    key !== 'End'
+                  )
+                    return;
+                  event.preventDefault();
+                  const next =
+                    key === 'Home'
+                      ? 0
+                      : key === 'End'
+                        ? tabs.length - 1
+                        : moveIndex(index, key === 'ArrowRight' ? 1 : -1, tabs.length, true);
+                  const item = tabs[next];
+                  if (item) select(item.id);
+                },
+              },
+            }),
+          );
         });
         const current = tabs.find((tab) => tab.id === value);
         panel.textContent = current?.panel ?? '';
@@ -412,25 +480,39 @@ export function Accordion(config: Config = {}) {
         for (const item of items) {
           const expanded = open.has(item.id);
           const panelId = uid('acc');
-          root.append(h('div', { className: 'wpl-accordion-item' }, [
-            h('button', {
-              className: 'wpl-accordion-trigger',
-              text: item.title,
-              attrs: { type: 'button', 'aria-expanded': String(expanded), 'aria-controls': panelId },
-              on: {
-                click: () => {
-                  if (expanded) open.delete(item.id);
-                  else {
-                    if (!flag(config.multiple)) open.clear();
-                    open.add(item.id);
-                  }
-                  paint();
-                  emit(this, 'wpl-toggle', { id: item.id, open: open.has(item.id) });
+          root.append(
+            h('div', { className: 'wpl-accordion-item' }, [
+              h(
+                'button',
+                {
+                  className: 'wpl-accordion-trigger',
+                  text: item.title,
+                  attrs: {
+                    type: 'button',
+                    'aria-expanded': String(expanded),
+                    'aria-controls': panelId,
+                  },
+                  on: {
+                    click: () => {
+                      if (expanded) open.delete(item.id);
+                      else {
+                        if (!flag(config.multiple)) open.clear();
+                        open.add(item.id);
+                      }
+                      paint();
+                      emit(this, 'wpl-toggle', { id: item.id, open: open.has(item.id) });
+                    },
+                  },
                 },
-              },
-            }, [svgIcon(expanded ? 'chevronDown' : 'chevronRight')]),
-            h('div', { className: 'wpl-accordion-panel', text: item.content ?? '', attrs: { id: panelId, hidden: expanded ? undefined : true } }),
-          ]));
+                [svgIcon(expanded ? 'chevronDown' : 'chevronRight')],
+              ),
+              h('div', {
+                className: 'wpl-accordion-panel',
+                text: item.content ?? '',
+                attrs: { id: panelId, hidden: expanded ? undefined : true },
+              }),
+            ]),
+          );
         }
       };
       paint();
@@ -443,24 +525,42 @@ export function Carousel(config: Config = {}) {
   return {
     init(this: Magic) {
       const slides = list<Slide>(config.slides);
+      const media = slides.some((slide) => Boolean(slide.src));
       let index = 0;
       const viewport = h('div', { className: 'wpl-carousel-viewport' });
       const paint = () => {
         const slide = slides[index];
         const figure = slide?.src
           ? h('figure', { className: 'wpl-carousel-figure' }, [
-              h('img', { className: 'wpl-carousel-image', attrs: { src: slide.src, alt: slide.alt ?? slide.label ?? '' } }),
+              h('img', {
+                className: 'wpl-carousel-image',
+                attrs: { src: slide.src, alt: slide.alt ?? slide.label ?? '' },
+              }),
               h('figcaption', { className: 'wpl-carousel-caption' }, [
                 h('strong', { text: slide.label }),
                 slide.caption ? h('span', { text: slide.caption }) : null,
               ]),
             ])
           : null;
-        viewport.replaceChildren(h('div', { className: 'wpl-carousel-slide', attrs: { 'aria-label': slide?.label } }, [
-          figure,
-          slide?.content ? h('div', { className: 'wpl-carousel-copy', text: slide.content }) : null,
-          !slide?.src && !slide?.content ? h('p', { className: 'wpl-carousel-copy', text: slide?.label ?? translate(this.$el, 'empty') }) : null,
-        ]));
+        const panel = h(
+          'div',
+          { className: 'wpl-carousel-slide', attrs: { 'aria-label': slide?.label } },
+          [
+            figure,
+            slide?.content
+              ? h('div', { className: 'wpl-carousel-copy', text: slide.content })
+              : null,
+            !slide?.src && !slide?.content
+              ? h('p', {
+                  className: 'wpl-carousel-copy',
+                  text: slide?.label ?? translate(this.$el, 'empty'),
+                })
+              : null,
+          ],
+        );
+        viewport.replaceChildren(
+          media ? h('div', { className: 'wpl-carousel-track' }, [panel]) : panel,
+        );
         previous.disabled = !config.loop && index === 0;
         next.disabled = !config.loop && index >= slides.length - 1;
       };
@@ -469,19 +569,30 @@ export function Carousel(config: Config = {}) {
         paint();
         emit(this, 'wpl-change', { index });
       };
-      const previous = h('button', {
-        className: 'wpl-carousel-control',
-        attrs: { type: 'button', 'aria-label': translate(this.$el, 'previous') },
-        on: { click: () => go(-1) },
-      }, [svgIcon('chevronLeft')]);
-      const next = h('button', {
-        className: 'wpl-carousel-control',
-        attrs: { type: 'button', 'aria-label': translate(this.$el, 'next') },
-        on: { click: () => go(1) },
-      }, [svgIcon('chevronRight')]);
+      const previous = h(
+        'button',
+        {
+          className: 'wpl-carousel-control',
+          attrs: { type: 'button', 'aria-label': translate(this.$el, 'previous') },
+          on: { click: () => go(-1) },
+        },
+        [svgIcon('chevronLeft')],
+      );
+      const next = h(
+        'button',
+        {
+          className: 'wpl-carousel-control',
+          attrs: { type: 'button', 'aria-label': translate(this.$el, 'next') },
+          on: { click: () => go(1) },
+        },
+        [svgIcon('chevronRight')],
+      );
       paint();
       this.$el.classList.add('wpl-carousel');
-      this.$el.replaceChildren(h('div', { className: 'wpl-carousel-bar' }, [previous, viewport, next]));
+      if (media) this.$el.classList.add('wpl-carousel-media');
+      this.$el.replaceChildren(
+        h('div', { className: 'wpl-carousel-bar' }, [previous, viewport, next]),
+      );
     },
   };
 }
@@ -497,23 +608,38 @@ export function Steps(config: Config = {}) {
         listEl.replaceChildren();
         items.forEach((item, index) => {
           const state = stepState(index, current);
-          listEl.append(h('li', { className: 'wpl-step', attrs: { 'data-state': state } }, [
-            h('button', {
-              className: 'wpl-step-trigger',
-              attrs: { type: 'button', 'aria-current': state === 'current' ? 'step' : undefined },
-              on: {
-                click: () => {
-                  value = item.id;
-                  paint();
-                  emit(this, 'wpl-change', { value });
+          listEl.append(
+            h('li', { className: 'wpl-step', attrs: { 'data-state': state } }, [
+              h(
+                'button',
+                {
+                  className: 'wpl-step-trigger',
+                  attrs: {
+                    type: 'button',
+                    'aria-current': state === 'current' ? 'step' : undefined,
+                  },
+                  on: {
+                    click: () => {
+                      value = item.id;
+                      paint();
+                      emit(this, 'wpl-change', { value });
+                    },
+                  },
                 },
-              },
-            }, [
-              h('span', { className: 'wpl-step-marker', attrs: { 'aria-hidden': 'true' }, text: String(index + 1) }),
-              h('span', { className: 'wpl-step-title', text: item.title }),
-              item.description ? h('span', { className: 'wpl-step-desc', text: item.description }) : null,
+                [
+                  h('span', {
+                    className: 'wpl-step-marker',
+                    attrs: { 'aria-hidden': 'true' },
+                    text: String(index + 1),
+                  }),
+                  h('span', { className: 'wpl-step-title', text: item.title }),
+                  item.description
+                    ? h('span', { className: 'wpl-step-desc', text: item.description })
+                    : null,
+                ],
+              ),
             ]),
-          ]));
+          );
         });
       };
       paint();
@@ -533,13 +659,24 @@ export function FileUpload(config: Config = {}) {
       const maxSize = num(config.maxSize, 0);
       const accept = text(config.accept);
       const names = h('ul', { className: 'wpl-file-list' });
-      const errors = h('p', { className: 'wpl-field-error', attrs: { role: 'alert', hidden: true } });
+      const errors = h('p', {
+        className: 'wpl-field-error',
+        attrs: { role: 'alert', hidden: true },
+      });
       const input = h('input', {
         className: 'wpl-file-input',
-        attrs: { type: 'file', accept: accept || undefined, multiple: flag(config.multiple) || undefined },
+        attrs: {
+          type: 'file',
+          accept: accept || undefined,
+          multiple: flag(config.multiple) || undefined,
+        },
         on: { change: () => take(input.files) },
       });
-      const drop = h('label', { className: 'wpl-file-drop', text: text(config.label, 'Choose a file') }, [input]);
+      const drop = h(
+        'label',
+        { className: 'wpl-file-drop', text: text(config.label, 'Choose a file') },
+        [input],
+      );
       drop.addEventListener('dragover', (event) => {
         event.preventDefault();
         drop.setAttribute('data-active', 'true');
@@ -564,7 +701,9 @@ export function FileUpload(config: Config = {}) {
           }
           accepted.push(file.name);
         }
-        names.replaceChildren(...accepted.map((name) => h('li', { className: 'wpl-file-item', text: name })));
+        names.replaceChildren(
+          ...accepted.map((name) => h('li', { className: 'wpl-file-item', text: name })),
+        );
         errors.hidden = rejected.length === 0;
         errors.textContent = rejected.map((item) => `${item.name}: ${item.reason}`).join(' ');
         if (accepted.length) emit(this, 'wpl-change', { files: accepted });
@@ -598,7 +737,13 @@ export function Combobox(config: Config = {}) {
       const listId = uid('list');
       const input = h('input', {
         className: 'wpl-input',
-        attrs: { role: 'combobox', 'aria-expanded': 'false', 'aria-controls': listId, 'aria-autocomplete': 'list', value: query },
+        attrs: {
+          role: 'combobox',
+          'aria-expanded': 'false',
+          'aria-controls': listId,
+          'aria-autocomplete': 'list',
+          value: query,
+        },
         on: {
           input: (event) => {
             query = (event.target as HTMLInputElement).value;
@@ -609,24 +754,37 @@ export function Combobox(config: Config = {}) {
           keydown: (event) => onKey(event as KeyboardEvent),
         },
       });
-      const listbox = h('div', { className: 'wpl-listbox', attrs: { id: listId, role: 'listbox', hidden: true } });
-      const filtered = () => options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
+      const listbox = h('div', {
+        className: 'wpl-listbox',
+        attrs: { id: listId, role: 'listbox', hidden: true },
+      });
+      const filtered = () =>
+        options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
       const paint = () => {
         const items = filtered();
         input.setAttribute('aria-expanded', String(open));
         listbox.hidden = !open;
         listbox.replaceChildren();
         if (!items.length) {
-          listbox.append(h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }));
+          listbox.append(
+            h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }),
+          );
           return;
         }
         items.forEach((option, index) => {
-          listbox.append(h('button', {
-            className: 'wpl-menu-item',
-            text: option.label,
-            attrs: { type: 'button', role: 'option', 'data-active': index === active ? 'true' : undefined, disabled: option.disabled || undefined },
-            on: { click: () => choose(option) },
-          }));
+          listbox.append(
+            h('button', {
+              className: 'wpl-menu-item',
+              text: option.label,
+              attrs: {
+                type: 'button',
+                role: 'option',
+                'data-active': index === active ? 'true' : undefined,
+                disabled: option.disabled || undefined,
+              },
+              on: { click: () => choose(option) },
+            }),
+          );
         });
       };
       const choose = (option: ComboOption) => {
@@ -658,11 +816,16 @@ export function Combobox(config: Config = {}) {
         }
       };
       paint();
-      this.$el.replaceChildren(h('div', { className: 'wpl-combo' }, [
-        h('label', { className: 'wpl-label', text: text(config.label, 'Choose') }),
-        h('div', { className: 'wpl-combo-control' }, [svgIcon('search', 'wpl-icon wpl-combo-icon'), input]),
-        listbox,
-      ]));
+      this.$el.replaceChildren(
+        h('div', { className: 'wpl-combo' }, [
+          h('label', { className: 'wpl-label', text: text(config.label, 'Choose') }),
+          h('div', { className: 'wpl-combo-control' }, [
+            svgIcon('search', 'wpl-icon wpl-combo-icon'),
+            input,
+          ]),
+          listbox,
+        ]),
+      );
     },
   };
 }
@@ -682,7 +845,11 @@ export function CommandPalette(config: Config = {}) {
       const results = h('div', { className: 'wpl-command-list', attrs: { role: 'listbox' } });
       const input = h('input', {
         className: 'wpl-input wpl-command-input',
-        attrs: { type: 'search', placeholder: text(config.placeholder, translate(this.$el, 'search')), 'aria-label': text(config.label, translate(this.$el, 'search')) },
+        attrs: {
+          type: 'search',
+          placeholder: text(config.placeholder, translate(this.$el, 'search')),
+          'aria-label': text(config.label, translate(this.$el, 'search')),
+        },
         on: {
           input: (event) => {
             query = (event.target as HTMLInputElement).value;
@@ -708,21 +875,32 @@ export function CommandPalette(config: Config = {}) {
           },
         },
       });
-      const filtered = () => commands.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()) && !item.disabled);
+      const filtered = () =>
+        commands.filter(
+          (item) => item.label.toLowerCase().includes(query.toLowerCase()) && !item.disabled,
+        );
       const paint = () => {
         const items = filtered();
         results.replaceChildren();
         if (!items.length) {
-          results.append(h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }));
+          results.append(
+            h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }),
+          );
           return;
         }
         items.forEach((item, index) => {
-          results.append(h('button', {
-            className: 'wpl-menu-item',
-            text: item.label,
-            attrs: { type: 'button', role: 'option', 'data-active': index === active ? 'true' : undefined },
-            on: { click: () => choose(item) },
-          }));
+          results.append(
+            h('button', {
+              className: 'wpl-menu-item',
+              text: item.label,
+              attrs: {
+                type: 'button',
+                role: 'option',
+                'data-active': index === active ? 'true' : undefined,
+              },
+              on: { click: () => choose(item) },
+            }),
+          );
         });
       };
       const choose = (item: CommandItem) => {
@@ -738,21 +916,30 @@ export function Toast(config: Config = {}) {
   return {
     init(this: Magic) {
       const variant = oneVariant(config.variant);
-      const article = h('article', { className: toastClassName(variant), attrs: { role: variant === 'danger' ? 'alert' : 'status' } }, [
-        h('strong', { className: 'wpl-toast-title', text: text(config.title, 'Notice') }),
-        text(config.description) ? h('p', { className: 'wpl-toast-description', text: text(config.description) }) : null,
-        h('button', {
-          className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
-          text: translate(this.$el, 'dismiss'),
-          attrs: { type: 'button' },
-          on: {
-            click: () => {
-              article.remove();
-              emit(this, 'wpl-dismiss', {});
+      const article = h(
+        'article',
+        {
+          className: toastClassName(variant),
+          attrs: { role: variant === 'danger' ? 'alert' : 'status' },
+        },
+        [
+          h('strong', { className: 'wpl-toast-title', text: text(config.title, 'Notice') }),
+          text(config.description)
+            ? h('p', { className: 'wpl-toast-description', text: text(config.description) })
+            : null,
+          h('button', {
+            className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
+            text: translate(this.$el, 'dismiss'),
+            attrs: { type: 'button' },
+            on: {
+              click: () => {
+                article.remove();
+                emit(this, 'wpl-dismiss', {});
+              },
             },
-          },
-        }),
-      ]);
+          }),
+        ],
+      );
       this.$el.replaceChildren(article);
     },
   };
@@ -765,4 +952,3 @@ export function Notification(config: Config = {}) {
 function oneVariant(value: unknown): 'neutral' | 'success' | 'warning' | 'danger' {
   return value === 'success' || value === 'warning' || value === 'danger' ? value : 'neutral';
 }
-

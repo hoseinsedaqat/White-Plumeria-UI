@@ -114,46 +114,48 @@ function DialogDemo() {
   );
 }
 
+const still = (file: string) => `${import.meta.env.BASE_URL}${file}`;
+
 export const themeSlides = [
   {
     id: 'white',
     label: 'White',
-    src: '/carousel/white.jpg',
+    src: still('carousel/white.jpg'),
     alt: 'White plumeria flowers with yellow centers resting on pale stone',
     caption: 'Neutral white and ink. The default palette, in light and dark.',
   },
   {
     id: 'ivory',
     label: 'Ivory',
-    src: '/carousel/ivory.jpg',
+    src: still('carousel/ivory.jpg'),
     alt: 'A cream ceramic cup of tea and dried grass on ivory linen',
     caption: 'Warm paper, brass, and ink.',
   },
   {
     id: 'ink',
     label: 'Ink',
-    src: '/carousel/ink.jpg',
+    src: still('carousel/ink.jpg'),
     alt: 'A brass lamp glowing against deep blue linen',
     caption: 'Letterpress contrast: near-black type and strong rules.',
   },
   {
     id: 'saffron',
     label: 'Saffron',
-    src: '/carousel/saffron.jpg',
+    src: still('carousel/saffron.jpg'),
     alt: 'Saffron threads and a halved blood orange on a walnut table',
     caption: 'Editorial saffron for dense dashboards.',
   },
   {
     id: 'lagoon',
     label: 'Lagoon',
-    src: '/carousel/lagoon.jpg',
+    src: still('carousel/lagoon.jpg'),
     alt: 'Clear turquoise water over pale sand and smooth stones',
     caption: 'Cool sand and deep teal.',
   },
   {
     id: 'blush',
     label: 'Blush',
-    src: '/carousel/blush.jpg',
+    src: still('carousel/blush.jpg'),
     alt: 'A coral-pink flower and blush linen on pale stone',
     caption: 'Stone and coral, still formal.',
   },
