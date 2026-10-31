@@ -6,19 +6,34 @@ body,
 }
 
 body {
-  background: var(--wpl-color-bg, #ffffff);
+  background: var(--wpl-color-bg, #f6f6f7);
   color: var(--wpl-color-text, #18181b);
 }
 
 .docs-app {
   --docs-bar: 4rem;
   --docs-side: 16rem;
+  /* Literals match the White canvas. A themed preview must not rewrite these, or the stage ring follows the component instead of the page. */
+  --docs-chrome-bg: #f6f6f7;
+  --docs-chrome-text: #18181b;
   direction: ltr;
   text-align: left;
   min-height: 100vh;
   color: var(--wpl-color-text);
   background: var(--wpl-color-bg);
   font-family: var(--wpl-font-sans);
+}
+
+.docs-app:not([data-home='true'])[data-wpl-scheme='dark'] {
+  --docs-chrome-bg: #09090b;
+  --docs-chrome-text: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  .docs-app:not([data-home='true']):not([data-wpl-scheme='light']) {
+    --docs-chrome-bg: #09090b;
+    --docs-chrome-text: #fafafa;
+  }
 }
 
 .docs-app *,
@@ -648,6 +663,10 @@ body {
   border-radius: 1rem;
   background: var(--wpl-color-bg);
   color: var(--wpl-color-text);
+}
+
+.docs-app:not([data-home='true']) :is(.docs-canvas, .docs-tile-preview) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-chrome-bg) 28%, var(--wpl-color-text));
 }
 
 .docs-tile-preview {
