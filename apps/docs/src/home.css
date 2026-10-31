@@ -1010,8 +1010,8 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-rulers {
   display: grid;
-  gap: 2.2rem;
-  margin-top: 2.8rem;
+  gap: 1.15rem;
+  margin-top: 2.4rem;
 }
 
 .home-ruler {
@@ -1031,8 +1031,8 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 .home-ruler-item i {
   display: block;
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--wpl-color-text) 9%, var(--wpl-color-bg-muted));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 8%, transparent);
+  background: color-mix(in srgb, var(--wpl-color-text) 42%, var(--wpl-color-bg));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wpl-color-text) 55%, transparent);
 }
 
 .home-ruler-item.is-xs i {
@@ -1069,13 +1069,15 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 .home-scale-board,
 .home-radius,
 .home-space {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.85rem 1.1rem;
 }
 
 .home-scale-board {
-  margin-top: 1.6rem;
+  margin-top: 1.8rem;
 }
 
 .home-scale-item,
@@ -1116,8 +1118,8 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-token-rows {
   display: grid;
-  gap: 0.8rem;
-  margin-top: 0.8rem;
+  gap: 1.6rem;
+  margin-top: 2.2rem;
 }
 
 .home-token-rows h3 {
@@ -1127,8 +1129,8 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 .home-radius i,
 .home-space i {
   display: block;
-  border: 1px solid var(--wpl-color-border-strong);
-  background: color-mix(in srgb, var(--wpl-color-primary) 18%, var(--wpl-color-bg));
+  border: 1px solid color-mix(in srgb, var(--wpl-color-text) 50%, transparent);
+  background: color-mix(in srgb, var(--wpl-color-text) 42%, var(--wpl-color-bg));
 }
 
 .home-radius i {
@@ -1137,11 +1139,16 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 }
 
 .home-space {
-  align-items: end;
+  align-items: flex-end;
 }
 
 .home-space div {
-  min-height: 6.5rem;
+  min-height: 0;
+}
+
+.home-space i {
+  block-size: 1.35rem;
+  border-radius: 0.45rem;
 }
 
 .home-charts {
@@ -1579,11 +1586,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
   }
 }
 
-@media (min-width: 760px) {
-  .home-token-rows {
-    grid-template-columns: 1.2fr 0.8fr;
-  }
-}
+
 
 @media (prefers-reduced-motion: reduce) {
   .home-window,
