@@ -332,11 +332,12 @@ export function renderDemo(slug: string): ReactNode {
           options={[
             { value: 'fra', label: 'Frankfurt' },
             { value: 'ber', label: 'Berlin' },
+            { value: 'ham', label: 'Hamburg' },
           ]}
         />
       );
     case 'search-input':
-      return <SearchInput label="Search docs" />;
+      return <SearchInput label="Search docs" defaultValue="Button" />;
     case 'file-upload':
       return <FileUpload label="Statement PDF" accept="application/pdf" maxSize={2_000_000} />;
     case 'dialog':

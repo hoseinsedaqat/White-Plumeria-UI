@@ -1,6 +1,7 @@
 import { capabilities, setModifierManager } from '@ember/modifier';
 import {
   createId,
+  iconPaths,
   firstEnabledIndex,
   menuCommand,
   menuHasSubmenu,
@@ -604,7 +605,7 @@ export const Carousel = glimmer(
 );
 
 export const Combobox = glimmer(
-  `<div class="wpl-field"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" role="combobox" aria-expanded={{this.expanded}} aria-controls={{this.listId}} value={{this.query}} {{on "input" this.filter}} {{on "focus" this.open}} />{{#if this.openState}}<ul class="wpl-menu" id={{this.listId}} role="listbox">{{#each this.matches as |option|}}<li><button type="button" role="option" {{on "click" (fn this.pick option)}}>{{option.label}}</button></li>{{/each}}</ul>{{/if}}</div>`,
+  `<div class="wpl-combo"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-combo-control"><span class="wpl-combo-icon" aria-hidden="true"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths.search}"/></svg></span><input id={{this.fieldId}} class="wpl-input" role="combobox" aria-expanded={{this.expanded}} aria-controls={{this.listId}} value={{this.query}} {{on "input" this.filter}} {{on "focus" this.open}} /></div>{{#if this.openState}}<ul class="wpl-menu" id={{this.listId}} role="listbox">{{#each this.matches as |option|}}<li><button type="button" role="option" {{on "click" (fn this.pick option)}}>{{option.label}}</button></li>{{/each}}</ul>{{/if}}</div>`,
   {
     state: (args) => ({
       query: str(args.value),

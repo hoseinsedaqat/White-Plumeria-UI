@@ -1,8 +1,19 @@
 import { emit } from "../emit.ts";
+import { iconPaths } from "@white-plumeria/core";
 export interface Input { label?: string; value?: string; placeholder?: string; onChange?: (value: string) => void; }
 <let/value=input.value ?? "">
 <id/fieldId/>
-<div/host class="wpl-field">
+<div/host class="wpl-search">
   <label class="wpl-label" for=fieldId>${input.label || "Search"}</label>
-  <input id=fieldId class="wpl-input" type="search" placeholder=input.placeholder || "Search" value=value valueChange(next) { value = String(next); emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+  <div class="wpl-search-control">
+    <span class="wpl-search-icon" aria-hidden="true">
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.search/></svg>
+    </span>
+    <input id=fieldId class="wpl-input" type="search" placeholder=input.placeholder || "Search" value=value valueChange(next) { value = String(next); emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+    <if=value>
+      <button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label="Clear" onClick() { value = ""; emit(host(), "wpl-change", { value: "" }); input.onChange?.(""); }>
+        <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.close/></svg>
+      </button>
+    </if>
+  </div>
 </div>

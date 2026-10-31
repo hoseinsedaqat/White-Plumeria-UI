@@ -536,9 +536,22 @@
   position: absolute;
   inset-block-start: 50%;
   inset-inline-start: 0.75rem;
+  display: grid;
+  place-items: center;
+  inline-size: 1rem;
+  block-size: 1rem;
   transform: translateY(-50%);
   color: var(--wpl-color-text-muted);
+  line-height: 0;
   pointer-events: none;
+}
+
+.wpl-search-icon .wpl-icon,
+.wpl-combo-icon .wpl-icon,
+.wpl-search-icon.wpl-icon,
+.wpl-combo-icon.wpl-icon {
+  inline-size: 1rem;
+  block-size: 1rem;
 }
 
 .wpl-search .wpl-input,
@@ -546,11 +559,28 @@
   padding-inline-start: 2.2rem;
 }
 
+.wpl-search .wpl-input::-webkit-search-cancel-button,
+.wpl-search .wpl-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.wpl-search-control:has(.wpl-search-clear:not([hidden])) .wpl-input {
+  padding-inline-end: 2.15rem;
+}
+
 .wpl-search-clear {
   position: absolute;
   inset-block-start: 50%;
   inset-inline-end: 0.35rem;
   transform: translateY(-50%);
+}
+
+.wpl-combo > .wpl-listbox,
+.wpl-combo > .wpl-menu,
+.wpl-combo > .wpl-menu-panel {
+  margin-block-start: 0.35rem;
 }
 
 .wpl-listbox,

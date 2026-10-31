@@ -11,8 +11,10 @@ import {
   ContextMenu,
   DatePicker,
   DateRangePicker,
+  Combobox,
   IconButton,
   Input,
+  SearchInput,
   DropdownMenu,
   Grid,
   Kbd,
@@ -434,6 +436,24 @@ const sections: Record<string, ReactNode> = {
     <Preview title="Shortcut" open code={`<Kbd keys={["Ctrl", "K"]} />`}>
       <Kbd keys={['Ctrl', 'K']} />
       <Kbd keys={['Shift', 'F10']} />
+    </Preview>
+  ),
+  combobox: (
+    <Preview title="Filterable list" open>
+      <Combobox
+        label="City"
+        defaultOpen
+        options={[
+          { value: 'fra', label: 'Frankfurt' },
+          { value: 'ber', label: 'Berlin' },
+          { value: 'ham', label: 'Hamburg' },
+        ]}
+      />
+    </Preview>
+  ),
+  'search-input': (
+    <Preview title="Search" open>
+      <SearchInput label="Search docs" defaultValue="Button" />
     </Preview>
   ),
   'button-group': (

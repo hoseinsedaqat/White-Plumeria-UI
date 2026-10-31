@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { Notification } from './toast.tsx';
-import { RangeSlider, ToggleGroup } from './form.tsx';
+import { Combobox } from './combobox.tsx';
+import { RangeSlider, SearchInput, ToggleGroup } from './form.tsx';
 import { ContextMenu, DropdownMenu } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
@@ -448,6 +449,28 @@ describe('new controls', () => {
     expect(input).toHaveValue(1);
     expect(screen.getByRole('button', { name: 'Decrease' })).toBeDisabled();
     expect(values).toEqual([3, 2, 1]);
+  });
+
+  it('draws search and combobox with the shared icon set', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <SearchInput label="Search docs" defaultValue="Button" />
+        <Combobox label="City" options={[{ value: 'fra', label: 'Frankfurt' }]} />
+      </>,
+    );
+    const search = screen.getByRole('searchbox', { name: 'Search docs' });
+    const searchRoot = search.closest('.wpl-search');
+    expect(searchRoot?.querySelector('.wpl-search-icon svg')).toBeTruthy();
+    expect(searchRoot?.textContent).not.toContain('⌕');
+    const clear = screen.getByRole('button', { name: 'Clear' });
+    expect(clear.querySelector('svg')).toBeTruthy();
+    expect(clear.textContent).not.toContain('×');
+    await user.click(clear);
+    expect(search).toHaveValue('');
+    const combo = screen.getByRole('combobox', { name: 'City' });
+    expect(combo.closest('.wpl-combo')?.querySelector('.wpl-combo-icon svg')).toBeTruthy();
+    expect(combo.closest('.wpl-combo')?.textContent).not.toMatch(/⌕|×/);
   });
 
   it('colors a notification and keeps dismiss optional', async () => {

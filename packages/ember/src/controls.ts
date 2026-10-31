@@ -389,8 +389,12 @@ export const ValidationMessage = glimmer(
   `<p class="wpl-field-error" role="alert">{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}</p>`,
 );
 
+function fieldGlyph(name: 'search' | 'close'): string {
+  return `<svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths[name]}"/></svg>`;
+}
+
 export const SearchInput = glimmer(
-  `<div class="wpl-search"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-search-control"><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.value}} placeholder={{this.placeholder}} aria-label={{this.label}} {{on "input" this.commit}} /></div></div>`,
+  `<div class="wpl-search"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${fieldGlyph('search')}</span><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.value}} placeholder={{this.placeholder}} aria-label={{this.label}} {{on "input" this.commit}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clear}}>${fieldGlyph('close')}</button>{{/if}}</div></div>`,
   {
     state: (args) => ({ value: str(args.value), fieldId: createId('search') }),
     getters: {
@@ -398,6 +402,11 @@ export const SearchInput = glimmer(
       placeholder: (host) => str(host.args.placeholder, 'Search'),
       fieldId: (host) => str(host.state.fieldId),
       value: (host) => str(host.state.value),
+      hasQuery: (host) => str(host.state.value).length > 0,
+      clearLabel() {
+        const element = typeof document === 'undefined' ? null : document.body;
+        return message(localeOf(element), 'clear');
+      },
     },
     methods: {
       commit(event) {
@@ -407,6 +416,10 @@ export const SearchInput = glimmer(
             : '';
         this.state.value = value;
         bubble(event as Event, 'wpl-change', { value });
+      },
+      clear(event) {
+        this.state.value = '';
+        bubble(event as Event, 'wpl-change', { value: '' });
       },
     },
   },

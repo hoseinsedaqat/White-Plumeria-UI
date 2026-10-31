@@ -1,5 +1,6 @@
 <script lang="ts">
   import { nextIndex } from '@white-plumeria/core';
+  import Icon from './Icon.svelte';
   import { useWhitePlumeria } from './context.svelte.ts';
   let {
     label,
@@ -31,9 +32,11 @@
   }
 </script>
 
-<div class="wpl-field">
+<div class="wpl-combo">
   <label class="wpl-label" for={id}>{label}</label>
-  <input
+  <div class="wpl-combo-control">
+    <span class="wpl-combo-icon" aria-hidden="true"><Icon name="search" /></span>
+    <input
     {id}
     class="wpl-input"
     role="combobox"
@@ -56,6 +59,7 @@
       if (event.key === 'Escape') open = false;
     }}
   />
+  </div>
   {#if open}
     <ul id="{id}-list" role="listbox" class="wpl-menu-panel">
       {#if filtered.length === 0}

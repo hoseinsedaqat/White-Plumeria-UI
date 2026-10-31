@@ -1,5 +1,6 @@
 import { bindDismissable, nextIndex } from '@white-plumeria/core';
 import { computed, defineComponent, h, onBeforeUnmount, ref, useId, watch, type PropType } from 'vue';
+import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
 
 export interface ComboOption {
@@ -37,9 +38,11 @@ export const Combobox = defineComponent({
     });
     onBeforeUnmount(() => stop?.());
     return () =>
-      h('div', { ref: root, class: 'wpl-field' }, [
+      h('div', { ref: root, class: 'wpl-combo' }, [
         h('label', { class: 'wpl-label', for: id }, props.label),
-        h('input', {
+        h('div', { class: 'wpl-combo-control' }, [
+          h('span', { class: 'wpl-combo-icon', 'aria-hidden': 'true' }, [h(Icon, { name: 'search' })]),
+          h('input', {
           id,
           class: 'wpl-input',
           role: 'combobox',
@@ -71,6 +74,7 @@ export const Combobox = defineComponent({
             if (event.key === 'Escape') open.value = false;
           },
         }),
+        ]),
         open.value
           ? h(
               'ul',

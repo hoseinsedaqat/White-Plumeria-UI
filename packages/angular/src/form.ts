@@ -31,6 +31,7 @@ import {
   type ControlSize,
   type NumberRange,
 } from '@white-plumeria/core';
+import { Icon } from './icon';
 import { injectWhitePlumeria } from './provider';
 
 export interface SelectOption {
@@ -564,11 +565,12 @@ export class RangeSlider {
   selector: 'wpl-search-input',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  imports: [Icon],
   template: `
     <div class="wpl-search">
       <label [class]="labelClass()" [attr.for]="inputId">{{ label() }}</label>
       <div class="wpl-search-control">
-        <span class="wpl-search-icon" aria-hidden="true">⌕</span>
+        <span class="wpl-search-icon" aria-hidden="true"><wpl-icon name="search" /></span>
         <input
           class="wpl-input"
           type="search"
@@ -580,7 +582,7 @@ export class RangeSlider {
         />
         @if (current()) {
           <button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" [attr.aria-label]="clearLabel()" (click)="commit('')">
-            ×
+            <wpl-icon name="close" />
           </button>
         }
       </div>

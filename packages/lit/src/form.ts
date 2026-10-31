@@ -18,6 +18,7 @@ import {
   type NumberRange,
 } from '@white-plumeria/core';
 import { defineTag, html, nothing, WplElement, type RenderResult } from './element';
+import { iconSvg } from './icon';
 import { localeOf, translate } from './provider';
 
 export interface SelectOption {
@@ -932,7 +933,7 @@ export class SearchInput extends WplElement {
     return html`<div class="wpl-search">
       <label class=${cx('wpl-label', this.visuallyHiddenLabel && 'wpl-sr-only')} for=${this.inputId}>${this.label}</label>
       <div class="wpl-search-control">
-        <span class="wpl-search-icon" aria-hidden="true">⌕</span>
+        <span class="wpl-search-icon" aria-hidden="true">${iconSvg('search')}</span>
         <input
           id=${this.inputId}
           class="wpl-input"
@@ -954,7 +955,7 @@ export class SearchInput extends WplElement {
               aria-label=${translate(this, 'clear')}
               @click=${() => this.commit('')}
             >
-              ×
+              ${iconSvg('close')}
             </button>`
           : nothing}
       </div>

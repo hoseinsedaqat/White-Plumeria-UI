@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Search fields and comboboxes use the shared search and close icons. The clear control is an icon button, and the combobox text is no longer indented into an empty gap. Packages are still not published.
 - Calendar and date controls use the shared icon set instead of placeholder glyphs. The docs month starts open so the selected day and range are visible. Packages are still not published.
 - The homepage centers a lone call-to-action, and the footer names the GitHub profile, the repository, and the docs paths. Packages are still not published.
 - The docs theme menu sets direction and reduced motion on component previews. The page chrome stays English and left to right.

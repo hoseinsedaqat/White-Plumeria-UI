@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { bindDismissable, createId, nextIndex } from '@white-plumeria/core';
+import { Icon } from './icon';
 import { injectWhitePlumeria } from './provider';
 
 export interface ComboOption {
@@ -21,10 +22,13 @@ export interface ComboOption {
   selector: 'wpl-combobox',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  imports: [Icon],
   template: `
     <div class="wpl-combo">
       <label class="wpl-label" [attr.for]="id">{{ label() }}</label>
-      <input
+      <div class="wpl-combo-control">
+        <span class="wpl-combo-icon" aria-hidden="true"><wpl-icon name="search" /></span>
+        <input
         class="wpl-input"
         role="combobox"
         [id]="id"
@@ -38,6 +42,7 @@ export interface ComboOption {
         (focus)="open.set(true)"
         (keydown)="onKey($event)"
       />
+      </div>
       @if (open()) {
         <ul class="wpl-listbox" role="listbox" [id]="listId">
           @if (!filtered().length) {
