@@ -907,11 +907,6 @@ body {
   font-size: 1rem;
 }
 
-.docs-tile-preview .wpl-grid-3,
-.docs-tile-preview .wpl-grid-4 {
-  grid-template-columns: 1fr;
-}
-
 .docs-canvas > .wpl-sidebar,
 .docs-tile-preview > .wpl-sidebar {
   border: 1px solid var(--wpl-color-border);

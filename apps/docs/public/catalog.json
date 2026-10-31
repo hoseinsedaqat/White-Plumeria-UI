@@ -242,10 +242,10 @@
   {
     "name": "Grid",
     "slug": "grid",
-    "summary": "Responsive 1 to 4 column grid.",
-    "summaryFa": "شبکهٔ واکنش‌گرا از ۱ تا ۴ ستون.",
+    "summary": "Responsive 1 to 4 column grid. The column count follows the grid width, not the viewport.",
+    "summaryFa": "شبکهٔ واکنش‌گرا از ۱ تا ۴ ستون. تعداد ستون از عرض خود شبکه می‌آید، نه از عرض پنجره.",
     "limitations": [
-      "Collapses to one column below 48rem. Not a masonry layout."
+      "Collapses to one column when the grid is narrower than 48rem. Three and four columns use two tracks from 48rem to 64rem. Not a masonry layout."
     ]
   },
   {

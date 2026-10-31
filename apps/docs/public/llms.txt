@@ -34,7 +34,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Footer (footer): Content info landmark.
 - FormField (form-field): Connects label, control, hint, and error by id.
 - FormMessage (form-message): Hint or error text with the correct role.
-- Grid (grid): Responsive 1 to 4 column grid.
+- Grid (grid): Responsive 1 to 4 column grid. The column count follows the grid width, not the viewport.
 - IconButton (icon-button): Square button that requires an accessible name.
 - Input (input): Single-line text field.
 - Kbd (kbd): Visual keyboard key. It does not register a shortcut.

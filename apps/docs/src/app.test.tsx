@@ -22,6 +22,17 @@ describe('docs app', () => {
     expect(screen.getAllByRole('link', { name: /^Dialog/ }).length).toBeGreaterThan(0);
   });
 
+  it('shows a grid that can stack inside a narrow frame', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('link', { name: 'Components' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
+    await user.click(screen.getAllByRole('link', { name: /^Grid\b/ })[0]);
+    expect(await screen.findByRole('heading', { level: 1, name: 'Grid' })).toBeInTheDocument();
+    expect(screen.getByText('Narrow frame')).toBeInTheDocument();
+    expect(screen.getAllByText('Ledger').length).toBe(2);
+  });
+
   it('searches the catalog without inventing a component', async () => {
     const user = userEvent.setup();
     render(<App />);
