@@ -1,10 +1,34 @@
+import { readPenComponent } from "../../component.ts";
+import Alert from "@white-plumeria/marko/tags/wpl-alert.marko";
+import Badge from "@white-plumeria/marko/tags/wpl-badge.marko";
 import Button from "@white-plumeria/marko/tags/wpl-button.marko";
+import Card from "@white-plumeria/marko/tags/wpl-card.marko";
+import Input from "@white-plumeria/marko/tags/wpl-input.marko";
 import Provider from "@white-plumeria/marko/tags/wpl-provider.marko";
+import Switch from "@white-plumeria/marko/tags/wpl-switch.marko";
 
+<const/component=readPenComponent()>
 <let/saved="Ready in this Marko document.">
 <Provider persist=false theme="white" appearance="light">
   <main class="wpl-root wpl-reset">
-    <Button onClick() { saved = "Saved in this Marko document."; }>Save changes</Button>
-    <p id="note">${saved}</p>
+    <if=component === "badge">
+      <Badge variant="success" label="Paid" />
+    </if>
+    <if=component === "alert">
+      <Alert variant="info" title="Info" description="Sample notice." />
+    </if>
+    <if=component === "card">
+      <Card title="Ledger" description="A titled surface." />
+    </if>
+    <if=component === "switch">
+      <Switch label="Enabled" checked />
+    </if>
+    <if=component === "input">
+      <Input label="Email" placeholder="ada@example.com" />
+    </if>
+    <if=component === "button">
+      <Button onClick() { saved = "Saved in this Marko document."; }>Save changes</Button>
+      <p id="note">${saved}</p>
+    </if>
   </main>
 </Provider>

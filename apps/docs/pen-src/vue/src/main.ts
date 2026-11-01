@@ -1,13 +1,23 @@
 import '@white-plumeria/styles';
-import { Button, Card } from '@white-plumeria/vue';
+import { Alert, Badge, Button, Card, Input, Switch } from '@white-plumeria/vue';
 import { createApp, h, ref } from 'vue';
+import { readPenComponent } from '../../component.ts';
 
+const component = readPenComponent();
 const saved = ref('Ready in this Vue document.');
 
 createApp({
   setup() {
-    return () =>
-      h('main', { class: 'wpl-root wpl-reset' }, [
+    return () => {
+      if (component === 'badge') return h(Badge, { variant: 'success' }, () => 'Paid');
+      if (component === 'alert')
+        return h(Alert, { variant: 'info', title: 'Info' }, () => 'Sample notice.');
+      if (component === 'card')
+        return h(Card, { title: 'Ledger', description: 'A titled surface.' });
+      if (component === 'switch') return h(Switch, { label: 'Enabled', modelValue: true });
+      if (component === 'input')
+        return h(Input, { placeholder: 'ada@example.com', 'aria-label': 'Email' });
+      return h('main', { class: 'wpl-root wpl-reset' }, [
         h(
           Card,
           {
@@ -30,5 +40,6 @@ createApp({
           },
         ),
       ]);
+    };
   },
 }).mount('#app');

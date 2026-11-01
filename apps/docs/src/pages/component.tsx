@@ -1,9 +1,23 @@
-import { catalog, categoryLabels, getComponent, libraryExamples, serverExample, serverHosts } from '@white-plumeria/core';
+import {
+  catalog,
+  categoryLabels,
+  getComponent,
+  libraryExamples,
+  serverExample,
+  serverHosts,
+} from '@white-plumeria/core';
 import { CodeBlock } from '../copy.tsx';
 import { A } from '../router.tsx';
 import { Showcase } from '../showcases.tsx';
+import { LiveLibraries } from './live-libraries.tsx';
 
-export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: (href: string) => void }) {
+export function ComponentPage({
+  slug,
+  onNavigate,
+}: {
+  slug: string;
+  onNavigate: (href: string) => void;
+}) {
   const component = getComponent(slug);
   if (!component) return <p>Unknown component.</p>;
   const index = catalog.findIndex((item) => item.slug === component.slug);
@@ -16,13 +30,15 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       <h1 className="docs-title">{component.name}</h1>
       <p className="docs-lede">{component.summary}</p>
       <Showcase slug={component.slug} />
+      <LiveLibraries slug={component.slug} name={component.name} />
       <ClassTable names={component.classes} />
 
       <section className="docs-block" id="usage">
         <h2>Examples</h2>
         <p>
-          This page includes one example for every library. Server hosts use the adapter named under each heading. They are not
-          separate packages, and nothing is published to npm until the set is complete.
+          This page includes one example for every library. Server hosts use the adapter named under
+          each heading. They are not separate packages, and nothing is published to npm until the
+          set is complete.
         </p>
         <nav className="docs-example-nav" aria-label="Example libraries">
           {libraryExamples.map((item) => (
@@ -44,7 +60,8 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
         ))}
         <h2 id="servers">Server hosts</h2>
         <p>
-          Next, Nuxt, and the other hosts below are application frameworks. Each example is the existing adapter in that host.
+          Next, Nuxt, and the other hosts below are application frameworks. Each example is the
+          existing adapter in that host.
           <A href="/servers" onNavigate={onNavigate}>
             {' '}
             Server host notes
@@ -55,7 +72,8 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
           <section key={item.id} className="docs-example-block" id={`example-${item.id}`}>
             <h3>{item.label}</h3>
             <p>
-              Uses <code>@white-plumeria/{item.package}</code>. There is no <code>@white-plumeria/{item.id}</code> package.
+              Uses <code>@white-plumeria/{item.package}</code>. There is no{' '}
+              <code>@white-plumeria/{item.id}</code> package.
             </p>
             <CodeBlock code={serverExample(component.examples, item.id)} label={item.label} />
           </section>
@@ -94,11 +112,14 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
 
       <section className="docs-block" id="events">
         <h2>Events</h2>
-        {component.events.length === 0 ? <p>No custom events. Use the native control event.</p> : null}
+        {component.events.length === 0 ? (
+          <p>No custom events. Use the native control event.</p>
+        ) : null}
         <ul>
           {component.events.map((event) => (
             <li key={event.name}>
-              <code>{event.react}</code> / <code>{event.vue}</code> / <code>{event.svelte}</code> / <code>{angularEvent(event.react)}</code> — {event.description}
+              <code>{event.react}</code> / <code>{event.vue}</code> / <code>{event.svelte}</code> /{' '}
+              <code>{angularEvent(event.react)}</code> — {event.description}
             </li>
           ))}
         </ul>
@@ -162,14 +183,16 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
 }
 
 function angularEvent(reactName: string): string {
-  if (!reactName.startsWith('on') || reactName.length < 3 || reactName.includes(' ')) return 'output binding';
+  if (!reactName.startsWith('on') || reactName.length < 3 || reactName.includes(' '))
+    return 'output binding';
   const name = reactName.slice(2);
   return `(${name.charAt(0).toLowerCase()}${name.slice(1)})`;
 }
 
 function classKind(name: string) {
   if (/-sm$|-md$|-lg$|-xs$|-xl$/.test(name)) return 'Size';
-  if (/primary|secondary|outline|ghost|danger|success|warning|info|neutral|link/.test(name)) return 'Style';
+  if (/primary|secondary|outline|ghost|danger|success|warning|info|neutral|link/.test(name))
+    return 'Style';
   if (/loading|disabled|block|active/.test(name)) return 'State';
   return 'Component';
 }

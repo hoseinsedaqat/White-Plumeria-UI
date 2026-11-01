@@ -1,4 +1,11 @@
 import { libraryExamples, serverHosts } from '@white-plumeria/core';
+import { penComponents, type PenComponent } from '../pen-src/component.ts';
+
+export { penComponents, type PenComponent };
+
+export function isLivePenComponent(value: string): value is PenComponent {
+  return (penComponents as readonly string[]).includes(value);
+}
 
 const details = {
   html: {
@@ -14,7 +21,8 @@ const details = {
   vue: {
     mount: 'Vue render function',
     file: 'src/main.ts',
-    runtime: 'Vue createApp owns this document. The button is a Vue render function, not JSX compiled as React.',
+    runtime:
+      'Vue createApp owns this document. The button is a Vue render function, not JSX compiled as React.',
   },
   svelte: {
     mount: 'Svelte mount',
@@ -44,7 +52,8 @@ const details = {
   lit: {
     mount: 'Custom element',
     file: 'src/main.ts',
-    runtime: 'defineWhitePlumeria registers wpl-button in this document. The stage is a custom element.',
+    runtime:
+      'defineWhitePlumeria registers wpl-button in this document. The stage is a custom element.',
   },
   alpine: {
     mount: 'Alpine data',
@@ -61,7 +70,10 @@ const details = {
     file: 'src/main.ts',
     runtime: 'renderComponent from @ember/renderer paints the Glimmer button in this document.',
   },
-} as const satisfies Record<(typeof libraryExamples)[number]['id'], { mount: string; file: string; runtime: string }>;
+} as const satisfies Record<
+  (typeof libraryExamples)[number]['id'],
+  { mount: string; file: string; runtime: string }
+>;
 
 const packages = {
   html: '@white-plumeria/styles',
@@ -89,10 +101,13 @@ export type PenId = (typeof libraryPens)[number]['id'];
 const boundaries = {
   next: 'An App Router file would add use client around that same client render. There is no @white-plumeria/next package.',
   nuxt: 'A Nuxt page would wrap the Vue template in ClientOnly. There is no @white-plumeria/nuxt package.',
-  sveltekit: 'A SvelteKit route uses this Svelte component. There is no @white-plumeria/sveltekit package.',
-  solidstart: 'A SolidStart route uses this Solid render. There is no @white-plumeria/solidstart package.',
+  sveltekit:
+    'A SvelteKit route uses this Svelte component. There is no @white-plumeria/sveltekit package.',
+  solidstart:
+    'A SolidStart route uses this Solid render. There is no @white-plumeria/solidstart package.',
   analog: 'An Analog page uses this Angular bootstrap. There is no @white-plumeria/analog package.',
-  qwikcity: 'A Qwik City route uses this Qwik component. There is no @white-plumeria/qwikcity package.',
+  qwikcity:
+    'A Qwik City route uses this Qwik component. There is no @white-plumeria/qwikcity package.',
 } as const satisfies Record<(typeof serverHosts)[number]['id'], string>;
 
 export const hostPens = serverHosts.map((host) => {
@@ -119,8 +134,9 @@ export function isExampleId(id: string): id is ExampleId {
   return Boolean(penById(id) || hostById(id));
 }
 
-export function penDocument(id: PenId): string {
+export function penDocument(id: PenId, component?: string): string {
   const base = import.meta.env.BASE_URL || '/';
   const prefix = base.endsWith('/') ? base : `${base}/`;
-  return `${prefix}pens/${id}/index.html`;
+  const url = `${prefix}pens/${id}/index.html`;
+  return component ? `${url}?component=${encodeURIComponent(component)}` : url;
 }
