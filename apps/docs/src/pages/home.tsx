@@ -42,6 +42,9 @@ function markAttr(source: string, attr: 'style' | 'class') {
     ),
   );
 }
+const pureMarkup = `<input class="wpl-input" placeholder="Email" />
+<label class="wpl-check"><input type="checkbox" checked /> Submit to newsletter</label>
+<button class="wpl-btn wpl-btn-primary" type="button">Save</button>`;
 const chips = ['badge', 'card', 'input', 'select', 'dialog', 'tabs', 'alert', 'table'];
 const principles = [
   ['One vocabulary', 'Class names stay wpl-. Tokens stay --wpl-. A theme change does not fork the markup.'],
@@ -715,23 +718,31 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
-      <section className="home-section">
-        <h2>
+      <section className="home-section" aria-labelledby="pure-title">
+        <h2 id="pure-title">
           Pure CSS.
           <br />
           <span>Works everywhere.</span>
         </h2>
-        <p>The stylesheet does not require a framework. Each adapter is native, and they share one set of names.</p>
-        <div className="home-marquee">
-          <div className="home-marquee-track">
-            {[0, 1].map((copy) => (
-              <ul key={copy} aria-hidden={copy === 1}>
-                {adapters.map(([name]) => (
-                  <li key={`${copy}-${name}`}>{name}</li>
-                ))}
-              </ul>
+        <p>The stylesheet does not require a framework. These controls are native elements. Every adapter shares the class names.</p>
+        <div className="home-pure">
+          <form className="home-pure-form" onSubmit={(event) => event.preventDefault()}>
+            <input className="wpl-input" placeholder="Email" aria-label="Email" />
+            <label className="wpl-check">
+              <input type="checkbox" defaultChecked /> Submit to newsletter
+            </label>
+            <button type="button" className="wpl-btn wpl-btn-primary">
+              Save
+            </button>
+          </form>
+          <pre className="home-code">
+            <code>{markAttr(pureMarkup, 'class')}</code>
+          </pre>
+          <ul className="home-pure-names">
+            {adapters.map(([name]) => (
+              <li key={name}>{name}</li>
             ))}
-          </div>
+          </ul>
         </div>
         <div className="home-ctas">
           <a className="home-cta" href="#frameworks">
