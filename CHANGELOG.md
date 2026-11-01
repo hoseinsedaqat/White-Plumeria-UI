@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Next and Nuxt have a static desk in the repository. The frame is that host’s export, and the control is still the client adapter. There is no `@white-plumeria/next` or `@white-plumeria/nuxt` package. Packages are still not published.
 - Button, Badge, Alert, Card, Switch, and Input open in each library’s own document from the component page. The frame reads `?component=` and is not drawn by the docs React runtime. Packages are still not published.
 - Every component page shows an example for each library, not one hidden tab. Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts on that page. They use the existing adapter and are not separate packages. Packages stay unpublished until the project is complete and stable.
 - The homepage “next level” section shows Button, Card, and Switch as they render, with the class each one uses. The centered call to action stays. Packages are still not published.

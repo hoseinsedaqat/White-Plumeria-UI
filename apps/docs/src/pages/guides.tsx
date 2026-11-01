@@ -65,7 +65,7 @@ export function Example() {
   },
   '/servers': {
     title: 'Server hosts',
-    body: 'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are application hosts, not new component libraries. A component page shows an example for each of them, built from the adapter you already install: React for Next, Vue for Nuxt, Svelte for SvelteKit, Solid for SolidStart, Angular for Analog, and Qwik for Qwik City. There is no @white-plumeria/next or @white-plumeria/nuxt package, and none will be published as a wrapper. Ember server render is not claimed. A runnable Next or Nuxt desk is not in this repository yet. Packages stay off npm until this set is complete and stable.',
+    body: 'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are application hosts, not new component libraries. A component page shows an example for each of them, built from the adapter you already install: React for Next, Vue for Nuxt, Svelte for SvelteKit, Solid for SolidStart, Angular for Analog, and Qwik for Qwik City. There is no @white-plumeria/next or @white-plumeria/nuxt package, and none will be published as a wrapper. Ember server render is not claimed. A Next.js desk and a Nuxt desk are in this repository. Each is a static export, and the control is still the client adapter. SvelteKit, SolidStart, Analog, and Qwik City do not have a desk yet. Packages stay off npm until this set is complete and stable.',
     code: `// Next.js App Router. Client file. Install @white-plumeria/styles and @white-plumeria/react.
 'use client';
 

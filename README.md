@@ -133,7 +133,7 @@ Each package is written for that framework. None of them wrap another adapter.
 | Ember    | `@white-plumeria/ember`    | Ember 7.4          | `<Button>`          |
 | Elements | `@white-plumeria/elements` | custom elements    | a documented subset |
 
-Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for those adapters. They are not extra packages, and they do not wrap another adapter. Each component page shows the host example. Ember server render is not claimed.
+Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for those adapters. They are not extra packages, and they do not wrap another adapter. Each component page shows the host example. Next and Nuxt also have a static desk under Examples. The other hosts do not have a desk yet. Ember server render is not claimed.
 
 <details>
 <summary>React</summary>
@@ -473,6 +473,8 @@ Example desks alias workspace source, so they run before a publish:
 | Alpine  | `pnpm --filter @white-plumeria/example-alpine dev`  | 5182 |
 | Marko   | `pnpm --filter @white-plumeria/example-marko dev`   | 5183 |
 | Ember   | `pnpm --filter @white-plumeria/example-ember dev`   | 5184 |
+| Next    | `pnpm --filter @white-plumeria/example-next dev`    | 5185 |
+| Nuxt    | `pnpm --filter @white-plumeria/example-nuxt dev`    | 5186 |
 
 ## Logo
 
