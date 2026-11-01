@@ -1,0 +1,323 @@
+/*
+  Host color environment.
+  color-scheme follows data-wpl-scheme, then the system preference.
+  A nested light or dark attribute wins over the page.
+  forced-colors keeps state visible with system colors.
+  The operating system palette stays in control.
+*/
+
+:root,
+.wpl-root,
+[data-wpl-theme] {
+  color-scheme: light;
+}
+
+[data-wpl-scheme='dark'] {
+  color-scheme: dark;
+}
+
+[data-wpl-scheme='light'] {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-wpl-scheme='light']),
+  .wpl-root:not([data-wpl-scheme='light']),
+  [data-wpl-theme]:not([data-wpl-scheme='light']) {
+    color-scheme: dark;
+  }
+
+  [data-wpl-scheme='light'] {
+    color-scheme: light;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :where(
+    .wpl-btn:not(.wpl-btn-link),
+    .wpl-icon-btn,
+    .wpl-input,
+    .wpl-textarea,
+    .wpl-select,
+    .wpl-badge,
+    .wpl-alert,
+    .wpl-card,
+    .wpl-dialog,
+    .wpl-drawer
+  ) {
+    border-color: var(--wpl-color-text);
+  }
+
+  :where(
+    .wpl-btn,
+    .wpl-icon-btn,
+    .wpl-input,
+    .wpl-textarea,
+    .wpl-select,
+    .wpl-switch,
+    .wpl-tab,
+    .wpl-day,
+    .wpl-page,
+    .wpl-link
+  ):focus-visible {
+    outline-width: 3px;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(
+    .wpl-btn,
+    .wpl-icon-btn,
+    .wpl-input,
+    .wpl-textarea,
+    .wpl-select,
+    .wpl-check input,
+    .wpl-radio input,
+    .wpl-switch,
+    .wpl-tab,
+    .wpl-accordion-trigger,
+    .wpl-menu-item,
+    .wpl-listbox-item,
+    .wpl-day,
+    .wpl-page,
+    .wpl-link,
+    .wpl-step-trigger,
+    .wpl-carousel-dot,
+    .wpl-carousel-control,
+    .wpl-otp-cell,
+    .wpl-toggle-item,
+    .wpl-number-step,
+    .wpl-split-separator,
+    .wpl-tabpanel,
+    .wpl-carousel-slide
+  ):focus-visible,
+  .wpl-carousel-slide:focus,
+  .wpl-range-input:focus-visible::-webkit-slider-thumb,
+  .wpl-range-input:focus-visible::-moz-range-thumb,
+  .wpl-rating-option input:focus-visible + .wpl-rating-icon {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .wpl-btn:not(.wpl-btn-link),
+  .wpl-icon-btn,
+  .wpl-btn:not(.wpl-btn-link):hover:not(:disabled),
+  .wpl-icon-btn:hover:not(:disabled) {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+
+  .wpl-btn:not(.wpl-btn-link):hover:not(:disabled),
+  .wpl-icon-btn:hover:not(:disabled) {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .wpl-link,
+  .wpl-btn-link,
+  .wpl-btn-link:hover:not(:disabled) {
+    background: transparent;
+    color: LinkText;
+    border-color: transparent;
+    text-decoration: underline;
+  }
+
+  .wpl-btn:disabled,
+  .wpl-icon-btn:disabled,
+  .wpl-input:disabled,
+  .wpl-textarea:disabled,
+  .wpl-select:disabled,
+  .wpl-toggle-item:disabled,
+  .wpl-day:disabled,
+  .wpl-page:disabled,
+  .wpl-number-step:disabled {
+    opacity: 1;
+    color: GrayText;
+    border-color: GrayText;
+    background: ButtonFace;
+  }
+
+  .wpl-input,
+  .wpl-textarea,
+  .wpl-select,
+  .wpl-otp-cell {
+    background: Canvas;
+    background: Field;
+    color: CanvasText;
+    color: FieldText;
+    border: 1px solid ButtonText;
+  }
+
+  .wpl-input[aria-invalid='true'],
+  .wpl-textarea[aria-invalid='true'],
+  .wpl-select[aria-invalid='true'] {
+    border: 2px solid CanvasText;
+  }
+
+  .wpl-input:disabled,
+  .wpl-textarea:disabled,
+  .wpl-select:disabled,
+  .wpl-otp-cell:disabled {
+    opacity: 1;
+    color: GrayText;
+    border-color: GrayText;
+    background: Canvas;
+  }
+
+  .wpl-check input,
+  .wpl-radio input {
+    background: Canvas;
+    background: Field;
+    border: 1px solid ButtonText;
+  }
+
+  .wpl-check input:checked,
+  .wpl-radio input:checked {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .wpl-check input:checked::after {
+    border-color: HighlightText;
+  }
+
+  .wpl-radio input:checked::after {
+    background: HighlightText;
+  }
+
+  .wpl-check input:disabled,
+  .wpl-radio input:disabled {
+    background: Canvas;
+    border-color: GrayText;
+  }
+
+  .wpl-switch-control,
+  .wpl-switch-track {
+    background: Canvas;
+    border: 1px solid ButtonText;
+  }
+
+  .wpl-switch-control::after,
+  .wpl-switch-track::after {
+    background: ButtonText;
+  }
+
+  .wpl-switch[aria-checked='true'] .wpl-switch-control,
+  .wpl-switch[aria-checked='true'] .wpl-switch-track,
+  .wpl-switch input:checked + .wpl-switch-control,
+  .wpl-switch input:checked + .wpl-switch-track {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .wpl-switch[aria-checked='true'] .wpl-switch-control::after,
+  .wpl-switch[aria-checked='true'] .wpl-switch-track::after,
+  .wpl-switch input:checked + .wpl-switch-control::after,
+  .wpl-switch input:checked + .wpl-switch-track::after {
+    background: HighlightText;
+  }
+
+  .wpl-switch:disabled,
+  .wpl-switch[aria-disabled='true'] {
+    opacity: 1;
+    color: GrayText;
+  }
+
+  .wpl-switch:disabled .wpl-switch-control,
+  .wpl-switch:disabled .wpl-switch-track,
+  .wpl-switch[aria-disabled='true'] .wpl-switch-control,
+  .wpl-switch[aria-disabled='true'] .wpl-switch-track {
+    background: Canvas;
+    border-color: GrayText;
+  }
+
+  .wpl-switch:disabled .wpl-switch-control::after,
+  .wpl-switch:disabled .wpl-switch-track::after,
+  .wpl-switch[aria-disabled='true'] .wpl-switch-control::after,
+  .wpl-switch[aria-disabled='true'] .wpl-switch-track::after {
+    background: GrayText;
+  }
+
+  .wpl-day[aria-selected='true'],
+  .wpl-tab[aria-selected='true'],
+  .wpl-page[aria-current='page'],
+  .wpl-listbox-item[aria-selected='true'],
+  .wpl-listbox-item[data-active='true'],
+  .wpl-menu-item[aria-current='true'],
+  .wpl-menu-item[data-active='true'],
+  .wpl-toggle-item[aria-checked='true'],
+  .wpl-nav-menu a[aria-current='page'],
+  .wpl-nav-link[aria-current='page'],
+  .wpl-sidebar a[aria-current='page'],
+  .wpl-step[data-state='current'] .wpl-step-marker,
+  .wpl-step[data-state='complete'] .wpl-step-marker {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+    box-shadow: none;
+  }
+
+  .wpl-day[aria-current='date'] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .wpl-badge,
+  .wpl-alert,
+  .wpl-card,
+  .wpl-dialog,
+  .wpl-drawer {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+
+  .wpl-alert-description,
+  .wpl-card-description {
+    color: CanvasText;
+  }
+
+  .wpl-dialog::backdrop,
+  .wpl-drawer::backdrop {
+    background: CanvasText;
+    opacity: 0.45;
+  }
+
+  .wpl-progress,
+  .wpl-progress-track,
+  .wpl-progress::-webkit-progress-bar,
+  .wpl-slider::-webkit-slider-runnable-track,
+  .wpl-slider::-moz-range-track,
+  .wpl-range-track {
+    background: Canvas;
+    border: 1px solid ButtonText;
+  }
+
+  .wpl-progress::-webkit-progress-value,
+  .wpl-progress::-moz-progress-bar,
+  .wpl-progress-bar,
+  .wpl-range-fill {
+    background: Highlight;
+  }
+
+  .wpl-slider::-webkit-slider-thumb,
+  .wpl-slider::-moz-range-thumb,
+  .wpl-range-input::-webkit-slider-thumb,
+  .wpl-range-input::-moz-range-thumb {
+    background: ButtonFace;
+    border: 2px solid ButtonText;
+  }
+
+  .wpl-spinner {
+    color: ButtonText;
+    border-color: ButtonText;
+    border-inline-end-color: Canvas;
+  }
+
+  .wpl-rating-icon.is-on,
+  .wpl-rating-icon.is-on .wpl-icon {
+    color: Highlight;
+  }
+}

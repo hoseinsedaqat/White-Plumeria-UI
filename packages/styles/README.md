@@ -22,6 +22,8 @@ Set the theme on any ancestor:
 
 `data-wpl-scheme` may be omitted to follow `prefers-color-scheme`. Themes: `white`, `ivory`, `ink`, `saffron`, `lagoon`, `blush`. `white` is the default when the attribute is omitted.
 
+`color-scheme` follows the same attribute, so a native select, date popup, or scrollbar matches the tokens. A nested `data-wpl-scheme="light"` stays light inside a dark page. `forced-colors: active` keeps buttons, switches, checks, selected days, and focus rings on system colors. It does not disable forced colors. This is not a completed screen-reader audit.
+
 Logical properties are used for spacing and alignment. Directional icons opt into mirroring with `.wpl-icon-dir`. The page is not flipped as a whole.
 
 Token CSS is generated from `@white-plumeria/tokens`. Run `pnpm generate:tokens` after editing token values.
