@@ -1,4 +1,5 @@
 import { mountProvider } from "../provider.ts";
+import { enterLocale, leaveLocale, leaveOnServer } from "../text.ts";
 
 export interface Input {
   theme?: string;
@@ -9,11 +10,13 @@ export interface Input {
   content?: Marko.Body;
 }
 
-<div/host class="wpl-root wpl-reset wpl-provider" data-wpl-provider>
+<const/locale=enterLocale(input.locale)>
+<div/host class="wpl-root wpl-reset wpl-provider" data-wpl-provider data-wpl-locale=locale>
   <${input.content}/>
-  <div class="wpl-toast-region" data-wpl-toasts role="region" aria-live="polite"></div>
+  <div class="wpl-toast-region" data-wpl-toasts role="region" aria-live="polite" data-wpl-locale-scope=leaveOnServer()></div>
   <lifecycle
     onMount() {
+      leaveLocale();
       return { stop: mountProvider(host(), input) };
     }
     onDestroy() {

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Persian date and time errors are translated. Marko labels follow the provider locale instead of staying English. Packages are still not published.
 - Component-page examples indent the Nuxt control inside `ClientOnly`, and Angular examples no longer insert a second space before a binding or a self-closing slash. Packages are still not published.
 - `pnpm verify:dist`, `pnpm pack:dry-run`, and `pnpm size` check the eighteen package entry files and a dry-run tarball. They do not publish, and they do not rewrite `workspace:*` into an npm install. The CLI and MCP builds now emit the `.js` files those packages already export.
 - The Analog and SolidStart desks show the button when the frame opens `index.html`. Analog treats that file as the home page. SolidStart writes the Solid button into the static document instead of an empty handler shell. Neither is a server renderer. Packages are still not published.

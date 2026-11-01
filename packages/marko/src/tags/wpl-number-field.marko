@@ -1,4 +1,5 @@
-import { iconPaths, message, numberFieldCommit, numberFieldDraftValue, numberFieldStep, numberFieldText, rangeBounds } from "@white-plumeria/core";
+import { iconPaths, numberFieldCommit, numberFieldDraftValue, numberFieldStep, numberFieldText, rangeBounds } from "@white-plumeria/core";
+import { text } from "../text.ts";
 import { emit } from "../emit.ts";
 
 export interface Input {
@@ -24,7 +25,7 @@ export interface Input {
     <button
       type="button"
       class="wpl-number-step"
-      aria-label=message("en", "decrease")
+      aria-label=text("decrease")
       disabled=input.disabled || (numberFieldDraftValue(focused ? draft : numberFieldText(value, bounds), bounds) ?? value) <= bounds.min
       onClick() {
         const shown = focused ? draft : numberFieldText(value, bounds);
@@ -78,7 +79,7 @@ export interface Input {
     <button
       type="button"
       class="wpl-number-step"
-      aria-label=message("en", "increase")
+      aria-label=text("increase")
       disabled=input.disabled || (numberFieldDraftValue(focused ? draft : numberFieldText(value, bounds), bounds) ?? value) >= bounds.max
       onClick() {
         const shown = focused ? draft : numberFieldText(value, bounds);

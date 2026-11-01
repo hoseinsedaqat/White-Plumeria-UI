@@ -14,3 +14,5 @@ import "@white-plumeria/styles";
 Text, range, and date fields sync through `valueChange` and emit `wpl-change`. `pushToast` throws `WhitePlumeriaProvider is required to push a toast.` when the node is outside `wpl-provider`.
 
 The tags render to HTML on the server. That path is covered by `src/ssr.server.test.ts`. The desk example mounts in the browser with `template.mount()`.
+
+Built-in labels follow `wpl-provider`'s `locale`. Without a provider they stay English.

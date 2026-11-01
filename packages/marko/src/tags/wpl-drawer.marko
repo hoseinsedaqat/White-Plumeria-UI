@@ -1,5 +1,5 @@
-import { message } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface Input {
   title?: string;
@@ -18,7 +18,7 @@ export interface Input {
   <div class=["wpl-drawer", input.side === "start" && "wpl-drawer-start"] hidden=!open role="dialog" aria-label=input.title || "Drawer">
     <header class="wpl-dialog-header">
       <h2 class="wpl-dialog-title">${input.title || "Drawer"}</h2>
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" onClick() { open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>${message("en", "close")}</button>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" onClick() { open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>${text("close")}</button>
     </header>
     <div class="wpl-dialog-body">
       <if=input.description><p>${input.description}</p></if>

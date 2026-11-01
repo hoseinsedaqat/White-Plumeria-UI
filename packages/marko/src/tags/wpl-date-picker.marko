@@ -1,15 +1,16 @@
-import { message, parseIsoDate } from "@white-plumeria/core";
+import { parseIsoDate } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text, textAt } from "../text.ts";
 export interface Input { label?: string; value?: string; onChange?: (value: string) => void; }
 <let/value=input.value ?? "">
 <let/error="">
 <id/fieldId/>
 <div/host class="wpl-date">
-  <label class="wpl-label" for=fieldId>${input.label || message("en", "chooseDate")}</label>
+  <label class="wpl-label" for=fieldId>${input.label || text("chooseDate")}</label>
   <input/field id=fieldId class="wpl-input" value=value placeholder="YYYY-MM-DD" data-wpl-edge="value" aria-invalid=String(Boolean(error)) valueChange(next) {
     value = String(next);
     if (value && !parseIsoDate(value)) {
-      error = message("en", "invalidDate");
+      error = textAt(host(), "invalidDate");
       return;
     }
     error = "";

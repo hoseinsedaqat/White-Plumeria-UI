@@ -1,9 +1,10 @@
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 export interface Input { page?: number; pageCount?: number; label?: string; onChange?: (page: number) => void; }
 <let/page=Math.max(1, Number(input.page) || 1)>
 <const/count=Math.max(1, Number(input.pageCount) || 1)>
-<nav/host class="wpl-pagination" aria-label=input.label || "Pagination">
-  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Previous" disabled=page <= 1 onClick() { page = Math.max(1, page - 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>Previous</button>
+<nav/host class="wpl-pagination" aria-label=input.label || text("pagination")>
+  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=text("previous") disabled=page <= 1 onClick() { page = Math.max(1, page - 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>${text("previous")}</button>
   <span>${page} / ${count}</span>
-  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Next" disabled=page >= count onClick() { page = Math.min(count, page + 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>Next</button>
+  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=text("next") disabled=page >= count onClick() { page = Math.min(count, page + 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>${text("next")}</button>
 </nav>
