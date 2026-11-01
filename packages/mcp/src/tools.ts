@@ -1,4 +1,4 @@
-import { catalog, getComponent, installCommand, searchComponents, type PackageName } from '@white-plumeria/core';
+import { catalog, getComponent, installCommand, isServerHost, searchComponents, serverExample, serverHost, type PackageName } from '@white-plumeria/core';
 import { getTheme, themeNames } from '@white-plumeria/tokens';
 
 export interface ToolResult {
@@ -53,6 +53,7 @@ export function getComponentPropsTool(name: string): ToolResult {
 export function getUsageExampleTool(name: string, framework?: string): ToolResult {
   const component = getComponent(name);
   if (!component) return { isError: true, text: `Unknown component: ${name}` };
+  if (framework && isServerHost(framework)) return { text: serverExample(component.examples, framework) };
   const target = frameworkOf(framework);
   return { text: component.examples[target] };
 }
@@ -81,6 +82,22 @@ export function generateComponentExampleTool(name: string, framework?: string): 
 }
 
 export function getFrameworkInstallationTool(framework?: string): ToolResult {
+  if (framework && isServerHost(framework)) {
+    const host = serverHost(framework);
+    return {
+      text: JSON.stringify(
+        {
+          published: false,
+          host: host.id,
+          adapter: host.package,
+          note: `${host.label} is not a separate package. Install the ${host.package} adapter. Nothing is published to npm until the project is complete and stable.`,
+          command: installCommand(['styles', host.package], 'npm'),
+        },
+        null,
+        2,
+      ),
+    };
+  }
   const target = frameworkOf(framework);
   const names: PackageName[] =
     target === 'html'

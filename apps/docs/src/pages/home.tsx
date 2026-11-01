@@ -871,6 +871,7 @@ const footGroups = [
     links: [
       { href: '/start', label: 'Quick start' },
       { href: '/install', label: 'Install' },
+      { href: '/servers', label: 'Server hosts' },
       { href: '/direction', label: 'Direction' },
       { href: '/accessibility', label: 'Accessibility' },
     ],

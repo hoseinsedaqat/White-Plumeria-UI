@@ -88,7 +88,7 @@ pnpm add @white-plumeria/styles @white-plumeria/react
 yarn add @white-plumeria/styles @white-plumeria/react
 ```
 
-Those three commands **do not work today**. Swap `react` for the adapter you use: `vue`, `svelte`, `angular`, `solid`, `preact`, `qwik`, `lit`, `alpine`, `marko`, `ember`, or `elements`. Always install `@white-plumeria/styles` with it. The stylesheet is not bundled into the adapter.
+Those three commands **do not work today**, and they stay unpublished until the catalog, every library example, and the server hosts are complete and stable. Swap `react` for the adapter you use: `vue`, `svelte`, `angular`, `solid`, `preact`, `qwik`, `lit`, `alpine`, `marko`, `ember`, or `elements`. Always install `@white-plumeria/styles` with it. The stylesheet is not bundled into the adapter.
 
 Peers are the framework you already have. `@white-plumeria/styles` is also a peer, so the CSS import stays explicit.
 
@@ -132,6 +132,8 @@ Each package is written for that framework. None of them wrap another adapter.
 | Marko    | `@white-plumeria/marko`    | Marko 6.4          | `<Button>`          |
 | Ember    | `@white-plumeria/ember`    | Ember 7.4          | `<Button>`          |
 | Elements | `@white-plumeria/elements` | custom elements    | a documented subset |
+
+Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for those adapters. They are not extra packages, and they do not wrap another adapter. Each component page shows the host example. Ember server render is not claimed.
 
 <details>
 <summary>React</summary>

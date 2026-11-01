@@ -1,12 +1,10 @@
-import { catalog, categoryLabels, getComponent } from '@white-plumeria/core';
-import { useState } from 'react';
+import { catalog, categoryLabels, getComponent, libraryExamples, serverExample, serverHosts } from '@white-plumeria/core';
 import { CodeBlock } from '../copy.tsx';
 import { A } from '../router.tsx';
 import { Showcase } from '../showcases.tsx';
 
 export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: (href: string) => void }) {
   const component = getComponent(slug);
-  const [tab, setTab] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'qwik' | 'lit' | 'alpine' | 'marko' | 'ember' | 'html'>('react');
   if (!component) return <p>Unknown component.</p>;
   const index = catalog.findIndex((item) => item.slug === component.slug);
   const prev = catalog[index - 1];
@@ -21,22 +19,47 @@ export function ComponentPage({ slug, onNavigate }: { slug: string; onNavigate: 
       <ClassTable names={component.classes} />
 
       <section className="docs-block" id="usage">
-        <h2>Usage</h2>
-        <div className="docs-tabs" role="tablist" aria-label="Framework examples">
-          {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'alpine', 'marko', 'ember', 'html'] as const).map((item) => (
-            <button
-              key={item}
-              type="button"
-              role="tab"
-              aria-selected={tab === item}
-              className="docs-usage-tab"
-              onClick={() => setTab(item)}
-            >
-              {item}
-            </button>
+        <h2>Examples</h2>
+        <p>
+          This page includes one example for every library. Server hosts use the adapter named under each heading. They are not
+          separate packages, and nothing is published to npm until the set is complete.
+        </p>
+        <nav className="docs-example-nav" aria-label="Example libraries">
+          {libraryExamples.map((item) => (
+            <a key={item.id} href={`#example-${item.id}`}>
+              {item.label}
+            </a>
           ))}
-        </div>
-        <CodeBlock code={component.examples[tab]} label={tab} />
+          {serverHosts.map((item) => (
+            <a key={item.id} href={`#example-${item.id}`}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        {libraryExamples.map((item) => (
+          <section key={item.id} className="docs-example-block" id={`example-${item.id}`}>
+            <h3>{item.label}</h3>
+            <CodeBlock code={component.examples[item.id]} label={item.label} />
+          </section>
+        ))}
+        <h2 id="servers">Server hosts</h2>
+        <p>
+          Next, Nuxt, and the other hosts below are application frameworks. Each example is the existing adapter in that host.
+          <A href="/servers" onNavigate={onNavigate}>
+            {' '}
+            Server host notes
+          </A>
+          .
+        </p>
+        {serverHosts.map((item) => (
+          <section key={item.id} className="docs-example-block" id={`example-${item.id}`}>
+            <h3>{item.label}</h3>
+            <p>
+              Uses <code>@white-plumeria/{item.package}</code>. There is no <code>@white-plumeria/{item.id}</code> package.
+            </p>
+            <CodeBlock code={serverExample(component.examples, item.id)} label={item.label} />
+          </section>
+        ))}
       </section>
 
       <section className="docs-block" id="props">

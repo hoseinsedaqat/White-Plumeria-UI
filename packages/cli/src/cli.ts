@@ -5,7 +5,10 @@ import {
   brand,
   getComponent,
   installCommand,
+  isServerHost,
   packageName,
+  serverExample,
+  serverHost,
   type PackageName,
 } from '@white-plumeria/core';
 import { themeNames, themes } from '@white-plumeria/tokens';
@@ -27,7 +30,7 @@ const help = `wpl — ${brand.productName} CLI
 
 Usage:
   wpl init
-  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|qwik|lit|alpine|marko|ember|html] [--copy]
+  wpl add <component> [--framework react|vue|svelte|angular|solid|preact|qwik|lit|alpine|marko|ember|html|next|nuxt|sveltekit|solidstart|analog|qwikcity] [--copy]
   wpl doctor
   wpl theme [name]
   wpl --help
@@ -99,6 +102,20 @@ function add(name: string | undefined, framework: string, copy: boolean, io: Cli
   const component = getComponent(name);
   if (!component)
     return fail(1, `Unknown component: ${name}. Run wpl theme or search the docs catalog.`);
+  if (isServerHost(framework)) {
+    const host = serverHost(framework);
+    const lines = [
+      installCommand(['styles', host.package], 'npm'),
+      '',
+      `${host.label} uses @white-plumeria/${host.package}. It is not a separate package, and it is not published.`,
+      '',
+      serverExample(component.examples, host.id),
+      '',
+      'This command does not copy the component implementation.',
+    ];
+    if (copy) lines.push('Copy is skipped for a server host. There is no package to re-export.');
+    return ok(`${lines.join('\n')}\n`);
+  }
   const target =
     framework === 'vue' ||
     framework === 'svelte' ||
@@ -117,7 +134,7 @@ function add(name: string | undefined, framework: string, copy: boolean, io: Cli
   if (!target)
     return fail(
       1,
-      `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, or html.`,
+      `Unknown framework: ${framework}. Use react, vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, html, next, nuxt, sveltekit, solidstart, analog, or qwikcity.`,
     );
   const packages: PackageName[] = target === 'html' ? ['styles'] : ['styles', target];
   const lines = [

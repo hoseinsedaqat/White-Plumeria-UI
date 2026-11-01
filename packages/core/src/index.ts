@@ -167,9 +167,14 @@ export {
   categoryLabels,
   componentNames,
   getComponent,
+  isServerHost,
+  libraryExamples,
   searchComponents,
+  serverExample,
+  serverHost,
+  serverHosts,
 } from './catalog/index.ts';
-export type { AngularHost } from './catalog/index.ts';
+export type { AngularHost, ServerHostId } from './catalog/index.ts';
 export type {
   ComponentCategory,
   ComponentDoc,

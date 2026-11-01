@@ -28,6 +28,11 @@ describe('docs app', () => {
     await user.click(screen.getAllByRole('link', { name: /^Button\b/ })[0]);
     expect(await screen.findByRole('heading', { level: 1, name: 'Button' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Vue' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Next' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Nuxt' })).toBeInTheDocument();
+    expect(screen.getByText(/use client/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Server host notes' })).toHaveAttribute('href', '/servers');
   });
 
   it('opens the component gallery without dropping a catalog entry', async () => {
