@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `pnpm verify:dist`, `pnpm pack:dry-run`, and `pnpm size` check the eighteen package entry files and a dry-run tarball. They do not publish, and they do not rewrite `workspace:*` into an npm install. The CLI and MCP builds now emit the `.js` files those packages already export.
 - The Analog and SolidStart desks show the button when the frame opens `index.html`. Analog treats that file as the home page. SolidStart writes the Solid button into the static document instead of an empty handler shell. Neither is a server renderer. Packages are still not published.
 - The Nuxt desk opens on `index.html` without a 404. That is the file the docs frame and GitHub Pages request. The button stays inside `ClientOnly`. Packages are still not published.
 - GitHub Pages can build the Qwik City desk. The router only matches a lowercase base, so the export is built that way and the public path casing is restored afterward. Packages are still not published.

@@ -6,6 +6,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   platform: 'node',
+  fixedExtension: false,
   sourcemap: true,
   treeshake: true,
   external: [/^@white-plumeria\//],
