@@ -36,9 +36,10 @@ export function ComponentPage({
       <section className="docs-block" id="usage">
         <h2>Examples</h2>
         <p>
-          This page includes one example for every library. Server hosts use the adapter named under
-          each heading. They are not separate packages, and nothing is published to npm until the
-          set is complete. Each server host also has a static desk on the examples page.
+          The previews above are the samples for this component. Each library below has one generated
+          usage example. Server hosts use the adapter named under each heading. They are not separate
+          packages, and nothing is published to npm until the set is complete. Each server host also
+          has a static desk on the examples page.
         </p>
         <nav className="docs-example-nav" aria-label="Example libraries">
           {libraryExamples.map((item) => (

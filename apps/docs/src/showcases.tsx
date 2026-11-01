@@ -33,6 +33,7 @@ import {
 import { useState, type ReactNode } from 'react';
 import { renderDemo, ThemeCarousel, themeCarouselCode } from './demos.tsx';
 import { Preview } from './preview.tsx';
+import { SampleGallery, samples } from './samples.tsx';
 
 function ButtonLab() {
   const [variant, setVariant] = useState<ButtonVariant>('primary');
@@ -471,7 +472,29 @@ const sections: Record<string, ReactNode> = {
   ),
 };
 
+const richShowcases = new Set([
+  'button',
+  'badge',
+  'alert',
+  'avatar',
+  'spinner',
+  'icon-button',
+  'button-group',
+  'date-picker',
+  'kbd',
+  'notification',
+  'dropdown-menu',
+  'context-menu',
+  'date-range-picker',
+  'range-slider',
+  'grid',
+]);
+
 export function Showcase({ slug }: { slug: string }) {
+  if (richShowcases.has(slug)) {
+    return sections[slug] ?? <Preview title="Preview">{renderDemo(slug)}</Preview>;
+  }
+  if (samples[slug]?.length) return <SampleGallery slug={slug} />;
   return sections[slug] ?? <Preview title="Preview">{renderDemo(slug)}</Preview>;
 }
 
