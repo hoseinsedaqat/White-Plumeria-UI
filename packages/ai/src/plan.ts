@@ -7,7 +7,7 @@ import {
 } from '@white-plumeria/core';
 import type { ThemeName } from '@white-plumeria/tokens';
 import { renderClassMarkup } from './markup.ts';
-import { recommendComponents } from './recommend.ts';
+import { componentsNamedInPrompt, recommendComponents } from './recommend.ts';
 import type { Analysis, FrameworkId, LayoutPlan, PreviewNode } from './types.ts';
 
 const themeWords: Array<{ theme: ThemeName; words: string[] }> = [
@@ -37,9 +37,17 @@ export function analyzePrompt(prompt: string): Analysis {
     'Sample figures in previews are labeled sample data and are not live metrics.',
   ];
   if (intent === 'general') {
-    limitations.push(
-      'The prompt did not match a specialized layout, so a compact component composition is used.',
-    );
+    const named = componentsNamedInPrompt(prompt);
+    if (named.names.length) {
+      limitations.push(
+        'The prompt named catalog components. The CSS tab uses their HTML examples and does not invent classes.',
+      );
+      if (named.truncated) limitations.push('Only the first six named components are in the plan.');
+    } else {
+      limitations.push(
+        'The prompt did not match a specialized layout, so a compact component composition is used.',
+      );
+    }
   }
   return {
     prompt,
@@ -70,7 +78,11 @@ function detectIntent(prompt: string): string {
 }
 
 export function buildLayout(analysis: Analysis): LayoutPlan {
-  const nodes = layouts[analysis.intent] ?? layouts.general ?? [];
+  const named = analysis.intent === 'general' ? componentsNamedInPrompt(analysis.prompt) : { names: [], truncated: false };
+  const nodes =
+    named.names.length > 0
+      ? named.names.map((component) => exampleNode(component))
+      : (layouts[analysis.intent] ?? layouts.general ?? []);
   const unknown = collect(nodes).filter((name) => !getComponent(name));
   if (unknown.length) {
     throw new Error(`Planner referenced unknown components: ${unknown.join(', ')}`);
@@ -82,6 +94,30 @@ export function buildLayout(analysis: Analysis): LayoutPlan {
     nodes: nodes,
     limitations: analysis.limitations,
   };
+}
+
+function exampleNode(name: string): PreviewNode {
+  const react = getComponent(name)?.examples.react ?? '';
+  const start = react.indexOf(`<${name}`);
+  const end = start < 0 ? -1 : react.indexOf('>', start);
+  if (start < 0 || end < 0) return { component: name };
+  const head = react.slice(start, end);
+  const props: NonNullable<PreviewNode['props']> = {};
+  for (const match of head.matchAll(/([A-Za-z][A-Za-z0-9]*)=(?:"([^"]*)"|\{([^{}]*)\})/g)) {
+    const key = match[1];
+    if (!key) continue;
+    if (match[2] != null) props[key] = match[2];
+    else if (match[3] === 'true' || match[3] === 'false') props[key] = match[3] === 'true';
+    else if (match[3] && /^-?\d+$/.test(match[3])) props[key] = Number(match[3]);
+  }
+  const node: PreviewNode = { component: name };
+  if (Object.keys(props).length) node.props = props;
+  if (!head.endsWith('/')) {
+    const close = react.indexOf(`</${name}>`, end);
+    const inner = close > end ? react.slice(end + 1, close).trim() : '';
+    if (inner && !inner.includes('<')) node.text = inner;
+  }
+  return node;
 }
 
 function collect(nodes: PreviewNode[]): string[] {

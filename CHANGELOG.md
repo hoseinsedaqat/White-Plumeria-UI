@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A prompt that names a catalog component now plans that component, and the CSS tab uses its HTML example instead of a generic div. MCP docs and `wpl add` return the same class list. Packages are still not published.
 - The local planner CSS tab emits catalog `wpl-` markup instead of a placeholder div. Unknown classes and host-package imports are rejected. `llms.txt` states that class contract. Packages are still not published.
 - CI builds the packages and runs the dry-run pack check. It still does not publish.
 - Persian date and time errors are translated. Marko labels follow the provider locale instead of staying English. Packages are still not published.

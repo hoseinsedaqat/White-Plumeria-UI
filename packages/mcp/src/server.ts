@@ -35,7 +35,8 @@ export function createServer(): McpServer {
     'get_component_docs',
     {
       title: 'Get component docs',
-      description: 'Return summary, accessibility, RTL notes, and limitations for one catalog component.',
+      description:
+        'Return summary, accessibility, RTL notes, limitations, catalog wpl- classes, and the HTML example. Do not invent a class.',
       inputSchema: z.object({ name: z.string() }),
     },
     async ({ name }) => text(getComponentDocsTool(name)),

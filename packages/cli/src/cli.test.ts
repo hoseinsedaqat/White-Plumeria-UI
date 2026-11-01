@@ -19,6 +19,8 @@ describe('wpl cli', () => {
     expect(added.code).toBe(0);
     expect(added.stdout).toContain('@white-plumeria/vue');
     expect(added.stdout).toContain('does not copy');
+    expect(added.stdout).toContain('wpl-btn');
+    expect(added.stdout).toContain('not a working install');
     const alpine = run(['add', 'button', '--framework', 'alpine']);
     expect(alpine.code).toBe(0);
     expect(alpine.stdout).toContain('@white-plumeria/alpine');
