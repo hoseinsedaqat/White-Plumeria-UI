@@ -64,8 +64,12 @@ export function serverExample(examples: FrameworkExamples, host: ServerHostId): 
 function nuxtExample(vue: string): string {
   const note =
     '<!-- Nuxt page. There is no @white-plumeria/nuxt package. ClientOnly keeps the control on the client. -->\n';
-  const wrapped = vue
-    .replace('<template>\n', '<template>\n  <ClientOnly>\n')
-    .replace('\n</template>', '\n  </ClientOnly>\n</template>');
+  const wrapped = vue.replace(/<template>\n([\s\S]*?)\n<\/template>/, (_match, body: string) => {
+    const indented = body
+      .split('\n')
+      .map((line) => (line.trim().length === 0 ? line : `  ${line}`))
+      .join('\n');
+    return `<template>\n  <ClientOnly>\n${indented}\n  </ClientOnly>\n</template>`;
+  });
   return note + wrapped;
 }

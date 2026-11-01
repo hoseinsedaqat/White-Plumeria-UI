@@ -24,5 +24,17 @@ describe('server host examples', () => {
     expect(serverExample(button.examples, 'next')).toContain("'use client'");
     expect(serverExample(button.examples, 'nuxt')).toContain('<ClientOnly>');
     expect(serverExample(button.examples, 'nuxt')).toContain('@white-plumeria/vue');
+    expect(serverExample(button.examples, 'nuxt')).toContain(
+      '  <ClientOnly>\n    <Button variant="primary">Save changes</Button>\n  </ClientOnly>',
+    );
+  });
+
+  it('does not leave a double space in an Angular example', () => {
+    for (const component of catalog) {
+      const code = component.examples.angular;
+      expect(code, component.slug).not.toMatch(/ {2}\/>/);
+      expect(code, component.slug).not.toMatch(/ {2}\[/);
+      expect(code, component.slug).not.toMatch(/ {2}\(/);
+    }
   });
 });
