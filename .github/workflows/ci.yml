@@ -21,3 +21,9 @@ jobs:
       - run: pnpm --filter @white-plumeria/docs build
         env:
           WPL_BASE: /
+      - name: Check package files
+        run: |
+          pnpm --filter "./packages/*" build
+          pnpm verify:dist
+          pnpm pack:dry-run
+          pnpm size

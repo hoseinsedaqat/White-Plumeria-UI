@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- CI builds the packages and runs the dry-run pack check. It still does not publish.
 - Persian date and time errors are translated. Marko labels follow the provider locale instead of staying English. Packages are still not published.
 - Component-page examples indent the Nuxt control inside `ClientOnly`, and Angular examples no longer insert a second space before a binding or a self-closing slash. Packages are still not published.
 - `pnpm verify:dist`, `pnpm pack:dry-run`, and `pnpm size` check the eighteen package entry files and a dry-run tarball. They do not publish, and they do not rewrite `workspace:*` into an npm install. The CLI and MCP builds now emit the `.js` files those packages already export.
