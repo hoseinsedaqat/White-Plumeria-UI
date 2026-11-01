@@ -1,6 +1,14 @@
 import { CodeBlock } from '../copy.tsx';
 import '../examples.css';
-import { hostById, hostPens, libraryPens, penById, penDocument, type ExampleId, type PenId } from '../pen-meta.ts';
+import {
+  hostById,
+  hostPens,
+  libraryPens,
+  penById,
+  penDocument,
+  type ExampleId,
+  type PenId,
+} from '../pen-meta.ts';
 import { penSources } from '../pen-sources.ts';
 import { A } from '../router.tsx';
 
@@ -10,7 +18,9 @@ export function ExamplesPage({ onNavigate }: { onNavigate: (href: string) => voi
       <p className="docs-kicker">Examples</p>
       <h1 className="docs-title">One pen per library</h1>
       <p className="docs-lede">
-        Each stage is that library’s own document. The docs page is React, and it does not draw the other libraries for them.
+        Each stage is that library’s own document. The docs page is React, and it does not draw the
+        other libraries for them. Button, Badge, Alert, Card, Switch, and Input open that same
+        document from their component page.
       </p>
       <h2>Libraries</h2>
       <ul className="pen-index">
@@ -24,7 +34,10 @@ export function ExamplesPage({ onNavigate }: { onNavigate: (href: string) => voi
         ))}
       </ul>
       <h2>Server hosts</h2>
-      <p>These hosts do not have a second renderer. Open one to see the client document it actually uses.</p>
+      <p>
+        These hosts do not have a second renderer. Open one to see the client document it actually
+        uses.
+      </p>
       <ul className="pen-index">
         {hostPens.map((host) => (
           <li key={host.id}>
@@ -39,7 +52,13 @@ export function ExamplesPage({ onNavigate }: { onNavigate: (href: string) => voi
   );
 }
 
-export function ExamplePage({ id, onNavigate }: { id: ExampleId; onNavigate: (href: string) => void }) {
+export function ExamplePage({
+  id,
+  onNavigate,
+}: {
+  id: ExampleId;
+  onNavigate: (href: string) => void;
+}) {
   const host = hostById(id);
   const pen = host?.pen ?? penById(id);
   if (!pen) return null;
@@ -57,13 +76,21 @@ export function ExamplePage({ id, onNavigate }: { id: ExampleId; onNavigate: (hr
       <ul className="pen-switch">
         {libraryPens.map((item) => (
           <li key={item.id}>
-            <A href={`/examples/${item.id}`} onNavigate={onNavigate} current={item.id === pen.id && !host}>
+            <A
+              href={`/examples/${item.id}`}
+              onNavigate={onNavigate}
+              current={item.id === pen.id && !host}
+            >
               {item.label}
             </A>
           </li>
         ))}
       </ul>
-      <PenStage penId={pen.id} title={title} caption={host ? `Rendered by ${pen.label}` : pen.mount} />
+      <PenStage
+        penId={pen.id}
+        title={title}
+        caption={host ? `Rendered by ${pen.label}` : pen.mount}
+      />
       <CodeBlock code={penSources[pen.id]} label={pen.file} />
     </article>
   );
@@ -74,9 +101,7 @@ function PenStage({ penId, title, caption }: { penId: PenId; title: string; capt
   return (
     <div className="pen-stage">
       <div className="pen-stage-bar">
-        <span>
-          Result · {caption}
-        </span>
+        <span>Result · {caption}</span>
         <a href={src} target="_blank" rel="noreferrer">
           Open pen document
         </a>
