@@ -72,9 +72,21 @@ describe('docs app', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Next' })).toBeInTheDocument();
     expect(screen.getByTitle('Next example')).toHaveAttribute(
       'src',
-      expect.stringContaining('pens/react/index.html'),
+      expect.stringContaining('desks/next/index.html'),
     );
-    expect(screen.getByText(/no Next renderer/i)).toBeInTheDocument();
+    expect(screen.getByText(/There is no @white-plumeria\/next package/)).toBeInTheDocument();
+    const nextCode = document.querySelector('.docs-code')?.textContent ?? '';
+    expect(nextCode).toContain("'use client'");
+    expect(nextCode).toContain('@white-plumeria/react');
+    expect(nextCode).not.toMatch(/from ["']@white-plumeria\/next["']/);
+    await user.click(screen.getByRole('link', { name: 'All examples' }));
+    await user.click(screen.getByRole('link', { name: /^Nuxt\b/ }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Nuxt' })).toBeInTheDocument();
+    expect(screen.getByTitle('Nuxt example')).toHaveAttribute(
+      'src',
+      expect.stringContaining('desks/nuxt/index.html'),
+    );
+    expect(screen.getByText(/There is no @white-plumeria\/nuxt package/)).toBeInTheDocument();
   });
 
   it('opens the component gallery without dropping a catalog entry', async () => {

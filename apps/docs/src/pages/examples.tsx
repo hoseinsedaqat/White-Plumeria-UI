@@ -1,11 +1,14 @@
 import { CodeBlock } from '../copy.tsx';
+import { deskSources } from '../desk-sources.ts';
 import '../examples.css';
 import {
+  deskDocument,
   hostById,
   hostPens,
   libraryPens,
   penById,
   penDocument,
+  type DeskId,
   type ExampleId,
   type PenId,
 } from '../pen-meta.ts';
@@ -35,15 +38,15 @@ export function ExamplesPage({ onNavigate }: { onNavigate: (href: string) => voi
       </ul>
       <h2>Server hosts</h2>
       <p>
-        These hosts do not have a second renderer. Open one to see the client document it actually
-        uses.
+        Next and Nuxt open the host export. The other hosts still use the client document. None of
+        these hosts is a separate package.
       </p>
       <ul className="pen-index">
         {hostPens.map((host) => (
           <li key={host.id}>
             <A href={`/examples/${host.id}`} onNavigate={onNavigate}>
               <strong>{host.label}</strong>
-              <small>Uses the {host.pen.label} pen</small>
+              <small>{host.desk ? host.desk.caption : `Uses the ${host.pen.label} pen`}</small>
             </A>
           </li>
         ))}
@@ -86,13 +89,35 @@ export function ExamplePage({
           </li>
         ))}
       </ul>
-      <PenStage
-        penId={pen.id}
-        title={title}
-        caption={host ? `Rendered by ${pen.label}` : pen.mount}
+      {host?.desk ? (
+        <DeskStage id={host.id as DeskId} title={title} caption={host.desk.caption} />
+      ) : (
+        <PenStage
+          penId={pen.id}
+          title={title}
+          caption={host ? `Rendered by ${pen.label}` : pen.mount}
+        />
+      )}
+      <CodeBlock
+        code={host?.desk ? deskSources[host.id as DeskId] : penSources[pen.id]}
+        label={host?.desk?.file ?? pen.file}
       />
-      <CodeBlock code={penSources[pen.id]} label={pen.file} />
     </article>
+  );
+}
+
+function DeskStage({ id, title, caption }: { id: DeskId; title: string; caption: string }) {
+  const src = deskDocument(id);
+  return (
+    <div className="pen-stage">
+      <div className="pen-stage-bar">
+        <span>Result · {caption}</span>
+        <a href={src} target="_blank" rel="noreferrer">
+          Open host document
+        </a>
+      </div>
+      <iframe title={`${title} example`} src={src} />
+    </div>
   );
 }
 

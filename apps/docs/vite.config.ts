@@ -27,6 +27,7 @@ export default defineConfig({
     },
   },
   server: {
+    fs: { allow: [fileURLToPath(new URL('../..', import.meta.url))] },
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,

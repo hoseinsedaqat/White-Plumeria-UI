@@ -98,6 +98,25 @@ export const libraryPens = libraryExamples.map((item) => ({
 
 export type PenId = (typeof libraryPens)[number]['id'];
 
+const deskHosts = {
+  next: {
+    file: 'app/page.tsx',
+    caption: 'Next.js static export',
+    note: 'This frame is the Next.js export of a client page. The button is the React adapter. There is no @white-plumeria/next package, and this is not a server renderer for the component.',
+  },
+  nuxt: {
+    file: 'pages/index.vue',
+    caption: 'Nuxt static export',
+    note: 'This frame is the Nuxt export. The button stays inside ClientOnly and uses the Vue adapter. There is no @white-plumeria/nuxt package, and this is not a server renderer for the component.',
+  },
+} as const;
+
+export type DeskId = keyof typeof deskHosts;
+
+export function isDeskId(value: string): value is DeskId {
+  return value === 'next' || value === 'nuxt';
+}
+
 const boundaries = {
   next: 'An App Router file would add use client around that same client render. There is no @white-plumeria/next package.',
   nuxt: 'A Nuxt page would wrap the Vue template in ClientOnly. There is no @white-plumeria/nuxt package.',
@@ -113,10 +132,14 @@ const boundaries = {
 export const hostPens = serverHosts.map((host) => {
   const pen = libraryPens.find((item) => item.id === host.adapter);
   if (!pen) throw new Error(`Missing pen for ${host.id}`);
+  const desk = isDeskId(host.id) ? deskHosts[host.id] : undefined;
   return {
     ...host,
     pen,
-    note: `There is no ${host.label} renderer on this page. The stage is the ${pen.label} document. ${boundaries[host.id]}`,
+    desk,
+    note: desk
+      ? desk.note
+      : `There is no ${host.label} renderer on this page. The stage is the ${pen.label} document. ${boundaries[host.id]}`,
   };
 });
 
@@ -139,4 +162,10 @@ export function penDocument(id: PenId, component?: string): string {
   const prefix = base.endsWith('/') ? base : `${base}/`;
   const url = `${prefix}pens/${id}/index.html`;
   return component ? `${url}?component=${encodeURIComponent(component)}` : url;
+}
+
+export function deskDocument(id: DeskId): string {
+  const base = import.meta.env.BASE_URL || '/';
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  return `${prefix}desks/${id}/index.html`;
 }

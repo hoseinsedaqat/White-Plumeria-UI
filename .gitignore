@@ -14,4 +14,9 @@ test-results
 .pnpm-store
 apps/docs/dist
 apps/docs/public/pens
+apps/docs/public/desks
 apps/*/dist
+apps/example-next/.next
+apps/example-next/out
+apps/example-nuxt/.nuxt
+apps/example-nuxt/.output
