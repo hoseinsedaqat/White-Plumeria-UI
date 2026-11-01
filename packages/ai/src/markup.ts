@@ -51,6 +51,7 @@ export function renderClassMarkup(nodes: PreviewNode[]): string {
 function renderNode(node: PreviewNode, indent: number): string {
   const props = node.props ?? {};
   const kids = (node.children ?? []).map((child) => renderNode(child, indent + 2)).join('\n');
+  if (!node.text && !node.children?.length && node.props == null) return catalogMarkup(node, indent, '');
   switch (node.component) {
     case 'Button':
       return inline(
@@ -246,13 +247,20 @@ function renderRange(indent: number, props: Props): string {
 }
 
 function generic(node: PreviewNode, indent: number, kids: string): string {
-  const component = getComponent(node.component);
-  const root = component?.classes.find((name) => known.has(name));
-  if (!root) throw new Error(`Planner has no catalog class for ${node.component}.`);
-  return block(indent, 'div', root, join(
-    node.text ? line(indent + 2, escapeHtml(node.text)) : '',
-    kids,
-  ));
+  return catalogMarkup(node, indent, kids);
+}
+
+function catalogMarkup(node: PreviewNode, indent: number, kids: string): string {
+  const html = getComponent(node.component)?.examples.html.trim();
+  if (!html) throw new Error(`Planner has no catalog HTML for ${node.component}.`);
+  const indented = html
+    .split('\n')
+    .map((row) => (row.length ? `${' '.repeat(indent)}${row}` : row))
+    .join('\n');
+  if (!kids) return indented;
+  const close = indented.lastIndexOf('</');
+  if (close < 0) return `${indented}\n${kids}`;
+  return `${indented.slice(0, close)}\n${kids}\n${' '.repeat(indent)}${indented.slice(close)}`;
 }
 
 function buttonClasses(props: Props): string {

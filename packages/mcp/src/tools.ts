@@ -37,6 +37,10 @@ export function getComponentDocsTool(name: string): ToolResult {
         rtl: component.rtl,
         limitations: component.limitations,
         element: component.element,
+        classes: component.classes,
+        html: component.examples.html,
+        contract:
+          'Use only these wpl- classes. Do not invent a class. Tailwind is not required. Packages are not on npm.',
       },
       null,
       2,
@@ -73,6 +77,8 @@ export function generateComponentExampleTool(name: string, framework?: string): 
   return {
     text: [
       'Generated from the catalog. This tool does not call a model.',
+      `Classes: ${component.classes.join(' ')}`,
+      'Use only these wpl- classes. Do not invent a class. Tailwind is not required. Packages are not on npm.',
       getUsageExampleTool(name, framework).text,
       component.limitations.length ? `Limitations: ${component.limitations.join(' ')}` : '',
     ]

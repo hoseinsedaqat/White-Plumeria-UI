@@ -14,4 +14,6 @@ const plan = await new LocalDeterministicProvider().complete({
 
 Generated code is validated against the real component catalog. HTML output uses catalog `wpl-` classes, and an unknown class is rejected. Tailwind is not required. The docs preview renders the structured plan with library components. It does not `eval` model output.
 
+A prompt that names a catalog component plans that component. The HTML tab uses its catalog example. Other prompts still use a specialized layout, or a compact composition when no name matched.
+
 Limitations: keyword planning, not a general model. Unknown component names are rejected. Contrast adjustment is reported, not silently claimed when a pair still fails.

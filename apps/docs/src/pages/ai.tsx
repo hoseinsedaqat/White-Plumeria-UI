@@ -65,7 +65,8 @@ export function AiPage() {
       <h1 className="docs-title">Studio without a key</h1>
       <p className="docs-lede">
         This page does not call a cloud model. It plans from the real catalog and does not execute
-        generated code. The CSS tab is the class contract. The other tabs render those same
+        generated code. The CSS tab is the class contract. A prompt that names a catalog
+        component uses that component's HTML example. The other tabs render those same
         classes. Models can read{' '}
         <a href={`${import.meta.env.BASE_URL}llms.txt`}>llms.txt</a>.
       </p>
@@ -308,7 +309,8 @@ function PreviewNodeView({ node }: { node: PreviewNode }) {
   }
   return (
     <p className="wpl-muted">
-      {node.component} is in the plan. Open its catalog page for the interactive demo.
+      {node.component} is in the plan. The CSS tab has its catalog markup. Open its catalog page
+      for the interactive demo.
     </p>
   );
 }

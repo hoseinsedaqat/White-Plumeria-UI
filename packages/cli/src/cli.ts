@@ -108,6 +108,8 @@ function add(name: string | undefined, framework: string, copy: boolean, io: Cli
       installCommand(['styles', host.package], 'npm'),
       '',
       `${host.label} uses @white-plumeria/${host.package}. It is not a separate package, and it is not published.`,
+      `Classes: ${component.classes.join(' ')}`,
+      'Use only these wpl- classes. Do not invent a class. Tailwind is not required.',
       '',
       serverExample(component.examples, host.id),
       '',
@@ -139,6 +141,9 @@ function add(name: string | undefined, framework: string, copy: boolean, io: Cli
   const packages: PackageName[] = target === 'html' ? ['styles'] : ['styles', target];
   const lines = [
     installCommand(packages, 'npm'),
+    'Packages are not on npm. That install line is the intended API, not a working install.',
+    `Classes: ${component.classes.join(' ')}`,
+    'Use only these wpl- classes. Do not invent a class. Tailwind is not required.',
     '',
     component.examples[target],
     '',

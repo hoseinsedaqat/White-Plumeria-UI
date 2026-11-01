@@ -39,8 +39,9 @@ describe('css planner', () => {
     const general = planFromPrompt({ prompt: 'A button to save changes and a badge' });
     const snippet = general.code.html.files[0]?.contents ?? '';
     expect(snippet).toContain('<button class="wpl-btn wpl-btn-primary" type="button">Save changes</button>');
-    expect(snippet).toContain('<span class="wpl-badge wpl-badge-primary">Catalog</span>');
-    expect(snippet).not.toContain('\\n');
+    expect(snippet).toContain('<span class="wpl-badge wpl-badge-success">Paid</span>');
+    expect(snippet).not.toContain('data-component');
+    expect(general.analysis.limitations.join(' ')).toContain('HTML examples');
 
     const settings = planFromPrompt({ prompt: 'Settings for reduced motion' });
     expect(settings.code.html.files[0]?.contents).toContain(
@@ -58,6 +59,26 @@ describe('css planner', () => {
     expect(range.code.html.files[0]?.contents).toContain('--wpl-range-start: 16%');
     const guests = planFromPrompt({ prompt: 'A number field for guests' });
     expect(guests.code.html.files[0]?.contents).toContain('class="wpl-number"');
+
+    const named = planFromPrompt({ prompt: 'A navbar and a breadcrumb' });
+    const namedHtml = named.code.html.files[0]?.contents ?? '';
+    expect(named.validation.html.ok, named.validation.html.errors.join(' ')).toBe(true);
+    expect(named.validation.react.ok, named.validation.react.errors.join(' ')).toBe(true);
+    expect(named.validation.alpine.ok, named.validation.alpine.errors.join(' ')).toBe(true);
+    expect(named.validation.marko.ok, named.validation.marko.errors.join(' ')).toBe(true);
+    expect(namedHtml.indexOf('wpl-navbar')).toBeGreaterThan(-1);
+    expect(namedHtml.indexOf('wpl-navbar')).toBeLessThan(namedHtml.indexOf('wpl-breadcrumb'));
+    expect(namedHtml).toContain('<header class="wpl-navbar">');
+    expect(namedHtml).not.toContain('<div class="wpl-navbar"');
+    expect(named.layout.nodes.map((node) => node.component)).toEqual(['Navbar', 'Breadcrumb']);
+
+    const upload = planFromPrompt({ prompt: 'file upload' });
+    expect(upload.code.html.files[0]?.contents).toContain('wpl-file-drop');
+    expect(upload.validation.html.ok).toBe(true);
+    const table = planFromPrompt({ prompt: 'a data table with pagination' });
+    expect(table.layout.nodes.map((node) => node.component)).toEqual(['DataTable', 'Pagination']);
+    expect(table.code.html.files[0]?.contents).toContain('wpl-table');
+    expect(table.code.html.files[0]?.contents).not.toContain('wpl-not-a-class');
   });
 
   it('rejects an unknown class and a host package import', () => {

@@ -37,6 +37,51 @@ const synonyms: Record<string, string[]> = {
   kbd: ['kbd'],
 };
 
+export function componentsNamedInPrompt(prompt: string): { names: string[]; truncated: boolean } {
+  const tokens = prompt
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}+-]+/u)
+    .map((term) => term.trim())
+    .filter((term) => term.length > 1);
+  const hits: Array<{ name: string; start: number; end: number }> = [];
+  for (const component of catalog) {
+    const parts = component.slug.split('-').filter(Boolean);
+    for (let index = 0; index <= tokens.length - parts.length; index += 1) {
+      if (parts.every((part, offset) => tokens[index + offset] === part)) {
+        hits.push({ name: component.name, start: index, end: index + parts.length });
+      }
+    }
+    for (const [index, token] of tokens.entries()) {
+      const aliases = synonyms[token] ?? [];
+      if (
+        aliases.some(
+          (alias) => alias === component.slug || alias.replace(/-/g, '') === component.slug.replace(/-/g, ''),
+        )
+      ) {
+        hits.push({ name: component.name, start: index, end: index + 1 });
+      }
+    }
+  }
+  const visible = hits.filter(
+    (hit) =>
+      !hits.some(
+        (other) =>
+          other.name !== hit.name &&
+          other.start <= hit.start &&
+          other.end >= hit.end &&
+          other.end - other.start > hit.end - hit.start,
+      ),
+  );
+  const ordered: Array<{ name: string; start: number }> = [];
+  for (const hit of visible) {
+    const existing = ordered.find((item) => item.name === hit.name);
+    if (!existing) ordered.push({ name: hit.name, start: hit.start });
+    else if (hit.start < existing.start) existing.start = hit.start;
+  }
+  ordered.sort((left, right) => left.start - right.start || left.name.localeCompare(right.name));
+  return { names: ordered.slice(0, 6).map((item) => item.name), truncated: ordered.length > 6 };
+}
+
 export function recommendComponents(prompt: string, limit = 6): Recommendation[] {
   const terms = prompt
     .toLowerCase()
