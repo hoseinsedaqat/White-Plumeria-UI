@@ -1,6 +1,6 @@
-import { brand, buttonClassName, catalog, resolveDirection } from '@white-plumeria/core';
+import { brand, buttonClassName, catalog, categoryLabels, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
-import { Alert, Badge, Button, Checkbox, Input, Kbd, Mark, Progress, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
+import { Button, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import type { ButtonSize } from '@white-plumeria/core';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
@@ -45,7 +45,11 @@ function markAttr(source: string, attr: 'style' | 'class') {
 const pureMarkup = `<input class="wpl-input" placeholder="Email" />
 <label class="wpl-check"><input type="checkbox" checked /> Submit to newsletter</label>
 <button class="wpl-btn wpl-btn-primary" type="button">Save</button>`;
-const chips = ['badge', 'card', 'input', 'select', 'dialog', 'tabs', 'alert', 'table'];
+const catalogGroups = (['base', 'form', 'interaction', 'data', 'layout'] as const).map((category) => ({
+  category,
+  label: categoryLabels[category].en,
+  items: catalog.filter((item) => item.category === category),
+}));
 const principles = [
   ['One vocabulary', 'Class names stay wpl-. Tokens stay --wpl-. A theme change does not fork the markup.'],
   ['Native, not wrapped', 'Each adapter is written for that framework. Vue is not React in a costume, and Ember is not Alpine.'],
@@ -751,42 +755,36 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
-      <section className="home-section">
-        <h2>
+      <section className="home-section" aria-labelledby="catalog-title">
+        <h2 id="catalog-title">
           {catalog.length} components.
           <br />
           <span>One catalog.</span>
         </h2>
-        <p>Every name below is a real component. Mix the same classes into a page without restyling each one.</p>
-        <div className="home-stage">
-          <div className="home-stage-top">
-            <Badge variant="success">Paid</Badge>
-            <Badge variant="warning">Review</Badge>
-            <Badge>Due</Badge>
-            <Kbd keys={['⌘', 'K']} />
-          </div>
-          <Alert variant="info" title="Statement ready">
-            March stayed in this tab.
-          </Alert>
-          <Input placeholder="Search merchants" aria-label="Search merchants" />
-          <Progress value={64} label="Collected" />
-          <div className="home-sizes">
-            <Button size="sm">Save</Button>
-            <Button size="sm" variant="outline">
-              Export
-            </Button>
-          </div>
+        <p>Every name below is a real component. The groups are the catalog categories, not a sample.</p>
+        <div className="home-catalog">
+          {catalogGroups.map((group) => (
+            <div key={group.category} className="home-catalog-group">
+              <h3>
+                {group.label}
+                <span>{group.items.length}</span>
+              </h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item.slug}>
+                    <A href={`/components/${item.slug}`} onNavigate={onNavigate}>
+                      {item.name}
+                    </A>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        <div className="home-chips">
-          {chips.map((slug) => {
-            const item = catalog.find((entry) => entry.slug === slug);
-            if (!item) return null;
-            return (
-              <A key={slug} href={`/components/${slug}`} onNavigate={onNavigate}>
-                {item.name}
-              </A>
-            );
-          })}
+        <div className="home-ctas">
+          <A className="home-cta" href="/components" onNavigate={onNavigate}>
+            Open the catalog
+          </A>
         </div>
       </section>
 
