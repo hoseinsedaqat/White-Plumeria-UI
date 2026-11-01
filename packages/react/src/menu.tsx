@@ -5,6 +5,7 @@ import {
   menuHasSubmenu,
   moveEnabledIndex,
   typeaheadMove,
+  placeAnchoredPanel,
   placeOverlay,
   readingDirection,
   type MenuMotion,
@@ -12,12 +13,40 @@ import {
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
 import { Button } from './button.tsx';
+
+function placeOpenPanel(anchor: HTMLElement | null, panel: HTMLElement | null) {
+  if (!anchor || !panel) return;
+  const rect = anchor.getBoundingClientRect();
+  const placed = placeAnchoredPanel(
+    { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+    { width: panel.offsetWidth, height: panel.offsetHeight },
+    { width: window.innerWidth, height: window.innerHeight },
+    readingDirection(anchor) === 'rtl' ? 'end' : 'start',
+  );
+  panel.style.top = `${placed.top}px`;
+  panel.style.left = `${placed.left}px`;
+}
+
+function useAnchoredPanel(open: boolean, anchorRef: { current: HTMLElement | null }, panelRef: { current: HTMLElement | null }) {
+  useLayoutEffect(() => {
+    if (!open) return;
+    const place = () => placeOpenPanel(anchorRef.current, panelRef.current);
+    place();
+    window.addEventListener('scroll', place, true);
+    window.addEventListener('resize', place);
+    return () => {
+      window.removeEventListener('scroll', place, true);
+      window.removeEventListener('resize', place);
+    };
+  }, [open, anchorRef, panelRef]);
+}
 
 export interface MenuItem {
   id: string;
@@ -48,6 +77,8 @@ export function DropdownMenu({
   const children = parent?.items ?? [];
   const current = subActive === null ? parent : children[subActive];
   const activeId = current ? `${menuId}-${current.id}` : undefined;
+
+  useAnchoredPanel(open, buttonRef, menuRef);
 
   useEffect(() => {
     if (!open || !menuRef.current) return;
@@ -157,7 +188,7 @@ export function DropdownMenu({
         {label}
       </Button>
       {open ? (
-        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-panel">
+        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-fixed">
           {items.map((item, index) => {
             const nested = menuHasSubmenu(item);
             const expanded = nested && index === active && subActive !== null;
@@ -439,6 +470,8 @@ export function Popover({
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  useAnchoredPanel(open, rootRef, panelRef);
+
   useEffect(() => {
     if (!open || !panelRef.current) return;
     return bindDismissable({
@@ -459,7 +492,7 @@ export function Popover({
         {trigger ?? label}
       </Button>
       {open ? (
-        <div ref={panelRef} id={id} className="wpl-popover" style={{ position: 'absolute', insetBlockStart: 'calc(100% + 0.35rem)', insetInlineStart: 0 }}>
+        <div ref={panelRef} id={id} className="wpl-popover wpl-popover-fixed">
           {children}
         </div>
       ) : null}
