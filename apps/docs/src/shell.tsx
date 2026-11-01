@@ -17,6 +17,7 @@ import { A, useRoute } from './router.tsx';
 const startLinks = [
   ['/start', 'Quick start'],
   ['/install', 'Install'],
+  ['/servers', 'Server hosts'],
   ['/theming', 'Theming'],
   ['/direction', 'Direction'],
   ['/accessibility', 'Accessibility'],
@@ -30,7 +31,7 @@ const startLinks = [
   ['/security', 'Security'],
 ] as const;
 
-const guidePaths = ['/start', '/install', '/theming', '/direction', '/rtl', '/accessibility', '/changelog', '/contributing', '/security'];
+const guidePaths = ['/start', '/install', '/servers', '/theming', '/direction', '/rtl', '/accessibility', '/changelog', '/contributing', '/security'];
 
 export function DocsApp() {
   const { path, navigate } = useRoute();

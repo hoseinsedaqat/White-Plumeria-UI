@@ -909,6 +909,52 @@ body {
   outline-offset: 2px;
 }
 
+.docs-example-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0.2rem;
+}
+
+.docs-example-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  color: var(--docs-chrome-text);
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--docs-chrome-text) 28%, transparent);
+}
+
+.docs-example-nav a:hover {
+  box-shadow: inset 0 0 0 1px var(--docs-chrome-text);
+}
+
+.docs-example-nav a:focus-visible {
+  outline: 2px solid var(--docs-chrome-text);
+  outline-offset: 2px;
+}
+
+.docs-example-block {
+  margin-top: 1.35rem;
+}
+
+.docs-example-block h3 {
+  margin: 0 0 0.45rem;
+  color: var(--docs-chrome-text);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.docs-example-block p {
+  margin: 0 0 0.55rem;
+  color: color-mix(in srgb, var(--docs-chrome-text) 78%, transparent);
+}
+
 .docs-lab {
   display: grid;
   gap: 1.25rem;

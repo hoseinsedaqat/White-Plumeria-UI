@@ -15,5 +15,10 @@ describe('mcp catalog tools', () => {
     expect(generateComponentExampleTool('button', 'marko').text).toContain('wpl-button.marko');
     expect(getFrameworkInstallationTool('ember').text).toContain('@white-plumeria/ember');
     expect(generateComponentExampleTool('button', 'ember').text).toContain('<template>');
+    expect(generateComponentExampleTool('button', 'next').text).toContain("'use client'");
+    expect(generateComponentExampleTool('button', 'next').text).toContain('There is no @white-plumeria/next package');
+    expect(generateComponentExampleTool('button', 'next').text).not.toContain('from "@white-plumeria/next"');
+    expect(getFrameworkInstallationTool('nuxt').text).toContain('@white-plumeria/vue');
+    expect(getFrameworkInstallationTool('nuxt').text).toContain('"published": false');
   });
 });

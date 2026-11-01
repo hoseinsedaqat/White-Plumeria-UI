@@ -31,6 +31,14 @@ describe('wpl cli', () => {
     expect(ember.code).toBe(0);
     expect(ember.stdout).toContain('@white-plumeria/ember');
     expect(ember.stdout).toContain('<template>');
+    const next = run(['add', 'button', '--framework', 'next', '--copy']);
+    expect(next.code).toBe(0);
+    expect(next.stdout).toContain('@white-plumeria/react');
+    expect(next.stdout).toContain("'use client'");
+    expect(next.stdout).toContain('not a separate package');
+    expect(next.stdout).toContain('There is no @white-plumeria/next package');
+    expect(next.stdout).not.toContain('from "@white-plumeria/next"');
+    expect(next.stdout).toContain('Copy is skipped');
   });
 
   it('doctor fails on an old Node and theme rejects an unknown name', () => {

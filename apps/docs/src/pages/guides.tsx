@@ -26,7 +26,7 @@ export function Example() {
   },
   '/install': {
     title: 'Installation',
-    body: 'These are the intended install commands. They do not work until @white-plumeria is published. Always install @white-plumeria/styles with an adapter. Today, clone the repository and run corepack pnpm install, then corepack pnpm dev.',
+    body: 'These are the intended install commands. They do not work until @white-plumeria is published, and nothing will be published until the catalog, every library example, and the server hosts are complete and stable. Always install @white-plumeria/styles with an adapter. Today, clone the repository and run corepack pnpm install, then corepack pnpm dev.',
     code: [
       installCommand(['styles', 'react'], 'npm'),
       installCommand(['styles', 'vue'], 'pnpm'),
@@ -62,6 +62,23 @@ export function Example() {
   '/contributing': {
     title: 'Contributing',
     body: 'Add a component by updating the catalog, CSS, every adapter you claim to support, a live demo, and a behavior test. Do not add a catalog entry for a component that is not implemented.',
+  },
+  '/servers': {
+    title: 'Server hosts',
+    body: 'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are application hosts, not new component libraries. A component page shows an example for each of them, built from the adapter you already install: React for Next, Vue for Nuxt, Svelte for SvelteKit, Solid for SolidStart, Angular for Analog, and Qwik for Qwik City. There is no @white-plumeria/next or @white-plumeria/nuxt package, and none will be published as a wrapper. Ember server render is not claimed. A runnable Next or Nuxt desk is not in this repository yet. Packages stay off npm until this set is complete and stable.',
+    code: `// Next.js App Router. Client file. Install @white-plumeria/styles and @white-plumeria/react.
+'use client';
+
+import { Button, WhitePlumeriaProvider } from "@white-plumeria/react";
+import "@white-plumeria/styles";
+
+export function Example() {
+  return (
+    <WhitePlumeriaProvider>
+      <Button>Save changes</Button>
+    </WhitePlumeriaProvider>
+  );
+}`,
   },
   '/security': {
     title: 'Security',

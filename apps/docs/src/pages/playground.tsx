@@ -1,4 +1,4 @@
-import { catalog, isThemeName } from '@white-plumeria/core';
+import { catalog, isThemeName, libraryExamples, serverExample, serverHosts, type ServerHostId } from '@white-plumeria/core';
 import { useWhitePlumeria } from '@white-plumeria/react';
 import { themeNames } from '@white-plumeria/tokens';
 import { useState } from 'react';
@@ -9,7 +9,7 @@ import { renderDemo } from '../demos.tsx';
 export function PlaygroundPage() {
   const { preferences, setPreferences } = useWhitePlumeria();
   const [slug, setSlug] = useState('button');
-  const [framework, setFramework] = useState<'react' | 'vue' | 'svelte' | 'angular' | 'solid' | 'preact' | 'qwik' | 'lit' | 'alpine' | 'marko' | 'ember' | 'html'>('react');
+  const [framework, setFramework] = useState<(typeof libraryExamples)[number]['id'] | ServerHostId>('react');
   const component = catalog.find((item) => item.slug === slug) ?? catalog[0];
   if (!component) return null;
 
@@ -67,18 +67,37 @@ export function PlaygroundPage() {
         <div>
           <ThemedFrame className="docs-canvas">{renderDemo(component.slug)}</ThemedFrame>
           <div className="docs-tabs" style={{ marginTop: '1rem' }}>
-            {(['react', 'vue', 'svelte', 'angular', 'solid', 'preact', 'qwik', 'lit', 'alpine', 'marko', 'ember', 'html'] as const).map((item) => (
+            {libraryExamples.map((item) => (
               <button
-                key={item}
+                key={item.id}
                 type="button"
-                className={framework === item ? 'wpl-btn wpl-btn-primary wpl-btn-sm' : 'wpl-btn wpl-btn-ghost wpl-btn-sm'}
-                onClick={() => setFramework(item)}
+                className={framework === item.id ? 'wpl-btn wpl-btn-primary wpl-btn-sm' : 'wpl-btn wpl-btn-ghost wpl-btn-sm'}
+                onClick={() => setFramework(item.id)}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </div>
-          <CodeBlock code={component.examples[framework]} label={framework} />
+          <div className="docs-tabs">
+            {serverHosts.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={framework === item.id ? 'wpl-btn wpl-btn-primary wpl-btn-sm' : 'wpl-btn wpl-btn-ghost wpl-btn-sm'}
+                onClick={() => setFramework(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <CodeBlock
+            code={
+              serverHosts.some((item) => item.id === framework)
+                ? serverExample(component.examples, framework as ServerHostId)
+                : component.examples[framework as (typeof libraryExamples)[number]['id']]
+            }
+            label={framework}
+          />
         </div>
       </div>
       {component.limitations.length ? (
