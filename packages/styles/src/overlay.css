@@ -216,10 +216,21 @@
   inline-size: min(18rem, calc(100vw - 1.5rem));
 }
 
-.wpl-popover-fixed {
-  position: fixed;
-  z-index: 80;
-  margin: 0;
+.wpl-popover-root {
+  position: relative;
+  display: inline-block;
+}
+
+.wpl-popover-root > .wpl-popover {
+  position: absolute;
+  z-index: var(--wpl-z-dropdown);
+  inset-block-start: calc(100% + 0.35rem);
+  inset-inline-start: 0;
+}
+
+.wpl-popover-root > .wpl-popover[data-placement='top'] {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + 0.35rem);
 }
 
 .wpl-tooltip {

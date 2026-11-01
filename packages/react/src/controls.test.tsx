@@ -150,7 +150,7 @@ describe('new controls', () => {
     expect(range).toEqual({ start: 20, end: 20 });
   });
 
-  it('pins an open popover instead of letting it flow under the trigger', async () => {
+  it('keeps an open popover inside its trigger instead of leaving the card', async () => {
     const user = userEvent.setup();
     render(
       <Popover label="Details">
@@ -158,7 +158,10 @@ describe('new controls', () => {
       </Popover>,
     );
     await user.click(screen.getByRole('button', { name: 'Details' }));
-    expect(screen.getByText('Settles on the next business day.').closest('.wpl-popover')?.className).toContain('wpl-popover-fixed');
+    const panel = screen.getByText('Settles on the next business day.').closest('.wpl-popover');
+    expect(panel?.className).not.toContain('fixed');
+    expect(panel?.closest('.wpl-popover-root')).toBeTruthy();
+    expect(panel?.getAttribute('data-placement')).toMatch(/top|bottom/);
   });
 
   it('opens a submenu toward the inline end and selects the leaf', async () => {
@@ -183,7 +186,10 @@ describe('new controls', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Account' }));
-    expect(screen.getByRole('menu', { name: 'Account' }).className).toContain('wpl-menu-fixed');
+    const menu = screen.getByRole('menu', { name: 'Account' });
+    expect(menu.className).toContain('wpl-menu-panel');
+    expect(menu.className).not.toContain('fixed');
+    expect(menu.closest('.wpl-menu-root')).toBeTruthy();
     await user.keyboard('{ArrowDown}{ArrowRight}');
     expect(screen.getByRole('menu', { name: 'Theme' })).toBeTruthy();
     expect(screen.getByRole('menuitem', { name: 'Ivory' }).getAttribute('data-active')).toBe(

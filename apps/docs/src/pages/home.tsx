@@ -795,6 +795,13 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           <span>you already have</span>
         </h2>
         <p>Twelve ways in. One catalog, one theme, one keyboard model. Pick the package that matches the app, not a second design system.</p>
+        <div className="home-shared">
+          <button type="button" className="wpl-btn wpl-btn-primary">
+            Save
+          </button>
+          <code>wpl-btn wpl-btn-primary</code>
+          <p>That class is the control. The packages below only change the language around it.</p>
+        </div>
         <div className="home-principles">
           {principles.map(([title, body]) => (
             <div key={title}>
