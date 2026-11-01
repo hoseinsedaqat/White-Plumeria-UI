@@ -109,12 +109,32 @@ const deskHosts = {
     caption: 'Nuxt static export',
     note: 'This frame is the Nuxt export. The button stays inside ClientOnly and uses the Vue adapter. There is no @white-plumeria/nuxt package, and this is not a server renderer for the component.',
   },
+  sveltekit: {
+    file: 'src/routes/+page.svelte',
+    caption: 'SvelteKit static export',
+    note: 'This frame is the SvelteKit export. The button is the Svelte adapter. There is no @white-plumeria/sveltekit package, and this is not a server renderer for the component.',
+  },
+  solidstart: {
+    file: 'src/routes/index.tsx',
+    caption: 'SolidStart static document',
+    note: 'This frame is the SolidStart document. The button is the Solid adapter. There is no @white-plumeria/solidstart package, and this is not a server renderer for the component.',
+  },
+  analog: {
+    file: 'src/app/pages/index.page.ts',
+    caption: 'Analog static export',
+    note: 'This frame is the Analog export. The button is the Angular adapter. There is no @white-plumeria/analog package, and this is not a server renderer for the component.',
+  },
+  qwikcity: {
+    file: 'src/routes/index.tsx',
+    caption: 'Qwik City static export',
+    note: 'This frame is the Qwik City export. The button is the Qwik adapter. There is no @white-plumeria/qwikcity package, and this is not a server renderer for the component.',
+  },
 } as const;
 
 export type DeskId = keyof typeof deskHosts;
 
 export function isDeskId(value: string): value is DeskId {
-  return value === 'next' || value === 'nuxt';
+  return Object.hasOwn(deskHosts, value);
 }
 
 const boundaries = {

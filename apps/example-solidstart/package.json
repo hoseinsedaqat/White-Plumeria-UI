@@ -1,0 +1,22 @@
+{
+  "name": "@white-plumeria/example-solidstart",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5189",
+    "build": "vite build && node export-html.mjs"
+  },
+  "dependencies": {
+    "@solidjs/router": "0.16.1",
+    "@solidjs/start": "2.1.0",
+    "@white-plumeria/solid": "workspace:*",
+    "@white-plumeria/styles": "workspace:*",
+    "solid-js": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:"
+  }
+}

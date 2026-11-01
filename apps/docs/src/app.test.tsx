@@ -87,6 +87,26 @@ describe('docs app', () => {
       expect.stringContaining('desks/nuxt/index.html'),
     );
     expect(screen.getByText(/There is no @white-plumeria\/nuxt package/)).toBeInTheDocument();
+    for (const [label, id, adapter] of [
+      ['SvelteKit', 'sveltekit', '@white-plumeria/svelte'],
+      ['SolidStart', 'solidstart', '@white-plumeria/solid'],
+      ['Analog', 'analog', '@white-plumeria/angular'],
+      ['Qwik City', 'qwikcity', '@white-plumeria/qwik'],
+    ] as const) {
+      await user.click(screen.getByRole('link', { name: 'All examples' }));
+      await user.click(screen.getByRole('link', { name: new RegExp(`^${label}\\b`) }));
+      expect(await screen.findByRole('heading', { level: 1, name: label })).toBeInTheDocument();
+      expect(screen.getByTitle(`${label} example`)).toHaveAttribute(
+        'src',
+        expect.stringContaining(`desks/${id}/index.html`),
+      );
+      expect(
+        screen.getByText(new RegExp(`There is no @white-plumeria/${id} package`)),
+      ).toBeInTheDocument();
+      const code = document.querySelector('.docs-code')?.textContent ?? '';
+      expect(code).toContain(adapter);
+      expect(code).not.toMatch(new RegExp(`from ["']@white-plumeria/${id}["']`));
+    }
   });
 
   it('opens the component gallery without dropping a catalog entry', async () => {

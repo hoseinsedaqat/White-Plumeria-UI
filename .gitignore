@@ -20,3 +20,13 @@ apps/example-next/.next
 apps/example-next/out
 apps/example-nuxt/.nuxt
 apps/example-nuxt/.output
+apps/example-sveltekit/.svelte-kit
+apps/example-sveltekit/build
+apps/example-analog/dist
+apps/example-analog/.output
+apps/example-analog/.analog
+apps/example-solidstart/dist
+apps/example-solidstart/.output
+apps/example-qwikcity/dist
+apps/example-qwikcity/server
+apps/example-qwikcity/.qwik

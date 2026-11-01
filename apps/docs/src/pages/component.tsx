@@ -38,7 +38,7 @@ export function ComponentPage({
         <p>
           This page includes one example for every library. Server hosts use the adapter named under
           each heading. They are not separate packages, and nothing is published to npm until the
-          set is complete. Next and Nuxt also have a static desk on the examples page.
+          set is complete. Each server host also has a static desk on the examples page.
         </p>
         <nav className="docs-example-nav" aria-label="Example libraries">
           {libraryExamples.map((item) => (
