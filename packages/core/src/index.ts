@@ -100,7 +100,7 @@ export {
   valueFromPointer,
 } from './range.ts';
 export type { NumberRange, RangeBounds } from './range.ts';
-export { placeOverlay } from './overlay.ts';
+export { placeAnchoredPanel, placeOverlay } from './overlay.ts';
 export type { Placement, PlacedOverlay, RectLike } from './overlay.ts';
 export {
   applyPreferences,

@@ -640,6 +640,12 @@ body {
   color: inherit;
 }
 
+.docs-tile:has([aria-expanded='true']),
+.docs-tile-preview:has([aria-expanded='true']) {
+  overflow: visible;
+  z-index: 6;
+}
+
 .docs-tile-meta {
   color: inherit;
   text-decoration: none;

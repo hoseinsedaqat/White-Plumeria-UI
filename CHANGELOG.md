@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Popover and dropdown panels stay in view. A catalog card no longer clips the open panel, and a panel that would fall past the viewport opens above the trigger. Packages are still not published.
+- The date-range docs test no longer assumes the calendar opens on October 2026.
+- Homepage adapter cards stay readable on the dark canvas. The role no longer depends on the primary color. Packages are still not published.
 - The homepage catalog section lists every component in its real category. The eight-name sample and the small stage are gone. Packages are still not published.
 - The homepage “Pure CSS” section shows native elements with the shared class names. The scrolling name strip is gone. Packages are still not published.
 - The homepage theme section is six cards. Each card paints the same button classes with that theme’s variables. The duplicate theme list and the extra color board are gone. Packages are still not published.

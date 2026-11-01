@@ -81,3 +81,25 @@ export function placeOverlay(
   );
   return { top, left, placement: preferred };
 }
+
+export function placeAnchoredPanel(
+  anchor: RectLike,
+  overlay: { width: number; height: number },
+  viewport: { width: number; height: number },
+  align: 'start' | 'end' = 'start',
+  gap = 6,
+): { top: number; left: number; placement: 'top' | 'bottom' } {
+  const margin = 8;
+  const width = Math.max(overlay.width, 0);
+  const height = Math.max(overlay.height, 0);
+  const belowTop = anchor.y + anchor.height + gap;
+  const aboveTop = anchor.y - gap - height;
+  const belowFits = belowTop + height <= viewport.height - margin;
+  const aboveFits = aboveTop >= margin;
+  const placement = belowFits || !aboveFits ? 'bottom' : 'top';
+  const rawTop = placement === 'bottom' ? belowTop : aboveTop;
+  const rawLeft = align === 'end' ? anchor.x + anchor.width - width : anchor.x;
+  const left = Math.min(Math.max(margin, rawLeft), Math.max(margin, viewport.width - width - margin));
+  const top = Math.min(Math.max(margin, rawTop), Math.max(margin, viewport.height - height - margin));
+  return { top, left, placement };
+}

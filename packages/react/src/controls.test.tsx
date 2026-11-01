@@ -5,7 +5,7 @@ import { DatePicker, DateRangePicker } from './calendar.tsx';
 import { Notification } from './toast.tsx';
 import { Combobox } from './combobox.tsx';
 import { RangeSlider, SearchInput, ToggleGroup } from './form.tsx';
-import { ContextMenu, DropdownMenu } from './menu.tsx';
+import { ContextMenu, DropdownMenu, Popover } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
 import { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
@@ -18,6 +18,15 @@ const steps = [
   { id: 'billing', title: 'Billing' },
   { id: 'review', title: 'Review' },
 ];
+
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function isoFromDayLabel(label: string) {
+  const match = label.match(/([A-Z][a-z]+) (\d{1,2}), (\d{4})/);
+  const month = match ? months.indexOf(match[1]) + 1 : 0;
+  if (!match || month < 1) throw new Error(`Unparsed day label: ${label}`);
+  return `${match[3]}-${String(month).padStart(2, '0')}-${match[2].padStart(2, '0')}`;
+}
 
 describe('new controls', () => {
   it('orders a date range and rejects a non-ISO day in English', async () => {
@@ -32,9 +41,17 @@ describe('new controls', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Choose date' }));
-    await user.click(screen.getByRole('gridcell', { name: /October 20, 2026/ }));
-    await user.click(screen.getByRole('gridcell', { name: /October 12, 2026/ }));
-    expect(range).toEqual({ start: '2026-10-12', end: '2026-10-20' });
+    const title = screen.getByRole('grid').getAttribute('aria-label') ?? '';
+    const monthName = title.split(' ')[0] ?? '';
+    const inMonth = screen.getAllByRole('gridcell').filter((cell) => (cell.getAttribute('aria-label') ?? '').includes(`${monthName} `));
+    const later = inMonth.find((cell) => / 20,/.test(cell.getAttribute('aria-label') ?? ''));
+    const earlier = inMonth.find((cell) => / 12,/.test(cell.getAttribute('aria-label') ?? ''));
+    if (!later || !earlier) throw new Error(`Missing sample days in ${title}`);
+    const laterName = later.getAttribute('aria-label') ?? '';
+    const earlierName = earlier.getAttribute('aria-label') ?? '';
+    await user.click(screen.getByRole('gridcell', { name: laterName }));
+    await user.click(screen.getByRole('gridcell', { name: earlierName }));
+    expect(range).toEqual({ start: isoFromDayLabel(earlierName), end: isoFromDayLabel(laterName) });
     view.rerender(
       <DateRangePicker
         label="Stay"
@@ -133,6 +150,17 @@ describe('new controls', () => {
     expect(range).toEqual({ start: 20, end: 20 });
   });
 
+  it('pins an open popover instead of letting it flow under the trigger', async () => {
+    const user = userEvent.setup();
+    render(
+      <Popover label="Details">
+        <p>Settles on the next business day.</p>
+      </Popover>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Details' }));
+    expect(screen.getByText('Settles on the next business day.').closest('.wpl-popover')?.className).toContain('wpl-popover-fixed');
+  });
+
   it('opens a submenu toward the inline end and selects the leaf', async () => {
     const user = userEvent.setup();
     let selected = '';
@@ -155,6 +183,7 @@ describe('new controls', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: 'Account' }));
+    expect(screen.getByRole('menu', { name: 'Account' }).className).toContain('wpl-menu-fixed');
     await user.keyboard('{ArrowDown}{ArrowRight}');
     expect(screen.getByRole('menu', { name: 'Theme' })).toBeTruthy();
     expect(screen.getByRole('menuitem', { name: 'Ivory' }).getAttribute('data-active')).toBe(
