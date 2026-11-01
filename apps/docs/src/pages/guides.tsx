@@ -53,7 +53,7 @@ export function Example() {
   },
   '/accessibility': {
     title: 'Accessibility',
-    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. Dialogs, drawers, menus, and toasts use a short transition. prefers-reduced-motion and data-wpl-motion="reduce" remove it. The theme menu can set that attribute. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
+    body: 'The target is WCAG 2.2 AA: native controls where they are the right tool, a visible focus ring, named icon buttons, dialog focus restore, and form errors tied to inputs. color-scheme follows data-wpl-scheme, or the system preference when that attribute is omitted, so a native popup matches the tokens. A nested light scheme stays light. forced-colors keeps buttons, switches, checks, selected days, and focus on system colors and does not turn forced colors off. prefers-contrast: more thickens borders. Dialogs, drawers, menus, and toasts use a short transition. prefers-reduced-motion and data-wpl-motion="reduce" remove it. The theme menu can set that attribute. Automated tests cover the critical paths. A full manual screen-reader audit is not complete and is not claimed as complete.',
   },
   '/changelog': {
     title: 'Changelog',

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The stylesheet sets `color-scheme` from `data-wpl-scheme`, and a nested light scheme stays light. `forced-colors` keeps buttons, switches, checks, selected days, and focus on system colors. It does not turn forced colors off. This is not a completed screen-reader audit. Packages are still not published.
 - Component pages show several live samples for each component, including table, data table, carousel, and toast. Library tabs still show one generated example. Packages are still not published.
 - A prompt that names a catalog component now plans that component, and the CSS tab uses its HTML example instead of a generic div. MCP docs and `wpl add` return the same class list. Packages are still not published.
 - The local planner CSS tab emits catalog `wpl-` markup instead of a placeholder div. Unknown classes and host-package imports are rejected. `llms.txt` states that class contract. Packages are still not published.

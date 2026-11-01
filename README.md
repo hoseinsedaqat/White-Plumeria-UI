@@ -401,6 +401,8 @@ Dialog and drawer fade. The drawer slides from the logical side, so `start` and 
 
 `prefers-reduced-motion: reduce` and `data-wpl-motion="reduce"` remove those transitions. Focus, names, and escape-to-close do not depend on motion.
 
+`color-scheme` follows `data-wpl-scheme`, or the system preference when that attribute is omitted. A nested light scheme stays light. `forced-colors: active` keeps controls visible with system colors and does not turn forced colors off. `prefers-contrast: more` thickens borders. That is not a completed screen-reader audit.
+
 ## Packages
 
 | Package                    | What it is                                           |
