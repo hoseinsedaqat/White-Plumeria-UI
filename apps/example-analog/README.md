@@ -4,4 +4,4 @@
 pnpm --filter @white-plumeria/example-analog dev
 ```
 
-This is an Analog app. It is not an `@white-plumeria/analog` package. The button is `@white-plumeria/angular`. The docs site frames the static export, not this dev server.
+This is an Analog app. It is not an `@white-plumeria/analog` package. The button is `@white-plumeria/angular`. The docs site frames the static export, not this dev server. The frame opens `index.html`, and that path is the same page as `/`.
