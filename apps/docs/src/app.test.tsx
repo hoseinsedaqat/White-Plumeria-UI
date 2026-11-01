@@ -12,6 +12,9 @@ describe('docs app', () => {
     expect(screen.getByRole('heading', { name: /from xs to xl/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /highly customizable/i })).toBeInTheDocument();
     expect(screen.getByText('Written natively')).toBeInTheDocument();
+    expect(screen.getByText('That class is the control. The packages below only change the language around it.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Popover' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'DropdownMenu' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'github.com/hoseinsedaqat', exact: true })).toHaveAttribute(
       'href',
       'https://github.com/hoseinsedaqat',
@@ -32,6 +35,14 @@ describe('docs app', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /^DatePicker/ }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /^Dialog/ }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /^Popover\b/ }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /^DropdownMenu\b/ }).length).toBeGreaterThan(0);
+    const popover = screen.getByText('Settles on the next business day.').closest('.wpl-popover');
+    const menu = screen.getByRole('menu', { name: 'Account' });
+    expect(popover?.closest('.docs-tile')).toBeTruthy();
+    expect(popover?.className).not.toContain('fixed');
+    expect(menu.closest('.docs-tile')).toBeTruthy();
+    expect(menu.className).not.toContain('fixed');
   });
 
   it('shows a grid that can stack inside a narrow frame', async () => {

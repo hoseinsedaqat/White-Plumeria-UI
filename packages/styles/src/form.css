@@ -697,6 +697,11 @@
   min-inline-size: 12rem;
 }
 
+.wpl-menu-panel[data-placement='top'] {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + 0.35rem);
+}
+
 .wpl-menu-row {
   position: relative;
 }

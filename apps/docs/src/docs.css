@@ -643,7 +643,24 @@ body {
 .docs-tile:has([aria-expanded='true']),
 .docs-tile-preview:has([aria-expanded='true']) {
   overflow: visible;
-  z-index: 6;
+  z-index: 8;
+}
+
+.docs-tile:has(.wpl-popover-root),
+.docs-tile:has(.wpl-menu-root) {
+  position: relative;
+  overflow: visible;
+  z-index: 3;
+}
+
+.docs-tile-preview:has(.wpl-popover-root),
+.docs-tile-preview:has(.wpl-menu-root),
+.docs-canvas:has(.wpl-popover-root),
+.docs-canvas:has(.wpl-menu-root) {
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 17rem;
+  overflow: visible;
 }
 
 .docs-tile-meta {

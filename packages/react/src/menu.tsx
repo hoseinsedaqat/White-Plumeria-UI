@@ -21,17 +21,45 @@ import {
 } from 'react';
 import { Button } from './button.tsx';
 
+function visibleLimit(node: HTMLElement) {
+  let top = 0;
+  let left = 0;
+  let right = window.innerWidth || 0;
+  let bottom = window.innerHeight || 0;
+  let parent = node.parentElement;
+  while (parent) {
+    const style = getComputedStyle(parent);
+    const overflow = `${style.overflow} ${style.overflowX} ${style.overflowY}`;
+    if (/(auto|scroll|hidden|clip)/.test(overflow)) {
+      const rect = parent.getBoundingClientRect();
+      if (rect.width >= 1 && rect.height >= 1) {
+        top = Math.max(top, rect.top);
+        left = Math.max(left, rect.left);
+        right = Math.min(right, rect.right);
+        bottom = Math.min(bottom, rect.bottom);
+      }
+    }
+    parent = parent.parentElement;
+  }
+  return { top, left, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
+}
+
 function placeOpenPanel(anchor: HTMLElement | null, panel: HTMLElement | null) {
   if (!anchor || !panel) return;
   const rect = anchor.getBoundingClientRect();
+  const box = visibleLimit(anchor);
   const placed = placeAnchoredPanel(
-    { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+    { x: rect.left - box.left, y: rect.top - box.top, width: rect.width, height: rect.height },
     { width: panel.offsetWidth, height: panel.offsetHeight },
-    { width: window.innerWidth, height: window.innerHeight },
+    { width: Math.max(box.width, 1), height: Math.max(box.height, 1) },
     readingDirection(anchor) === 'rtl' ? 'end' : 'start',
   );
-  panel.style.top = `${placed.top}px`;
-  panel.style.left = `${placed.left}px`;
+  panel.dataset.placement = placed.placement;
+  panel.style.position = 'absolute';
+  panel.style.top = '';
+  panel.style.left = '';
+  panel.style.right = '';
+  panel.style.bottom = '';
 }
 
 function useAnchoredPanel(open: boolean, anchorRef: { current: HTMLElement | null }, panelRef: { current: HTMLElement | null }) {
@@ -60,12 +88,14 @@ export function DropdownMenu({
   label,
   items,
   onSelect,
+  defaultOpen = false,
 }: {
   label: string;
   items: MenuItem[];
   onSelect?: (id: string) => void;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [active, setActive] = useState(0);
   const [subActive, setSubActive] = useState<number | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -188,7 +218,7 @@ export function DropdownMenu({
         {label}
       </Button>
       {open ? (
-        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-fixed">
+        <div ref={menuRef} id={menuId} role="menu" aria-label={label} className="wpl-menu wpl-menu-panel">
           {items.map((item, index) => {
             const nested = menuHasSubmenu(item);
             const expanded = nested && index === active && subActive !== null;
@@ -460,12 +490,14 @@ export function Popover({
   label,
   children,
   trigger,
+  defaultOpen = false,
 }: {
   label?: string;
   children: ReactNode;
   trigger?: ReactNode;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const id = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -482,7 +514,7 @@ export function Popover({
   }, [open]);
 
   return (
-    <div ref={rootRef} style={{ position: 'relative', display: 'inline-block' }}>
+    <div ref={rootRef} className="wpl-popover-root">
       <Button
         variant="secondary"
         aria-expanded={open}
@@ -492,7 +524,7 @@ export function Popover({
         {trigger ?? label}
       </Button>
       {open ? (
-        <div ref={panelRef} id={id} className="wpl-popover wpl-popover-fixed">
+        <div ref={panelRef} id={id} className="wpl-popover">
           {children}
         </div>
       ) : null}

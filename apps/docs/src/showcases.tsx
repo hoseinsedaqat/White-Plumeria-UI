@@ -19,6 +19,7 @@ import {
   Grid,
   Kbd,
   Navbar,
+  Popover,
   Progress,
   RangeSlider,
   Select,
@@ -481,6 +482,26 @@ export function MiniPreview({ slug }: { slug: string }) {
   if (slug === 'input') return <Input aria-label="Email" placeholder="ada@example.com" />;
   if (slug === 'switch') return <Switch label="Enabled" defaultChecked />;
   if (slug === 'checkbox') return <Checkbox label="Remember me" defaultChecked />;
+  if (slug === 'popover') {
+    return (
+      <Popover label="Details" defaultOpen>
+        <p>Settles on the next business day.</p>
+      </Popover>
+    );
+  }
+  if (slug === 'dropdown-menu') {
+    return (
+      <DropdownMenu
+        label="Account"
+        defaultOpen
+        items={[
+          { id: 'profile', label: 'Profile' },
+          { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] },
+          { id: 'out', label: 'Sign out' },
+        ]}
+      />
+    );
+  }
   if (slug === 'data-table') {
     return (
       <Table caption="Sample rates">
