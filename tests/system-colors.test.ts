@@ -37,5 +37,26 @@ describe('system color contract', () => {
     expect(forced).toContain('.wpl-btn-link');
     expect(system).not.toMatch(/forced-color-adjust\s*:/);
     expect(system).toContain('@media (prefers-contrast: more)');
+    const forcedSelection = forced.slice(forced.indexOf(':root::selection'));
+    expect(forcedSelection).toContain('background: Highlight');
+    expect(forcedSelection).toContain('color: HighlightText');
+  });
+
+  it('themes selection and autofill, and prints document content without transient chrome', () => {
+    expect(system).toContain('background-color: var(--wpl-color-primary)');
+    expect(system).toContain('color: var(--wpl-color-primary-fg)');
+    expect(system).toContain('.wpl-input:-webkit-autofill');
+    expect(system).toContain('.wpl-input:autofill');
+    expect(system).toContain('box-shadow: 0 0 0 1000px var(--wpl-color-surface) inset');
+    expect(system).toContain('-webkit-text-fill-color: var(--wpl-color-text)');
+    const print = system.slice(system.indexOf('@media print'));
+    expect(print).toContain('.wpl-toast-region');
+    expect(print).toContain('.wpl-tooltip');
+    expect(print).toContain('.wpl-menu-fixed');
+    expect(print).toContain('display: none');
+    expect(print).not.toMatch(/\.wpl-dialog\s*,[\s\S]*display:\s*none/);
+    expect(print).toContain('print-color-adjust: exact');
+    expect(print).toContain('.wpl-table tr');
+    expect(print).not.toMatch(/^\s*tr\s*[,{]/m);
   });
 });

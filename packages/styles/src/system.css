@@ -4,6 +4,7 @@
   A nested light or dark attribute wins over the page.
   forced-colors keeps state visible with system colors.
   The operating system palette stays in control.
+  Selection and autofill use the theme tokens. Print drops transient chrome only.
 */
 
 :root,
@@ -30,6 +31,38 @@
   [data-wpl-scheme='light'] {
     color-scheme: light;
   }
+}
+
+:root::selection,
+:root ::selection,
+.wpl-root::selection,
+.wpl-root ::selection,
+[data-wpl-theme]::selection,
+[data-wpl-theme] ::selection {
+  background-color: var(--wpl-color-primary);
+  color: var(--wpl-color-primary-fg);
+}
+
+.wpl-input:-webkit-autofill,
+.wpl-input:-webkit-autofill:hover,
+.wpl-input:-webkit-autofill:focus,
+.wpl-textarea:-webkit-autofill,
+.wpl-textarea:-webkit-autofill:hover,
+.wpl-textarea:-webkit-autofill:focus,
+.wpl-select:-webkit-autofill,
+.wpl-select:-webkit-autofill:hover,
+.wpl-select:-webkit-autofill:focus,
+.wpl-command-input:-webkit-autofill,
+.wpl-command-input:-webkit-autofill:hover,
+.wpl-command-input:-webkit-autofill:focus,
+.wpl-input:autofill,
+.wpl-textarea:autofill,
+.wpl-select:autofill,
+.wpl-command-input:autofill {
+  -webkit-text-fill-color: var(--wpl-color-text);
+  caret-color: var(--wpl-color-text);
+  box-shadow: 0 0 0 1000px var(--wpl-color-surface) inset;
+  transition: background-color 9999s ease-out 0s;
 }
 
 @media (prefers-contrast: more) {
@@ -319,5 +352,89 @@
   .wpl-rating-icon.is-on,
   .wpl-rating-icon.is-on .wpl-icon {
     color: Highlight;
+  }
+
+  :root::selection,
+  :root ::selection,
+  .wpl-root::selection,
+  .wpl-root ::selection,
+  [data-wpl-theme]::selection,
+  [data-wpl-theme] ::selection {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .wpl-input:-webkit-autofill,
+  .wpl-textarea:-webkit-autofill,
+  .wpl-select:-webkit-autofill,
+  .wpl-command-input:-webkit-autofill,
+  .wpl-input:autofill,
+  .wpl-textarea:autofill,
+  .wpl-select:autofill,
+  .wpl-command-input:autofill {
+    box-shadow: none;
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+    background: Canvas;
+  }
+}
+
+@media print {
+  .wpl-toast-region,
+  .wpl-tooltip,
+  .wpl-menu-fixed {
+    display: none;
+  }
+
+  .wpl-dialog::backdrop,
+  .wpl-drawer::backdrop {
+    display: none;
+  }
+
+  .wpl-overlay {
+    position: static;
+    display: block;
+    background: none;
+    padding: 0;
+  }
+
+  .wpl-dialog,
+  .wpl-drawer,
+  .wpl-dialog-panel,
+  .wpl-drawer-panel {
+    position: static;
+    inset: auto;
+    transform: none;
+    opacity: 1;
+    box-shadow: none;
+    inline-size: auto;
+    max-inline-size: 100%;
+    max-block-size: none;
+    block-size: auto;
+  }
+
+  .wpl-card,
+  .wpl-alert,
+  .wpl-stat,
+  .wpl-table-wrap,
+  .wpl-table tr {
+    break-inside: avoid;
+  }
+
+  :where([class^='wpl-'], [class*=' wpl-']) {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .wpl-btn:not(.wpl-btn-link),
+  .wpl-icon-btn,
+  .wpl-badge,
+  .wpl-alert,
+  .wpl-switch-control,
+  .wpl-switch-track,
+  .wpl-day[aria-selected='true'],
+  .wpl-progress-bar {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
