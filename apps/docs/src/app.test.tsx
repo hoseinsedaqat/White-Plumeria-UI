@@ -9,6 +9,8 @@ describe('docs app', () => {
     render(<App />);
     expect(screen.getByRole('heading', { level: 1, name: /faster, cleaner, easier/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'See all components' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Named components' }).textContent).toContain('wpl-card');
+    expect(screen.getByRole('group', { name: 'Named components' }).textContent).toContain('wpl-switch');
     expect(screen.getByRole('heading', { name: /from xs to xl/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /highly customizable/i })).toBeInTheDocument();
     expect(screen.getByText('Written natively')).toBeInTheDocument();

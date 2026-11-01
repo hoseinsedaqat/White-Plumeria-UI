@@ -1,6 +1,6 @@
 import { brand, buttonClassName, catalog, categoryLabels, resolveDirection } from '@white-plumeria/core';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
-import { Button, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
+import { Button, Card, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import type { ButtonSize } from '@white-plumeria/core';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
@@ -409,6 +409,26 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
           </A>
           , plus {Math.max(catalog.length - 3, 0)} more.
         </p>
+        <div className="home-next" role="group" aria-label="Named components">
+          <article>
+            <div className="home-next-stage">
+              <Button>Save</Button>
+            </div>
+            <code>wpl-btn wpl-btn-primary</code>
+          </article>
+          <article>
+            <div className="home-next-stage">
+              <Card title="Ledger" titleAs="h3" description="A titled surface." />
+            </div>
+            <code>wpl-card</code>
+          </article>
+          <article>
+            <div className="home-next-stage">
+              <Switch label="Enabled" defaultChecked />
+            </div>
+            <code>wpl-switch</code>
+          </article>
+        </div>
         <div className="home-ctas">
           <A className="home-cta home-cta-dark" href="/components" onNavigate={onNavigate}>
             See all components

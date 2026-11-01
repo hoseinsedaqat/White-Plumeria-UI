@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The homepage “next level” section shows Button, Card, and Switch as they render, with the class each one uses. The centered call to action stays. Packages are still not published.
 - Popover and Dropdown stay in the catalog. The open panel stays inside the card instead of leaving it, and a panel that would pass the visible edge opens above the trigger. Packages are still not published.
 - The homepage framework section shows the shared button class once, above the adapter cards. Packages are still not published.
 - The date-range docs test no longer assumes the calendar opens on October 2026.
