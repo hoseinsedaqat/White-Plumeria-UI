@@ -1,4 +1,4 @@
-import { message } from '@white-plumeria/core';
+import { message, type Locale } from '@white-plumeria/core';
 
 export interface RejectedFile {
   name: string;
@@ -17,7 +17,12 @@ export function matchesFile(file: File, rule: string): boolean {
   return file.type === rule;
 }
 
-export function takeFiles(files: FileList | null, accept = '', maxSize = 0): TakenFiles {
+export function takeFiles(
+  files: FileList | null,
+  accept = '',
+  maxSize = 0,
+  locale: Locale = 'en',
+): TakenFiles {
   const accepted: string[] = [];
   const rejected: RejectedFile[] = [];
   const rules = accept
@@ -28,7 +33,7 @@ export function takeFiles(files: FileList | null, accept = '', maxSize = 0): Tak
     const typeOk = rules.length === 0 || rules.some((rule) => matchesFile(file, rule));
     const sizeOk = !maxSize || file.size <= maxSize;
     if (!typeOk || !sizeOk)
-      rejected.push({ name: file.name, reason: message('en', 'fileRejected') });
+      rejected.push({ name: file.name, reason: message(locale, 'fileRejected') });
     else accepted.push(file.name);
   }
   return { accepted, rejected };

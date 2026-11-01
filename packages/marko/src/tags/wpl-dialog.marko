@@ -1,5 +1,6 @@
-import { message, supportsModalDialog } from "@white-plumeria/core";
+import { supportsModalDialog } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface Input {
   title?: string;
@@ -36,7 +37,7 @@ export interface Input {
           emit(host(), "wpl-close", { open: false });
           input.onOpenChange?.(false);
         }
-      >${message("en", "close")}</button>
+      >${text("close")}</button>
     </header>
     <div class="wpl-dialog-body">
       <if=input.description><p class="wpl-dialog-description">${input.description}</p></if>

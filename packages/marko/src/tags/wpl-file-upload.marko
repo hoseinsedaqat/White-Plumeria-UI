@@ -1,4 +1,5 @@
 import { emit } from "../emit.ts";
+import { localeOf } from "../provider.ts";
 import { takeFiles } from "../files.ts";
 
 export interface Input {
@@ -22,7 +23,7 @@ export interface Input {
       accept=input.accept
       multiple=input.multiple
       onChange(_event, el) {
-        const taken = takeFiles(el.files, input.accept, Number(input.maxSize) || 0);
+        const taken = takeFiles(el.files, input.accept, Number(input.maxSize) || 0, localeOf(el));
         names = taken.accepted;
         rejected = taken.rejected;
         if (taken.accepted.length) {

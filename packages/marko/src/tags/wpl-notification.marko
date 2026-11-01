@@ -1,4 +1,5 @@
-import { iconPaths, message, notificationClassName, type AlertVariant } from "@white-plumeria/core";
+import { iconPaths, notificationClassName, type AlertVariant } from "@white-plumeria/core";
+import { text } from "../text.ts";
 import { emit, oneOf } from "../emit.ts";
 
 export interface Input {
@@ -26,7 +27,7 @@ static const variants = ["neutral", "info", "success", "warning", "danger"] as c
     <button/host
       type="button"
       class="wpl-icon-btn wpl-btn-ghost"
-      aria-label=message("en", "dismiss")
+      aria-label=text("dismiss")
       onClick() {
         emit(host(), "wpl-dismiss", {});
         input.onDismiss?.();

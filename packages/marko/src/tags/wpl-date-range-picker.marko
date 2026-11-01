@@ -4,11 +4,12 @@ import {
   calendarDayClass,
   formatDate,
   iconPaths,
-  message,
   parseIsoDate,
   type CalendarSystem,
 } from "@white-plumeria/core";
 import { emit, oneOf } from "../emit.ts";
+import { localeOf } from "../provider.ts";
+import { activeLocale, text } from "../text.ts";
 import { commitRange, pickRange } from "../range-state.ts";
 
 export interface Input {
@@ -41,14 +42,14 @@ static function publish(
 <const/month=buildMonthGrid({
   anchor,
   calendar,
-  locale: "en",
+  locale: activeLocale(),
   min: parseIsoDate(input.min ?? "") ?? undefined,
   max: parseIsoDate(input.max ?? "") ?? undefined,
 })>
 <id/startId/>
 <id/endId/>
 <const/apply=(which: "start" | "end", next: string) => {
-  const result = commitRange(which, next, start, end);
+  const result = commitRange(which, next, start, end, localeOf(host()));
   start = result.start;
   end = result.end;
   error = result.error;
@@ -56,10 +57,10 @@ static function publish(
 }>
 
 <div/host class="wpl-date">
-  <span class="wpl-label">${input.label || message("en", "chooseDate")}</span>
+  <span class="wpl-label">${input.label || text("chooseDate")}</span>
   <div class="wpl-date-row">
     <div class="wpl-field">
-      <label class="wpl-label" for=startId>${message("en", "startDate")}</label>
+      <label class="wpl-label" for=startId>${text("startDate")}</label>
       <input/startInput
         id=startId
         class="wpl-input"
@@ -71,7 +72,7 @@ static function publish(
       >
     </div>
     <div class="wpl-field">
-      <label class="wpl-label" for=endId>${message("en", "endDate")}</label>
+      <label class="wpl-label" for=endId>${text("endDate")}</label>
       <input/endInput
         id=endId
         class="wpl-input"
@@ -87,13 +88,13 @@ static function publish(
   <p class="wpl-field-hint">
     <if=(startDate && endDate)>${formatDate(startDate, "en")} – ${formatDate(endDate, "en")}</if>
     <else if=startDate>${formatDate(startDate, "en")}</else>
-    <else>${message("en", "chooseDate")}</else>
+    <else>${text("chooseDate")}</else>
   </p>
   <div class="wpl-calendar">
     <div class="wpl-calendar-head">
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "previous") onClick() { anchor = addMonths(anchor, -1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg></button>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=text("previous") onClick() { anchor = addMonths(anchor, -1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg></button>
       <strong>${month.title}</strong>
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=message("en", "next") onClick() { anchor = addMonths(anchor, 1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg></button>
+      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label=text("next") onClick() { anchor = addMonths(anchor, 1, calendar) }><svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg></button>
     </div>
     <div class="wpl-calendar-grid" role="grid" aria-label=month.title>
       <for|day| of=month.weekdays>
@@ -104,9 +105,9 @@ static function publish(
           type="button"
           class=calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: startDate, rangeEnd: endDate })
           disabled=cell.disabled
-          aria-label=formatDate(cell.date, "en", { dateStyle: "full" }, calendar)
+          aria-label=formatDate(cell.date, activeLocale(), { dateStyle: "full" }, calendar)
           onClick() {
-            const result = pickRange(cell.date, start, end);
+            const result = pickRange(cell.date, start, end, localeOf(host()));
             start = result.start;
             end = result.end;
             error = result.error;

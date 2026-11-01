@@ -1,5 +1,6 @@
 import { canMove, moveIndex } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface Slide {
   id?: string;
@@ -23,12 +24,12 @@ export interface Input {
 <const/slide=slides[index]>
 <const/media=slides.some((item) => Boolean(item.src))>
 
-<div/host class=`wpl-carousel${media ? " wpl-carousel-media" : ""}` aria-roledescription="carousel" aria-label=input.label || "Carousel" data-index=index>
+<div/host class=`wpl-carousel${media ? " wpl-carousel-media" : ""}` aria-roledescription="carousel" aria-label=input.label || text("carousel") data-index=index>
   <div class="wpl-carousel-bar">
     <button
       type="button"
       class="wpl-carousel-control"
-      aria-label="Previous"
+      aria-label=text("previous")
       disabled=!canMove(index, -1, slides.length, Boolean(input.loop))
       onClick() {
         index = moveIndex(index, -1, slides.length, Boolean(input.loop));
@@ -56,7 +57,7 @@ export interface Input {
     <button
       type="button"
       class="wpl-carousel-control"
-      aria-label="Next"
+      aria-label=text("next")
       disabled=!canMove(index, 1, slides.length, Boolean(input.loop))
       onClick() {
         index = moveIndex(index, 1, slides.length, Boolean(input.loop));
