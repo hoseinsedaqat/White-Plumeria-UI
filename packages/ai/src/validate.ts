@@ -1,4 +1,5 @@
 import { catalog } from '@white-plumeria/core';
+import { knownClassNames } from './markup.ts';
 import type { FrameworkId, ValidationResult } from './types.ts';
 
 const forbidden = [
@@ -10,11 +11,16 @@ const forbidden = [
   { pattern: /<script\b/i, message: 'Script tags are not allowed in generated markup.' },
 ];
 
+const missingPackage =
+  /@white-plumeria\/(next|nuxt|sveltekit|solidstart|analog|qwikcity|astro|stimulus|aurelia|ripple|stencil|vanjs|lwc)\b/;
+
 export function validateGeneratedCode(code: string, framework: FrameworkId): ValidationResult {
   const errors: string[] = [];
   for (const rule of forbidden) {
     if (rule.pattern.test(code)) errors.push(rule.message);
   }
+  const host = missingPackage.exec(code);
+  if (host?.[1]) errors.push(`@white-plumeria/${host[1]} is not a package.`);
   const known = new Set(catalog.map((component) => component.name));
   const markoTags = [
     ...code.matchAll(
@@ -70,8 +76,14 @@ export function validateGeneratedCode(code: string, framework: FrameworkId): Val
         if (name && !known.has(name)) errors.push(`JSX component ${name} is not in the catalog.`);
       }
     }
-  } else if (!/wpl-/.test(code)) {
-    errors.push('HTML examples must use wpl- classes.');
+  } else {
+    const classes = [...code.matchAll(/class=(["'])([^"']*)\1/g)];
+    if (classes.length === 0) errors.push('HTML examples must use wpl- classes.');
+    for (const match of classes) {
+      for (const token of (match[2] ?? '').split(/\s+/).filter(Boolean)) {
+        if (!knownClassNames().has(token)) errors.push(`Unknown class ${token}.`);
+      }
+    }
   }
   return { ok: errors.length === 0, errors };
 }

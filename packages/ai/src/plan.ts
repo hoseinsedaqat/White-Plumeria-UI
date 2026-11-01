@@ -1,7 +1,13 @@
-import { getComponent } from '@white-plumeria/core';
+import {
+  angularCloseTag,
+  angularHost,
+  getComponent,
+  litAttribute,
+  litTag,
+} from '@white-plumeria/core';
 import type { ThemeName } from '@white-plumeria/tokens';
+import { renderClassMarkup } from './markup.ts';
 import { recommendComponents } from './recommend.ts';
-import { angularCloseTag, angularHost, litAttribute, litTag } from '@white-plumeria/core';
 import type { Analysis, FrameworkId, LayoutPlan, PreviewNode } from './types.ts';
 
 const themeWords: Array<{ theme: ThemeName; words: string[] }> = [
@@ -189,7 +195,7 @@ const layouts: Record<string, PreviewNode[]> = {
 };
 
 export function renderCode(nodes: PreviewNode[], framework: FrameworkId): string {
-  if (framework === 'html') return nodes.map(renderHtml).join('\n');
+  if (framework === 'html') return renderClassMarkup(nodes);
   if (framework === 'react') return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n'));
   if (framework === 'solid')
     return wrapReact(nodes.map((node) => renderReact(node, 2)).join('\n')).replaceAll(
@@ -358,13 +364,6 @@ function wrapLit(nodes: PreviewNode[]): string {
     '}',
     '',
   ].join('\n');
-}
-
-function renderHtml(node: PreviewNode): string {
-  const component = getComponent(node.component);
-  const className = component?.classes[0] ?? 'wpl-root';
-  const text = node.text ?? String(node.props?.title ?? node.props?.label ?? node.component);
-  return `<div class="${className}" data-component="${node.component}">${escapeHtml(text)}</div>`;
 }
 
 function propString(props: PreviewNode['props'], framework: FrameworkId): string {

@@ -95,6 +95,11 @@ function bundle(framework: FrameworkId, contents: string) {
     notes: [
       'Imports are limited to @white-plumeria packages that exist in this repository.',
       'Preview renders a structured plan. It does not eval this source.',
+      ...(framework === 'html'
+        ? [
+            'HTML uses catalog wpl- classes. Tailwind is not required. There is no host package and no npm install.',
+          ]
+        : []),
     ],
   };
 }

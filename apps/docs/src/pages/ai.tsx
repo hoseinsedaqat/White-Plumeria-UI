@@ -42,7 +42,7 @@ export function AiPage() {
     | 'marko'
     | 'ember'
     | 'html'
-  >('react');
+  >('html');
   const [error, setError] = useState('');
   const [plan, setPlan] = useState<PlanResult | null>(null);
 
@@ -65,7 +65,9 @@ export function AiPage() {
       <h1 className="docs-title">Studio without a key</h1>
       <p className="docs-lede">
         This page does not call a cloud model. It plans from the real catalog and does not execute
-        generated code.
+        generated code. The CSS tab is the class contract. The other tabs render those same
+        classes. Models can read{' '}
+        <a href={`${import.meta.env.BASE_URL}llms.txt`}>llms.txt</a>.
       </p>
       <label className="wpl-label" htmlFor="ai-prompt">
         Prompt
@@ -106,6 +108,7 @@ export function AiPage() {
           <div className="docs-tabs">
             {(
               [
+                'html',
                 'react',
                 'vue',
                 'svelte',
@@ -117,7 +120,6 @@ export function AiPage() {
                 'alpine',
                 'marko',
                 'ember',
-                'html',
               ] as const
             ).map((item) => (
               <button
@@ -130,7 +132,7 @@ export function AiPage() {
                 }
                 onClick={() => setFramework(item)}
               >
-                {item}
+                {item === 'html' ? 'CSS' : item}
               </button>
             ))}
           </div>

@@ -4,14 +4,28 @@
     "slug": "accordion",
     "summary": "Disclosure stack, single or multiple.",
     "summaryFa": "پشتهٔ بازشو، تکی یا چندتایی.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-accordion",
+      "wpl-accordion-trigger",
+      "wpl-accordion-panel"
+    ],
+    "html": "<div class=\"wpl-accordion\"><button class=\"wpl-accordion-trigger\" aria-expanded=\"false\">Fees</button></div>"
   },
   {
     "name": "Alert",
     "slug": "alert",
     "summary": "Inline status message that is part of the page.",
     "summaryFa": "پیام وضعیت درون صفحه.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-alert",
+      "wpl-alert-info",
+      "wpl-alert-success",
+      "wpl-alert-warning",
+      "wpl-alert-danger"
+    ],
+    "html": "<div class=\"wpl-alert wpl-alert-warning\" role=\"status\"><p class=\"wpl-alert-title\">Review needed</p></div>"
   },
   {
     "name": "Avatar",
@@ -20,21 +34,40 @@
     "summaryFa": "تصویر یا حروف آغازین، با نقطهٔ وضعیت اختیاری.",
     "limitations": [
       "Broken images fall back to initials on the error event. There is no remote presence service."
-    ]
+    ],
+    "classes": [
+      "wpl-avatar",
+      "wpl-avatar-sm",
+      "wpl-avatar-lg",
+      "wpl-avatar-status"
+    ],
+    "html": "<span class=\"wpl-avatar\" role=\"img\" aria-label=\"Laleh Karimi\">LK</span>"
   },
   {
     "name": "Badge",
     "slug": "badge",
     "summary": "Compact status label.",
     "summaryFa": "برچسب وضعیت فشرده.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-badge",
+      "wpl-badge-primary",
+      "wpl-badge-success",
+      "wpl-badge-warning",
+      "wpl-badge-danger"
+    ],
+    "html": "<span class=\"wpl-badge wpl-badge-success\">Paid</span>"
   },
   {
     "name": "Breadcrumb",
     "slug": "breadcrumb",
     "summary": "Hierarchical location.",
     "summaryFa": "جایگاه سلسله‌مراتبی.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-breadcrumb"
+    ],
+    "html": "<nav class=\"wpl-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"/\">Home</a></li></ol></nav>"
   },
   {
     "name": "Button",
@@ -44,14 +77,40 @@
     "limitations": [
       "xs is 1.75rem and is for dense toolbars, not the only target of a primary action.",
       "appearance is ignored when variant is link."
-    ]
+    ],
+    "classes": [
+      "wpl-btn",
+      "wpl-btn-primary",
+      "wpl-btn-secondary",
+      "wpl-btn-outline",
+      "wpl-btn-ghost",
+      "wpl-btn-danger",
+      "wpl-btn-success",
+      "wpl-btn-warning",
+      "wpl-btn-info",
+      "wpl-btn-link",
+      "wpl-btn-soft",
+      "wpl-btn-dash",
+      "wpl-btn-xs",
+      "wpl-btn-sm",
+      "wpl-btn-lg",
+      "wpl-btn-xl",
+      "wpl-btn-loading",
+      "wpl-btn-block"
+    ],
+    "html": "<button class=\"wpl-btn wpl-btn-primary\" type=\"button\">Save changes</button>"
   },
   {
     "name": "ButtonGroup",
     "slug": "button-group",
     "summary": "Groups related buttons. Joined mode shares borders.",
     "summaryFa": "دکمه‌های مرتبط را گروه می‌کند.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-btn-group",
+      "wpl-btn-group-joined"
+    ],
+    "html": "<div class=\"wpl-btn-group\" role=\"group\" aria-label=\"Save options\"><button class=\"wpl-btn wpl-btn-primary\">Save</button></div>"
   },
   {
     "name": "Calendar",
@@ -60,14 +119,27 @@
     "summaryFa": "شبکهٔ ماه برای تقویم میلادی یا خورشیدی.",
     "limitations": [
       "Local timezone only. No time of day. Persian conversion is tested against Intl."
-    ]
+    ],
+    "classes": [
+      "wpl-calendar",
+      "wpl-day"
+    ],
+    "html": "<div class=\"wpl-calendar\"><div class=\"wpl-calendar-grid\" role=\"grid\"></div></div>"
   },
   {
     "name": "Card",
     "slug": "card",
     "summary": "Surface for a title, description, body, and actions.",
     "summaryFa": "سطح برای عنوان، توضیح، بدنه و عمل‌ها.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-card",
+      "wpl-card-title",
+      "wpl-card-description",
+      "wpl-card-body",
+      "wpl-card-footer"
+    ],
+    "html": "<section class=\"wpl-card\"><h2 class=\"wpl-card-title\">Analytics</h2><p class=\"wpl-card-description\">Overview of recent activity</p></section>"
   },
   {
     "name": "Carousel",
@@ -80,7 +152,15 @@
       "The picture covers a 3:2 frame. The image file does not set the carousel height.",
       "A pointer drag moves one slide. It is not a physics scroller.",
       "The HTML class snapshot does not include the behavior."
-    ]
+    ],
+    "classes": [
+      "wpl-carousel",
+      "wpl-carousel-media",
+      "wpl-carousel-image",
+      "wpl-carousel-caption",
+      "wpl-carousel-dot"
+    ],
+    "html": "<section class=\"wpl-carousel wpl-carousel-media\" aria-roledescription=\"carousel\" aria-label=\"Theme stills\"><div class=\"wpl-carousel-viewport\"><div class=\"wpl-carousel-track\"><figure class=\"wpl-carousel-figure\"><img class=\"wpl-carousel-image\" src=\"/carousel/white.jpg\" alt=\"White plumeria flowers on pale stone\" /><figcaption class=\"wpl-carousel-caption\"><strong>White</strong><span>The default palette.</span></figcaption></figure></div></div></section>"
   },
   {
     "name": "ChartContainer",
@@ -89,14 +169,24 @@
     "summaryFa": "خلاصهٔ میله‌ای دسترس‌پذیر به‌علاوهٔ جدول. موتور نمودار نیست.",
     "limitations": [
       "No line, pie, zoom, or canvas chart. Children can replace the bar view, but the table remains."
-    ]
+    ],
+    "classes": [
+      "wpl-chart",
+      "wpl-chart-bar",
+      "wpl-chart-fill"
+    ],
+    "html": "<figure class=\"wpl-chart\"><figcaption>Sample volume</figcaption></figure>"
   },
   {
     "name": "Checkbox",
     "slug": "checkbox",
     "summary": "Native checkbox with a visible label.",
     "summaryFa": "چک‌باکس بومی با برچسب نمایان.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-check"
+    ],
+    "html": "<label class=\"wpl-check\"><input type=\"checkbox\" name=\"email\" /> Email me invoices</label>"
   },
   {
     "name": "Combobox",
@@ -105,7 +195,15 @@
     "summaryFa": "فهرست تک‌انتخابی قابل فیلتر.",
     "limitations": [
       "Single select. Options are local. No virtualization and no async loader."
-    ]
+    ],
+    "classes": [
+      "wpl-combo",
+      "wpl-combo-control",
+      "wpl-combo-icon",
+      "wpl-listbox",
+      "wpl-listbox-item"
+    ],
+    "html": "<!-- Combobox needs the framework or elements behavior. The class contract is wpl-combo, wpl-combo-control, wpl-combo-icon, and wpl-listbox. -->"
   },
   {
     "name": "CommandPalette",
@@ -114,14 +212,26 @@
     "summaryFa": "فهرست فرمان با اولویت صفحه‌کلید داخل گفتگو.",
     "limitations": [
       "Filters the provided list only. No fuzzy scoring beyond substring and keywords."
-    ]
+    ],
+    "classes": [
+      "wpl-command",
+      "wpl-command-list"
+    ],
+    "html": "<div class=\"wpl-command\" role=\"dialog\" aria-label=\"Command palette\"></div>"
   },
   {
     "name": "Container",
     "slug": "container",
     "summary": "Centered content width.",
     "summaryFa": "عرض محتوای وسط‌چین.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-container",
+      "wpl-container-sm",
+      "wpl-container-md",
+      "wpl-container-xl"
+    ],
+    "html": "<div class=\"wpl-container wpl-container-md\">Content</div>"
   },
   {
     "name": "ContextMenu",
@@ -131,7 +241,14 @@
     "limitations": [
       "Does not replace the browser menu for assistive tech that does not emit contextmenu.",
       "One submenu level. Deeper items are not opened."
-    ]
+    ],
+    "classes": [
+      "wpl-menu",
+      "wpl-menu-item",
+      "wpl-menu-sub",
+      "wpl-menu-caret"
+    ],
+    "html": "<div class=\"wpl-menu\" role=\"menu\"><button class=\"wpl-menu-item\" role=\"menuitem\" aria-haspopup=\"menu\">Export</button></div>"
   },
   {
     "name": "DataTable",
@@ -140,7 +257,14 @@
     "summaryFa": "مرتب‌سازی، فیلتر و صفحه‌بندی سمت کاربر روی ردیف‌هایی که می‌دهید.",
     "limitations": [
       "Client-side only. No virtualization and no server cursor mode in 0.1.0."
-    ]
+    ],
+    "classes": [
+      "wpl-data-table",
+      "wpl-table",
+      "wpl-table-toolbar",
+      "wpl-sort"
+    ],
+    "html": "<div class=\"wpl-table-wrap\"><table class=\"wpl-table\"><caption>Sample transactions</caption></table></div>"
   },
   {
     "name": "DatePicker",
@@ -149,7 +273,12 @@
     "summaryFa": "فیلد متن به‌علاوهٔ تقویم. تاریخ ISO را می‌پذیرد.",
     "limitations": [
       "Value is always a Gregorian ISO date so forms stay unambiguous. Persian display is a view, not a stored Jalali string. Use DateRangePicker for a start and end date."
-    ]
+    ],
+    "classes": [
+      "wpl-calendar",
+      "wpl-input"
+    ],
+    "html": "<label class=\"wpl-field\">From <input class=\"wpl-input\" type=\"date\" value=\"2026-10-27\" /></label>"
   },
   {
     "name": "DateRangePicker",
@@ -158,7 +287,14 @@
     "summaryFa": "تاریخ شروع و پایان. اگر روز بعدی اول انتخاب شود هم مرتب می‌شود.",
     "limitations": [
       "No seconds and no timezone name. Dates stay Gregorian ISO strings, not Jalali strings. The first open selection sets the start; the next sets the end. Same-day times are ordered too."
-    ]
+    ],
+    "classes": [
+      "wpl-date",
+      "wpl-date-row",
+      "wpl-calendar",
+      "wpl-day-range"
+    ],
+    "html": "<div class=\"wpl-date\"><label>Start <input class=\"wpl-input\" value=\"2026-10-12\" /></label><label>End <input class=\"wpl-input\" value=\"2026-10-20\" /></label></div>"
   },
   {
     "name": "Dialog",
@@ -167,21 +303,38 @@
     "summaryFa": "گفتگوی مودال با مدیریت فوکوس و بستن با Escape.",
     "limitations": [
       "Open dialogs are activated after mount. SSR HTML does not call showModal."
-    ]
+    ],
+    "classes": [
+      "wpl-dialog",
+      "wpl-dialog-title",
+      "wpl-dialog-body",
+      "wpl-dialog-footer"
+    ],
+    "html": "<dialog class=\"wpl-dialog\"><h2 class=\"wpl-dialog-title\">Discard draft?</h2></dialog>"
   },
   {
     "name": "Divider",
     "slug": "divider",
     "summary": "Horizontal rule, optionally with a label.",
     "summaryFa": "خط افقی، اختیاری با برچسب.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-divider",
+      "wpl-divider-labeled"
+    ],
+    "html": "<div class=\"wpl-divider-labeled\" role=\"separator\">Or</div>"
   },
   {
     "name": "Drawer",
     "slug": "drawer",
     "summary": "Side dialog for navigation or filters.",
     "summaryFa": "گفتگوی کناری برای ناوبری یا فیلتر.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-drawer",
+      "wpl-drawer-start"
+    ],
+    "html": "<dialog class=\"wpl-drawer\"><h2 class=\"wpl-dialog-title\">Filters</h2></dialog>"
   },
   {
     "name": "DropdownMenu",
@@ -191,14 +344,27 @@
     "limitations": [
       "One submenu level. Deeper items are not opened.",
       "Typeahead matches a label prefix. Letters typed within half a second narrow it; the same letter cycles."
-    ]
+    ],
+    "classes": [
+      "wpl-menu",
+      "wpl-menu-item",
+      "wpl-menu-sub",
+      "wpl-menu-caret"
+    ],
+    "html": "<div class=\"wpl-menu\" role=\"menu\"><button class=\"wpl-menu-item\" role=\"menuitem\" aria-haspopup=\"menu\">Theme</button></div>"
   },
   {
     "name": "EmptyState",
     "slug": "empty-state",
     "summary": "Explains an empty collection and offers the next action.",
     "summaryFa": "مجموعهٔ خالی را توضیح می‌دهد و عمل بعدی را پیشنهاد می‌کند.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-empty",
+      "wpl-empty-title",
+      "wpl-empty-description"
+    ],
+    "html": "<div class=\"wpl-empty\"><h2 class=\"wpl-empty-title\">No invoices</h2><p class=\"wpl-empty-description\">Create the first invoice to see it here.</p></div>"
   },
   {
     "name": "FileUpload",
@@ -207,21 +373,37 @@
     "summaryFa": "انتخاب محلی پرونده با بررسی نوع و اندازه. بارگذاری نمی‌کند.",
     "limitations": [
       "Does not upload to a server. Rejected files are reported in the error list and are not executed."
-    ]
+    ],
+    "classes": [
+      "wpl-file",
+      "wpl-file-drop",
+      "wpl-file-list"
+    ],
+    "html": "<label class=\"wpl-file-drop\">Statement PDF <input class=\"wpl-file-input\" type=\"file\" accept=\"application/pdf\" /></label>"
   },
   {
     "name": "Flex",
     "slug": "flex",
     "summary": "Inline row with wrap and alignment options.",
     "summaryFa": "ردیف با شکست و تراز.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-flex",
+      "wpl-flex-wrap",
+      "wpl-flex-between"
+    ],
+    "html": "<div class=\"wpl-flex wpl-flex-between\"></div>"
   },
   {
     "name": "Footer",
     "slug": "footer",
     "summary": "Content info landmark.",
     "summaryFa": "ناحیهٔ اطلاعات صفحه.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-footer"
+    ],
+    "html": "<footer class=\"wpl-footer\">MIT License</footer>"
   },
   {
     "name": "FormField",
@@ -230,14 +412,26 @@
     "summaryFa": "برچسب، کنترل، راهنما و خطا را با شناسه وصل می‌کند.",
     "limitations": [
       "Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember. HTML users set ids manually."
-    ]
+    ],
+    "classes": [
+      "wpl-field",
+      "wpl-field-invalid",
+      "wpl-field-hint",
+      "wpl-field-error"
+    ],
+    "html": "<div class=\"wpl-field wpl-field-invalid\"><label class=\"wpl-label\" for=\"email\">Email</label><input id=\"email\" class=\"wpl-input\" aria-invalid=\"true\" aria-describedby=\"email-error\" /><p id=\"email-error\" class=\"wpl-field-error\" role=\"alert\">Enter a valid email</p></div>"
   },
   {
     "name": "FormMessage",
     "slug": "form-message",
     "summary": "Hint or error text with the correct role.",
     "summaryFa": "متن راهنما یا خطا با نقش درست.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-field-hint",
+      "wpl-field-error"
+    ],
+    "html": "<p class=\"wpl-field-error\" role=\"alert\">Amount must be positive.</p>"
   },
   {
     "name": "Grid",
@@ -246,21 +440,38 @@
     "summaryFa": "شبکهٔ واکنش‌گرا از ۱ تا ۴ ستون. تعداد ستون از عرض خود شبکه می‌آید، نه از عرض پنجره.",
     "limitations": [
       "Collapses to one column when the grid is narrower than 48rem. Three and four columns use two tracks from 48rem to 64rem. Not a masonry layout."
-    ]
+    ],
+    "classes": [
+      "wpl-grid",
+      "wpl-grid-2",
+      "wpl-grid-3",
+      "wpl-grid-4"
+    ],
+    "html": "<div class=\"wpl-grid wpl-grid-3\"></div>"
   },
   {
     "name": "IconButton",
     "slug": "icon-button",
     "summary": "Square button that requires an accessible name.",
     "summaryFa": "دکمهٔ مربعی که نام دسترس‌پذیر لازم دارد.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-icon-btn"
+    ],
+    "html": "<button class=\"wpl-icon-btn wpl-btn-ghost\" type=\"button\" aria-label=\"Close\"><svg class=\"wpl-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7l10 10M17 7 7 17\"/></svg></button>"
   },
   {
     "name": "Input",
     "slug": "input",
     "summary": "Single-line text field.",
     "summaryFa": "فیلد متن تک‌خطی.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-input",
+      "wpl-input-sm",
+      "wpl-input-lg"
+    ],
+    "html": "<input class=\"wpl-input\" name=\"email\" type=\"email\" placeholder=\"ada@example.com\" />"
   },
   {
     "name": "Kbd",
@@ -269,28 +480,46 @@
     "summaryFa": "کلید صفحه‌کلید بصری. میانبر ثبت نمی‌کند.",
     "limitations": [
       "Visual only. Pair it with a real keydown listener in your application if the shortcut must work."
-    ]
+    ],
+    "classes": [
+      "wpl-kbd",
+      "wpl-kbd-group"
+    ],
+    "html": "<span class=\"wpl-kbd-group\"><kbd class=\"wpl-kbd\">Ctrl</kbd><kbd class=\"wpl-kbd\">K</kbd></span>"
   },
   {
     "name": "Label",
     "slug": "label",
     "summary": "Form label associated by htmlFor.",
     "summaryFa": "برچسب فرم با htmlFor.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-label"
+    ],
+    "html": "<label class=\"wpl-label\" for=\"email\">Email</label>"
   },
   {
     "name": "Link",
     "slug": "link",
     "summary": "Text link. External links receive safe rel and target.",
     "summaryFa": "پیوند متنی. پیوند بیرونی rel امن می‌گیرد.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-link"
+    ],
+    "html": "<a class=\"wpl-link\" href=\"#install\">Installation</a>"
   },
   {
     "name": "List",
     "slug": "list",
     "summary": "Stacked list of title, description, and optional trailing action.",
     "summaryFa": "فهرست پشته‌ای با عنوان، توضیح و عمل انتهایی اختیاری.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-list",
+      "wpl-list-item"
+    ],
+    "html": "<ul class=\"wpl-list\"><li class=\"wpl-list-item\">Invoice 104</li></ul>"
   },
   {
     "name": "Modal",
@@ -299,7 +528,11 @@
     "summaryFa": "پیش‌تنظیم Dialog که همیشه مودال است.",
     "limitations": [
       "This is a Dialog preset, not a second focus system."
-    ]
+    ],
+    "classes": [
+      "wpl-dialog"
+    ],
+    "html": "<dialog class=\"wpl-dialog\"><h2 class=\"wpl-dialog-title\">Confirm</h2></dialog>"
   },
   {
     "name": "Navbar",
@@ -308,7 +541,13 @@
     "summaryFa": "سربرگ چسبان با منوی جمع‌شو.",
     "limitations": [
       "The menu collapses at a 48rem viewport or a 36rem container. It is CSS, not a resize observer."
-    ]
+    ],
+    "classes": [
+      "wpl-navbar",
+      "wpl-nav-menu",
+      "wpl-navbar-toggle"
+    ],
+    "html": "<header class=\"wpl-navbar\"><a class=\"wpl-navbar-brand\" href=\"/\">White Plumeria</a></header>"
   },
   {
     "name": "NavigationMenu",
@@ -317,7 +556,12 @@
     "summaryFa": "فهرست افقی پیوندها.",
     "limitations": [
       "No mega-menu panels in 0.1.0."
-    ]
+    ],
+    "classes": [
+      "wpl-nav-menu",
+      "wpl-nav-link"
+    ],
+    "html": "<ul class=\"wpl-nav-menu\"><li><a class=\"wpl-nav-link\" href=\"#start\" aria-current=\"page\">Start</a></li></ul>"
   },
   {
     "name": "Notification",
@@ -326,7 +570,15 @@
     "summaryFa": "اعلان ماندگار درون صفحه. لحن از تم می‌آید و بستن اختیاری است.",
     "limitations": [
       "Not a push-notification service and not a toast. The close button appears only when a dismiss handler is passed. Angular and Lit use the dismissable prop for that button."
-    ]
+    ],
+    "classes": [
+      "wpl-notification",
+      "wpl-notification-info",
+      "wpl-notification-success",
+      "wpl-notification-warning",
+      "wpl-notification-danger"
+    ],
+    "html": "<div class=\"wpl-notification wpl-notification-success\" role=\"status\"><p class=\"wpl-toast-title\">Saved</p><p class=\"wpl-toast-description\">The sample stayed in this tab.</p></div>"
   },
   {
     "name": "NumberField",
@@ -336,7 +588,13 @@
     "limitations": [
       "Does not format currency or locale grouping inside the input. The stored value is a number.",
       "An unfinished draft, such as a trailing decimal, is kept until blur, then snapped or restored."
-    ]
+    ],
+    "classes": [
+      "wpl-number",
+      "wpl-number-step",
+      "wpl-input"
+    ],
+    "html": "<div class=\"wpl-field\"><label class=\"wpl-label\" for=\"guests\">Guests</label><div class=\"wpl-number\"><button class=\"wpl-number-step\" type=\"button\">−</button><input class=\"wpl-input\" id=\"guests\" name=\"guests\" type=\"number\" min=\"1\" max=\"8\" value=\"2\" /><button class=\"wpl-number-step\" type=\"button\">+</button></div></div>"
   },
   {
     "name": "OtpField",
@@ -346,21 +604,37 @@
     "limitations": [
       "Does not send or verify a code.",
       "The value is left-packed. Typing past the current end appends."
-    ]
+    ],
+    "classes": [
+      "wpl-otp",
+      "wpl-otp-cell"
+    ],
+    "html": "<div class=\"wpl-otp\" role=\"group\" aria-label=\"Verification code\"><input class=\"wpl-input wpl-otp-cell\" inputmode=\"numeric\" maxlength=\"1\" aria-label=\"Character 1 of 6\" /></div>"
   },
   {
     "name": "PageHeader",
     "slug": "page-header",
     "summary": "Title, description, and action row.",
     "summaryFa": "عنوان، توضیح و ردیف عمل.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-page-header",
+      "wpl-page-title",
+      "wpl-page-description"
+    ],
+    "html": "<header class=\"wpl-page-header\"><h1 class=\"wpl-page-title\">Invoices</h1></header>"
   },
   {
     "name": "Pagination",
     "slug": "pagination",
     "summary": "Page controls with a current page.",
     "summaryFa": "کنترل صفحه‌ها با صفحهٔ جاری.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-pagination",
+      "wpl-page"
+    ],
+    "html": "<nav class=\"wpl-pagination\" aria-label=\"Pagination\"><button class=\"wpl-page\" aria-current=\"page\">1</button></nav>"
   },
   {
     "name": "PasswordField",
@@ -370,7 +644,12 @@
     "limitations": [
       "Does not score strength or talk to an identity provider.",
       "Reveal shows the value on screen."
-    ]
+    ],
+    "classes": [
+      "wpl-password",
+      "wpl-input"
+    ],
+    "html": "<label class=\"wpl-label\" for=\"password\">Password</label><div class=\"wpl-password\"><input id=\"password\" class=\"wpl-input\" type=\"password\" name=\"password\" autocomplete=\"current-password\" /></div>"
   },
   {
     "name": "Popover",
@@ -379,21 +658,35 @@
     "summaryFa": "پنل غیرمودال متصل به یک لنگر.",
     "limitations": [
       "No hover-open mode. Use Tooltip for hover hints."
-    ]
+    ],
+    "classes": [
+      "wpl-popover"
+    ],
+    "html": "<div class=\"wpl-popover\">Settles on the next business day.</div>"
   },
   {
     "name": "Progress",
     "slug": "progress",
     "summary": "Determinate or indeterminate progress.",
     "summaryFa": "پیشرفت مشخص یا نامشخص.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-progress-track",
+      "wpl-progress-bar",
+      "wpl-progress-indeterminate"
+    ],
+    "html": "<div class=\"wpl-progress-track\" role=\"progressbar\" aria-label=\"Upload\" aria-valuenow=\"40\" aria-valuemin=\"0\" aria-valuemax=\"100\"><span class=\"wpl-progress-bar\" style=\"inline-size:40%\"></span></div>"
   },
   {
     "name": "RadioGroup",
     "slug": "radio-group",
     "summary": "Named native radios with a legend.",
     "summaryFa": "رادیوهای بومی هم‌نام با legend.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-radio"
+    ],
+    "html": "<fieldset><legend>Plan</legend><label class=\"wpl-radio\"><input type=\"radio\" name=\"plan\" value=\"annual\" /> Annual</label></fieldset>"
   },
   {
     "name": "RangeSlider",
@@ -403,7 +696,14 @@
     "limitations": [
       "When the thumbs overlap, the pointer hits the end thumb. The start thumb stays reachable from the keyboard.",
       "The HTML classes draw the track. Ordering the two values is done by the React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember components."
-    ]
+    ],
+    "classes": [
+      "wpl-range",
+      "wpl-range-track",
+      "wpl-range-fill",
+      "wpl-range-input"
+    ],
+    "html": "<div class=\"wpl-range\" style=\"--wpl-range-start: 16%; --wpl-range-size: 48%\"><span class=\"wpl-range-track\"></span><span class=\"wpl-range-fill\"></span><input class=\"wpl-range-input\" type=\"range\" min=\"0\" max=\"500\" value=\"80\" aria-label=\"Price start\" /><input class=\"wpl-range-input\" type=\"range\" min=\"0\" max=\"500\" value=\"320\" aria-label=\"Price end\" /></div>"
   },
   {
     "name": "Rating",
@@ -413,7 +713,12 @@
     "limitations": [
       "Does not submit a review by itself. Read the value from your form.",
       "max is clamped from 1 to 10."
-    ]
+    ],
+    "classes": [
+      "wpl-rating",
+      "wpl-rating-icon"
+    ],
+    "html": "<fieldset class=\"wpl-rating\"><legend>Workspace quality</legend><label><input type=\"radio\" name=\"quality\" value=\"4\" checked /> 4 of 5</label></fieldset>"
   },
   {
     "name": "ResponsiveLayout",
@@ -422,14 +727,26 @@
     "summaryFa": "نوار کناری به‌علاوهٔ بدنه. اگر خودِ چیدمان از ۴۰rem باریک‌تر شود، پشته می‌شود.",
     "limitations": [
       "Collapse is a 40rem container query on the layout, not the viewport. The open flag only shows the sidebar while it is stacked."
-    ]
+    ],
+    "classes": [
+      "wpl-layout",
+      "wpl-layout-main"
+    ],
+    "html": "<div class=\"wpl-layout\"><nav class=\"wpl-sidebar\" aria-label=\"Docs\"></nav><main class=\"wpl-layout-main\"></main></div>"
   },
   {
     "name": "SearchInput",
     "slug": "search-input",
     "summary": "Search field with a clear button.",
     "summaryFa": "فیلد جستجو با دکمهٔ پاک‌کردن.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-search",
+      "wpl-search-control",
+      "wpl-search-icon",
+      "wpl-search-clear"
+    ],
+    "html": "<div class=\"wpl-search\"><label class=\"wpl-label\" for=\"q\">Search docs</label><div class=\"wpl-search-control\"><input id=\"q\" class=\"wpl-input\" type=\"search\" /></div></div>"
   },
   {
     "name": "Select",
@@ -438,21 +755,34 @@
     "summaryFa": "سلکت بومی استایل‌شده. برای فهرست سفارشی از Combobox استفاده کنید.",
     "limitations": [
       "Not a custom-styled popup. That is Combobox."
-    ]
+    ],
+    "classes": [
+      "wpl-select"
+    ],
+    "html": "<select class=\"wpl-select\" name=\"currency\"><option value=\"eur\">EUR</option></select>"
   },
   {
     "name": "Separator",
     "slug": "separator",
     "summary": "Orientation-aware non-text separator.",
     "summaryFa": "جداکنندهٔ بدون متن با جهت.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-separator",
+      "wpl-separator-vertical"
+    ],
+    "html": "<div class=\"wpl-separator wpl-separator-vertical\" role=\"separator\" aria-orientation=\"vertical\"></div>"
   },
   {
     "name": "Sidebar",
     "slug": "sidebar",
     "summary": "Vertical navigation landmark.",
     "summaryFa": "ناوبری عمودی.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-sidebar"
+    ],
+    "html": "<nav class=\"wpl-sidebar\" aria-label=\"Docs\"><a href=\"#button\" aria-current=\"page\">Button</a></nav>"
   },
   {
     "name": "Skeleton",
@@ -461,7 +791,11 @@
     "summaryFa": "بلوک جایگزین هنگام بارگذاری.",
     "limitations": [
       "Not a content layout detector. You size each placeholder."
-    ]
+    ],
+    "classes": [
+      "wpl-skeleton"
+    ],
+    "html": "<span class=\"wpl-skeleton\" style=\"width:12rem;height:1rem\" aria-hidden=\"true\"></span>"
   },
   {
     "name": "Slider",
@@ -470,14 +804,24 @@
     "summaryFa": "ورودی بازهٔ بومی با مقدار نمایان.",
     "limitations": [
       "Single thumb only. Use RangeSlider for a start and end value."
-    ]
+    ],
+    "classes": [
+      "wpl-slider"
+    ],
+    "html": "<label>Volume <input class=\"wpl-slider\" type=\"range\" min=\"0\" max=\"100\" value=\"40\" /></label>"
   },
   {
     "name": "Spinner",
     "slug": "spinner",
     "summary": "Indeterminate progress indicator.",
     "summaryFa": "نشانگر پیشرفت نامشخص.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-spinner",
+      "wpl-spinner-sm",
+      "wpl-spinner-lg"
+    ],
+    "html": "<span class=\"wpl-spinner\" role=\"status\" aria-label=\"Saving\"></span>"
   },
   {
     "name": "SplitPane",
@@ -486,14 +830,26 @@
     "summaryFa": "دو قاب با جداکنندهٔ قابل تغییر از صفحه‌کلید.",
     "limitations": [
       "Horizontal split only. No nested persistence."
-    ]
+    ],
+    "classes": [
+      "wpl-split",
+      "wpl-split-separator",
+      "wpl-split-pane"
+    ],
+    "html": "<div class=\"wpl-split\"><div class=\"wpl-split-pane\">Notes</div><div class=\"wpl-split-separator\" role=\"separator\" aria-orientation=\"vertical\"></div><div class=\"wpl-split-pane\">Preview</div></div>"
   },
   {
     "name": "Stack",
     "slug": "stack",
     "summary": "Vertical stack with a gap token.",
     "summaryFa": "پشتهٔ عمودی با توکن فاصله.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-stack",
+      "wpl-stack-sm",
+      "wpl-stack-lg"
+    ],
+    "html": "<div class=\"wpl-stack wpl-stack-sm\"></div>"
   },
   {
     "name": "StatCard",
@@ -502,7 +858,13 @@
     "summaryFa": "برچسب، مقدار و راهنما. عدد نمی‌سازد.",
     "limitations": [
       "No sparkline and no live data source."
-    ]
+    ],
+    "classes": [
+      "wpl-stat",
+      "wpl-stat-value",
+      "wpl-card"
+    ],
+    "html": "<article class=\"wpl-card wpl-stat\"><p class=\"wpl-stat-label\">Open invoices</p><p class=\"wpl-stat-value\">12</p><p class=\"wpl-stat-hint\">Sample data</p></article>"
   },
   {
     "name": "Steps",
@@ -511,14 +873,26 @@
     "summaryFa": "پیشرفت پرداخت یا راه‌اندازی. حالت خطی مرحله‌های آینده را تا جلو رفتن مقدار می‌بندد.",
     "limitations": [
       "Does not validate a form or persist progress. Move the value from your own Next control."
-    ]
+    ],
+    "classes": [
+      "wpl-steps",
+      "wpl-steps-vertical",
+      "wpl-step",
+      "wpl-step-marker"
+    ],
+    "html": "<ol class=\"wpl-steps\" aria-label=\"Checkout\"><li class=\"wpl-step\" data-state=\"current\" aria-current=\"step\"><span class=\"wpl-step-marker\">1</span><span class=\"wpl-step-title\">Account</span></li></ol>"
   },
   {
     "name": "Switch",
     "slug": "switch",
     "summary": "Boolean switch with role=\"switch\".",
     "summaryFa": "کلید بولی با role=\"switch\".",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-switch",
+      "wpl-switch-control"
+    ],
+    "html": "<button class=\"wpl-switch\" type=\"button\" role=\"switch\" aria-checked=\"false\"><span class=\"wpl-switch-control\"></span> Reduced motion</button>"
   },
   {
     "name": "Table",
@@ -527,28 +901,49 @@
     "summaryFa": "پوشش جدول معنایی با caption.",
     "limitations": [
       "Static markup. Sorting and filtering are DataTable."
-    ]
+    ],
+    "classes": [
+      "wpl-table",
+      "wpl-table-wrap"
+    ],
+    "html": "<div class=\"wpl-table-wrap\"><table class=\"wpl-table\"><caption>Sample rates</caption></table></div>"
   },
   {
     "name": "Tabs",
     "slug": "tabs",
     "summary": "Automatic-activation tabs.",
     "summaryFa": "زبانه‌ها با فعال‌سازی خودکار.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-tabs",
+      "wpl-tablist",
+      "wpl-tab",
+      "wpl-tabpanel"
+    ],
+    "html": "<div class=\"wpl-tablist\" role=\"tablist\"><button class=\"wpl-tab\" role=\"tab\" aria-selected=\"true\">Overview</button></div>"
   },
   {
     "name": "Textarea",
     "slug": "textarea",
     "summary": "Multi-line text field.",
     "summaryFa": "فیلد متن چندخطی.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-textarea"
+    ],
+    "html": "<textarea class=\"wpl-textarea\" name=\"note\" rows=\"4\"></textarea>"
   },
   {
     "name": "Timeline",
     "slug": "timeline",
     "summary": "Ordered events with time elements.",
     "summaryFa": "رویدادهای مرتب با عنصر time.",
-    "limitations": []
+    "limitations": [],
+    "classes": [
+      "wpl-timeline",
+      "wpl-timeline-item"
+    ],
+    "html": "<ol class=\"wpl-timeline\"><li class=\"wpl-timeline-item\"><div><p class=\"wpl-timeline-title\">Draft saved</p></div></li></ol>"
   },
   {
     "name": "Toast",
@@ -557,7 +952,12 @@
     "summaryFa": "پیام گذرا در ناحیهٔ زنده.",
     "limitations": [
       "Requires WhitePlumeriaProvider or ToastProvider. Auto-dismiss default is 5 seconds and is cancelled under reduced motion."
-    ]
+    ],
+    "classes": [
+      "wpl-toast",
+      "wpl-toast-region"
+    ],
+    "html": "<div class=\"wpl-toast-region\" aria-live=\"polite\"><div class=\"wpl-toast wpl-toast-success\" role=\"status\">Saved</div></div>"
   },
   {
     "name": "ToggleGroup",
@@ -568,7 +968,12 @@
       "One value. It does not select several items.",
       "Not a set of independent switches. Use Checkbox or Switch for that.",
       "Not a labeled radio list. Use RadioGroup when the choice should look like a radio."
-    ]
+    ],
+    "classes": [
+      "wpl-toggle",
+      "wpl-toggle-item"
+    ],
+    "html": "<div class=\"wpl-field\"><span class=\"wpl-label\" id=\"appearance\">Appearance</span><div class=\"wpl-toggle\" role=\"radiogroup\" aria-labelledby=\"appearance\"><button type=\"button\" class=\"wpl-toggle-item\" role=\"radio\" aria-checked=\"true\">Light</button><button type=\"button\" class=\"wpl-toggle-item\" role=\"radio\" aria-checked=\"false\">Dark</button></div></div>"
   },
   {
     "name": "Tooltip",
@@ -577,7 +982,11 @@
     "summaryFa": "راهنمای تکمیلی با هاور و فوکوس صفحه‌کلید.",
     "limitations": [
       "Not shown as the only path on touch. Delay is 400ms. Escape dismisses."
-    ]
+    ],
+    "classes": [
+      "wpl-tooltip"
+    ],
+    "html": "<span class=\"wpl-tooltip\" role=\"tooltip\">Copy token</span>"
   },
   {
     "name": "TreeView",
@@ -586,7 +995,13 @@
     "summaryFa": "درخت بازشو با ناوبری کلیدهای جهت.",
     "limitations": [
       "No drag and drop. No virtualization."
-    ]
+    ],
+    "classes": [
+      "wpl-tree",
+      "wpl-tree-row",
+      "wpl-tree-children"
+    ],
+    "html": "<ul class=\"wpl-tree\" role=\"tree\"><li role=\"none\"><button class=\"wpl-tree-row\" role=\"treeitem\">src</button></li></ul>"
   },
   {
     "name": "ValidationMessage",
@@ -595,6 +1010,10 @@
     "summaryFa": "معادل FormMessage با tone=\"error\".",
     "limitations": [
       "Preset of FormMessage, not a second validation engine."
-    ]
+    ],
+    "classes": [
+      "wpl-field-error"
+    ],
+    "html": "<p class=\"wpl-field-error\" role=\"alert\">Amount must be positive.</p>"
   }
 ]
