@@ -1,0 +1,20 @@
+{
+  "name": "@white-plumeria/example-qwikcity",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5190",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@qwik.dev/core": "catalog:",
+    "@qwik.dev/router": "2.0.0-rc.4",
+    "@white-plumeria/qwik": "workspace:*",
+    "@white-plumeria/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

@@ -133,7 +133,7 @@ Each package is written for that framework. None of them wrap another adapter.
 | Ember    | `@white-plumeria/ember`    | Ember 7.4          | `<Button>`          |
 | Elements | `@white-plumeria/elements` | custom elements    | a documented subset |
 
-Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for those adapters. They are not extra packages, and they do not wrap another adapter. Each component page shows the host example. Next and Nuxt also have a static desk under Examples. The other hosts do not have a desk yet. Ember server render is not claimed.
+Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for those adapters. They are not extra packages, and they do not wrap another adapter. Each component page shows the host example, and Examples frames that host’s static export. Ember server render is not claimed.
 
 <details>
 <summary>React</summary>
@@ -459,22 +459,26 @@ corepack pnpm docs:build
 
 Example desks alias workspace source, so they run before a publish:
 
-| Desk    | Command                                             | Port |
-| ------- | --------------------------------------------------- | ---- |
-| Docs    | `pnpm dev`                                          | 5173 |
-| React   | `pnpm --filter @white-plumeria/example-react dev`   | 5174 |
-| Vue     | `pnpm --filter @white-plumeria/example-vue dev`     | 5175 |
-| Svelte  | `pnpm --filter @white-plumeria/example-svelte dev`  | 5176 |
-| Angular | `pnpm --filter @white-plumeria/example-angular dev` | 5177 |
-| Solid   | `pnpm --filter @white-plumeria/example-solid dev`   | 5178 |
-| Preact  | `pnpm --filter @white-plumeria/example-preact dev`  | 5179 |
-| Qwik    | `pnpm --filter @white-plumeria/example-qwik dev`    | 5180 |
-| Lit     | `pnpm --filter @white-plumeria/example-lit dev`     | 5181 |
-| Alpine  | `pnpm --filter @white-plumeria/example-alpine dev`  | 5182 |
-| Marko   | `pnpm --filter @white-plumeria/example-marko dev`   | 5183 |
-| Ember   | `pnpm --filter @white-plumeria/example-ember dev`   | 5184 |
-| Next    | `pnpm --filter @white-plumeria/example-next dev`    | 5185 |
-| Nuxt    | `pnpm --filter @white-plumeria/example-nuxt dev`    | 5186 |
+| Desk       | Command                                                | Port |
+| ---------- | ------------------------------------------------------ | ---- |
+| Docs       | `pnpm dev`                                             | 5173 |
+| React      | `pnpm --filter @white-plumeria/example-react dev`      | 5174 |
+| Vue        | `pnpm --filter @white-plumeria/example-vue dev`        | 5175 |
+| Svelte     | `pnpm --filter @white-plumeria/example-svelte dev`     | 5176 |
+| Angular    | `pnpm --filter @white-plumeria/example-angular dev`    | 5177 |
+| Solid      | `pnpm --filter @white-plumeria/example-solid dev`      | 5178 |
+| Preact     | `pnpm --filter @white-plumeria/example-preact dev`     | 5179 |
+| Qwik       | `pnpm --filter @white-plumeria/example-qwik dev`       | 5180 |
+| Lit        | `pnpm --filter @white-plumeria/example-lit dev`        | 5181 |
+| Alpine     | `pnpm --filter @white-plumeria/example-alpine dev`     | 5182 |
+| Marko      | `pnpm --filter @white-plumeria/example-marko dev`      | 5183 |
+| Ember      | `pnpm --filter @white-plumeria/example-ember dev`      | 5184 |
+| Next       | `pnpm --filter @white-plumeria/example-next dev`       | 5185 |
+| Nuxt       | `pnpm --filter @white-plumeria/example-nuxt dev`       | 5186 |
+| SvelteKit  | `pnpm --filter @white-plumeria/example-sveltekit dev`  | 5187 |
+| Analog     | `pnpm --filter @white-plumeria/example-analog dev`     | 5188 |
+| SolidStart | `pnpm --filter @white-plumeria/example-solidstart dev` | 5189 |
+| Qwik City  | `pnpm --filter @white-plumeria/example-qwikcity dev`   | 5190 |
 
 ## Logo
 

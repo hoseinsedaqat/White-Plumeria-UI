@@ -38,8 +38,7 @@ export function ExamplesPage({ onNavigate }: { onNavigate: (href: string) => voi
       </ul>
       <h2>Server hosts</h2>
       <p>
-        Next and Nuxt open the host export. The other hosts still use the client document. None of
-        these hosts is a separate package.
+        Each host opens its own static export. None of these hosts is a separate package.
       </p>
       <ul className="pen-index">
         {hostPens.map((host) => (

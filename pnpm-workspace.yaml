@@ -7,6 +7,7 @@ allowBuilds:
   "@parcel/watcher": true
   lmdb: true
   msgpackr-extract: true
+  sharp: true
 
 catalog:
   typescript: 6.0.3
@@ -29,6 +30,16 @@ catalog:
   "@marko/testing-library": 6.4.2
   zod: 4.6.7
 
+packageExtensions:
+  "@analogjs/vite-plugin-nitro":
+    dependencies:
+      h3: 1.15.11
+
 minimumReleaseAgeExclude:
   - "@marko/compiler@5.42.13"
   - marko@6.4.7
+  - "@analogjs/content@2.9.4"
+  - "@analogjs/platform@2.9.4"
+  - "@analogjs/router@2.9.4"
+  - "@analogjs/vite-plugin-angular@2.9.4"
+  - "@analogjs/vite-plugin-nitro@2.9.4"

@@ -1,0 +1,29 @@
+{
+  "name": "@white-plumeria/example-analog",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5188",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@analogjs/router": "2.9.4",
+    "@angular/common": "22.2.3",
+    "@angular/core": "22.2.3",
+    "@angular/platform-browser": "22.2.3",
+    "@angular/platform-server": "22.2.3",
+    "@angular/router": "22.2.3",
+    "@white-plumeria/angular": "workspace:*",
+    "@white-plumeria/styles": "workspace:*",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@analogjs/platform": "2.9.4",
+    "@angular/build": "22.2.5",
+    "@angular/compiler": "22.2.3",
+    "@angular/compiler-cli": "22.2.3",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
