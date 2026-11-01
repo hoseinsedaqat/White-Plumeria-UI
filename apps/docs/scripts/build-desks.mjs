@@ -109,9 +109,18 @@ for (const [filter] of desks) run(['--filter', filter, 'build']);
 
 const nextSource = readFileSync(join(repo, 'apps/example-next/app/page.tsx'), 'utf8');
 const nuxtSource = readFileSync(join(repo, 'apps/example-nuxt/pages/index.vue'), 'utf8');
-const svelteSource = readFileSync(join(repo, 'apps/example-sveltekit/src/routes/+page.svelte'), 'utf8');
-const solidSource = readFileSync(join(repo, 'apps/example-solidstart/src/routes/index.tsx'), 'utf8');
-const analogSource = readFileSync(join(repo, 'apps/example-analog/src/app/pages/index.page.ts'), 'utf8');
+const svelteSource = readFileSync(
+  join(repo, 'apps/example-sveltekit/src/routes/+page.svelte'),
+  'utf8',
+);
+const solidSource = readFileSync(
+  join(repo, 'apps/example-solidstart/src/routes/index.tsx'),
+  'utf8',
+);
+const analogSource = readFileSync(
+  join(repo, 'apps/example-analog/src/app/pages/index.page.ts'),
+  'utf8',
+);
 const qwikSource = readFileSync(join(repo, 'apps/example-qwikcity/src/routes/index.tsx'), 'utf8');
 if (!nextSource.includes("'use client'") || !nextSource.includes('@white-plumeria/react')) {
   process.stderr.write('Next desk source is not a React client file\n');
@@ -149,5 +158,22 @@ const markers = {
 for (const [, relative, id] of desks) {
   const dir = copyExport(join(repo, relative), id);
   assertDesk(dir, id, markers[id]);
+  if (id === 'nuxt') assertNuxtIndex(dir);
+}
+
+function assertNuxtIndex(dir) {
+  const html = readFileSync(join(dir, 'index.html'), 'utf8');
+  if (html.includes('Page not found')) {
+    process.stderr.write('Nuxt index.html is the 404 page\n');
+    process.exit(1);
+  }
+  const js = walk(dir)
+    .filter((file) => file.endsWith('.js'))
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n');
+  if (!js.includes('/index.html')) {
+    process.stderr.write('Nuxt client route does not accept /index.html\n');
+    process.exit(1);
+  }
 }
 process.stdout.write('desks built\n');

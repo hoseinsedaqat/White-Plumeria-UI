@@ -4,4 +4,4 @@
 pnpm --filter @white-plumeria/example-nuxt dev
 ```
 
-This is a Nuxt app. It is not an `@white-plumeria/nuxt` package. The button is `@white-plumeria/vue` inside `ClientOnly`. The docs site frames the static export, not this dev server.
+This is a Nuxt app. It is not an `@white-plumeria/nuxt` package. The button is `@white-plumeria/vue` inside `ClientOnly`. The docs site frames the static export, not this dev server. The frame opens `index.html`, and that path is the same page as `/`.

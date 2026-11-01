@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { defineNuxtConfig } from 'nuxt/config';
+import { acceptIndexDocument } from './desk-routes';
 
 function deskBase() {
   const site = process.env.WPL_BASE ?? '/';
@@ -17,6 +18,11 @@ export default defineNuxtConfig({
   app: {
     baseURL: embedded ? deskBase() : '/',
     head: { title: 'Nuxt desk · White Plumeria' },
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      acceptIndexDocument(pages);
+    },
   },
   alias: {
     '@white-plumeria/vue': fileURLToPath(
