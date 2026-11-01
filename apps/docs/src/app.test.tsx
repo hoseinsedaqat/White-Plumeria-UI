@@ -128,6 +128,53 @@ describe('docs app', () => {
     expect(menu.className).not.toContain('fixed');
   });
 
+  it('shows several samples for table, data table, carousel, and toast', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const components = screen.getAllByRole('link', { name: 'Components' }).at(0);
+    if (!components) throw new Error('Missing Components link');
+    await user.click(components);
+    expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
+
+    const pages: Array<{ link: RegExp; heading: string; titles: string[] }> = [
+      {
+        link: /^Table\b/,
+        heading: 'Table',
+        titles: ['Caption and columns', 'Footer total', 'Status in a cell', 'Row action', 'Empty body', 'Wide table scrolls'],
+      },
+      {
+        link: /^DataTable\b/,
+        heading: 'DataTable',
+        titles: ['Sort, filter, and page', 'No filter', 'Descending amount', 'Empty rows'],
+      },
+      {
+        link: /^Carousel\b/,
+        heading: 'Carousel',
+        titles: ['Image slides, looping', 'Content slides', 'Stops at the ends', 'Two slides'],
+      },
+      {
+        link: /^Toast\b/,
+        heading: 'Toast',
+        titles: ['Neutral', 'Success', 'Warning', 'Danger', 'Title only', 'Push each tone'],
+      },
+    ];
+
+    for (const page of pages) {
+      const link = screen.getAllByRole('link', { name: page.link }).at(0);
+      if (!link) throw new Error(`Missing ${page.heading} link`);
+      await user.click(link);
+      expect(await screen.findByRole('heading', { level: 1, name: page.heading })).toBeInTheDocument();
+      for (const title of page.titles) {
+        expect(screen.getByRole('heading', { level: 3, name: title })).toBeInTheDocument();
+      }
+      expect(screen.getByText(/The previews above are the samples for this component/)).toBeInTheDocument();
+      const back = screen.getAllByRole('link', { name: 'Components' }).at(0);
+      if (!back) throw new Error('Missing Components link');
+      await user.click(back);
+      expect(await screen.findByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument();
+    }
+  });
+
   it('shows a grid that can stack inside a narrow frame', async () => {
     const user = userEvent.setup();
     render(<App />);
