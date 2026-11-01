@@ -10,6 +10,13 @@ function deskBase() {
   return `${prefix}desks/qwikcity/`;
 }
 
+// Qwik stores each base segment as written, then looks it up lowercased.
+// `/White-Plumeria-UI/` therefore never matches and SSG writes no page.
+// The build uses the lowercased base; restore-base.mjs puts the public casing back.
+function routerBase() {
+  return deskBase().toLowerCase();
+}
+
 const embedded = process.env.WPL_DESK === '1';
 
 export default defineConfig({
@@ -28,7 +35,7 @@ export default defineConfig({
     },
     ssgAdapter({ origin: 'https://white-plumeria.local', sitemapOutFile: null }),
   ],
-  base: embedded ? deskBase() : '/',
+  base: embedded ? routerBase() : '/',
   build: { emptyOutDir: false },
   environments: {
     ssr: { build: { emptyOutDir: false } },

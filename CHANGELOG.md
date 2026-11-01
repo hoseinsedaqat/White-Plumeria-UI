@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- GitHub Pages can build the Qwik City desk. The router only matches a lowercase base, so the export is built that way and the public path casing is restored afterward. Packages are still not published.
 - Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City each have a static desk in the repository. The frame is that host’s export, and the control is still the client adapter. There is no `@white-plumeria/next`, `@white-plumeria/nuxt`, `@white-plumeria/sveltekit`, `@white-plumeria/solidstart`, `@white-plumeria/analog`, or `@white-plumeria/qwikcity` package. Packages are still not published.
 - Button, Badge, Alert, Card, Switch, and Input open in each library’s own document from the component page. The frame reads `?component=` and is not drawn by the docs React runtime. Packages are still not published.
 - Every component page shows an example for each library, not one hidden tab. Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts on that page. They use the existing adapter and are not separate packages. Packages stay unpublished until the project is complete and stable.
