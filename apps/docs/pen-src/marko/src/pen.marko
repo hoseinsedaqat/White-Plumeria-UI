@@ -1,0 +1,10 @@
+import Button from "@white-plumeria/marko/tags/wpl-button.marko";
+import Provider from "@white-plumeria/marko/tags/wpl-provider.marko";
+
+<let/saved="Ready in this Marko document.">
+<Provider persist=false theme="white" appearance="light">
+  <main class="wpl-root wpl-reset">
+    <Button onClick() { saved = "Saved in this Marko document."; }>Save changes</Button>
+    <p id="note">${saved}</p>
+  </main>
+</Provider>

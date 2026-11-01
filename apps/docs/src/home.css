@@ -1887,3 +1887,12 @@ html[data-wpl-scheme='dark'] .home-pure {
   transform: none !important;
   animation: none;
 }
+
+.home-example-grid {
+  margin-top: 1.4rem;
+}
+
+.home-example {
+  color: inherit;
+  text-decoration: none;
+}

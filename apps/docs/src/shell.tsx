@@ -6,12 +6,14 @@ import { AiPage } from './pages/ai.tsx';
 import { BlocksPage } from './pages/blocks.tsx';
 import { ComponentPage } from './pages/component.tsx';
 import { GalleryPage } from './pages/gallery.tsx';
+import { ExamplePage, ExamplesPage } from './pages/examples.tsx';
 import { GuidePage } from './pages/guides.tsx';
 import { HomePage } from './pages/home.tsx';
 import { NotFoundPage } from './pages/not-found.tsx';
 import { PlaygroundPage } from './pages/playground.tsx';
 import { ThemeLabPage } from './pages/theme-lab.tsx';
 import { useDocsScheme } from './preview.tsx';
+import { isExampleId } from './pen-meta.ts';
 import { A, useRoute } from './router.tsx';
 
 const startLinks = [
@@ -23,6 +25,7 @@ const startLinks = [
   ['/accessibility', 'Accessibility'],
   ['/components', 'All components'],
   ['/blocks', 'Blocks'],
+  ['/examples', 'Examples'],
   ['/playground', 'Playground'],
   ['/ai', 'AI studio'],
   ['/themes', 'Theme lab'],
@@ -43,6 +46,7 @@ export function DocsApp() {
   const themeRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => (query.trim() ? searchComponents(query).slice(0, 8) : []), [query]);
   const componentSlug = path.match(/^\/components\/([a-z0-9-]+)$/)?.[1];
+  const exampleId = path.match(/^\/examples\/([a-z0-9-]+)$/)?.[1];
   const showSide = path !== '/';
   const theme = themes.find((item) => item.name === preferences.theme) ?? themes[0];
   const scheme = useDocsScheme(preferences.appearance);
@@ -97,6 +101,8 @@ export function DocsApp() {
   if (path === '/') page = <HomePage onNavigate={go} />;
   else if (path === '/components') page = <GalleryPage onNavigate={go} />;
   else if (path === '/blocks') page = <BlocksPage />;
+  else if (path === '/examples') page = <ExamplesPage onNavigate={go} />;
+  else if (exampleId && isExampleId(exampleId)) page = <ExamplePage id={exampleId} onNavigate={go} />;
   else if (path === '/playground') page = <PlaygroundPage />;
   else if (path === '/ai') page = <AiPage />;
   else if (path === '/themes') page = <ThemeLabPage />;
@@ -174,6 +180,9 @@ export function DocsApp() {
           </A>
           <A href="/components" onNavigate={go} current={path === '/components' || Boolean(componentSlug)}>
             Components
+          </A>
+          <A href="/examples" onNavigate={go} current={path === '/examples' || path.startsWith('/examples/')}>
+            Examples
           </A>
           <A href="/playground" onNavigate={go} current={path === '/playground'}>
             Playground

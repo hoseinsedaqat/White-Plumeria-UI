@@ -4,29 +4,53 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5173",
-    "build": "vite build",
+    "pens": "node scripts/build-pens.mjs",
+    "dev": "node scripts/build-pens.mjs && vite --host 0.0.0.0 --port 5173",
+    "build": "node scripts/build-pens.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@angular/core": "22.2.3",
+    "@angular/platform-browser": "22.2.3",
+    "@glimmer/component": "2.2.1",
+    "@glimmer/tracking": "1.0.1",
+    "@qwik.dev/core": "catalog:",
     "@white-plumeria/ai": "workspace:*",
+    "@white-plumeria/marko": "workspace:*",
     "@white-plumeria/core": "workspace:*",
     "@white-plumeria/react": "workspace:*",
     "@white-plumeria/styles": "workspace:*",
     "@white-plumeria/tokens": "workspace:*",
+    "alpinejs": "catalog:",
+    "ember-source": "7.4.0",
+    "lit": "catalog:",
+    "marko": "catalog:",
+    "preact": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "rxjs": "7.8.2",
+    "solid-js": "catalog:",
+    "svelte": "catalog:",
+    "vue": "catalog:"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "2.9.2",
+    "@angular/compiler": "22.2.3",
+    "@angular/compiler-cli": "22.2.3",
+    "@babel/core": "catalog:",
     "@fontsource-variable/figtree": "5.3.0",
     "@fontsource-variable/fraunces": "5.3.0",
     "@fontsource-variable/outfit": "5.3.0",
     "@fontsource/vazirmatn": "5.3.0",
+    "@marko/vite": "catalog:",
+    "@preact/preset-vite": "catalog:",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:"
   }
 }
