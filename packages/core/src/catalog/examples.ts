@@ -76,20 +76,33 @@ function angularTemplate(name: string, vue: string): string {
     .replace(/<template #sidebar>([\s\S]*?)<\/template>/g, '$1')
     .replace(/<template #start>([\s\S]*?)<\/template>/g, '<div wplStart>$1</div>')
     .replace(/<template #end>([\s\S]*?)<\/template>/g, '<div wplEnd>$1</div>')
-    .replace(/<([A-Z][A-Za-z0-9]*)\b([^>]*?)(\/?)>/g, (_match, tag: string, attrs: string, self: string) => {
-      const converted = convertAttrs(tag, attrs);
-      const open = angularOpenTag(tag, converted, !self);
-      return self ? open.replace(/>$/, ' />') : open;
-    })
+    .replace(
+      /<([A-Z][A-Za-z0-9]*)\b([^>]*?)(\/?)>/g,
+      (_match, tag: string, attrs: string, self: string) => {
+        const converted = convertAttrs(tag, attrs).trim();
+        const open = angularOpenTag(tag, converted ? ` ${converted}` : '', !self);
+        return self ? `${open.slice(0, -1)} />` : open;
+      },
+    )
     .replace(/<\/([A-Z][A-Za-z0-9]*)>/g, (_match, tag: string) => angularCloseTag(tag));
 }
 
 function convertAttrs(tag: string, attrs: string): string {
   let next = attrs
-    .replace(/@([\w:.]+)="([^"]*)"/g, (_match, key: string, value: string) => ` (${angularEvent(key)})="${value}"`)
-    .replace(/(?<![\w@-]):([A-Za-z0-9-]+)="([^"]*)"/g, (_match, key: string, value: string) => ` [${camel(key)}]="${value}"`)
+    .replace(
+      /(^|\s)@([\w:.]+)="([^"]*)"/g,
+      (_match, space: string, key: string, value: string) =>
+        `${space}(${angularEvent(key)})="${value}"`,
+    )
+    .replace(
+      /(^|\s):([A-Za-z0-9-]+)="([^"]*)"/g,
+      (_match, space: string, key: string, value: string) => `${space}[${camel(key)}]="${value}"`,
+    )
     .replace(/\bmodel-value=/g, 'value=')
-    .replace(/(^|\s)(loop|required)(?=\s|$)/g, (_match, space: string, key: string) => `${space}[${key}]="true"`);
+    .replace(
+      /(^|\s)(loop|required)(?=\s|$)/g,
+      (_match, space: string, key: string) => `${space}[${key}]="true"`,
+    );
   if (tag === 'Label') next = next.replace(/\bfor=/g, 'htmlFor=');
   return next;
 }
@@ -108,7 +121,7 @@ function camel(value: string): string {
 }
 
 function componentNames(source: string): string[] {
-  return [...source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)].map((match) => match[1] ?? '').filter(Boolean);
+  return [...source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)]
+    .map((match) => match[1] ?? '')
+    .filter(Boolean);
 }
-
-
