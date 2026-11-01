@@ -35,6 +35,25 @@ describe('docs app', () => {
     expect(screen.getByRole('link', { name: 'Server host notes' })).toHaveAttribute('href', '/servers');
   });
 
+  it('opens a library pen that is not rendered by the docs React runtime', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getByRole('heading', { name: /one pen per library/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('link', { name: 'Open examples' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'One pen per library' })).toBeInTheDocument();
+    await user.click(screen.getByRole('link', { name: /^Vue\b/ }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Vue' })).toBeInTheDocument();
+    expect(screen.getByTitle('Vue example')).toHaveAttribute('src', expect.stringContaining('pens/vue/index.html'));
+    const vueCode = document.querySelector('.docs-code')?.textContent ?? '';
+    expect(vueCode).toContain('createApp');
+    expect(vueCode).not.toContain('createRoot');
+    await user.click(screen.getByRole('link', { name: 'All examples' }));
+    await user.click(screen.getByRole('link', { name: /^Next\b/ }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Next' })).toBeInTheDocument();
+    expect(screen.getByTitle('Next example')).toHaveAttribute('src', expect.stringContaining('pens/react/index.html'));
+    expect(screen.getByText(/no Next renderer/i)).toBeInTheDocument();
+  });
+
   it('opens the component gallery without dropping a catalog entry', async () => {
     const user = userEvent.setup();
     render(<App />);

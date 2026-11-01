@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: process.env.WPL_BASE ?? '/',
   plugins: [
-    react(),
+    react({ exclude: [/pen-src\//] }),
     {
       name: 'github-pages-spa-fallback',
       apply: 'build',

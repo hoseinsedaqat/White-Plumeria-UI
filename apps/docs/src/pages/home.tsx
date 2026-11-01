@@ -1,4 +1,5 @@
 import { brand, buttonClassName, catalog, categoryLabels, resolveDirection } from '@white-plumeria/core';
+import { libraryPens } from '../pen-meta.ts';
 import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
 import { Button, Card, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import type { ButtonSize } from '@white-plumeria/core';
@@ -850,6 +851,31 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
+      <section className="home-section home-examples" id="examples" aria-labelledby="examples-title">
+        <h2 id="examples-title">
+          Examples
+          <br />
+          <span>one pen per library</span>
+        </h2>
+        <p>Each library has a page with a live stage and the source beside it. The stage is that library’s own document, so Vue is not a React drawing of Vue.</p>
+        <ul className="home-adapter-grid home-example-grid">
+          {libraryPens.map((pen) => (
+            <li key={pen.id}>
+              <A className="home-adapter home-example" href={`/examples/${pen.id}`} onNavigate={onNavigate}>
+                <small>{pen.packageName}</small>
+                <strong>{pen.label}</strong>
+                <em>{pen.mount}</em>
+              </A>
+            </li>
+          ))}
+        </ul>
+        <div className="home-ctas">
+          <A className="home-cta home-cta-dark" href="/examples" onNavigate={onNavigate}>
+            Open examples
+          </A>
+        </div>
+      </section>
+
       <HomeFooter onNavigate={onNavigate} />
     </div>
   );
@@ -872,6 +898,7 @@ const footGroups = [
       { href: '/start', label: 'Quick start' },
       { href: '/install', label: 'Install' },
       { href: '/servers', label: 'Server hosts' },
+      { href: '/examples', label: 'Examples' },
       { href: '/direction', label: 'Direction' },
       { href: '/accessibility', label: 'Accessibility' },
     ],

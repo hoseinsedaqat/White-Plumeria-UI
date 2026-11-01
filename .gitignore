@@ -13,4 +13,5 @@ test-results
 *.tsbuildinfo
 .pnpm-store
 apps/docs/dist
+apps/docs/public/pens
 apps/*/dist
