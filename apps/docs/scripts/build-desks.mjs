@@ -159,6 +159,29 @@ for (const [, relative, id] of desks) {
   const dir = copyExport(join(repo, relative), id);
   assertDesk(dir, id, markers[id]);
   if (id === 'nuxt') assertNuxtIndex(dir);
+  if (id === 'analog' || id === 'solidstart') assertVisibleButton(dir, id);
+}
+
+function assertVisibleButton(dir, id) {
+  const html = readFileSync(join(dir, 'index.html'), 'utf8');
+  if (!html.includes('Save changes') || !html.includes('wpl-btn')) {
+    process.stderr.write(`${id} index.html does not show the button\n`);
+    process.exit(1);
+  }
+  if (html.includes('_$HY') || html.includes('Internal Server Error')) {
+    process.stderr.write(`${id} index.html is an error shell\n`);
+    process.exit(1);
+  }
+  if (id === 'analog') {
+    const js = walk(dir)
+      .filter((file) => file.endsWith('.js'))
+      .map((file) => readFileSync(file, 'utf8'))
+      .join('\n');
+    if (!js.includes('index.html')) {
+      process.stderr.write('Analog client route does not accept index.html\n');
+      process.exit(1);
+    }
+  }
 }
 
 function assertNuxtIndex(dir) {

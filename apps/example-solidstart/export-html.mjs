@@ -1,7 +1,8 @@
-// SolidStart 2.1 writes client and server bundles, not a static document.
-// The server handler still renders the Solid tree, so the desk is that HTML.
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+// SolidStart's handler returns an empty shell. The desk is a static document
+// of the same Solid route, not a server renderer and not a new package.
+import { createComponent, renderToStringAsync } from 'solid-js/web';
+import { existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
@@ -11,53 +12,60 @@ function walk(dir, found = []) {
     if (name === 'node_modules') continue;
     const path = join(dir, name);
     if (statSync(path).isDirectory()) walk(path, found);
-    else if (/\.(js|css|html)$/.test(name)) found.push(path);
+    else found.push(path);
   }
   return found;
 }
 
-const serverDir = join(root, 'dist/server');
-if (!existsSync(serverDir)) {
-  process.stderr.write('SolidStart did not write dist/server\n');
-  process.exit(1);
-}
-const entry = walk(serverDir).find((file) => file.endsWith('entry-server.js'));
-if (!entry) {
-  process.stderr.write('SolidStart server entry was not built\n');
+function fail(message) {
+  process.stderr.write(`${message}\n`);
   process.exit(1);
 }
 
-const loaded = await import(pathToFileURL(entry).href);
-const app = loaded.default;
-const site = process.env.WPL_BASE ?? '/';
-const prefix = site.endsWith('/') ? site : `${site}/`;
-const path = process.env.WPL_DESK === '1' ? `${prefix}desks/solidstart/` : '/';
-const request = new Request(new URL(path, 'http://127.0.0.1'));
-const response =
-  app && typeof app.fetch === 'function'
-    ? await app.fetch(request)
-    : typeof app === 'function'
-      ? await app(request)
-      : null;
-if (!response || typeof response.text !== 'function') {
-  process.stderr.write(`SolidStart server export cannot render HTML\n`);
-  process.exit(1);
+function deskBase() {
+  const site = process.env.WPL_BASE ?? '/';
+  const prefix = site.endsWith('/') ? site : `${site}/`;
+  return process.env.WPL_DESK === '1' ? `${prefix}desks/solidstart/` : '/';
 }
-const html = await response.text();
-if (!html.includes('type="module"') || !html.includes('_build/')) {
-  process.stderr.write('SolidStart HTML is missing the client entry\n');
-  process.stderr.write(`${html.slice(0, 800)}\n`);
-  process.exit(1);
-}
+
+const serverDir = join(root, 'dist/server');
 const clientDir = join(root, 'dist/client');
-const assets = walk(clientDir)
-  .filter((file) => /\.(js|css|html)$/.test(file))
-  .map((file) => readFileSync(file, 'utf8'))
-  .join('\n');
-if (!assets.includes('Save changes') || !assets.includes('wpl-btn') || !assets.includes('SolidStart built')) {
-  process.stderr.write('SolidStart client bundle is missing the Solid button\n');
-  process.exit(1);
+if (!existsSync(serverDir) || !existsSync(clientDir)) fail('SolidStart did not write dist');
+
+const pageFile = walk(serverDir).find((file) =>
+  /[/\\]_build[/\\]assets[/\\]index-.*\.js$/.test(file),
+);
+const css = walk(clientDir).find((file) => file.endsWith('.css') && file.includes('_build'));
+const entry = walk(clientDir).find((file) => file.includes('entry-client') && file.endsWith('.js'));
+if (!pageFile || !css || !entry) fail('SolidStart export is missing the route or client assets');
+
+const page = await import(pathToFileURL(pageFile).href);
+const body = await renderToStringAsync(() => createComponent(page.default, {}));
+if (
+  !body.includes('Save changes') ||
+  !body.includes('wpl-btn') ||
+  !body.includes('SolidStart built')
+) {
+  fail('SolidStart route did not render the Solid button');
 }
+
+const base = deskBase();
+const href = (file) => `${base}${relative(clientDir, file).split(sep).join('/')}`;
+const html = `<!DOCTYPE html>
+<html lang="en" data-wpl-theme="white" data-wpl-scheme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SolidStart desk · White Plumeria</title>
+    <link rel="stylesheet" href="${href(css)}" />
+    <script type="module" src="${href(entry)}"></script>
+  </head>
+  <body>
+    <div id="app">${body}</div>
+  </body>
+</html>
+`;
+if (html.includes('_$HY')) fail('SolidStart document still contains the handler shell');
 const dest = join(clientDir, 'index.html');
 writeFileSync(dest, html);
 process.stdout.write(`wrote ${dest}\n`);

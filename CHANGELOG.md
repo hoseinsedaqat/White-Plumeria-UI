@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The Analog and SolidStart desks show the button when the frame opens `index.html`. Analog treats that file as the home page. SolidStart writes the Solid button into the static document instead of an empty handler shell. Neither is a server renderer. Packages are still not published.
 - The Nuxt desk opens on `index.html` without a 404. That is the file the docs frame and GitHub Pages request. The button stays inside `ClientOnly`. Packages are still not published.
 - GitHub Pages can build the Qwik City desk. The router only matches a lowercase base, so the export is built that way and the public path casing is restored afterward. Packages are still not published.
 - Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City each have a static desk in the repository. The frame is that host’s export, and the control is still the client adapter. There is no `@white-plumeria/next`, `@white-plumeria/nuxt`, `@white-plumeria/sveltekit`, `@white-plumeria/solidstart`, `@white-plumeria/analog`, or `@white-plumeria/qwikcity` package. Packages are still not published.
