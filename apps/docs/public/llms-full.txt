@@ -2,83 +2,238 @@
 
 Framework-agnostic design system. No Tailwind requirement. No model key in the static site.
 
+## CSS contract
+White Plumeria is a class stylesheet. Tailwind is not required and is not a dependency.
+Use only a class that already appears in a component HTML example or class list below. Every class starts with wpl-.
+Do not invent a class. Do not invent a Tailwind utility. Do not invent a package.
+The HTML example is the source of truth. React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember render those same classes.
+Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for an existing adapter. They are not packages.
+Astro, Stimulus, Aurelia, Ripple, Stencil, VanJS, and LWC are not adapters in this repository.
+Packages are not on npm. Do not invent an install command.
+
 Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: white, ivory, ink, saffron, lagoon, blush. white is the default. Each theme has light and dark color tokens named --wpl-color-*.
 
 ## Components
 - Accordion (accordion): Disclosure stack, single or multiple.
+  HTML: `<div class="wpl-accordion"><button class="wpl-accordion-trigger" aria-expanded="false">Fees</button></div>`
 - Alert (alert): Inline status message that is part of the page.
+  HTML: `<div class="wpl-alert wpl-alert-warning" role="status"><p class="wpl-alert-title">Review needed</p></div>`
 - Avatar (avatar): Image or initials, with an optional status dot.
+  HTML: `<span class="wpl-avatar" role="img" aria-label="Laleh Karimi">LK</span>`
 - Badge (badge): Compact status label.
+  HTML: `<span class="wpl-badge wpl-badge-success">Paid</span>`
 - Breadcrumb (breadcrumb): Hierarchical location.
+  HTML: `<nav class="wpl-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li></ol></nav>`
 - Button (button): Action control with variant, appearance, size, and loading state.
+  HTML: `<button class="wpl-btn wpl-btn-primary" type="button">Save changes</button>`
 - ButtonGroup (button-group): Groups related buttons. Joined mode shares borders.
+  HTML: `<div class="wpl-btn-group" role="group" aria-label="Save options"><button class="wpl-btn wpl-btn-primary">Save</button></div>`
 - Calendar (calendar): Month grid for Gregorian or Persian calendars.
+  HTML: `<div class="wpl-calendar"><div class="wpl-calendar-grid" role="grid"></div></div>`
 - Card (card): Surface for a title, description, body, and actions.
+  HTML: `<section class="wpl-card"><h2 class="wpl-card-title">Analytics</h2><p class="wpl-card-description">Overview of recent activity</p></section>`
 - Carousel (carousel): Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.
+  HTML: `<section class="wpl-carousel wpl-carousel-media" aria-roledescription="carousel" aria-label="Theme stills"><div class="wpl-carousel-viewport"><div class="wpl-carousel-track"><figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src="/carousel/white.jpg" alt="White plumeria flowers on pale stone" /><figcaption class="wpl-carousel-caption"><strong>White</strong><span>The default palette.</span></figcaption></figure></div></div></section>`
 - ChartContainer (chart-container): Accessible bar summary plus a data table. Not a charting engine.
+  HTML: `<figure class="wpl-chart"><figcaption>Sample volume</figcaption></figure>`
 - Checkbox (checkbox): Native checkbox with a visible label.
+  HTML: `<label class="wpl-check"><input type="checkbox" name="email" /> Email me invoices</label>`
 - Combobox (combobox): Filterable single-select listbox.
+  HTML: `<!-- Combobox needs the framework or elements behavior. The class contract is wpl-combo, wpl-combo-control, wpl-combo-icon, and wpl-listbox. -->`
 - CommandPalette (command-palette): Keyboard-first command list inside a dialog.
+  HTML: `<div class="wpl-command" role="dialog" aria-label="Command palette"></div>`
 - Container (container): Centered content width.
+  HTML: `<div class="wpl-container wpl-container-md">Content</div>`
 - ContextMenu (context-menu): Menu opened from contextmenu or Shift+F10, with one submenu level.
+  HTML: `<div class="wpl-menu" role="menu"><button class="wpl-menu-item" role="menuitem" aria-haspopup="menu">Export</button></div>`
 - DataTable (data-table): Client-side sort, filter, and pagination. Narrow frames stack rows and keep a sort field.
+  HTML: `<div class="wpl-table-wrap"><table class="wpl-table"><caption>Sample transactions</caption></table></div>`
 - DatePicker (date-picker): Text field plus calendar popover. Accepts ISO dates.
+  HTML: `<label class="wpl-field">From <input class="wpl-input" type="date" value="2026-10-27" /></label>`
 - DateRangePicker (date-range-picker): Start and end dates, with optional 24-hour times. A later choice is ordered first.
+  HTML: `<div class="wpl-date"><label>Start <input class="wpl-input" value="2026-10-12" /></label><label>End <input class="wpl-input" value="2026-10-20" /></label></div>`
 - Dialog (dialog): Modal dialog with focus management and escape to close.
+  HTML: `<dialog class="wpl-dialog"><h2 class="wpl-dialog-title">Discard draft?</h2></dialog>`
 - Divider (divider): Horizontal rule, optionally with a label.
+  HTML: `<div class="wpl-divider-labeled" role="separator">Or</div>`
 - Drawer (drawer): Side dialog for navigation or filters.
+  HTML: `<dialog class="wpl-drawer"><h2 class="wpl-dialog-title">Filters</h2></dialog>`
 - DropdownMenu (dropdown-menu): Menu button with keyboard navigation and one submenu level.
+  HTML: `<div class="wpl-menu" role="menu"><button class="wpl-menu-item" role="menuitem" aria-haspopup="menu">Theme</button></div>`
 - EmptyState (empty-state): Explains an empty collection and offers the next action.
+  HTML: `<div class="wpl-empty"><h2 class="wpl-empty-title">No invoices</h2><p class="wpl-empty-description">Create the first invoice to see it here.</p></div>`
 - FileUpload (file-upload): Local file selection with type and size checks. It does not upload.
+  HTML: `<label class="wpl-file-drop">Statement PDF <input class="wpl-file-input" type="file" accept="application/pdf" /></label>`
 - Flex (flex): Inline row with wrap and alignment options.
+  HTML: `<div class="wpl-flex wpl-flex-between"></div>`
 - Footer (footer): Content info landmark.
+  HTML: `<footer class="wpl-footer">MIT License</footer>`
 - FormField (form-field): Connects label, control, hint, and error by id.
+  HTML: `<div class="wpl-field wpl-field-invalid"><label class="wpl-label" for="email">Email</label><input id="email" class="wpl-input" aria-invalid="true" aria-describedby="email-error" /><p id="email-error" class="wpl-field-error" role="alert">Enter a valid email</p></div>`
 - FormMessage (form-message): Hint or error text with the correct role.
+  HTML: `<p class="wpl-field-error" role="alert">Amount must be positive.</p>`
 - Grid (grid): Responsive 1 to 4 column grid. The column count follows the grid width, not the viewport.
+  HTML: `<div class="wpl-grid wpl-grid-3"></div>`
 - IconButton (icon-button): Square button that requires an accessible name.
+  HTML: `<button class="wpl-icon-btn wpl-btn-ghost" type="button" aria-label="Close"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7 7 17"/></svg></button>`
 - Input (input): Single-line text field.
+  HTML: `<input class="wpl-input" name="email" type="email" placeholder="ada@example.com" />`
 - Kbd (kbd): Visual keyboard key. It does not register a shortcut.
+  HTML: `<span class="wpl-kbd-group"><kbd class="wpl-kbd">Ctrl</kbd><kbd class="wpl-kbd">K</kbd></span>`
 - Label (label): Form label associated by htmlFor.
+  HTML: `<label class="wpl-label" for="email">Email</label>`
 - Link (link): Text link. External links receive safe rel and target.
+  HTML: `<a class="wpl-link" href="#install">Installation</a>`
 - List (list): Stacked list of title, description, and optional trailing action.
+  HTML: `<ul class="wpl-list"><li class="wpl-list-item">Invoice 104</li></ul>`
 - Modal (modal): Dialog preset that is always modal.
+  HTML: `<dialog class="wpl-dialog"><h2 class="wpl-dialog-title">Confirm</h2></dialog>`
 - Navbar (navbar): Sticky header with a collapsible menu.
+  HTML: `<header class="wpl-navbar"><a class="wpl-navbar-brand" href="/">White Plumeria</a></header>`
 - NavigationMenu (navigation-menu): Horizontal list of links.
+  HTML: `<ul class="wpl-nav-menu"><li><a class="wpl-nav-link" href="#start" aria-current="page">Start</a></li></ul>`
 - Notification (notification): Persistent inline notice. Its tone follows the theme, and dismiss is optional.
+  HTML: `<div class="wpl-notification wpl-notification-success" role="status"><p class="wpl-toast-title">Saved</p><p class="wpl-toast-description">The sample stayed in this tab.</p></div>`
 - NumberField (number-field): Numeric field with decrease and increase buttons. The value snaps to the step.
+  HTML: `<div class="wpl-field"><label class="wpl-label" for="guests">Guests</label><div class="wpl-number"><button class="wpl-number-step" type="button">−</button><input class="wpl-input" id="guests" name="guests" type="number" min="1" max="8" value="2" /><button class="wpl-number-step" type="button">+</button></div></div>`
 - OtpField (otp-field): One-time-code field. It does not send or verify a code.
+  HTML: `<div class="wpl-otp" role="group" aria-label="Verification code"><input class="wpl-input wpl-otp-cell" inputmode="numeric" maxlength="1" aria-label="Character 1 of 6" /></div>`
 - PageHeader (page-header): Title, description, and action row.
+  HTML: `<header class="wpl-page-header"><h1 class="wpl-page-title">Invoices</h1></header>`
 - Pagination (pagination): Page controls with a current page.
+  HTML: `<nav class="wpl-pagination" aria-label="Pagination"><button class="wpl-page" aria-current="page">1</button></nav>`
 - PasswordField (password-field): Password field with a visible label and a reveal toggle. It does not score strength.
+  HTML: `<label class="wpl-label" for="password">Password</label><div class="wpl-password"><input id="password" class="wpl-input" type="password" name="password" autocomplete="current-password" /></div>`
 - Popover (popover): Anchored non-modal panel.
+  HTML: `<div class="wpl-popover">Settles on the next business day.</div>`
 - Progress (progress): Determinate or indeterminate progress.
+  HTML: `<div class="wpl-progress-track" role="progressbar" aria-label="Upload" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><span class="wpl-progress-bar" style="inline-size:40%"></span></div>`
 - RadioGroup (radio-group): Named native radios with a legend.
+  HTML: `<fieldset><legend>Plan</legend><label class="wpl-radio"><input type="radio" name="plan" value="annual" /> Annual</label></fieldset>`
 - RangeSlider (range-slider): Two thumbs for a numeric start and end. A thumb stops at the other thumb.
+  HTML: `<div class="wpl-range" style="--wpl-range-start: 16%; --wpl-range-size: 48%"><span class="wpl-range-track"></span><span class="wpl-range-fill"></span><input class="wpl-range-input" type="range" min="0" max="500" value="80" aria-label="Price start" /><input class="wpl-range-input" type="range" min="0" max="500" value="320" aria-label="Price end" /></div>`
 - Rating (rating): Star rating as a radio group. It does not submit a review by itself.
+  HTML: `<fieldset class="wpl-rating"><legend>Workspace quality</legend><label><input type="radio" name="quality" value="4" checked /> 4 of 5</label></fieldset>`
 - ResponsiveLayout (responsive-layout): Sidebar plus main. The sidebar stacks when this layout is narrower than 40rem.
+  HTML: `<div class="wpl-layout"><nav class="wpl-sidebar" aria-label="Docs"></nav><main class="wpl-layout-main"></main></div>`
 - SearchInput (search-input): Search field with a clear button.
+  HTML: `<div class="wpl-search"><label class="wpl-label" for="q">Search docs</label><div class="wpl-search-control"><input id="q" class="wpl-input" type="search" /></div></div>`
 - Select (select): Styled native select. Use Combobox for a custom listbox.
+  HTML: `<select class="wpl-select" name="currency"><option value="eur">EUR</option></select>`
 - Separator (separator): Orientation-aware non-text separator.
+  HTML: `<div class="wpl-separator wpl-separator-vertical" role="separator" aria-orientation="vertical"></div>`
 - Sidebar (sidebar): Vertical navigation landmark.
+  HTML: `<nav class="wpl-sidebar" aria-label="Docs"><a href="#button" aria-current="page">Button</a></nav>`
 - Skeleton (skeleton): Placeholder block while content loads.
+  HTML: `<span class="wpl-skeleton" style="width:12rem;height:1rem" aria-hidden="true"></span>`
 - Slider (slider): Native range input with a visible value.
+  HTML: `<label>Volume <input class="wpl-slider" type="range" min="0" max="100" value="40" /></label>`
 - Spinner (spinner): Indeterminate progress indicator.
+  HTML: `<span class="wpl-spinner" role="status" aria-label="Saving"></span>`
 - SplitPane (split-pane): Two panes with a keyboard-resizable separator.
+  HTML: `<div class="wpl-split"><div class="wpl-split-pane">Notes</div><div class="wpl-split-separator" role="separator" aria-orientation="vertical"></div><div class="wpl-split-pane">Preview</div></div>`
 - Stack (stack): Vertical stack with a gap token.
+  HTML: `<div class="wpl-stack wpl-stack-sm"></div>`
 - StatCard (stat-card): Label, value, and hint. It does not invent numbers.
+  HTML: `<article class="wpl-card wpl-stat"><p class="wpl-stat-label">Open invoices</p><p class="wpl-stat-value">12</p><p class="wpl-stat-hint">Sample data</p></article>`
 - Steps (steps): Checkout or setup progress. Linear mode blocks future steps until the value moves forward.
+  HTML: `<ol class="wpl-steps" aria-label="Checkout"><li class="wpl-step" data-state="current" aria-current="step"><span class="wpl-step-marker">1</span><span class="wpl-step-title">Account</span></li></ol>`
 - Switch (switch): Boolean switch with role="switch".
+  HTML: `<button class="wpl-switch" type="button" role="switch" aria-checked="false"><span class="wpl-switch-control"></span> Reduced motion</button>`
 - Table (table): Semantic table wrapper with a caption.
+  HTML: `<div class="wpl-table-wrap"><table class="wpl-table"><caption>Sample rates</caption></table></div>`
 - Tabs (tabs): Automatic-activation tabs.
+  HTML: `<div class="wpl-tablist" role="tablist"><button class="wpl-tab" role="tab" aria-selected="true">Overview</button></div>`
 - Textarea (textarea): Multi-line text field.
+  HTML: `<textarea class="wpl-textarea" name="note" rows="4"></textarea>`
 - Timeline (timeline): Ordered events with time elements.
+  HTML: `<ol class="wpl-timeline"><li class="wpl-timeline-item"><div><p class="wpl-timeline-title">Draft saved</p></div></li></ol>`
 - Toast (toast): Transient message in a live region.
+  HTML: `<div class="wpl-toast-region" aria-live="polite"><div class="wpl-toast wpl-toast-success" role="status">Saved</div></div>`
 - ToggleGroup (toggle-group): Joined buttons for one choice. Arrow keys follow reading direction. This is not RadioGroup.
+  HTML: `<div class="wpl-field"><span class="wpl-label" id="appearance">Appearance</span><div class="wpl-toggle" role="radiogroup" aria-labelledby="appearance"><button type="button" class="wpl-toggle-item" role="radio" aria-checked="true">Light</button><button type="button" class="wpl-toggle-item" role="radio" aria-checked="false">Dark</button></div></div>`
 - Tooltip (tooltip): Supplemental hint on hover and keyboard focus.
+  HTML: `<span class="wpl-tooltip" role="tooltip">Copy token</span>`
 - TreeView (tree-view): Expandable tree with arrow-key navigation.
+  HTML: `<ul class="wpl-tree" role="tree"><li role="none"><button class="wpl-tree-row" role="treeitem">src</button></li></ul>`
 - ValidationMessage (validation-message): Alias of FormMessage with tone="error".
+  HTML: `<p class="wpl-field-error" role="alert">Amount must be positive.</p>`
 
-AI tools may only name components from this list.
+AI tools may only name components from this list, and may only use the classes in these HTML examples.
+
+## Class lists
+- Accordion: wpl-accordion wpl-accordion-trigger wpl-accordion-panel
+- Alert: wpl-alert wpl-alert-info wpl-alert-success wpl-alert-warning wpl-alert-danger
+- Avatar: wpl-avatar wpl-avatar-sm wpl-avatar-lg wpl-avatar-status
+- Badge: wpl-badge wpl-badge-primary wpl-badge-success wpl-badge-warning wpl-badge-danger
+- Breadcrumb: wpl-breadcrumb
+- Button: wpl-btn wpl-btn-primary wpl-btn-secondary wpl-btn-outline wpl-btn-ghost wpl-btn-danger wpl-btn-success wpl-btn-warning wpl-btn-info wpl-btn-link wpl-btn-soft wpl-btn-dash wpl-btn-xs wpl-btn-sm wpl-btn-lg wpl-btn-xl wpl-btn-loading wpl-btn-block
+- ButtonGroup: wpl-btn-group wpl-btn-group-joined
+- Calendar: wpl-calendar wpl-day
+- Card: wpl-card wpl-card-title wpl-card-description wpl-card-body wpl-card-footer
+- Carousel: wpl-carousel wpl-carousel-media wpl-carousel-image wpl-carousel-caption wpl-carousel-dot
+- ChartContainer: wpl-chart wpl-chart-bar wpl-chart-fill
+- Checkbox: wpl-check
+- Combobox: wpl-combo wpl-combo-control wpl-combo-icon wpl-listbox wpl-listbox-item
+- CommandPalette: wpl-command wpl-command-list
+- Container: wpl-container wpl-container-sm wpl-container-md wpl-container-xl
+- ContextMenu: wpl-menu wpl-menu-item wpl-menu-sub wpl-menu-caret
+- DataTable: wpl-data-table wpl-table wpl-table-toolbar wpl-sort
+- DatePicker: wpl-calendar wpl-input
+- DateRangePicker: wpl-date wpl-date-row wpl-calendar wpl-day-range
+- Dialog: wpl-dialog wpl-dialog-title wpl-dialog-body wpl-dialog-footer
+- Divider: wpl-divider wpl-divider-labeled
+- Drawer: wpl-drawer wpl-drawer-start
+- DropdownMenu: wpl-menu wpl-menu-item wpl-menu-sub wpl-menu-caret
+- EmptyState: wpl-empty wpl-empty-title wpl-empty-description
+- FileUpload: wpl-file wpl-file-drop wpl-file-list
+- Flex: wpl-flex wpl-flex-wrap wpl-flex-between
+- Footer: wpl-footer
+- FormField: wpl-field wpl-field-invalid wpl-field-hint wpl-field-error
+- FormMessage: wpl-field-hint wpl-field-error
+- Grid: wpl-grid wpl-grid-2 wpl-grid-3 wpl-grid-4
+- IconButton: wpl-icon-btn
+- Input: wpl-input wpl-input-sm wpl-input-lg
+- Kbd: wpl-kbd wpl-kbd-group
+- Label: wpl-label
+- Link: wpl-link
+- List: wpl-list wpl-list-item
+- Modal: wpl-dialog
+- Navbar: wpl-navbar wpl-nav-menu wpl-navbar-toggle
+- NavigationMenu: wpl-nav-menu wpl-nav-link
+- Notification: wpl-notification wpl-notification-info wpl-notification-success wpl-notification-warning wpl-notification-danger
+- NumberField: wpl-number wpl-number-step wpl-input
+- OtpField: wpl-otp wpl-otp-cell
+- PageHeader: wpl-page-header wpl-page-title wpl-page-description
+- Pagination: wpl-pagination wpl-page
+- PasswordField: wpl-password wpl-input
+- Popover: wpl-popover
+- Progress: wpl-progress-track wpl-progress-bar wpl-progress-indeterminate
+- RadioGroup: wpl-radio
+- RangeSlider: wpl-range wpl-range-track wpl-range-fill wpl-range-input
+- Rating: wpl-rating wpl-rating-icon
+- ResponsiveLayout: wpl-layout wpl-layout-main
+- SearchInput: wpl-search wpl-search-control wpl-search-icon wpl-search-clear
+- Select: wpl-select
+- Separator: wpl-separator wpl-separator-vertical
+- Sidebar: wpl-sidebar
+- Skeleton: wpl-skeleton
+- Slider: wpl-slider
+- Spinner: wpl-spinner wpl-spinner-sm wpl-spinner-lg
+- SplitPane: wpl-split wpl-split-separator wpl-split-pane
+- Stack: wpl-stack wpl-stack-sm wpl-stack-lg
+- StatCard: wpl-stat wpl-stat-value wpl-card
+- Steps: wpl-steps wpl-steps-vertical wpl-step wpl-step-marker
+- Switch: wpl-switch wpl-switch-control
+- Table: wpl-table wpl-table-wrap
+- Tabs: wpl-tabs wpl-tablist wpl-tab wpl-tabpanel
+- Textarea: wpl-textarea
+- Timeline: wpl-timeline wpl-timeline-item
+- Toast: wpl-toast wpl-toast-region
+- ToggleGroup: wpl-toggle wpl-toggle-item
+- Tooltip: wpl-tooltip
+- TreeView: wpl-tree wpl-tree-row wpl-tree-children
+- ValidationMessage: wpl-field-error
 
 ## Limits
 - Avatar: Broken images fall back to initials on the error event. There is no remote presence service.
