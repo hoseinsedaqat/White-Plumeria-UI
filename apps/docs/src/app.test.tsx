@@ -20,7 +20,7 @@ describe('docs app', () => {
       'href',
       'https://github.com/hoseinsedaqat/White-Plumeria-UI',
     );
-    await user.click(screen.getByRole('link', { name: /^Button\b/ }));
+    await user.click(screen.getAllByRole('link', { name: /^Button\b/ })[0]);
     expect(await screen.findByRole('heading', { level: 1, name: 'Button' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
   });
