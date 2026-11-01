@@ -448,14 +448,17 @@ corepack pnpm lint
 corepack pnpm docs:build
 ```
 
-| Command                | What it does                                 |
-| ---------------------- | -------------------------------------------- |
-| `pnpm dev`             | Docs site on `5173`                          |
-| `pnpm test`            | Adapter suites, then the shared Vitest run   |
-| `pnpm typecheck`       | `tsc` and the Svelte check, per package      |
-| `pnpm lint`            | ESLint                                       |
-| `pnpm docs:build`      | Static docs build                            |
-| `pnpm generate:tokens` | Regenerates token CSS from `packages/tokens` |
+| Command                | What it does                                    |
+| ---------------------- | ----------------------------------------------- |
+| `pnpm dev`             | Docs site on `5173`                             |
+| `pnpm test`            | Adapter suites, then the shared Vitest run      |
+| `pnpm typecheck`       | `tsc` and the Svelte check, per package         |
+| `pnpm lint`            | ESLint                                          |
+| `pnpm docs:build`      | Static docs build                               |
+| `pnpm generate:tokens` | Regenerates token CSS from `packages/tokens`    |
+| `pnpm verify:dist`     | Checks built entry files. Does not publish.     |
+| `pnpm pack:dry-run`    | Dry-run tarball only. Does not publish.         |
+| `pnpm size`            | Unpacked size of those files. Does not publish. |
 
 Example desks alias workspace source, so they run before a publish:
 
