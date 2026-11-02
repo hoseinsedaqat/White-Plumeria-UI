@@ -1,10 +1,11 @@
-import { catalog, formatDate, parseIsoDate } from '@white-plumeria/core';
+import { catalog, formatDate, parseIsoDate, toIsoDate } from '@white-plumeria/core';
 import { renderComponent, renderSettled } from '@ember/renderer';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   Accordion,
   Breadcrumb,
   Button,
+  Calendar,
   Link,
   Pagination,
   Carousel,
@@ -39,6 +40,15 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('marks the selected calendar day and today', async () => {
+    const host = mount(Calendar, { value: toIsoDate(new Date()) });
+    await renderSettled();
+    const selected = host.querySelector('[aria-selected="true"]');
+    expect(selected?.getAttribute('aria-current')).toBe('date');
+    expect(selected?.getAttribute('role')).toBe('gridcell');
+    expect(host.querySelectorAll('[aria-selected="true"]')).toHaveLength(1);
+  });
+
   it('announces that an external link opens in a new tab', async () => {
     const host = mount(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
     await renderSettled();

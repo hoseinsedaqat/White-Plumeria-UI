@@ -1,4 +1,4 @@
-import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
+import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import { render } from '@marko/testing-library';
 import { afterEach, describe, expect, it } from 'vitest';
 import { pushToast } from './provider.ts';
@@ -18,6 +18,7 @@ import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
+import Calendar from './tags/wpl-calendar.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
@@ -43,6 +44,17 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('marks the selected calendar day and today', async () => {
+    const today = toIsoDate(new Date());
+    const view = await render(Calendar, { value: today });
+    const selected = view.container.querySelector('[aria-selected="true"]');
+    expect(selected?.getAttribute('aria-current')).toBe('date');
+    expect(selected?.getAttribute('role')).toBe('gridcell');
+    expect(view.container.querySelectorAll('[aria-selected="true"]')).toHaveLength(1);
+    const range = await render(DateRange, { start: today, end: today });
+    expect(range.container.querySelector('[aria-current="date"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
   it('announces that an external link opens in a new tab', async () => {
     const view = await render(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
     const link = view.container.querySelector('a');

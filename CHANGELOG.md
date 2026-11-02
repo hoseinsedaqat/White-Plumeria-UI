@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A calendar marks the selected day and marks today, in Alpine, Marko, and Ember. Alpine no longer compares the ISO value with a different day key. A range grid that already draws days does the same. Packages are still not published.
 - An external link says it opens in a new tab, including in Persian, and shows a directional external icon. Vue, Alpine, and Marko also set `noopener` with `noreferrer`. Packages are still not published.
 - Breadcrumb separators follow writing direction in Alpine, Marko, and Ember. The last crumb is the current page. Packages are still not published.
 - Pagination marks the current page and uses directional previous and next icons in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
