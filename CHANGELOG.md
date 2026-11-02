@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A split separator follows writing direction in every adapter. ArrowRight grows the start pane in LTR and shrinks it in RTL. Ember's separator has the separator role. Packages are still not published.
 - Marko, Ember, and Alpine layout, rating, accordion, radio, and chart markup now use the shared stylesheet classes. A responsive layout is a grid, a rating is a star control, and a chart bar has a track. Packages are still not published.
 - Vue, Svelte, Solid, Ember, and Marko controls use the same stylesheet classes as the other adapters. A file drop, tab list, split separator, command list, and step marker is no longer an unstyled name. Packages are still not published.
 - Scrolling a dialog, menu, or table no longer drags the page behind it. Reduced transparency replaces the overlay and translucent bars with a solid theme color. Packages are still not published.

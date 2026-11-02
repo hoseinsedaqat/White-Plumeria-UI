@@ -14,6 +14,7 @@ import {
   cx,
   gridClassName,
   readingDirection,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -262,9 +263,8 @@ export class SplitPane {
   }
 
   onKey(event: KeyboardEvent) {
-    const host = event.currentTarget instanceof HTMLElement ? event.currentTarget.parentElement : null;
-    const direction = readingDirection(host);
-    const step = event.key === 'ArrowRight' ? (direction === 'rtl' ? -5 : 5) : event.key === 'ArrowLeft' ? (direction === 'rtl' ? 5 : -5) : 0;
+    const host = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    const step = splitSizeStep(event.key, host);
     if (!step) return;
     event.preventDefault();
     this.commit(this.current() + step);

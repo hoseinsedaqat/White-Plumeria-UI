@@ -61,7 +61,7 @@ export {
   supportsModalDialog,
 } from './dom.ts';
 export type { FocusTrap } from './dom.ts';
-export { nextIndex, readingDirection, toggleGroupMove } from './keyboard.ts';
+export { nextIndex, readingDirection, splitSizeStep, toggleGroupMove } from './keyboard.ts';
 export {
   firstEnabledIndex,
   menuCommand,

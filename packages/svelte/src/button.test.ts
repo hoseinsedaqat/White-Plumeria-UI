@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Button from './lib/Button.svelte';
+import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
 import Switch from './lib/Switch.svelte';
 
@@ -35,5 +36,16 @@ describe('svelte adapter', () => {
       value: 'account',
     });
     expect(screen.getByRole('button', { name: /Billing/ }).hasAttribute('disabled')).toBe(true);
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
+    const user = userEvent.setup();
+    render(SplitPane, { label: 'Resize editor' });
+    const separator = screen.getByRole('separator', { name: 'Resize editor' });
+    const split = separator.closest('.wpl-split');
+    if (split instanceof HTMLElement) split.style.direction = 'rtl';
+    separator.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(separator.getAttribute('aria-valuenow')).toBe('45');
   });
 });

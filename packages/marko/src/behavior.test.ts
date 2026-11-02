@@ -13,6 +13,7 @@ import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Slider from './tags/wpl-slider.marko';
+import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 
 const templates = import.meta.glob('./tags/wpl-*.marko', { eager: true });
@@ -188,6 +189,21 @@ describe('Marko adapter', () => {
     const first = view.container.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
+    const view = await render(SplitPane, { label: 'Resize editor' });
+    view.container.setAttribute('dir', 'rtl');
+    view.container.style.direction = 'rtl';
+    const separator = view.container.querySelector('.wpl-split-separator');
+    expect(separator?.getAttribute('role')).toBe('separator');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+    expect(view.container.querySelector('.wpl-split')?.getAttribute('style')).toContain('--wpl-split-size:45%');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
   });
 
   it('moves a carousel and a step', async () => {
