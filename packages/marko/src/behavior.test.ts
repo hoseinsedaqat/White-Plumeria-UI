@@ -16,6 +16,7 @@ import Slider from './tags/wpl-slider.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
+import Accordion from './tags/wpl-accordion.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
@@ -192,6 +193,21 @@ describe('Marko adapter', () => {
     const first = view.container.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+  });
+
+  it('names an accordion panel from its trigger', async () => {
+    const view = await render(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
+    const trigger = view.container.querySelector('.wpl-accordion-trigger');
+    const panel = view.container.querySelector('.wpl-accordion-panel');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.getAttribute('role')).toBe('region');
+    expect(panel?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    expect(panel?.hasAttribute('hidden')).toBe(true);
+    expect(trigger?.querySelector('.wpl-icon-dir')).toBeTruthy();
+    trigger?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('.wpl-accordion-panel')?.hasAttribute('hidden')).toBe(false);
+    expect(view.container.textContent).toContain('No monthly fee.');
   });
 
   it('moves a carousel toward the inline end', async () => {

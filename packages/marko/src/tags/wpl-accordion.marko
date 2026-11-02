@@ -1,3 +1,4 @@
+import { iconPaths } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface AccordionItem {
@@ -15,6 +16,7 @@ export interface Input {
 
 <let/open=(input.value ?? [])>
 <const/items=input.items ?? []>
+<id/baseId/>
 
 <div/host class="wpl-accordion">
   <for|item| of=items>
@@ -23,7 +25,9 @@ export interface Input {
         <button
           type="button"
           class="wpl-accordion-trigger"
+          id=`${baseId}-trigger-${item.id}`
           aria-expanded=String(open.includes(item.id))
+          aria-controls=`${baseId}-${item.id}`
           onClick() {
             const has = open.includes(item.id);
             open = input.multiple
@@ -32,9 +36,9 @@ export interface Input {
             emit(host(), "wpl-change", { value: open });
             input.onValueChange?.(open);
           }
-        >${item.title}</button>
+        >${item.title}<svg class=(open.includes(item.id) ? "wpl-icon" : "wpl-icon wpl-icon-dir") viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=(open.includes(item.id) ? iconPaths.chevronDown : iconPaths.chevronRight)/></svg></button>
       </h3>
-      <div class="wpl-accordion-panel" hidden=!open.includes(item.id)>${item.content || ""}</div>
+      <div id=`${baseId}-${item.id}` class="wpl-accordion-panel" role="region" aria-labelledby=`${baseId}-trigger-${item.id}` hidden=!open.includes(item.id)>${item.content || ""}</div>
     </div>
   </for>
 </div>

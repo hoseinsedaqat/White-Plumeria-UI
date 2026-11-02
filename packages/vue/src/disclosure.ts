@@ -105,6 +105,7 @@ export const Accordion = defineComponent({
               {
                 type: 'button',
                 class: 'wpl-accordion-trigger',
+                id: `${base}-trigger-${item.id}`,
                 'aria-expanded': expanded,
                 'aria-controls': `${base}-${item.id}`,
                 onClick: () => {
@@ -117,7 +118,13 @@ export const Accordion = defineComponent({
               },
               item.title,
             ),
-            h('div', { id: `${base}-${item.id}`, class: 'wpl-accordion-panel', hidden: !expanded }, item.content),
+            h('div', {
+              id: `${base}-${item.id}`,
+              role: 'region',
+              'aria-labelledby': `${base}-trigger-${item.id}`,
+              class: 'wpl-accordion-panel',
+              hidden: !expanded,
+            }, item.content),
           ]);
         }),
       );

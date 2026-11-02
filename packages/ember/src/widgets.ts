@@ -439,9 +439,9 @@ export const Tabs = glimmer(
 );
 
 export const Accordion = glimmer(
-  `<div class="wpl-accordion">{{#each this.items as |item|}}<div class="wpl-accordion-item"><h3><button type="button" class="wpl-accordion-trigger" aria-expanded={{item.expanded}} {{on "click" (fn this.toggle item)}}>{{item.title}}</button></h3>{{#if item.open}}<div class="wpl-accordion-panel">{{item.content}}</div>{{/if}}</div>{{/each}}</div>`,
+  `<div class="wpl-accordion">{{#each this.items as |item|}}<div class="wpl-accordion-item"><h3><button type="button" id={{item.triggerId}} class="wpl-accordion-trigger" aria-expanded={{item.expanded}} aria-controls={{item.panelId}} {{on "click" (fn this.toggle item)}}>{{item.title}}<svg class={{item.iconClass}} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{item.icon}}></path></svg></button></h3><div id={{item.panelId}} class="wpl-accordion-panel" role="region" aria-labelledby={{item.triggerId}} {{flagAttr "hidden" item.closed}}>{{item.content}}</div></div>{{/each}}</div>`,
   {
-    state: (args) => ({ open: str(args.value) }),
+    state: (args) => ({ open: str(args.value), baseId: createId('wpl-accordion') }),
     getters: {
       items(this: Host) {
         const open = str(this.state.open, str(this.args.value));
@@ -455,7 +455,12 @@ export const Accordion = glimmer(
             title: str(item.title, str(item.label, id)),
             content: str(item.content),
             open: isOpen,
+            closed: !isOpen,
             expanded: isOpen ? 'true' : 'false',
+            panelId: `${str(this.state.baseId, 'wpl-accordion')}-${id}`,
+            triggerId: `${str(this.state.baseId, 'wpl-accordion')}-trigger-${id}`,
+            icon: iconPaths[isOpen ? 'chevronDown' : 'chevronRight'],
+            iconClass: isOpen ? 'wpl-icon' : 'wpl-icon wpl-icon-dir',
           };
         });
       },
