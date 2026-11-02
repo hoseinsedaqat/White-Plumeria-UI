@@ -59,4 +59,18 @@ describe('system color contract', () => {
     expect(print).toContain('.wpl-table tr');
     expect(print).not.toMatch(/^\s*tr\s*[,{]/m);
   });
+
+  it('themes native accent and scrollbars without overriding forced colors', () => {
+    expect(system).toContain('accent-color: var(--wpl-color-primary)');
+    expect(system).toContain('scrollbar-color: var(--wpl-color-border-strong) transparent');
+    expect(system).toContain('scrollbar-width: thin');
+    expect(system).toContain('scroll-padding: 0.35rem');
+    expect(system).toContain('scroll-margin: 0.35rem');
+    const forced = system.slice(system.indexOf('@media (forced-colors: active)'));
+    expect(forced).toContain('accent-color: auto');
+    expect(forced).toContain('scrollbar-color: auto');
+    const docs = readFileSync('apps/docs/src/docs.css', 'utf8');
+    expect(docs).toContain('scroll-padding-top: 4rem');
+    expect(docs).toContain('scroll-padding-block: 0.5rem');
+  });
 });
