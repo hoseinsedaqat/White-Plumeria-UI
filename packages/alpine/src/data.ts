@@ -204,6 +204,7 @@ export function Breadcrumb(config: Config = {}) {
         h('ol', {}, items.map((item, index) => {
           const last = index === items.length - 1;
           return h('li', {}, [
+            index > 0 ? svgIcon('chevronRight', 'wpl-icon wpl-icon-dir') : null,
             last || !item.href
               ? h('span', { text: item.label, attrs: { 'aria-current': last ? 'page' : undefined } })
               : h('a', { className: 'wpl-link', text: item.label, attrs: { href: item.href } }),

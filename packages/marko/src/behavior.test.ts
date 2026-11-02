@@ -17,6 +17,7 @@ import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
+import Breadcrumb from './tags/wpl-breadcrumb.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -41,6 +42,19 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('separates breadcrumbs toward the inline end', async () => {
+    const view = await render(Breadcrumb, {
+      items: [
+        { href: '/home', label: 'Home' },
+        { href: '/docs', label: 'Docs' },
+        { label: 'Button' },
+      ],
+    });
+    expect(view.container.querySelectorAll('.wpl-icon-dir')).toHaveLength(2);
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent).toBe('Button');
+    expect(view.container.querySelector('a')?.getAttribute('href')).toBe('/home');
+  });
+
   it('marks the current pagination page', async () => {
     const view = await render(Pagination, { page: 5, pageCount: 10 });
     expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');

@@ -3,6 +3,7 @@ import { renderComponent, renderSettled } from '@ember/renderer';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   Accordion,
+  Breadcrumb,
   Button,
   Pagination,
   Carousel,
@@ -37,6 +38,20 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('separates breadcrumbs toward the inline end', async () => {
+    const host = mount(Breadcrumb, {
+      items: [
+        { href: '/home', label: 'Home' },
+        { href: '/docs', label: 'Docs' },
+        { label: 'Button' },
+      ],
+    });
+    await renderSettled();
+    expect(host.querySelectorAll('.wpl-icon-dir')).toHaveLength(2);
+    expect(host.querySelector('[aria-current="page"]')?.textContent).toBe('Button');
+    expect(host.querySelector('a')?.getAttribute('href')).toBe('/home');
+  });
+
   it('marks the current pagination page', async () => {
     const host = mount(Pagination, { page: 5, pageCount: 10 });
     await renderSettled();
