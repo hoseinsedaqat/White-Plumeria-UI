@@ -55,10 +55,17 @@ export interface Input {
   <for|key| of=keys><kbd class="wpl-kbd">\${key}</kbd></for>
 </span>
 `,
-  'wpl-link.marko': `export interface Input { href?: string; label?: string; external?: boolean; content?: Marko.Body; }
-<a class="wpl-link" href=input.href || "#" target=(input.external ? "_blank" : null) rel=(input.external ? "noreferrer" : null)>
+  'wpl-link.marko': `import { iconPaths } from "@white-plumeria/core";
+import { text } from "../text.ts";
+
+export interface Input { href?: string; label?: string; external?: boolean; content?: Marko.Body; }
+<a class="wpl-link" href=input.href || "#" target=(input.external ? "_blank" : null) rel=(input.external ? "noreferrer noopener" : null)>
   <if=input.label>\${input.label}</if>
   <\${input.content}/>
+  <if=input.external>
+    <span class="wpl-sr-only"> (\${text("newTab")})</span>
+    <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.external/></svg>
+  </if>
 </a>
 `,
   'wpl-badge.marko': `import { badgeClassName, type BadgeVariant } from "@white-plumeria/core";

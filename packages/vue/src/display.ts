@@ -11,6 +11,7 @@ import {
 } from '@white-plumeria/core';
 import { defineComponent, h, ref, type PropType } from 'vue';
 import { Icon } from './icon.ts';
+import { useWhitePlumeria } from './provider.ts';
 import { mergeClass } from './util.ts';
 
 export const Link = defineComponent({
@@ -21,6 +22,7 @@ export const Link = defineComponent({
     external: { type: Boolean, default: false },
   },
   setup(props, { slots, attrs }) {
+    const { t } = useWhitePlumeria();
     return () =>
       h(
         'a',
@@ -28,11 +30,12 @@ export const Link = defineComponent({
           ...attrs,
           href: props.href,
           class: mergeClass('wpl-link', attrs.class),
-          ...(props.external ? { target: '_blank', rel: 'noreferrer' } : {}),
+          ...(props.external ? { target: '_blank', rel: 'noreferrer noopener' } : {}),
         },
         [
           slots.default?.(),
-          props.external ? h(Icon, { name: 'external', class: 'wpl-icon-dir' }) : null,
+          props.external ? h('span', { class: 'wpl-sr-only' }, ` (${t('newTab')})`) : null,
+          props.external ? h(Icon, { name: 'external' }) : null,
         ],
       );
   },

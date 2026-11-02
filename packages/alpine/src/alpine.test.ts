@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Breadcrumb, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Breadcrumb, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -33,6 +33,15 @@ afterEach(() => {
 });
 
 describe('Alpine adapter', () => {
+  it('announces that an external link opens in a new tab', () => {
+    const host = mount(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
+    const link = host.querySelector('a');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(link?.querySelector('.wpl-sr-only')?.textContent).toContain('opens in a new tab');
+    expect(link?.querySelector('.wpl-icon-dir')).toBeTruthy();
+  });
+
   it('separates breadcrumbs toward the inline end', () => {
     const host = mount(Breadcrumb, {
       items: [

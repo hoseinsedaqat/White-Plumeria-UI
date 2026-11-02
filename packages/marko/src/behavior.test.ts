@@ -18,6 +18,7 @@ import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
+import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -42,6 +43,15 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('announces that an external link opens in a new tab', async () => {
+    const view = await render(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
+    const link = view.container.querySelector('a');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(link?.querySelector('.wpl-sr-only')?.textContent).toContain('opens in a new tab');
+    expect(link?.querySelector('.wpl-icon-dir')).toBeTruthy();
+  });
+
   it('separates breadcrumbs toward the inline end', async () => {
     const view = await render(Breadcrumb, {
       items: [

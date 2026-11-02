@@ -7,7 +7,7 @@ import {
   type AvatarSize,
   type BadgeVariant,
 } from '@white-plumeria/core';
-import { h, num, oneOf, svgIcon, text, type Config, type Magic } from './runtime.ts';
+import { h, num, oneOf, svgIcon, text, translate, type Config, type Magic } from './runtime.ts';
 import type { IconName } from '@white-plumeria/core';
 import { iconPaths } from '@white-plumeria/core';
 
@@ -105,11 +105,19 @@ function listKeys(value: unknown): string[] {
 export function Link(config: Config = {}) {
   return {
     init(this: Magic) {
+      const external = config.external === true;
       this.$el.replaceChildren(h('a', {
         className: 'wpl-link',
-        text: text(config.label, 'Link'),
-        attrs: { href: text(config.href, '#'), target: config.external === true ? '_blank' : undefined, rel: config.external === true ? 'noreferrer' : undefined },
-      }));
+        attrs: {
+          href: text(config.href, '#'),
+          target: external ? '_blank' : undefined,
+          rel: external ? 'noreferrer noopener' : undefined,
+        },
+      }, [
+        text(config.label, this.$el.textContent?.trim() || 'Link'),
+        external ? h('span', { className: 'wpl-sr-only', text: ` (${translate(this.$el, 'newTab')})` }) : null,
+        external ? svgIcon('external', 'wpl-icon wpl-icon-dir') : null,
+      ]));
     },
   };
 }

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Accordion from './lib/Accordion.svelte';
+import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Button from './lib/Button.svelte';
 import SplitPane from './lib/SplitPane.svelte';
@@ -10,6 +11,15 @@ import TreeView from './lib/TreeView.svelte';
 import Switch from './lib/Switch.svelte';
 
 describe('svelte adapter', () => {
+  it('announces that an external link opens in a new tab', () => {
+    const view = render(Link, { href: 'https://example.com/docs', external: true });
+    const link = view.container.querySelector('a');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(link?.querySelector('.wpl-sr-only')?.textContent).toContain('opens in a new tab');
+    expect(link?.querySelector('.wpl-icon-dir')).toBeTruthy();
+  });
+
   it('marks the current pagination page', async () => {
     const user = userEvent.setup();
     const view = render(Pagination, { page: 5, pageCount: 10 });

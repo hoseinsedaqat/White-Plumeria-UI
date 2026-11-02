@@ -2,9 +2,24 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Accordion, Button, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('announces that an external link opens in a new tab', () => {
+    const view = render(
+      defineComponent({
+        setup() {
+          return () => h(WhitePlumeriaProvider, () => h(Link, { href: 'https://example.com/docs', external: true }, () => 'Docs'));
+        },
+      }),
+    );
+    const link = view.container.querySelector('a');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(link?.querySelector('.wpl-sr-only')?.textContent).toContain('opens in a new tab');
+    expect(link?.querySelector('.wpl-icon-dir')).toBeTruthy();
+  });
+
   it('marks the current pagination page', async () => {
     const user = userEvent.setup();
     const page = ref(5);

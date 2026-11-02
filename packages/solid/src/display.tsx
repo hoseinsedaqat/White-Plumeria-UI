@@ -23,6 +23,7 @@ function initials(name: string): string {
 }
 
 export function Link(props: JSX.AnchorHTMLAttributes<HTMLAnchorElement> & { external?: boolean }) {
+  const wpl = useWhitePlumeria();
   return (
     <a
       {...props}
@@ -31,7 +32,7 @@ export function Link(props: JSX.AnchorHTMLAttributes<HTMLAnchorElement> & { exte
       target={props.external ? '_blank' : props.target}
     >
       {props.children}
-      {props.external ? <span class="wpl-sr-only"> (opens in a new tab)</span> : null}
+      {props.external ? <span class="wpl-sr-only"> ({wpl.t('newTab')})</span> : null}
       {props.external ? <Icon name="external" /> : null}
     </a>
   );

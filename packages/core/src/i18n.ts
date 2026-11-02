@@ -81,6 +81,7 @@ const messages = {
     carousel: 'Carousel',
     slide: 'Slide',
     character: 'Character',
+    newTab: 'opens in a new tab',
   },
   fa: {
     required: 'الزامی',
@@ -129,6 +130,7 @@ const messages = {
     carousel: 'اسلایدر',
     slide: 'اسلاید',
     character: 'نویسه',
+    newTab: 'در زبانهٔ جدید باز می‌شود',
   },
 } as const;
 

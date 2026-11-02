@@ -140,6 +140,7 @@ export const EmptyState = component$<{ title: string; description?: string }>((p
 });
 
 export const Link = component$<{ href: string; external?: boolean; class?: string }>((props) => {
+  const wpl = useWhitePlumeria();
   return (
     <a
       class={cx('wpl-link', props.class)}
@@ -148,7 +149,7 @@ export const Link = component$<{ href: string; external?: boolean; class?: strin
       rel={props.external ? 'noreferrer noopener' : undefined}
     >
       <Slot />
-      {props.external ? <span class="wpl-sr-only"> (opens in a new tab)</span> : null}
+      {props.external ? <span class="wpl-sr-only"> ({wpl.t('newTab')})</span> : null}
       {props.external ? <Icon name="external" /> : null}
     </a>
   );

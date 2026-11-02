@@ -261,7 +261,7 @@ export class Link extends WplElement {
       rel=${this.external ? 'noreferrer noopener' : nothing}
     >
       <span data-wpl-slot="" style="display:contents"></span>
-      ${this.external ? html`<span class="wpl-sr-only"> (opens in a new tab)</span>${iconSvg('external')}` : nothing}
+      ${this.external ? html`<span class="wpl-sr-only"> (${translate(this, 'newTab')})</span>${iconSvg('external')}` : nothing}
     </a>`;
   }
 }

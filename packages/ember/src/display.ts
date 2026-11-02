@@ -1,5 +1,5 @@
-import { alertClassName, avatarClassName, badgeClassName, cardClassName, spinnerClassName } from '@white-plumeria/core';
-import { flag, glimmer, list, num, str, type Host } from './runtime.ts';
+import { alertClassName, avatarClassName, badgeClassName, cardClassName, iconMarkup, message, spinnerClassName } from '@white-plumeria/core';
+import { flag, glimmer, list, localeOf, num, str, type Host } from './runtime.ts';
 
 export const Kbd = glimmer(
   `<span class="wpl-kbd-group">{{#each this.keys as |key|}}<kbd class="wpl-kbd">{{key}}</kbd>{{/each}}</span>`,
@@ -16,12 +16,18 @@ export const Kbd = glimmer(
 );
 
 export const Link = glimmer(
-  `<a class="wpl-link" href={{this.href}} target={{this.target}} rel={{this.rel}}>{{#if @label}}{{@label}}{{else}}{{yield}}{{/if}}</a>`,
+  `<a class="wpl-link" href={{this.href}} target={{this.target}} rel={{this.rel}}>{{#if @label}}{{@label}}{{else}}{{yield}}{{/if}}{{#if this.external}}<span class="wpl-sr-only"> ({{this.newTab}})</span>${iconMarkup('external')}{{/if}}</a>`,
   {
     getters: {
       href: (host) => str(host.args.href, '#'),
-      target: (host) => (flag(host.args.external) ? '_blank' : ''),
-      rel: (host) => (flag(host.args.external) ? 'noreferrer noopener' : ''),
+      external: (host) => flag(host.args.external),
+      newTab: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'newTab'),
+      target(this: Host) {
+        return this.external ? '_blank' : '';
+      },
+      rel(this: Host) {
+        return this.external ? 'noreferrer noopener' : '';
+      },
     },
   },
 );

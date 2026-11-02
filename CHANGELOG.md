@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- An external link says it opens in a new tab, including in Persian, and shows a directional external icon. Vue, Alpine, and Marko also set `noopener` with `noreferrer`. Packages are still not published.
 - Breadcrumb separators follow writing direction in Alpine, Marko, and Ember. The last crumb is the current page. Packages are still not published.
 - Pagination marks the current page and uses directional previous and next icons in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
 - Accordion triggers name their panels, and a titled panel is a region, in Vue, Svelte, Alpine, Marko, and Ember. A collapsed chevron uses the directional icon. Packages are still not published.
