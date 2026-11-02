@@ -17,6 +17,7 @@ import {
   Slider,
   SplitPane,
   Steps,
+  Tabs,
   TreeView,
   WhitePlumeriaProvider,
 } from './index.ts';
@@ -235,6 +236,42 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(host.querySelector('[aria-expanded="true"]')?.textContent).toContain('src');
     expect(host.textContent).toContain('button.tsx');
+  });
+
+  it('moves a tab toward the inline end', async () => {
+    const tabs = [
+      { id: 'overview', label: 'Overview', panel: 'Balances' },
+      { id: 'activity', label: 'Activity', panel: 'Recent' },
+      { id: 'settings', label: 'Settings', panel: 'Prefs' },
+    ];
+    const host = mount(Tabs, { value: 'activity', tabs });
+    await renderSettled();
+    const panel = host.querySelector('[role="tabpanel"]');
+    const selected = () => host.querySelector('[aria-selected="true"]');
+    expect(selected()?.textContent).toBe('Activity');
+    expect(selected()?.getAttribute('aria-controls')).toBe(panel?.id);
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(selected()?.textContent).toBe('Settings');
+    expect(panel?.textContent).toBe('Prefs');
+    host.style.direction = 'rtl';
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(selected()?.textContent).toBe('Activity');
+    expect(panel?.textContent).toBe('Recent');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    expect(selected()?.textContent).toBe('Activity');
+
+    const vertical = mount(Tabs, { value: 'activity', orientation: 'vertical', items: tabs });
+    await renderSettled();
+    expect(vertical.querySelector('.wpl-tabs')?.className).toContain('wpl-tabs-vertical');
+    vertical.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(vertical.querySelector('[aria-selected="true"]')?.textContent).toBe('Activity');
+    vertical.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    expect(vertical.querySelector('[aria-selected="true"]')?.textContent).toBe('Settings');
   });
 
   it('moves a carousel and a step', async () => {

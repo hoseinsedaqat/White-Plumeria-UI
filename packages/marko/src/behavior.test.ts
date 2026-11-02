@@ -16,6 +16,7 @@ import Slider from './tags/wpl-slider.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
+import Tabs from './tags/wpl-tabs.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
 const templates = import.meta.glob('./tags/wpl-*.marko', { eager: true });
@@ -238,6 +239,42 @@ describe('Marko adapter', () => {
     await flush();
     expect(view.container.querySelector('[aria-expanded="true"]')?.textContent).toContain('src');
     expect(view.container.textContent).toContain('button.tsx');
+  });
+
+  it('moves a tab toward the inline end', async () => {
+    const tabs = [
+      { id: 'overview', label: 'Overview', panel: 'Balances' },
+      { id: 'activity', label: 'Activity', panel: 'Recent' },
+      { id: 'settings', label: 'Settings', panel: 'Prefs' },
+    ];
+    const view = await render(Tabs, { value: 'activity', tabs });
+    const selected = () => view.container.querySelector('[aria-selected="true"]');
+    const panelFor = (tab: Element | null) =>
+      view.container.querySelector(`#${tab?.getAttribute('aria-controls') ?? ''}`);
+    expect(selected()?.textContent).toBe('Activity');
+    expect(panelFor(selected())?.textContent).toBe('Recent');
+    expect(panelFor(selected())?.hasAttribute('hidden')).toBe(false);
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(selected()?.textContent).toBe('Settings');
+    expect(panelFor(selected())?.textContent).toBe('Prefs');
+    view.container.style.direction = 'rtl';
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(selected()?.textContent).toBe('Activity');
+    expect(panelFor(selected())?.textContent).toBe('Recent');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    expect(selected()?.textContent).toBe('Activity');
+
+    const vertical = await render(Tabs, { value: 'activity', orientation: 'vertical', tabs });
+    expect(vertical.container.querySelector('.wpl-tabs')?.className).toContain('wpl-tabs-vertical');
+    vertical.container.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(vertical.container.querySelector('[aria-selected="true"]')?.textContent).toBe('Activity');
+    vertical.container.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    expect(vertical.container.querySelector('[aria-selected="true"]')?.textContent).toBe('Settings');
   });
 
   it('moves a carousel and a step', async () => {

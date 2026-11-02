@@ -6,6 +6,7 @@ import {
   moveEnabledIndex,
   typeaheadMove,
   moveIndex,
+  nextIndex,
   readingDirection,
   stepIndex,
   stepState,
@@ -409,13 +410,19 @@ export function Tabs(config: Config = {}) {
     init(this: Magic) {
       const tabs = list<TabItem>(config.tabs);
       let value = text(config.value, tabs[0]?.id ?? '');
+      const orientation = config.orientation === 'vertical' ? 'vertical' : 'horizontal';
+      const panelId = uid('wpl-tabpanel');
       const tablist = h('div', {
         className: 'wpl-tablist',
-        attrs: { role: 'tablist', 'aria-label': text(config.label, 'Tabs') },
+        attrs: {
+          role: 'tablist',
+          'aria-label': text(config.label, 'Tabs'),
+          'aria-orientation': orientation,
+        },
       });
       const panel = h('div', {
         className: 'wpl-tabpanel',
-        attrs: { role: 'tabpanel', tabindex: '0' },
+        attrs: { role: 'tabpanel', id: panelId, tabindex: '0' },
       });
       const paint = () => {
         tablist.replaceChildren();
@@ -428,29 +435,28 @@ export function Tabs(config: Config = {}) {
               attrs: {
                 type: 'button',
                 role: 'tab',
+                id: `wpl-tab-${tab.id}`,
                 'aria-selected': String(selected),
+                'aria-controls': panelId,
                 tabindex: selected ? '0' : '-1',
               },
               on: {
                 click: () => select(tab.id),
                 keydown: (event) => {
-                  const key = (event as KeyboardEvent).key;
-                  if (
-                    key !== 'ArrowRight' &&
-                    key !== 'ArrowLeft' &&
-                    key !== 'Home' &&
-                    key !== 'End'
-                  )
-                    return;
-                  event.preventDefault();
-                  const next =
-                    key === 'Home'
-                      ? 0
-                      : key === 'End'
-                        ? tabs.length - 1
-                        : moveIndex(index, key === 'ArrowRight' ? 1 : -1, tabs.length, true);
+                  const keyEvent = event as KeyboardEvent;
+                  const next = nextIndex(
+                    index,
+                    tabs.length,
+                    keyEvent.key,
+                    orientation,
+                    readingDirection(
+                      keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null,
+                    ),
+                  );
+                  if (next === null) return;
+                  keyEvent.preventDefault();
                   const item = tabs[next];
-                  if (item) select(item.id);
+                  if (item) select(item.id, true);
                 },
               },
             }),
@@ -458,14 +464,17 @@ export function Tabs(config: Config = {}) {
         });
         const current = tabs.find((tab) => tab.id === value);
         panel.textContent = current?.panel ?? '';
+        panel.setAttribute('aria-labelledby', current ? `wpl-tab-${current.id}` : '');
       };
-      const select = (id: string) => {
+      const select = (id: string, focus = false) => {
         value = id;
         paint();
         emit(this, 'wpl-change', { value });
+        if (focus) tablist.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus();
       };
       paint();
       this.$el.classList.add('wpl-tabs');
+      if (orientation === 'vertical') this.$el.classList.add('wpl-tabs-vertical');
       this.$el.replaceChildren(tablist, panel);
     },
   };
