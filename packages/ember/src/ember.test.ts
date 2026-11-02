@@ -208,6 +208,35 @@ describe('Ember adapter', () => {
     expect(first).toContain('Pine');
   });
 
+  it('moves a carousel toward the inline end', async () => {
+    const slides = [
+      { id: 'filter', label: 'Filter', content: 'October is the default.' },
+      { id: 'activity', label: 'Activity', content: 'Recent notes.' },
+      { id: 'save', label: 'Save', content: 'Save keeps a note.' },
+    ];
+    const host = mount(Carousel, { label: 'Notes', index: 1, slides });
+    host.style.direction = 'rtl';
+    await renderSettled();
+    const selected = () => host.querySelector('[role="tab"][aria-selected="true"]');
+    expect(selected()?.textContent).toContain('Activity');
+    expect(host.querySelector('[role="tabpanel"][aria-hidden="true"]')).toBeTruthy();
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(selected()?.textContent).toContain('Filter');
+    expect(host.querySelector('.wpl-carousel')?.getAttribute('data-index')).toBe('0');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    expect(selected()?.textContent).toContain('Filter');
+
+    const dragged = mount(Carousel, { label: 'Notes', slides });
+    await renderSettled();
+    const viewport = dragged.querySelector('.wpl-carousel-viewport');
+    viewport?.dispatchEvent(new PointerEvent('pointerdown', { clientX: 180, bubbles: true }));
+    viewport?.dispatchEvent(new PointerEvent('pointerup', { clientX: 20, bubbles: true }));
+    await renderSettled();
+    expect(dragged.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Activity');
+  });
+
   it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
     const host = mount(SplitPane, { label: 'Resize editor' });
     host.setAttribute('dir', 'rtl');
@@ -286,6 +315,7 @@ describe('Ember adapter', () => {
     carousel.querySelector('[aria-label="Next"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await renderSettled();
     expect(carousel.textContent).toContain('Save keeps a note.');
+    expect(carousel.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Save');
 
     const steps = mount(Steps, {
       value: 'draft',
