@@ -1,23 +1,45 @@
-import { parseIsoDate } from "@white-plumeria/core";
+import { iconPaths, parseIsoDate, type CalendarSystem } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 import { text, textAt } from "../text.ts";
-export interface Input { label?: string; value?: string; onChange?: (value: string) => void; }
+import Calendar from "./wpl-calendar.marko";
+
+export interface Input {
+  label?: string;
+  value?: string;
+  calendar?: CalendarSystem;
+  onChange?: (value: string) => void;
+}
 <let/value=input.value ?? "">
 <let/error="">
+<let/open=false>
 <id/fieldId/>
 <div/host class="wpl-date">
   <label class="wpl-label" for=fieldId>${input.label || text("chooseDate")}</label>
-  <input/field id=fieldId class="wpl-input" value=value placeholder="YYYY-MM-DD" data-wpl-edge="value" aria-invalid=String(Boolean(error)) aria-describedby=(error ? fieldId + "-error" : undefined) valueChange(next) {
-    value = String(next);
-    if (value && !parseIsoDate(value)) {
-      error = textAt(host(), "invalidDate");
-      return;
-    }
-    error = "";
-    emit(host(), "wpl-change", { value });
-    input.onChange?.(value);
-  }>
+  <div class="wpl-flex">
+    <input/field id=fieldId class="wpl-input" value=value placeholder="YYYY-MM-DD" data-wpl-edge="value" aria-invalid=String(Boolean(error)) aria-describedby=(error ? fieldId + "-error" : undefined) valueChange(next) {
+      value = String(next);
+      if (value && !parseIsoDate(value)) {
+        error = textAt(host(), "invalidDate");
+        return;
+      }
+      error = "";
+      emit(host(), "wpl-change", { value });
+      input.onChange?.(value);
+    }>
+    <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label=text("chooseDate") aria-expanded=String(open) onClick() { open = !open }>
+      <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.calendar/></svg>
+    </button>
+  </div>
   <if=error><p id=(fieldId + "-error") class="wpl-field-error" role="alert">${error}</p></if>
+  <if=open>
+    <Calendar value=value calendar=input.calendar onChange(next) {
+      value = next;
+      open = false;
+      error = "";
+      emit(host(), "wpl-change", { value });
+      input.onChange?.(value);
+    }/>
+  </if>
   <lifecycle
     onMount() {
       const forward = () => field().dispatchEvent(new Event("input", { bubbles: true }));

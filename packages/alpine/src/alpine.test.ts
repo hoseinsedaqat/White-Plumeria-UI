@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Breadcrumb, Calendar, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Breadcrumb, Calendar, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -33,6 +33,19 @@ afterEach(() => {
 });
 
 describe('Alpine adapter', () => {
+  it('names the date picker calendar button', () => {
+    const host = mount(DatePicker, { label: 'Start' });
+    const button = host.querySelector('button[aria-label="Choose date"]');
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+    expect(host.querySelector('.wpl-calendar')).toBeNull();
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(button?.getAttribute('aria-expanded')).toBe('true');
+    const day = host.querySelector('.wpl-day:not([disabled])');
+    day?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(host.querySelector('input')?.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+  });
+
   it('marks the selected calendar day and today', () => {
     const today = toIsoDate(new Date());
     const host = mount(Calendar, { value: today });

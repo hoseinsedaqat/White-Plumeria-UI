@@ -4,6 +4,7 @@ import {
   calendarDayClass,
   chartFigureHtml,
   formatDate,
+  iconButtonClassName,
   formatNumber,
   orderDateRange,
   orderDateTimeRange,
@@ -473,22 +474,38 @@ export function DatePicker(config: Config = {}) {
         emit(this, 'wpl-change', { value, time });
       };
       paintHint();
-      const calendarData = Calendar({
-        ...config,
-        value,
-      });
+      let open = false;
       const calendarHost = document.createElement('div');
-      calendarData.init.call({
-        ...this,
-        $el: calendarHost,
-        $dispatch: (_name, detail) => {
-          const next = (detail as { value?: string } | undefined)?.value;
-          if (next) commit(next);
+      calendarHost.hidden = true;
+      const showCalendar = () => {
+        Calendar({ ...config, value }).init.call({
+          ...this,
+          $el: calendarHost,
+          $dispatch: (_name, detail) => {
+            const next = (detail as { value?: string } | undefined)?.value;
+            if (!next) return;
+            commit(next);
+            open = false;
+            toggle.setAttribute('aria-expanded', 'false');
+            calendarHost.hidden = true;
+          },
+        });
+      };
+      const toggle = h('button', {
+        className: iconButtonClassName(),
+        attrs: { type: 'button', 'aria-label': translate(this.$el, 'chooseDate'), 'aria-expanded': 'false' },
+        on: {
+          click: () => {
+            open = !open;
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            calendarHost.hidden = !open;
+            if (open) showCalendar();
+          },
         },
-      });
+      }, [svgIcon('calendar')]);
       this.$el.replaceChildren(h('div', { className: 'wpl-date' }, [
         h('label', { className: 'wpl-label', text: text(config.label, translate(this.$el, 'chooseDate')), attrs: { for: id } }),
-        input,
+        h('div', { className: 'wpl-flex' }, [input, toggle]),
         flag(config.showTime) ? h('label', { className: 'wpl-label', text: translate(this.$el, 'time'), attrs: { for: timeId } }) : null,
         flag(config.showTime) ? timeInput : null,
         errorEl,

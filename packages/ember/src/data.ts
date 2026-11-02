@@ -355,9 +355,17 @@ export const Calendar = glimmer(
 );
 
 export const DatePicker = glimmer(
-  `<div class="wpl-date"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" value={{this.value}} placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commit}} />{{#if this.showTime}}<label class="wpl-label" for={{this.timeId}}>{{this.timeLabel}}</label><input id={{this.timeId}} class="wpl-input" type="time" value={{this.time}} data-wpl-edge="time" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitTime}} />{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
+  `<div class="wpl-date"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-flex"><input id={{this.fieldId}} class="wpl-input" value={{this.value}} placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commit}} /><button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={{this.chooseLabel}} aria-expanded={{this.expanded}} {{on "click" this.toggle}}>${iconMarkup('calendar')}</button></div>{{#if this.showTime}}<label class="wpl-label" for={{this.timeId}}>{{this.timeLabel}}</label><input id={{this.timeId}} class="wpl-input" type="time" value={{this.time}} data-wpl-edge="time" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitTime}} />{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p>{{#if this.open}}<div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>${calendarChevron('chevronLeft')}</button><strong>{{this.gridTitle}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>${calendarChevron('chevronRight')}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.gridTitle}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} role="gridcell" aria-label={{day.aria}} disabled={{day.disabled}} {{flagAttr "aria-selected" day.selected}} {{flagAttr "aria-current" day.current}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div>{{/if}}</div>`,
   {
-    state: (args) => ({ value: str(args.value), time: str(args.time), error: '', fieldId: createId('date'), timeId: createId('time') }),
+    state: (args) => ({
+      value: str(args.value),
+      time: str(args.time),
+      error: '',
+      open: false,
+      anchor: str(args.value) || toIsoDate(new Date()),
+      fieldId: createId('date'),
+      timeId: createId('time'),
+    }),
     getters: {
       label: (host) => str(host.args.label, 'Date'),
       fieldId: (host) => str(host.state.fieldId),
@@ -369,6 +377,39 @@ export const DatePicker = glimmer(
       errorId: (host) => `${str(host.state.fieldId)}-error`,
       describedBy: (host) => (str(host.state.error) ? `${str(host.state.fieldId)}-error` : ''),
       showTime: (host) => flag(host.args.showTime),
+      chooseLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'chooseDate'),
+      open: (host) => Boolean(host.state.open),
+      expanded: (host) => (host.state.open ? 'true' : 'false'),
+      previousLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'previous'),
+      nextLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'next'),
+      grid(this: Host) {
+        return buildMonthGrid({
+          anchor: parseIsoDate(str(this.state.anchor)) ?? new Date(),
+          calendar: calendarOf(this.args.calendar),
+          locale: localeOf(typeof document === 'undefined' ? null : document.body),
+          min: parseIsoDate(str(this.args.min)) ?? undefined,
+          max: parseIsoDate(str(this.args.max)) ?? undefined,
+        });
+      },
+      gridTitle(this: Host) {
+        return this.grid.title;
+      },
+      weekdays(this: Host) {
+        return this.grid.weekdays;
+      },
+      days(this: Host) {
+        const selected = parseIsoDate(str(this.state.value));
+        const today = new Date();
+        return this.grid.cells.map((cell: { date: Date; label: string; disabled?: boolean; inMonth: boolean }) => ({
+          iso: toIsoDate(cell.date),
+          label: cell.label,
+          disabled: cell.disabled,
+          selected: Boolean(selected && sameDay(selected, cell.date)),
+          current: sameDay(today, cell.date) ? 'date' : '',
+          aria: formatDate(cell.date, localeOf(typeof document === 'undefined' ? null : document.body), { dateStyle: 'full' }, calendarOf(this.args.calendar)),
+          className: calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: selected, rangeEnd: selected }),
+        }));
+      },
       timeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'time'),
       hint(this: Host) {
         const date = parseIsoDate(str(this.state.value, str(this.args.value)));
@@ -399,6 +440,26 @@ export const DatePicker = glimmer(
         }
         this.state.error = '';
         bubble(event as Event, 'wpl-time', { time });
+      },
+      toggle() {
+        const next = !this.state.open;
+        this.state.open = next;
+        if (next) this.state.anchor = str(this.state.value) || toIsoDate(new Date());
+      },
+      previous() {
+        const anchor = parseIsoDate(str(this.state.anchor)) ?? new Date();
+        this.state.anchor = toIsoDate(addMonths(anchor, -1, calendarOf(this.args.calendar)));
+      },
+      next() {
+        const anchor = parseIsoDate(str(this.state.anchor)) ?? new Date();
+        this.state.anchor = toIsoDate(addMonths(anchor, 1, calendarOf(this.args.calendar)));
+      },
+      pick(iso, event) {
+        this.state.value = String(iso);
+        this.state.anchor = String(iso);
+        this.state.error = '';
+        this.state.open = false;
+        bubble(event as Event, 'wpl-change', { value: String(iso) });
       },
     },
   },
