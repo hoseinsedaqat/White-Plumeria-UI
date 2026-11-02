@@ -15,6 +15,7 @@ import Provider from './tags/wpl-provider.marko';
 import Slider from './tags/wpl-slider.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
+import ToggleGroup from './tags/wpl-toggle-group.marko';
 
 const templates = import.meta.glob('./tags/wpl-*.marko', { eager: true });
 
@@ -204,6 +205,23 @@ describe('Marko adapter', () => {
     separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     await flush();
     expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+  });
+
+  it('moves a toggle toward the inline end in RTL', async () => {
+    const view = await render(ToggleGroup, {
+      label: 'Align',
+      value: 'start',
+      options: [
+        { value: 'start', label: 'Start' },
+        { value: 'middle', label: 'Middle' },
+        { value: 'end', label: 'End' },
+      ],
+    });
+    view.container.style.direction = 'rtl';
+    const start = [...view.container.querySelectorAll('[role="radio"]')].find((item) => item.textContent === 'Start');
+    start?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[aria-checked="true"]')?.textContent).toBe('End');
   });
 
   it('moves a carousel and a step', async () => {

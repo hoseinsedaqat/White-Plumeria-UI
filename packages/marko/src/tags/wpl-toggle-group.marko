@@ -28,7 +28,7 @@ export interface Input {
 
 <div/host class="wpl-field">
   <span id=labelId class=(input.hideLabel ? "wpl-label wpl-sr-only" : "wpl-label")>${label}</span>
-  <div class="wpl-toggle" role="radiogroup" aria-labelledby=labelId>
+  <div/group class="wpl-toggle" role="radiogroup" aria-labelledby=labelId>
     <for|option, index| of=options>
       <button
         type="button"
@@ -45,7 +45,7 @@ export interface Input {
         }
         onKeyDown(event) {
           const selected = options.findIndex((item) => item.value === value);
-          const next = toggleGroupMove(options, selected, event.key, readingDirection(event.currentTarget));
+          const next = toggleGroupMove(options, selected, event.key, readingDirection(group()));
           if (next === null) return;
           const choice = options[next];
           if (!choice) return;
@@ -53,8 +53,7 @@ export interface Input {
           value = choice.value;
           emit(host(), "wpl-change", { value });
           input.onValueChange?.(value);
-          const group = event.currentTarget?.parentElement;
-          queueMicrotask(() => group?.querySelectorAll("[role='radio']")[next]?.focus());
+          queueMicrotask(() => group()?.querySelectorAll("[role='radio']")[next]?.focus());
         }
       >${option.label}</button>
     </for>
