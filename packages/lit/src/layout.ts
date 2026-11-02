@@ -4,6 +4,7 @@ import {
   cx,
   gridClassName,
   readingDirection,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -324,8 +325,7 @@ export class SplitPane extends WplHost {
       this.built = true;
       this.append(this.start, this.separator, this.end);
       this.separator.addEventListener('keydown', (event) => {
-        const direction = readingDirection(this);
-        const step = event.key === 'ArrowRight' ? (direction === 'rtl' ? -5 : 5) : event.key === 'ArrowLeft' ? (direction === 'rtl' ? 5 : -5) : 0;
+        const step = splitSizeStep(event.key, this);
         if (!step) return;
         event.preventDefault();
         this.commit(current + step);

@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -156,6 +156,21 @@ describe('Alpine adapter', () => {
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
     [...steps.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'))?.click();
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', () => {
+    const host = document.createElement('div');
+    host.setAttribute('dir', 'rtl');
+    host.style.direction = 'rtl';
+    document.body.append(host);
+    SplitPane({ label: 'Resize editor' }).init?.call(magicFor(host));
+    const separator = host.querySelector('.wpl-split-separator');
+    expect(separator?.getAttribute('role')).toBe('separator');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+    expect(host.style.getPropertyValue('--wpl-split-size')).toBe('45%');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
   });
 
   it('names a form-field error from the nested control', async () => {

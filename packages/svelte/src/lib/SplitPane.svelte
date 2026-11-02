@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { splitSizeStep } from '@white-plumeria/core';
   import type { Snippet } from 'svelte';
   let { label, size = $bindable(50), start, end }: { label: string; size?: number; start?: Snippet; end?: Snippet } = $props();
 </script>
@@ -16,8 +17,10 @@
     tabindex="0"
     class="wpl-split-separator"
     onkeydown={(event) => {
-      if (event.key === 'ArrowRight') size = Math.min(80, size + 5);
-      if (event.key === 'ArrowLeft') size = Math.max(20, size - 5);
+      const step = splitSizeStep(event.key, event.currentTarget);
+      if (!step) return;
+      event.preventDefault();
+      size = Math.min(80, Math.max(20, size + step));
     }}
   ></div>
   <div class="wpl-split-pane">{@render end?.()}</div>

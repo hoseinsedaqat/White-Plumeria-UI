@@ -1,6 +1,7 @@
 import {
   containerClassName,
   gridClassName,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -171,18 +172,18 @@ export function SplitPane(config: Config = {}) {
         },
         on: {
           keydown: (event) => {
-            const key = (event as KeyboardEvent).key;
-            if (key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'ArrowUp' && key !== 'ArrowDown') return;
+            const keyEvent = event as KeyboardEvent;
+            const step = splitSizeStep(keyEvent.key, keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : host);
+            if (!step) return;
             event.preventDefault();
-            const delta = key === 'ArrowRight' || key === 'ArrowDown' ? 5 : -5;
-            size = Math.min(80, Math.max(20, size + delta));
+            size = Math.min(80, Math.max(20, size + step));
             apply();
             host.dispatchEvent(new CustomEvent('wpl-resize', { detail: { size }, bubbles: true }));
           },
         },
       });
       const apply = () => {
-        host.style.gridTemplateColumns = `minmax(0, ${size}fr) auto minmax(0, ${100 - size}fr)`;
+        host.style.setProperty('--wpl-split-size', `${size}%`);
         separator.setAttribute('aria-valuenow', String(size));
       };
       host.classList.add('wpl-split');

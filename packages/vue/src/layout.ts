@@ -2,6 +2,7 @@ import {
   containerClassName,
   cx,
   gridClassName,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -202,9 +203,8 @@ export const SplitPane = defineComponent({
   setup(props, { slots, emit }) {
     const internal = ref(props.size);
     const root = ref<HTMLElement | null>(null);
-    return () => {
-      const current = props.size;
-      return h(
+    return () =>
+      h(
         'div',
         { ref: root, class: 'wpl-split', style: { '--wpl-split-size': `${internal.value}%` } },
         [
@@ -213,20 +213,21 @@ export const SplitPane = defineComponent({
             role: 'separator',
             'aria-orientation': 'vertical',
             'aria-label': props.label,
-            'aria-valuenow': current,
+            'aria-valuemin': 20,
+            'aria-valuemax': 80,
+            'aria-valuenow': Math.round(internal.value),
             tabindex: 0,
             class: 'wpl-split-separator',
             onKeydown: (event: KeyboardEvent) => {
-              const delta = event.key === 'ArrowRight' ? 5 : event.key === 'ArrowLeft' ? -5 : 0;
-              if (!delta) return;
+              const step = splitSizeStep(event.key, event.currentTarget instanceof HTMLElement ? event.currentTarget : root.value);
+              if (!step) return;
               event.preventDefault();
-              internal.value = Math.min(80, Math.max(20, internal.value + delta));
+              internal.value = Math.min(80, Math.max(20, internal.value + step));
               emit('update:size', internal.value);
             },
           }),
           h('div', { class: 'wpl-split-pane' }, slots.end?.()),
         ],
       );
-    };
   },
 });

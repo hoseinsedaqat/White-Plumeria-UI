@@ -1,4 +1,4 @@
-import { containerClassName, gridClassName, stackClassName } from '@white-plumeria/core';
+import { containerClassName, gridClassName, readingDirection, splitSizeStep, stackClassName } from '@white-plumeria/core';
 import { bubble, flag, glimmer, list, num, str, type Host } from './runtime.ts';
 
 interface NavItem {
@@ -109,7 +109,7 @@ export const ResponsiveLayout = glimmer(
 );
 
 export const SplitPane = glimmer(
-  `<div class="wpl-split" style={{this.style}}><div class="wpl-split-pane" data-wpl-start>{{#if @start}}{{@start}}{{else}}{{yield to="start"}}{{/if}}</div><button type="button" class="wpl-split-separator" aria-label={{this.label}} aria-valuenow={{this.size}} aria-valuemin="20" aria-valuemax="80" {{on "pointerdown" this.drag}}></button><div class="wpl-split-pane" data-wpl-end>{{#if @end}}{{@end}}{{else}}{{yield to="end"}}{{/if}}</div></div>`,
+  `<div class="wpl-split" style={{this.style}}><div class="wpl-split-pane" data-wpl-start>{{#if @start}}{{@start}}{{else}}{{yield to="start"}}{{/if}}</div><button type="button" class="wpl-split-separator" role="separator" aria-orientation="vertical" aria-label={{this.label}} aria-valuenow={{this.size}} aria-valuemin="20" aria-valuemax="80" {{on "keydown" this.move}} {{on "pointerdown" this.drag}}></button><div class="wpl-split-pane" data-wpl-end>{{#if @end}}{{@end}}{{else}}{{yield to="end"}}{{/if}}</div></div>`,
   {
     state: (args) => ({ size: Math.min(80, Math.max(20, num(args.size, 50))) }),
     getters: {
@@ -118,6 +118,15 @@ export const SplitPane = glimmer(
       style: (host) => `--wpl-split-size:${num(host.state.size, 50)}%`,
     },
     methods: {
+      move(event) {
+        const keyEvent = event as KeyboardEvent;
+        const step = splitSizeStep(keyEvent.key, keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null);
+        if (!step) return;
+        keyEvent.preventDefault();
+        const size = Math.min(80, Math.max(20, num(this.state.size, 50) + step));
+        this.state.size = size;
+        bubble(keyEvent, 'wpl-resize', { size });
+      },
       drag(event) {
         const pointer = event as PointerEvent;
         const host = pointer.currentTarget instanceof Element ? pointer.currentTarget.closest('.wpl-split') : null;
@@ -125,7 +134,8 @@ export const SplitPane = glimmer(
         const move = (next: PointerEvent) => {
           const rect = host.getBoundingClientRect();
           if (!(rect.width > 0)) return;
-          const ratio = host.dir === 'rtl' || host.closest('[dir="rtl"]') ? rect.right - next.clientX : next.clientX - rect.left;
+          const direction = readingDirection(host);
+          const ratio = direction === 'rtl' ? rect.right - next.clientX : next.clientX - rect.left;
           const size = Math.min(80, Math.max(20, (ratio / rect.width) * 100));
           this.state.size = Math.round(size);
           host.dispatchEvent(new CustomEvent('wpl-resize', { detail: { size: this.state.size }, bubbles: true }));

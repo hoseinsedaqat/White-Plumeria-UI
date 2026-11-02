@@ -448,7 +448,8 @@ export interface Input { label?: string; items?: Item[]; }
   <div class="wpl-responsive-main"><\${input.content}/></div>
 </div>
 `,
-  'wpl-split-pane.marko': `import { emit } from "../emit.ts";
+  'wpl-split-pane.marko': `import { splitSizeStep } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
 export interface Input {
   label?: string;
   size?: number;
@@ -458,9 +459,9 @@ export interface Input {
   content?: Marko.Body;
 }
 <let/size=Math.min(80, Math.max(20, Number(input.size) || 50))>
-<div/host class="wpl-split" style={ "grid-template-columns": \`minmax(0, \${size}fr) auto minmax(0, \${100 - size}fr)\` }>
+<div/host class="wpl-split" style=\`--wpl-split-size:\${size}%\`>
   <div class="wpl-split-pane" data-wpl-start>\${input.start || "Start"}</div>
-  <button
+  <button/separator
     type="button"
     class="wpl-split-separator"
     role="separator"
@@ -470,10 +471,10 @@ export interface Input {
     aria-valuenow=String(size)
     aria-orientation="vertical"
     onKeyDown(event) {
-      const delta = event.key === "ArrowRight" || event.key === "ArrowDown" ? 5 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -5 : 0;
-      if (!delta) return;
+      const step = splitSizeStep(event.key, separator());
+      if (!step) return;
       event.preventDefault();
-      size = Math.min(80, Math.max(20, size + delta));
+      size = Math.min(80, Math.max(20, size + step));
       emit(host(), "wpl-resize", { size });
       input.onSizeChange?.(size);
     }

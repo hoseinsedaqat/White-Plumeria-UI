@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Button, Notification, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
+import { Button, Notification, SplitPane, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
   it('colors a notification and shows dismiss only when requested', async () => {
@@ -99,5 +99,24 @@ describe('vue adapter', () => {
       }),
     );
     expect(screen.getByRole('button', { name: /Billing/ }).hasAttribute('disabled')).toBe(true);
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
+    const user = userEvent.setup();
+    render(
+      defineComponent({
+        setup() {
+          return () =>
+            h('div', { dir: 'rtl', style: { direction: 'rtl' } }, [
+              h(SplitPane, { label: 'Resize editor' }),
+            ]);
+        },
+      }),
+    );
+    const separator = screen.getByRole('separator', { name: 'Resize editor' });
+    separator.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(separator.getAttribute('aria-valuenow')).toBe('45');
+    expect(separator.getAttribute('aria-valuemin')).toBe('20');
   });
 });

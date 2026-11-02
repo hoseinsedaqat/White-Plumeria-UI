@@ -11,7 +11,7 @@ import { Carousel } from './carousel.tsx';
 import { DataTable } from './data.tsx';
 import { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
 import { Kbd } from './kbd.tsx';
-import { Navbar } from './layout.tsx';
+import { Navbar, SplitPane } from './layout.tsx';
 import { Steps } from './steps.tsx';
 
 const steps = [
@@ -558,5 +558,20 @@ describe('new controls', () => {
     await user.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(onDismiss).toHaveBeenCalledOnce();
     expect(blocked.isConnected).toBe(true);
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
+    const user = userEvent.setup();
+    render(
+      <div dir="rtl" style={{ direction: 'rtl' }}>
+        <SplitPane label="Resize editor" start={<p>Notes</p>} end={<p>Preview</p>} />
+      </div>,
+    );
+    const separator = screen.getByRole('separator', { name: 'Resize editor' });
+    separator.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(separator).toHaveAttribute('aria-valuenow', '45');
+    await user.keyboard('{ArrowDown}');
+    expect(separator).toHaveAttribute('aria-valuenow', '45');
   });
 });

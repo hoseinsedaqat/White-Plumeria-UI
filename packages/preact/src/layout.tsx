@@ -3,6 +3,7 @@ import {
   cx,
   gridClassName,
   readingDirection,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -239,17 +240,7 @@ export function SplitPane({
         tabIndex={0}
         className="wpl-split-separator"
         onKeyDown={(event) => {
-          const direction = readingDirection(ref.current);
-          const step =
-            event.key === 'ArrowRight'
-              ? direction === 'rtl'
-                ? -5
-                : 5
-              : event.key === 'ArrowLeft'
-                ? direction === 'rtl'
-                  ? 5
-                  : -5
-                : 0;
+          const step = splitSizeStep(event.key, ref.current);
           if (!step) return;
           event.preventDefault();
           commit(current + step);

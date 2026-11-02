@@ -15,6 +15,7 @@ import {
   Notification,
   pushToast,
   Slider,
+  SplitPane,
   Steps,
   WhitePlumeriaProvider,
 } from './index.ts';
@@ -203,6 +204,21 @@ describe('Ember adapter', () => {
     const first = host.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+  });
+
+  it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
+    const host = mount(SplitPane, { label: 'Resize editor' });
+    host.setAttribute('dir', 'rtl');
+    host.style.direction = 'rtl';
+    const separator = host.querySelector('.wpl-split-separator');
+    expect(separator?.getAttribute('role')).toBe('separator');
+    expect(separator?.getAttribute('aria-orientation')).toBe('vertical');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+    separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    expect(separator?.getAttribute('aria-valuenow')).toBe('45');
   });
 
   it('moves a carousel and a step', async () => {

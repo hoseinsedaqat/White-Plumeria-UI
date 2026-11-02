@@ -3,6 +3,7 @@ import {
   cx,
   gridClassName,
   readingDirection,
+  splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
@@ -147,8 +148,7 @@ export const SplitPane = component$<{
         tabIndex={0}
         class="wpl-split-separator"
         onKeyDown$={(event) => {
-          const direction = readingDirection(root.value);
-          const step = event.key === 'ArrowRight' ? (direction === 'rtl' ? -5 : 5) : event.key === 'ArrowLeft' ? (direction === 'rtl' ? 5 : -5) : 0;
+          const step = splitSizeStep(event.key, root.value);
           if (!step) return;
           event.preventDefault();
           const next = Math.min(80, Math.max(20, current + step));

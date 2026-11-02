@@ -28,6 +28,14 @@ export function readingDirection(element?: HTMLElement | null): Direction {
   return getComputedStyle(element).direction === 'rtl' ? 'rtl' : 'ltr';
 }
 
+/** Five-percent step for a vertical split separator. ArrowRight grows the start pane in LTR. */
+export function splitSizeStep(key: string, element?: HTMLElement | null): number {
+  const direction = readingDirection(element);
+  if (key === 'ArrowRight') return direction === 'rtl' ? -5 : 5;
+  if (key === 'ArrowLeft') return direction === 'rtl' ? 5 : -5;
+  return 0;
+}
+
 /** Arrow, Home, and End movement for a single-select toggle group. Disabled options are skipped. */
 export function toggleGroupMove(
   options: readonly { disabled?: boolean }[],
