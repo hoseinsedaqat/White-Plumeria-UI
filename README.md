@@ -401,7 +401,7 @@ Dialog and drawer fade. The drawer slides from the logical side, so `start` and 
 
 `prefers-reduced-motion: reduce` and `data-wpl-motion="reduce"` remove those transitions. Focus, names, and escape-to-close do not depend on motion.
 
-`color-scheme` follows `data-wpl-scheme`, or the system preference when that attribute is omitted. A nested light scheme stays light. `forced-colors: active` keeps controls visible with system colors and does not turn forced colors off. `prefers-contrast: more` thickens borders. Native accents and scrollbars use the theme. Selected text uses the theme’s primary pair. Autofill keeps the field surface instead of the browser’s yellow fill. Printing hides toasts, tooltips, and pointer menus, and keeps an open dialog in the flow. That is not a completed screen-reader audit.
+`color-scheme` follows `data-wpl-scheme`, or the system preference when that attribute is omitted. A nested light scheme stays light. `forced-colors: active` keeps controls visible with system colors and does not turn forced colors off. `prefers-contrast: more` thickens borders. Native accents and scrollbars use the theme. A scrolling dialog or menu does not drag the page behind it. When the system asks for less transparency, overlays and translucent bars become solid. Selected text uses the theme’s primary pair. Autofill keeps the field surface instead of the browser’s yellow fill. Printing hides toasts, tooltips, and pointer menus, and keeps an open dialog in the flow. That is not a completed screen-reader audit.
 
 ## Packages
 

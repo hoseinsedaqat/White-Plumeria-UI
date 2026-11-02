@@ -6,6 +6,8 @@
   The operating system palette stays in control.
   Selection and autofill use the theme tokens. Print drops transient chrome only.
   Accent and scrollbar colors follow the theme. Forced colors keep the system chrome.
+  A scrolling layer does not drag the page behind it.
+  Reduced transparency replaces see-through chrome with a solid theme color.
 */
 
 :root,
@@ -50,6 +52,21 @@
 .wpl-split-pane :focus-visible,
 .wpl-sidebar :focus-visible {
   scroll-margin: 0.35rem;
+}
+
+.wpl-overlay,
+.wpl-dialog,
+.wpl-drawer,
+.wpl-toast-region,
+.wpl-table-wrap,
+.wpl-dialog-body,
+.wpl-command-list,
+.wpl-listbox,
+.wpl-menu,
+.wpl-nav-menu,
+.wpl-split-pane,
+.wpl-sidebar {
+  overscroll-behavior: contain;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -125,6 +142,23 @@
     .wpl-link
   ):focus-visible {
     outline-width: 3px;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .wpl-overlay,
+  .wpl-dialog::backdrop,
+  .wpl-drawer::backdrop {
+    background: var(--wpl-color-text);
+  }
+
+  .wpl-navbar,
+  .wpl-carousel-count {
+    background: var(--wpl-color-surface);
+  }
+
+  .wpl-carousel-caption {
+    background: var(--wpl-color-primary);
   }
 }
 

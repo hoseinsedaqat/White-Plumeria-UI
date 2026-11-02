@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Scrolling a dialog, menu, or table no longer drags the page behind it. Reduced transparency replaces the overlay and translucent bars with a solid theme color. Packages are still not published.
 - Native accents and scrollbars follow the theme. Forced colors keep the system chrome. Focus inside a scrolling component is not clipped at the edge, and the docs bar no longer covers a focused target. Packages are still not published.
 - Selected text uses the theme primary pair. Autofill keeps the field surface instead of the browser yellow. Printing hides toasts, tooltips, and pointer menus, and keeps an open dialog in the flow. Packages are still not published.
 - The stylesheet sets `color-scheme` from `data-wpl-scheme`, and a nested light scheme stays light. `forced-colors` keeps buttons, switches, checks, selected days, and focus on system colors. It does not turn forced colors off. This is not a completed screen-reader audit. Packages are still not published.
