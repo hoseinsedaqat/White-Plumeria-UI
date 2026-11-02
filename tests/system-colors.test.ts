@@ -73,4 +73,19 @@ describe('system color contract', () => {
     expect(docs).toContain('scroll-padding-top: 4rem');
     expect(docs).toContain('scroll-padding-block: 0.5rem');
   });
+
+  it('contains scroll chaining and drops see-through chrome when asked', () => {
+    expect(system).toContain('overscroll-behavior: contain');
+    const reduced = system.slice(
+      system.indexOf('@media (prefers-reduced-transparency: reduce)'),
+      system.indexOf('@media (forced-colors: active)'),
+    );
+    expect(reduced).toContain('.wpl-overlay');
+    expect(reduced).toContain('.wpl-dialog::backdrop');
+    expect(reduced).toContain('background: var(--wpl-color-text)');
+    expect(reduced).toContain('.wpl-navbar');
+    expect(reduced).toContain('.wpl-carousel-caption');
+    expect(reduced).toContain('background: var(--wpl-color-primary)');
+    expect(reduced).not.toContain('transparent');
+  });
 });
