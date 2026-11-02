@@ -145,6 +145,7 @@ describe('Alpine adapter', () => {
     expect(carousel.textContent).toContain('October is the default.');
     carousel.querySelector('[aria-label="Next"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(carousel.textContent).toContain('Save keeps a note.');
+    expect(carousel.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Save');
 
     const steps = mount(Steps, {
       value: 'draft',
@@ -156,6 +157,30 @@ describe('Alpine adapter', () => {
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
     [...steps.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'))?.click();
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+  });
+
+  it('moves a carousel toward the inline end', () => {
+    const slides = [
+      { id: 'filter', label: 'Filter', content: 'October is the default.' },
+      { id: 'activity', label: 'Activity', content: 'Recent notes.' },
+      { id: 'save', label: 'Save', content: 'Save keeps a note.' },
+    ];
+    const host = mount(Carousel, { label: 'Notes', index: 1, slides });
+    host.style.direction = 'rtl';
+    const selected = () => host.querySelector('[role="tab"][aria-selected="true"]');
+    expect(selected()?.textContent).toContain('Activity');
+    expect(host.querySelector('[role="tabpanel"][aria-hidden="true"]')).toBeTruthy();
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(selected()?.textContent).toContain('Filter');
+    expect(host.dataset.index).toBe('0');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(selected()?.textContent).toContain('Filter');
+
+    const dragged = mount(Carousel, { label: 'Notes', slides });
+    const viewport = dragged.querySelector('.wpl-carousel-viewport');
+    viewport?.dispatchEvent(new PointerEvent('pointerdown', { clientX: 180, bubbles: true }));
+    viewport?.dispatchEvent(new PointerEvent('pointerup', { clientX: 20, bubbles: true }));
+    expect(dragged.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Activity');
   });
 
   it('shrinks the start pane when ArrowRight is pressed in RTL', () => {

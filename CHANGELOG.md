@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Carousel arrow keys and a pointer drag follow writing direction in Alpine, Marko, and Ember. Dots are tabs, and an inactive slide is inert. Packages are still not published.
 - Tab arrow keys follow writing direction in Alpine, Marko, and Ember. ArrowRight moves to the previous tab in RTL. Packages are still not published.
 - A tree expands toward the inline end and collapses toward the inline start in every adapter. ArrowRight no longer toggles a closed branch in RTL. Packages are still not published.
 - A Marko toggle reads writing direction from the group, because a delegated key event has no current target. Packages are still not published.

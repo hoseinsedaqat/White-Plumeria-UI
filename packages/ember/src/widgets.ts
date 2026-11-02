@@ -1,5 +1,8 @@
 import { capabilities, setModifierManager } from '@ember/modifier';
 import {
+  canMove,
+  carouselIndexFromKey,
+  clampIndex,
   createId,
   iconMarkup,
   iconPaths,
@@ -571,47 +574,62 @@ export const Steps = glimmer(
   },
 );
 
+function carouselView(host: Host) {
+  const source = list<Slide>(host.args.slides);
+  const count = source.length;
+  const index = clampIndex(num(host.state.index, 0), count);
+  const baseId = str(host.state.baseId, 'wpl-slide');
+  const ofLabel = message(localeOf(typeof document === 'undefined' ? null : document.body), 'of');
+  return source.map((slide, slideIndex) => {
+    const id = str(slide.id, String(slideIndex));
+    const label = str(slide.label, id);
+    const active = slideIndex === index;
+    return {
+      id,
+      label,
+      panelId: `${baseId}-panel-${id}`,
+      dotId: `${baseId}-tab-${id}`,
+      selected: active ? 'true' : 'false',
+      hidden: active ? null : 'true',
+      inactive: !active,
+      tab: active ? '-1' : null,
+      dotTab: active ? '0' : '-1',
+      ariaLabel: `${label}, ${slideIndex + 1} ${ofLabel} ${count}`,
+      src: str(slide.src),
+      alt: str(slide.alt, label),
+      caption: str(slide.caption),
+      copy: str(slide.content),
+      fallback: !str(slide.src) && !str(slide.content),
+    };
+  });
+}
+
 export const Carousel = glimmer(
-  `<div class="wpl-carousel {{this.mediaClass}}" aria-roledescription="carousel" aria-label={{this.label}}><div class="wpl-carousel-bar"><button type="button" class="wpl-carousel-control" aria-label="Previous" disabled={{this.atStart}} {{on "click" this.previous}}>Previous</button><div class="wpl-carousel-viewport"><div class="wpl-carousel-track"><div class="wpl-carousel-slide" aria-label={{this.slideLabel}}>{{#if this.slideSrc}}<figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src={{this.slideSrc}} alt={{this.slideAlt}} /><figcaption class="wpl-carousel-caption"><strong>{{this.slideLabel}}</strong>{{#if this.slideCaption}}<span>{{this.slideCaption}}</span>{{/if}}</figcaption></figure>{{/if}}{{#if this.slideCopy}}<div class="wpl-carousel-copy">{{this.slideCopy}}</div>{{/if}}{{#if this.showFallback}}<p class="wpl-carousel-copy">{{this.slideLabel}}</p>{{/if}}</div></div></div><button type="button" class="wpl-carousel-control" aria-label="Next" disabled={{this.atEnd}} {{on "click" this.next}}>Next</button></div></div>`,
+  `<div class={{this.className}} aria-roledescription="carousel" aria-label={{this.label}} data-index={{this.index}}>{{#if this.empty}}<p class="wpl-muted">{{this.emptyLabel}}</p>{{else}}<div class="wpl-carousel-viewport" {{on "pointerdown" this.pointerDown}} {{on "pointerup" this.pointerUp}} {{on "pointercancel" this.pointerCancel}}><div class="wpl-carousel-track" style={{this.trackStyle}}>{{#each this.slides as |slide|}}<div id={{slide.panelId}} class="wpl-carousel-slide" role="tabpanel" aria-roledescription="slide" aria-label={{slide.ariaLabel}} {{flagAttr "aria-hidden" slide.hidden}} {{flagAttr "inert" slide.inactive}} {{flagAttr "tabindex" slide.tab}}>{{#if slide.src}}<figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src={{slide.src}} alt={{slide.alt}} draggable="false" /><figcaption class="wpl-carousel-caption"><strong>{{slide.label}}</strong>{{#if slide.caption}}<span>{{slide.caption}}</span>{{/if}}</figcaption></figure>{{/if}}{{#if slide.copy}}<div class="wpl-carousel-copy">{{slide.copy}}</div>{{/if}}{{#if slide.fallback}}<p class="wpl-carousel-copy">{{slide.label}}</p>{{/if}}</div>{{/each}}</div>{{#if this.media}}<div class="wpl-carousel-nav"><button type="button" class="wpl-carousel-control" aria-label={{this.previousLabel}} disabled={{this.atStart}} {{on "click" this.previous}}>${iconMarkup('chevronLeft')}</button><button type="button" class="wpl-carousel-control" aria-label={{this.nextLabel}} disabled={{this.atEnd}} {{on "click" this.next}}>${iconMarkup('chevronRight')}</button></div><div class="wpl-carousel-dots" role="tablist" aria-label={{this.label}}>{{#each this.slides as |slide|}}<button type="button" id={{slide.dotId}} role="tab" class="wpl-carousel-dot" aria-selected={{slide.selected}} aria-controls={{slide.panelId}} tabindex={{slide.dotTab}} {{on "click" (fn this.pick slide)}} {{on "keydown" (fn this.key slide)}}><span class="wpl-sr-only">{{slide.label}}</span></button>{{/each}}</div>{{/if}}</div>{{#if this.bar}}<div class="wpl-carousel-bar"><button type="button" class={{this.controlClass}} aria-label={{this.previousLabel}} disabled={{this.atStart}} {{on "click" this.previous}}>${iconMarkup('chevronLeft')}</button><div class="wpl-carousel-dots" role="tablist" aria-label={{this.label}}>{{#each this.slides as |slide|}}<button type="button" id={{slide.dotId}} role="tab" class="wpl-carousel-dot" aria-selected={{slide.selected}} aria-controls={{slide.panelId}} tabindex={{slide.dotTab}} {{on "click" (fn this.pick slide)}} {{on "keydown" (fn this.key slide)}}><span class="wpl-sr-only">{{slide.label}}</span></button>{{/each}}</div><button type="button" class={{this.controlClass}} aria-label={{this.nextLabel}} disabled={{this.atEnd}} {{on "click" this.next}}>${iconMarkup('chevronRight')}</button></div>{{/if}}{{/if}}</div>`,
   {
-    state: () => ({ index: 0 }),
+    state: (args) => ({ index: num(args.index, 0), baseId: createId('wpl-slide') }),
     getters: {
-      label: (host) => str(host.args.label, 'Slides'),
-      mediaClass: (host) =>
+      label: (host) => str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'carousel')),
+      emptyLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'empty'),
+      previousLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'previous'),
+      nextLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'next'),
+      empty: (host) => list(host.args.slides).length === 0,
+      media: (host) => list<Slide>(host.args.slides).some((slide) => Boolean(slide.src)),
+      bar: (host) => list(host.args.slides).length > 0 && !list<Slide>(host.args.slides).some((slide) => Boolean(slide.src)),
+      className: (host) =>
         list<Slide>(host.args.slides).some((slide) => Boolean(slide.src))
-          ? 'wpl-carousel-media'
-          : '',
-      slides: (host) => list<Slide>(host.args.slides),
-      index: (host) => num(host.state.index, 0),
-      slide(this: Host) {
-        return list<Slide>(this.args.slides)[num(this.state.index, 0)];
-      },
-      slideLabel(this: Host) {
-        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.label);
-      },
-      slideSrc(this: Host) {
-        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.src);
-      },
-      slideAlt(this: Host) {
-        const slide = list<Slide>(this.args.slides)[num(this.state.index, 0)];
-        return str(slide?.alt, str(slide?.label));
-      },
-      slideCaption(this: Host) {
-        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.caption);
-      },
-      slideCopy(this: Host) {
-        return str(list<Slide>(this.args.slides)[num(this.state.index, 0)]?.content);
-      },
-      showFallback(this: Host) {
-        const slide = list<Slide>(this.args.slides)[num(this.state.index, 0)];
-        return !str(slide?.src) && !str(slide?.content);
-      },
+          ? 'wpl-carousel wpl-carousel-media'
+          : 'wpl-carousel',
+      controlClass: () => 'wpl-btn wpl-btn-outline wpl-btn-sm',
+      index: (host) => clampIndex(num(host.state.index, 0), list(host.args.slides).length),
+      trackStyle: (host) => `--wpl-carousel-index:${clampIndex(num(host.state.index, 0), list(host.args.slides).length)}`,
+      slides: (host) => carouselView(host),
       atStart(this: Host) {
-        return !flag(this.args.loop) && num(this.state.index, 0) === 0;
+        return !flag(this.args.loop) && clampIndex(num(this.state.index, 0), list(this.args.slides).length) === 0;
       },
       atEnd(this: Host) {
         const count = list(this.args.slides).length;
-        return !flag(this.args.loop) && num(this.state.index, 0) >= count - 1;
+        return !flag(this.args.loop) && clampIndex(num(this.state.index, 0), count) >= count - 1;
       },
     },
     methods: {
@@ -623,13 +641,56 @@ export const Carousel = glimmer(
       },
       go(delta, event) {
         const count = list(this.args.slides).length;
-        this.state.index = moveIndex(
-          num(this.state.index, 0),
-          Number(delta),
-          count,
+        const loop = flag(this.args.loop);
+        const current = clampIndex(num(this.state.index, 0), count);
+        if (!canMove(current, Number(delta), count, loop)) return;
+        this.state.index = moveIndex(current, Number(delta), count, loop);
+        bubble(event as Event, 'wpl-change', { index: this.state.index });
+      },
+      pick(slide, event) {
+        const slides = this.slides as Array<{ id: string }>;
+        const index = slides.findIndex((item) => item.id === str((slide as { id?: string }).id));
+        if (index < 0) return;
+        this.state.index = index;
+        bubble(event as Event, 'wpl-change', { index });
+      },
+      key(slide, event) {
+        const keyEvent = event as KeyboardEvent;
+        const slides = this.slides as Array<{ id: string; dotId: string }>;
+        const index = slides.findIndex((item) => item.id === str((slide as { id?: string }).id));
+        const next = carouselIndexFromKey(
+          Math.max(0, index),
+          slides.length,
+          keyEvent.key,
+          readingDirection(keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null),
           flag(this.args.loop),
         );
-        bubble(event as Event, 'wpl-change', { index: this.state.index });
+        if (next === null) return;
+        keyEvent.preventDefault();
+        const tab = slides[next];
+        if (!tab) return;
+        this.state.index = next;
+        bubble(keyEvent, 'wpl-change', { index: next });
+        const list = keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget.parentElement : null;
+        queueMicrotask(() => list?.querySelector<HTMLElement>(`#${CSS.escape(tab.dotId)}`)?.focus());
+      },
+      pointerDown(event) {
+        const pointer = event as PointerEvent;
+        if (pointer.target instanceof Element && pointer.target.closest('button, a, input, textarea, select')) return;
+        this.dragX = pointer.clientX;
+      },
+      pointerUp(event) {
+        const pointer = event as PointerEvent;
+        const start = typeof this.dragX === 'number' ? this.dragX : null;
+        this.dragX = null;
+        if (start === null) return;
+        const delta = pointer.clientX - start;
+        if (Math.abs(delta) < 48) return;
+        const direction = readingDirection(pointer.currentTarget instanceof HTMLElement ? pointer.currentTarget : null);
+        this.go(direction === 'rtl' ? (delta > 0 ? 1 : -1) : delta < 0 ? 1 : -1, pointer);
+      },
+      pointerCancel() {
+        this.dragX = null;
       },
     },
   },

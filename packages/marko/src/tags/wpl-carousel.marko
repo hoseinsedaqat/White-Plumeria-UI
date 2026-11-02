@@ -1,4 +1,4 @@
-import { canMove, moveIndex } from "@white-plumeria/core";
+import { canMove, carouselIndexFromKey, clampIndex, iconPaths, moveIndex, readingDirection } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 import { text } from "../text.ts";
 
@@ -19,51 +19,163 @@ export interface Input {
   onIndexChange?: (index: number) => void;
 }
 
+static const dragStart = new WeakMap<HTMLElement, number>();
+
 <let/index=Number.isFinite(input.index) ? Number(input.index) : 0>
 <const/slides=input.slides ?? []>
-<const/slide=slides[index]>
+<const/count=slides.length>
+<const/current=clampIndex(index, count)>
 <const/media=slides.some((item) => Boolean(item.src))>
+<const/loop=Boolean(input.loop)>
+<id/baseId/>
 
-<div/host class=`wpl-carousel${media ? " wpl-carousel-media" : ""}` aria-roledescription="carousel" aria-label=input.label || text("carousel") data-index=index>
-  <div class="wpl-carousel-bar">
-    <button
-      type="button"
-      class="wpl-carousel-control"
-      aria-label=text("previous")
-      disabled=!canMove(index, -1, slides.length, Boolean(input.loop))
-      onClick() {
-        index = moveIndex(index, -1, slides.length, Boolean(input.loop));
+<div/host class=`wpl-carousel${media ? " wpl-carousel-media" : ""}` aria-roledescription="carousel" aria-label=input.label || text("carousel") data-index=current>
+  <if=(count === 0)><p class="wpl-muted">${text("empty")}</p></if>
+  <else>
+    <div/viewport
+      class="wpl-carousel-viewport"
+      onPointerDown(event) {
+        const node = viewport();
+        if (!node) return;
+        if (event.target instanceof Element && event.target.closest("button, a, input, textarea, select")) return;
+        dragStart.set(node, event.clientX);
+      }
+      onPointerUp(event) {
+        const node = viewport();
+        const start = node ? dragStart.get(node) : undefined;
+        if (node) dragStart.delete(node);
+        if (start === undefined) return;
+        const delta = event.clientX - start;
+        if (Math.abs(delta) < 48) return;
+        const step = readingDirection(node) === "rtl" ? (delta > 0 ? 1 : -1) : delta < 0 ? 1 : -1;
+        if (!canMove(current, step, count, loop)) return;
+        index = moveIndex(current, step, count, loop);
         emit(host(), "wpl-change", { index });
         input.onIndexChange?.(index);
       }
-    >‹</button>
-    <div class="wpl-carousel-viewport">
-      <div class="wpl-carousel-track">
-      <div class="wpl-carousel-slide" aria-label=slide?.label>
-        <if=slide?.src>
-          <figure class="wpl-carousel-figure">
-            <img class="wpl-carousel-image" src=slide.src alt=slide.alt || slide.label || "">
-            <figcaption class="wpl-carousel-caption">
-              <strong>${slide.label || ""}</strong>
-              <if=slide.caption><span>${slide.caption}</span></if>
-            </figcaption>
-          </figure>
-        </if>
-        <if=slide?.content><div class="wpl-carousel-copy">${slide.content}</div></if>
-        <if=!slide?.src && !slide?.content><p class="wpl-carousel-copy">${slide?.label || ""}</p></if>
+      onPointerCancel() {
+        const node = viewport();
+        if (node) dragStart.delete(node);
+      }
+    >
+      <div class="wpl-carousel-track" style=`--wpl-carousel-index:${current}`>
+        <for|slide, slideIndex| of=slides>
+          <div
+            id=`${baseId}-panel-${slide.id || slideIndex}`
+            class="wpl-carousel-slide"
+            role="tabpanel"
+            aria-roledescription="slide"
+            aria-label=`${slide.label || ""}, ${slideIndex + 1} ${text("of")} ${count}`
+            aria-hidden=(slideIndex === current ? null : "true")
+            inert=(slideIndex !== current)
+            tabindex=(slideIndex === current ? -1 : null)
+          >
+            <if=slide.src>
+              <figure class="wpl-carousel-figure">
+                <img class="wpl-carousel-image" src=slide.src alt=slide.alt || slide.label || "" draggable="false">
+                <figcaption class="wpl-carousel-caption">
+                  <strong>${slide.label || ""}</strong>
+                  <if=slide.caption><span>${slide.caption}</span></if>
+                </figcaption>
+              </figure>
+            </if>
+            <if=slide.content><div class="wpl-carousel-copy">${slide.content}</div></if>
+            <if=!slide.src && !slide.content><p class="wpl-carousel-copy">${slide.label || ""}</p></if>
+          </div>
+        </for>
       </div>
-      </div>
+      <if=media>
+        <div class="wpl-carousel-nav">
+          <button type="button" class="wpl-carousel-control" aria-label=text("previous") disabled=!canMove(current, -1, count, loop) onClick() {
+            if (!canMove(current, -1, count, loop)) return;
+            index = moveIndex(current, -1, count, loop);
+            emit(host(), "wpl-change", { index });
+            input.onIndexChange?.(index);
+          }>
+            <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg>
+          </button>
+          <button type="button" class="wpl-carousel-control" aria-label=text("next") disabled=!canMove(current, 1, count, loop) onClick() {
+            if (!canMove(current, 1, count, loop)) return;
+            index = moveIndex(current, 1, count, loop);
+            emit(host(), "wpl-change", { index });
+            input.onIndexChange?.(index);
+          }>
+            <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg>
+          </button>
+        </div>
+        <div/mediaTabs class="wpl-carousel-dots" role="tablist" aria-label=input.label || text("carousel")>
+          <for|slide, slideIndex| of=slides>
+            <button
+              type="button"
+              role="tab"
+              class="wpl-carousel-dot"
+              aria-selected=String(slideIndex === current)
+              aria-controls=`${baseId}-panel-${slide.id || slideIndex}`
+              tabindex=(slideIndex === current ? 0 : -1)
+              onClick() {
+                index = slideIndex;
+                emit(host(), "wpl-change", { index });
+                input.onIndexChange?.(index);
+              }
+              onKeyDown(event) {
+                const next = carouselIndexFromKey(current, count, event.key, readingDirection(mediaTabs()), loop);
+                if (next === null) return;
+                event.preventDefault();
+                index = next;
+                emit(host(), "wpl-change", { index });
+                input.onIndexChange?.(index);
+                queueMicrotask(() => mediaTabs()?.querySelectorAll("[role='tab']")[next]?.focus());
+              }
+            ><span class="wpl-sr-only">${slide.label || ""}</span></button>
+          </for>
+        </div>
+      </if>
     </div>
-    <button
-      type="button"
-      class="wpl-carousel-control"
-      aria-label=text("next")
-      disabled=!canMove(index, 1, slides.length, Boolean(input.loop))
-      onClick() {
-        index = moveIndex(index, 1, slides.length, Boolean(input.loop));
-        emit(host(), "wpl-change", { index });
-        input.onIndexChange?.(index);
-      }
-    >›</button>
-  </div>
+    <if=!media>
+      <div class="wpl-carousel-bar">
+        <button type="button" class="wpl-btn wpl-btn-outline wpl-btn-sm" aria-label=text("previous") disabled=!canMove(current, -1, count, loop) onClick() {
+          if (!canMove(current, -1, count, loop)) return;
+          index = moveIndex(current, -1, count, loop);
+          emit(host(), "wpl-change", { index });
+          input.onIndexChange?.(index);
+        }>
+          <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg>
+        </button>
+        <div/textTabs class="wpl-carousel-dots" role="tablist" aria-label=input.label || text("carousel")>
+          <for|slide, slideIndex| of=slides>
+            <button
+              type="button"
+              role="tab"
+              class="wpl-carousel-dot"
+              aria-selected=String(slideIndex === current)
+              aria-controls=`${baseId}-panel-${slide.id || slideIndex}`
+              tabindex=(slideIndex === current ? 0 : -1)
+              onClick() {
+                index = slideIndex;
+                emit(host(), "wpl-change", { index });
+                input.onIndexChange?.(index);
+              }
+              onKeyDown(event) {
+                const next = carouselIndexFromKey(current, count, event.key, readingDirection(textTabs()), loop);
+                if (next === null) return;
+                event.preventDefault();
+                index = next;
+                emit(host(), "wpl-change", { index });
+                input.onIndexChange?.(index);
+                queueMicrotask(() => textTabs()?.querySelectorAll("[role='tab']")[next]?.focus());
+              }
+            ><span class="wpl-sr-only">${slide.label || ""}</span></button>
+          </for>
+        </div>
+        <button type="button" class="wpl-btn wpl-btn-outline wpl-btn-sm" aria-label=text("next") disabled=!canMove(current, 1, count, loop) onClick() {
+          if (!canMove(current, 1, count, loop)) return;
+          index = moveIndex(current, 1, count, loop);
+          emit(host(), "wpl-change", { index });
+          input.onIndexChange?.(index);
+        }>
+          <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg>
+        </button>
+      </div>
+    </if>
+  </else>
 </div>

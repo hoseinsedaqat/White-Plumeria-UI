@@ -1,5 +1,8 @@
 import {
   bindDismissable,
+  canMove,
+  carouselIndexFromKey,
+  clampIndex,
   firstEnabledIndex,
   menuCommand,
   menuHasSubmenu,
@@ -537,73 +540,157 @@ export function Carousel(config: Config = {}) {
     init(this: Magic) {
       const slides = list<Slide>(config.slides);
       const media = slides.some((slide) => Boolean(slide.src));
-      let index = 0;
+      const loop = flag(config.loop);
+      const baseId = uid('wpl-slide');
+      let index = clampIndex(num(config.index, 0), slides.length);
+      let startX: number | null = null;
+      if (slides.length === 0) {
+        this.$el.classList.add('wpl-carousel');
+        this.$el.replaceChildren(h('p', { className: 'wpl-muted', text: translate(this.$el, 'empty') }));
+        return;
+      }
       const viewport = h('div', { className: 'wpl-carousel-viewport' });
-      const paint = () => {
-        const slide = slides[index];
-        const figure = slide?.src
-          ? h('figure', { className: 'wpl-carousel-figure' }, [
-              h('img', {
-                className: 'wpl-carousel-image',
-                attrs: { src: slide.src, alt: slide.alt ?? slide.label ?? '' },
-              }),
-              h('figcaption', { className: 'wpl-carousel-caption' }, [
-                h('strong', { text: slide.label }),
-                slide.caption ? h('span', { text: slide.caption }) : null,
-              ]),
-            ])
-          : null;
-        const panel = h(
-          'div',
-          { className: 'wpl-carousel-slide', attrs: { 'aria-label': slide?.label } },
-          [
-            figure,
-            slide?.content
-              ? h('div', { className: 'wpl-carousel-copy', text: slide.content })
-              : null,
-            !slide?.src && !slide?.content
-              ? h('p', {
-                  className: 'wpl-carousel-copy',
-                  text: slide?.label ?? translate(this.$el, 'empty'),
-                })
-              : null,
-          ],
+      const track = h('div', { className: 'wpl-carousel-track' });
+      const dots = h('div', {
+        className: 'wpl-carousel-dots',
+        attrs: { role: 'tablist', 'aria-label': text(config.label, translate(this.$el, 'carousel')) },
+      });
+      const control = (name: 'previous' | 'next', delta: number) =>
+        h(
+          'button',
+          {
+            className: media ? 'wpl-carousel-control' : 'wpl-btn wpl-btn-outline wpl-btn-sm',
+            attrs: { type: 'button', 'aria-label': translate(this.$el, name) },
+            on: { click: () => go(delta) },
+          },
+          [svgIcon(delta < 0 ? 'chevronLeft' : 'chevronRight', 'wpl-icon wpl-icon-dir')],
         );
-        viewport.replaceChildren(
-          media ? h('div', { className: 'wpl-carousel-track' }, [panel]) : panel,
-        );
-        previous.disabled = !config.loop && index === 0;
-        next.disabled = !config.loop && index >= slides.length - 1;
-      };
-      const go = (delta: number) => {
-        index = moveIndex(index, delta, slides.length, flag(config.loop));
+      const previous = control('previous', -1);
+      const next = control('next', 1);
+      const commit = (nextIndex: number, focus = false) => {
+        index = clampIndex(nextIndex, slides.length);
         paint();
         emit(this, 'wpl-change', { index });
+        if (focus) dots.querySelector<HTMLButtonElement>('[aria-selected="true"]')?.focus();
       };
-      const previous = h(
-        'button',
-        {
-          className: 'wpl-carousel-control',
-          attrs: { type: 'button', 'aria-label': translate(this.$el, 'previous') },
-          on: { click: () => go(-1) },
-        },
-        [svgIcon('chevronLeft')],
-      );
-      const next = h(
-        'button',
-        {
-          className: 'wpl-carousel-control',
-          attrs: { type: 'button', 'aria-label': translate(this.$el, 'next') },
-          on: { click: () => go(1) },
-        },
-        [svgIcon('chevronRight')],
-      );
+      const go = (delta: number) => {
+        if (!canMove(index, delta, slides.length, loop)) return;
+        commit(moveIndex(index, delta, slides.length, loop));
+      };
+      const paint = () => {
+        track.style.setProperty('--wpl-carousel-index', String(index));
+        track.replaceChildren(
+          ...slides.map((slide, slideIndex) => {
+            const active = slideIndex === index;
+            const panel = h(
+              'div',
+              {
+                className: 'wpl-carousel-slide',
+                attrs: {
+                  id: `${baseId}-panel-${slide.id || slideIndex}`,
+                  role: 'tabpanel',
+                  'aria-roledescription': 'slide',
+                  'aria-label': `${slide.label}, ${slideIndex + 1} ${translate(this.$el, 'of')} ${slides.length}`,
+                  'aria-hidden': active ? undefined : 'true',
+                  inert: active ? undefined : true,
+                  tabindex: active ? -1 : undefined,
+                },
+              },
+              [
+                slide.src
+                  ? h('figure', { className: 'wpl-carousel-figure' }, [
+                      h('img', {
+                        className: 'wpl-carousel-image',
+                        attrs: {
+                          src: slide.src,
+                          alt: slide.alt ?? slide.label ?? '',
+                          draggable: 'false',
+                        },
+                      }),
+                      h('figcaption', { className: 'wpl-carousel-caption' }, [
+                        h('strong', { text: slide.label }),
+                        slide.caption ? h('span', { text: slide.caption }) : null,
+                      ]),
+                    ])
+                  : null,
+                slide.content ? h('div', { className: 'wpl-carousel-copy', text: slide.content }) : null,
+                !slide.src && !slide.content
+                  ? h('p', { className: 'wpl-carousel-copy', text: slide.label })
+                  : null,
+              ],
+            );
+            return panel;
+          }),
+        );
+        dots.replaceChildren(
+          ...slides.map((slide, slideIndex) => {
+            const selected = slideIndex === index;
+            return h(
+              'button',
+              {
+                className: 'wpl-carousel-dot',
+                text: '',
+                attrs: {
+                  type: 'button',
+                  role: 'tab',
+                  'aria-selected': String(selected),
+                  'aria-controls': `${baseId}-panel-${slide.id || slideIndex}`,
+                  tabindex: selected ? '0' : '-1',
+                },
+                on: {
+                  click: () => commit(slideIndex),
+                  keydown: (event) => {
+                    const keyEvent = event as KeyboardEvent;
+                    const nextIndex = carouselIndexFromKey(
+                      index,
+                      slides.length,
+                      keyEvent.key,
+                      readingDirection(
+                        keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null,
+                      ),
+                      loop,
+                    );
+                    if (nextIndex === null) return;
+                    keyEvent.preventDefault();
+                    commit(nextIndex, true);
+                  },
+                },
+              },
+              [h('span', { className: 'wpl-sr-only', text: slide.label })],
+            );
+          }),
+        );
+        previous.disabled = !canMove(index, -1, slides.length, loop);
+        next.disabled = !canMove(index, 1, slides.length, loop);
+        this.$el.dataset.index = String(index);
+      };
+      viewport.addEventListener('pointerdown', (event) => {
+        if (event.target instanceof Element && event.target.closest('button, a, input, textarea, select')) return;
+        startX = event.clientX;
+      });
+      viewport.addEventListener('pointerup', (event) => {
+        if (startX === null) return;
+        const delta = event.clientX - startX;
+        startX = null;
+        if (Math.abs(delta) < 48) return;
+        const direction = readingDirection(viewport);
+        go(direction === 'rtl' ? (delta > 0 ? 1 : -1) : delta < 0 ? 1 : -1);
+      });
+      viewport.addEventListener('pointercancel', () => {
+        startX = null;
+      });
       paint();
       this.$el.classList.add('wpl-carousel');
       if (media) this.$el.classList.add('wpl-carousel-media');
-      this.$el.replaceChildren(
-        h('div', { className: 'wpl-carousel-bar' }, [previous, viewport, next]),
-      );
+      this.$el.setAttribute('aria-roledescription', 'carousel');
+      this.$el.setAttribute('aria-label', text(config.label, translate(this.$el, 'carousel')));
+      if (media) {
+        viewport.append(track, h('div', { className: 'wpl-carousel-nav' }, [previous, next]), dots);
+        this.$el.replaceChildren(viewport);
+      } else {
+        viewport.append(track);
+        this.$el.replaceChildren(viewport, h('div', { className: 'wpl-carousel-bar' }, [previous, dots, next]));
+      }
     },
   };
 }

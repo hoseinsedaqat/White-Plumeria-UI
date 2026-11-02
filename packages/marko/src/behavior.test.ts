@@ -194,6 +194,33 @@ describe('Marko adapter', () => {
     expect(first).toContain('Pine');
   });
 
+  it('moves a carousel toward the inline end', async () => {
+    const slides = [
+      { id: 'filter', label: 'Filter', content: 'October is the default.' },
+      { id: 'activity', label: 'Activity', content: 'Recent notes.' },
+      { id: 'save', label: 'Save', content: 'Save keeps a note.' },
+    ];
+    const view = await render(Carousel, { label: 'Notes', index: 1, slides });
+    view.container.style.direction = 'rtl';
+    const selected = () => view.container.querySelector('[role="tab"][aria-selected="true"]');
+    expect(selected()?.textContent).toContain('Activity');
+    expect(view.container.querySelector('[role="tabpanel"][aria-hidden="true"]')).toBeTruthy();
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    expect(selected()?.textContent).toContain('Filter');
+    expect(view.container.querySelector('.wpl-carousel')?.getAttribute('data-index')).toBe('0');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    expect(selected()?.textContent).toContain('Filter');
+
+    const dragged = await render(Carousel, { label: 'Notes', slides });
+    const viewport = dragged.container.querySelector('.wpl-carousel-viewport');
+    viewport?.dispatchEvent(new PointerEvent('pointerdown', { clientX: 180, bubbles: true }));
+    viewport?.dispatchEvent(new PointerEvent('pointerup', { clientX: 20, bubbles: true }));
+    await flush();
+    expect(dragged.container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Activity');
+  });
+
   it('shrinks the start pane when ArrowRight is pressed in RTL', async () => {
     const view = await render(SplitPane, { label: 'Resize editor' });
     view.container.setAttribute('dir', 'rtl');
@@ -296,6 +323,7 @@ describe('Marko adapter', () => {
     expect(moves).toEqual([{ index: 1 }]);
     expect(carousel.container.querySelector('.wpl-carousel')?.getAttribute('data-index')).toBe('1');
     expect(carousel.container.textContent).toContain('Save keeps a note.');
+    expect(carousel.container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toContain('Save');
 
     const steps = await render(Steps, {
       value: 'draft',
