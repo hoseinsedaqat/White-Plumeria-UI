@@ -5,6 +5,11 @@ body,
   min-height: 100%;
 }
 
+html {
+  /* Matches the sticky docs bar so a focused target is not hidden under it. */
+  scroll-padding-top: 4rem;
+}
+
 body {
   background: var(--wpl-color-bg, #f6f6f7);
   color: var(--wpl-color-text, #18181b);
@@ -327,6 +332,7 @@ body {
   top: var(--docs-bar);
   height: calc(100vh - var(--docs-bar));
   overflow: auto;
+  scroll-padding-block: 0.5rem;
   padding: 1rem 0.75rem 2.5rem;
   border-right: 1px solid var(--wpl-color-border);
   background: var(--wpl-color-bg);

@@ -5,6 +5,7 @@
   forced-colors keeps state visible with system colors.
   The operating system palette stays in control.
   Selection and autofill use the theme tokens. Print drops transient chrome only.
+  Accent and scrollbar colors follow the theme. Forced colors keep the system chrome.
 */
 
 :root,
@@ -19,6 +20,36 @@
 
 [data-wpl-scheme='light'] {
   color-scheme: light;
+}
+
+.wpl-root,
+[data-wpl-theme] {
+  accent-color: var(--wpl-color-primary);
+  scrollbar-color: var(--wpl-color-border-strong) transparent;
+}
+
+.wpl-table-wrap,
+.wpl-dialog-body,
+.wpl-command-list,
+.wpl-listbox,
+.wpl-menu,
+.wpl-nav-menu,
+.wpl-split-pane,
+.wpl-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wpl-color-border-strong) transparent;
+  scroll-padding: 0.35rem;
+}
+
+.wpl-table-wrap :focus-visible,
+.wpl-dialog-body :focus-visible,
+.wpl-command-list :focus-visible,
+.wpl-listbox :focus-visible,
+.wpl-menu :focus-visible,
+.wpl-nav-menu :focus-visible,
+.wpl-split-pane :focus-visible,
+.wpl-sidebar :focus-visible {
+  scroll-margin: 0.35rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -352,6 +383,20 @@
   .wpl-rating-icon.is-on,
   .wpl-rating-icon.is-on .wpl-icon {
     color: Highlight;
+  }
+
+  .wpl-root,
+  [data-wpl-theme],
+  .wpl-table-wrap,
+  .wpl-dialog-body,
+  .wpl-command-list,
+  .wpl-listbox,
+  .wpl-menu,
+  .wpl-nav-menu,
+  .wpl-split-pane,
+  .wpl-sidebar {
+    accent-color: auto;
+    scrollbar-color: auto;
   }
 
   :root::selection,
