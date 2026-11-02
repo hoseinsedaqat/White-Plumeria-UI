@@ -10,6 +10,7 @@ import {
   notificationClassName,
   moveEnabledIndex,
   moveIndex,
+  nextIndex,
   readingDirection,
   stepIndex,
   stepState,
@@ -363,35 +364,44 @@ export const ContextMenu = glimmer(
   },
 );
 
+function tabSource(host: Host): Array<{ id?: string; label?: string; panel?: string; content?: string }> {
+  const tabs = host.args.tabs;
+  return list(Array.isArray(tabs) ? tabs : host.args.items);
+}
+
 export const Tabs = glimmer(
-  `<div class="wpl-tabs"><div class="wpl-tablist" role="tablist" aria-label={{this.label}}>{{#each this.items as |item|}}<button type="button" class="wpl-tab" role="tab" aria-selected={{item.selected}} {{on "click" (fn this.pick item)}}>{{item.label}}</button>{{/each}}</div><div class="wpl-tabpanel" role="tabpanel">{{this.panel}}</div></div>`,
+  `<div class={{this.className}}><div class="wpl-tablist" role="tablist" aria-orientation={{this.orientation}} aria-label={{this.label}}>{{#each this.items as |item|}}<button type="button" class="wpl-tab" role="tab" id={{item.tabId}} aria-selected={{item.selected}} aria-controls={{this.panelId}} tabindex={{item.tabIndex}} {{on "click" (fn this.pick item)}} {{on "keydown" (fn this.move item)}}>{{item.label}}</button>{{/each}}</div><div id={{this.panelId}} class="wpl-tabpanel" role="tabpanel" aria-labelledby={{this.labelledBy}} tabindex="0">{{this.panel}}</div></div>`,
   {
-    state: (args) => ({ value: str(args.value) }),
+    state: (args) => ({ value: str(args.value), panelId: createId('wpl-tabpanel') }),
     getters: {
       label: (host) => str(host.args.label, 'Tabs'),
+      orientation: (host) => (host.args.orientation === 'vertical' ? 'vertical' : 'horizontal'),
+      className: (host) => (host.args.orientation === 'vertical' ? 'wpl-tabs wpl-tabs-vertical' : 'wpl-tabs'),
+      panelId: (host) => str(host.state.panelId),
       items(this: Host) {
-        const current = str(this.state.value, str(this.args.value));
-        return list<{ id?: string; label?: string; panel?: string; content?: string }>(
-          this.args.items,
-        ).map((item, index) => {
+        const source = tabSource(this);
+        const current = str(this.state.value, str(this.args.value, str(source[0]?.id, '0')));
+        return source.map((item, index) => {
           const id = str(item.id, String(index));
+          const selected = current === id;
           return {
             id,
+            tabId: `wpl-tab-${id}`,
             label: str(item.label, id),
             panel: str(item.panel, str(item.content)),
-            selected:
-              (current || str(list<{ id?: string }>(this.args.items)[0]?.id, '0')) === id
-                ? 'true'
-                : 'false',
+            selected: selected ? 'true' : 'false',
+            tabIndex: selected ? '0' : '-1',
           };
         });
       },
+      labelledBy(this: Host) {
+        const selected = (this.items as Array<{ selected: string; tabId: string }>).find((item) => item.selected === 'true');
+        return selected?.tabId ?? '';
+      },
       panel(this: Host) {
-        const items = list<{ id?: string; panel?: string; content?: string; label?: string }>(
-          this.args.items,
-        );
-        const current = str(this.state.value, str(this.args.value, str(items[0]?.id)));
-        const found = items.find((item) => str(item.id) === current) ?? items[0];
+        const source = tabSource(this);
+        const current = str(this.state.value, str(this.args.value, str(source[0]?.id)));
+        const found = source.find((item) => str(item.id) === current) ?? source[0];
         return found ? str(found.panel, str(found.content, str(found.label))) : '';
       },
     },
@@ -400,6 +410,26 @@ export const Tabs = glimmer(
         const id = str((item as { id?: string }).id);
         this.state.value = id;
         bubble(event as Event, 'wpl-change', { value: id });
+      },
+      move(item, event) {
+        const keyEvent = event as KeyboardEvent;
+        const items = this.items as Array<{ id: string; tabId: string }>;
+        const index = items.findIndex((entry) => entry.id === str((item as { id?: string }).id));
+        const next = nextIndex(
+          Math.max(0, index),
+          items.length,
+          keyEvent.key,
+          this.orientation === 'vertical' ? 'vertical' : 'horizontal',
+          readingDirection(keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null),
+        );
+        if (next === null) return;
+        keyEvent.preventDefault();
+        const tab = items[next];
+        if (!tab) return;
+        this.state.value = tab.id;
+        bubble(keyEvent, 'wpl-change', { value: tab.id });
+        const list = keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget.parentElement : null;
+        queueMicrotask(() => list?.querySelector<HTMLElement>(`#${CSS.escape(tab.tabId)}`)?.focus());
       },
     },
   },

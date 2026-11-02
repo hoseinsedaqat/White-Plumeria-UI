@@ -1,3 +1,4 @@
+import { nextIndex, readingDirection } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface TabItem {
@@ -15,26 +16,47 @@ export interface Input {
 
 <let/value=input.value || (input.tabs ?? [])[0]?.id || "">
 <const/tabs=input.tabs ?? []>
-<id/tablistId/>
+<const/orientation=input.orientation === "vertical" ? "vertical" : "horizontal">
+<id/baseId/>
 
-<div/host class=(input.orientation === "vertical" ? "wpl-tabs wpl-tabs-vertical" : "wpl-tabs")>
-  <div class="wpl-tablist" role="tablist" id=tablistId aria-orientation=input.orientation || "horizontal">
-    <for|tab| of=tabs>
+<div/host class=(orientation === "vertical" ? "wpl-tabs wpl-tabs-vertical" : "wpl-tabs")>
+  <div/tablist class="wpl-tablist" role="tablist" aria-orientation=orientation>
+    <for|tab, index| of=tabs>
       <button
         type="button"
         class="wpl-tab"
         role="tab"
+        id=`${baseId}-${tab.id}`
         aria-selected=String(value === tab.id)
+        aria-controls=`${baseId}-panel-${tab.id}`
         tabindex=(value === tab.id ? 0 : -1)
         onClick() {
           value = tab.id;
           emit(host(), "wpl-change", { value });
           input.onValueChange?.(tab.id);
         }
+        onKeyDown(event) {
+          const next = nextIndex(index, tabs.length, event.key, orientation, readingDirection(tablist()));
+          if (next === null) return;
+          event.preventDefault();
+          const choice = tabs[next];
+          if (!choice) return;
+          value = choice.id;
+          emit(host(), "wpl-change", { value });
+          input.onValueChange?.(choice.id);
+          queueMicrotask(() => tablist()?.querySelectorAll("[role='tab']")[next]?.focus());
+        }
       >${tab.label}</button>
     </for>
   </div>
   <for|tab| of=tabs>
-    <div class="wpl-tabpanel" role="tabpanel" hidden=value !== tab.id>${tab.panel || ""}</div>
+    <div
+      class="wpl-tabpanel"
+      role="tabpanel"
+      id=`${baseId}-panel-${tab.id}`
+      aria-labelledby=`${baseId}-${tab.id}`
+      hidden=(value !== tab.id)
+      tabindex="0"
+    >${tab.panel || ""}</div>
   </for>
 </div>

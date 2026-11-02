@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -188,6 +188,35 @@ describe('Alpine adapter', () => {
     const open = host.querySelector('[aria-expanded="true"]');
     expect(open?.textContent).toContain('src');
     expect(host.textContent).toContain('button.tsx');
+  });
+
+  it('moves a tab toward the inline end', () => {
+    const tabs = [
+      { id: 'overview', label: 'Overview', panel: 'Balances' },
+      { id: 'activity', label: 'Activity', panel: 'Recent' },
+      { id: 'settings', label: 'Settings', panel: 'Prefs' },
+    ];
+    const host = mount(Tabs, { value: 'activity', tabs });
+    const panel = host.querySelector('[role="tabpanel"]');
+    const selected = () => host.querySelector('[aria-selected="true"]');
+    expect(selected()?.textContent).toBe('Activity');
+    expect(selected()?.getAttribute('aria-controls')).toBe(panel?.id);
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(selected()?.textContent).toBe('Settings');
+    expect(panel?.textContent).toBe('Prefs');
+    host.style.direction = 'rtl';
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(selected()?.textContent).toBe('Activity');
+    expect(panel?.textContent).toBe('Recent');
+    selected()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(selected()?.textContent).toBe('Activity');
+
+    const vertical = mount(Tabs, { value: 'activity', orientation: 'vertical', tabs });
+    expect(vertical.className).toContain('wpl-tabs-vertical');
+    vertical.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(vertical.querySelector('[aria-selected="true"]')?.textContent).toBe('Activity');
+    vertical.querySelector('[aria-selected="true"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(vertical.querySelector('[aria-selected="true"]')?.textContent).toBe('Settings');
   });
 
   it('names a form-field error from the nested control', async () => {
