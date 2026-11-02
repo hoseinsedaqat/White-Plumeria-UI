@@ -8,7 +8,7 @@ import { Combobox } from './combobox.tsx';
 import { RangeSlider, SearchInput, ToggleGroup } from './form.tsx';
 import { ContextMenu, DropdownMenu, Popover } from './menu.tsx';
 import { Carousel } from './carousel.tsx';
-import { DataTable } from './data.tsx';
+import { DataTable, TreeView } from './data.tsx';
 import { NumberField, OtpField, PasswordField, Rating } from './fields.tsx';
 import { Kbd } from './kbd.tsx';
 import { Navbar, SplitPane } from './layout.tsx';
@@ -573,5 +573,22 @@ describe('new controls', () => {
     expect(separator).toHaveAttribute('aria-valuenow', '45');
     await user.keyboard('{ArrowDown}');
     expect(separator).toHaveAttribute('aria-valuenow', '45');
+  });
+
+  it('expands a tree toward the inline end', async () => {
+    const user = userEvent.setup();
+    render(
+      <div dir="rtl" style={{ direction: 'rtl' }}>
+        <TreeView label="Files" nodes={[{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }]} />
+      </div>,
+    );
+    const row = screen.getByRole('treeitem', { name: 'src' });
+    expect(row).toHaveAttribute('aria-expanded', 'false');
+    row.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(row).toHaveAttribute('aria-expanded', 'false');
+    await user.keyboard('{ArrowLeft}');
+    expect(row).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
   });
 });

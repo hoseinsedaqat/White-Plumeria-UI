@@ -1,4 +1,4 @@
-import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, treeExpandAction, type ColumnSpec } from '@white-plumeria/core';
 import { createMemo, createSignal, type JSX } from 'solid-js';
 import { EmptyState } from './display.tsx';
 import { SearchInput } from './form.tsx';
@@ -290,13 +290,14 @@ function TreeNodeView(props: {
           if (hasChildren()) props.onToggle(props.node.id);
         }}
         onKeyDown={(event) => {
-          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-            event.preventDefault();
-            if (hasChildren()) props.onToggle(props.node.id);
-          }
+          if (!hasChildren()) return;
+          const action = treeExpandAction(event.key, event.currentTarget, isOpen());
+          if (!action) return;
+          event.preventDefault();
+          if (action !== 'stay') props.onToggle(props.node.id);
         }}
       >
-        {hasChildren() ? <Icon name={isOpen() ? 'chevronDown' : 'chevronRight'} /> : <span style={{ 'inline-size': '1.1em' }} />}
+        {hasChildren() ? <Icon name={isOpen() ? 'chevronDown' : 'chevronRight'} /> : <span class="wpl-tree-spacer" aria-hidden="true" />}
         {props.node.label}
       </button>
       {hasChildren() && isOpen() ? (

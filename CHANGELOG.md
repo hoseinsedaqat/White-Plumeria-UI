@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A tree expands toward the inline end and collapses toward the inline start in every adapter. ArrowRight no longer toggles a closed branch in RTL. Packages are still not published.
 - A Marko toggle reads writing direction from the group, because a delegated key event has no current target. Packages are still not published.
 - A split separator follows writing direction in every adapter. ArrowRight grows the start pane in LTR and shrinks it in RTL. Ember's separator has the separator role. Packages are still not published.
 - Marko, Ember, and Alpine layout, rating, accordion, radio, and chart markup now use the shared stylesheet classes. A responsive layout is a grid, a rating is a star control, and a chart bar has a track. Packages are still not published.

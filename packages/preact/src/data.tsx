@@ -1,4 +1,4 @@
-import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, treeExpandAction, type ColumnSpec } from '@white-plumeria/core';
 import { type ComponentChildren } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
 import { EmptyState } from './display.tsx';
@@ -367,16 +367,17 @@ function TreeNodeView({
           if (hasChildren) onToggle(node.id);
         }}
         onKeyDown={(event) => {
-          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-            event.preventDefault();
-            if (hasChildren) onToggle(node.id);
-          }
+          if (!hasChildren) return;
+          const action = treeExpandAction(event.key, event.currentTarget, isOpen);
+          if (!action) return;
+          event.preventDefault();
+          if (action !== 'stay') onToggle(node.id);
         }}
       >
         {hasChildren ? (
           <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} />
         ) : (
-          <span style={{ inlineSize: '1.1em' }} />
+          <span className="wpl-tree-spacer" aria-hidden="true" />
         )}
         {node.label}
       </button>

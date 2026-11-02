@@ -12,6 +12,7 @@ import {
   queryTable,
   readingDirection,
   toIsoDate,
+  treeExpandAction,
   toggleSort,
   type CalendarSystem,
   type ColumnSpec,
@@ -209,31 +210,63 @@ export function TreeView(config: Config = {}) {
     init(this: Magic) {
       const nodes = list<TreeNode>(config.nodes);
       const open = new Set<string>();
-      const root = h('div', { attrs: { role: 'tree' } });
+      let selected = '';
+      const root = h('ul', { className: 'wpl-tree', attrs: { role: 'tree', 'aria-label': text(config.label, 'Tree') } });
       const paint = () => {
-        root.replaceChildren(...nodes.map((node) => branch(node, 0)));
+        root.replaceChildren(...nodes.map((node) => branch(node)));
       };
-      const branch = (node: TreeNode, depth: number): HTMLElement => {
-        const expanded = open.has(node.id);
+      const branch = (node: TreeNode): HTMLElement => {
         const kids = node.children ?? [];
-        return h('div', { attrs: { role: 'treeitem', 'aria-expanded': kids.length ? String(expanded) : undefined, 'aria-level': depth + 1 } }, [
-          h('button', {
-            className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
-            text: node.label,
-            attrs: { type: 'button' },
+        const expanded = open.has(node.id);
+        const row = h(
+          'button',
+          {
+            className: 'wpl-tree-row',
+            attrs: {
+              type: 'button',
+              role: 'treeitem',
+              'aria-expanded': kids.length ? String(expanded) : undefined,
+              'aria-selected': selected === node.id ? 'true' : 'false',
+            },
             on: {
               click: () => {
+                selected = node.id;
+                emit(this, 'wpl-select', { id: node.id });
                 if (!kids.length) {
-                  emit(this, 'wpl-select', { id: node.id });
+                  paint();
                   return;
                 }
                 if (expanded) open.delete(node.id);
                 else open.add(node.id);
                 paint();
               },
+              keydown: (event) => {
+                if (!kids.length) return;
+                const keyEvent = event as KeyboardEvent;
+                const action = treeExpandAction(
+                  keyEvent.key,
+                  keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null,
+                  expanded,
+                );
+                if (!action) return;
+                keyEvent.preventDefault();
+                if (action === 'stay') return;
+                if (expanded) open.delete(node.id);
+                else open.add(node.id);
+                paint();
+              },
             },
-          }),
-          expanded ? h('div', { attrs: { role: 'group' } }, kids.map((child) => branch(child, depth + 1))) : null,
+          },
+          [
+            kids.length
+              ? svgIcon(expanded ? 'chevronDown' : 'chevronRight')
+              : h('span', { className: 'wpl-tree-spacer', attrs: { 'aria-hidden': 'true' } }),
+            node.label,
+          ],
+        );
+        return h('li', { className: 'wpl-tree-item', attrs: { role: 'none' } }, [
+          row,
+          kids.length && expanded ? h('ul', { className: 'wpl-tree-children', attrs: { role: 'group' } }, kids.map((child) => branch(child))) : null,
         ]);
       };
       paint();

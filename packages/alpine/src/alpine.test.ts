@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -171,6 +171,23 @@ describe('Alpine adapter', () => {
     expect(host.style.getPropertyValue('--wpl-split-size')).toBe('45%');
     separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+  });
+
+  it('expands a tree toward the inline end', () => {
+    const host = document.createElement('div');
+    host.style.direction = 'rtl';
+    document.body.append(host);
+    TreeView({
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }],
+    }).init?.call(magicFor(host));
+    const row = host.querySelector('[role="treeitem"]') as HTMLElement;
+    expect(row.getAttribute('aria-expanded')).toBe('false');
+    expect(row.className).toContain('wpl-tree-row');
+    row.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    const open = host.querySelector('[aria-expanded="true"]');
+    expect(open?.textContent).toContain('src');
+    expect(host.textContent).toContain('button.tsx');
   });
 
   it('names a form-field error from the nested control', async () => {

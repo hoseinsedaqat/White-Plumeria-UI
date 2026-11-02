@@ -36,6 +36,18 @@ export function splitSizeStep(key: string, element?: HTMLElement | null): number
   return 0;
 }
 
+export type TreeExpandAction = 'open' | 'close' | 'stay';
+
+/** Expand toward the inline end and collapse toward the inline start. */
+export function treeExpandAction(key: string, element?: HTMLElement | null, expanded = false): TreeExpandAction | null {
+  const direction = readingDirection(element);
+  const openKey = direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+  const closeKey = direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+  if (key === openKey) return expanded ? 'stay' : 'open';
+  if (key === closeKey) return expanded ? 'close' : 'stay';
+  return null;
+}
+
 /** Arrow, Home, and End movement for a single-select toggle group. Disabled options are skipped. */
 export function toggleGroupMove(
   options: readonly { disabled?: boolean }[],

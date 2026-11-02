@@ -14,6 +14,7 @@ import {
   queryTable,
   toIsoDate,
   toggleSort,
+  treeExpandAction,
   type CalendarSystem,
   type ColumnSpec,
   type TableQuery,
@@ -194,25 +195,56 @@ export const List = glimmer(
 );
 
 export const TreeView = glimmer(
-  `<ul class="wpl-tree" role="tree" aria-label={{this.label}}>{{#each this.nodes as |node|}}<li role="treeitem" aria-expanded={{node.expanded}}><button type="button" {{on "click" (fn this.pick node)}}>{{node.label}}</button>{{#if node.children.length}}<ul role="group">{{#each node.children as |child|}}<li role="treeitem"><button type="button" {{on "click" (fn this.pick child)}}>{{child.label}}</button></li>{{/each}}</ul>{{/if}}</li>{{/each}}</ul>`,
+  `<ul class="wpl-tree" role="tree" aria-label={{this.label}}>{{#each this.nodes as |node|}}<li class="wpl-tree-item" role="none"><button type="button" class="wpl-tree-row" role="treeitem" aria-selected={{node.selected}} {{flagAttr "aria-expanded" node.expanded}} {{on "click" (fn this.pick node)}} {{on "keydown" (fn this.move node)}}>{{#if node.hasChildren}}<svg class={{node.iconClass}} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{node.icon}}></path></svg>{{else}}<span class="wpl-tree-spacer" aria-hidden="true"></span>{{/if}}{{node.label}}</button>{{#if node.open}}<ul class="wpl-tree-children" role="group">{{#each node.children as |child|}}<li class="wpl-tree-item" role="none"><button type="button" class="wpl-tree-row" role="treeitem" aria-selected={{child.selected}} {{on "click" (fn this.pick child)}}><span class="wpl-tree-spacer" aria-hidden="true"></span>{{child.label}}</button></li>{{/each}}</ul>{{/if}}</li>{{/each}}</ul>`,
   {
+    state: () => ({ open: [] as string[], selected: '' }),
     getters: {
       label: (host) => str(host.args.label, 'Tree'),
       nodes(this: Host) {
-        return list<{ id?: string; label?: string; children?: Array<{ id?: string; label?: string }> }>(this.args.nodes).map((node) => ({
-          id: str(node.id),
-          label: str(node.label, str(node.id)),
-          expanded: node.children?.length ? 'true' : 'false',
-          children: list<{ id?: string; label?: string }>(node.children).map((child) => ({
-            id: str(child.id),
-            label: str(child.label, str(child.id)),
-          })),
-        }));
+        const open = list<string>(this.state.open);
+        const selected = str(this.state.selected);
+        return list<{ id?: string; label?: string; children?: Array<{ id?: string; label?: string }> }>(this.args.nodes).map((node) => {
+          const id = str(node.id);
+          const children = list<{ id?: string; label?: string }>(node.children).map((child) => {
+            const childId = str(child.id);
+            return { id: childId, label: str(child.label, childId), selected: selected === childId ? 'true' : 'false' };
+          });
+          const isOpen = children.length > 0 && open.includes(id);
+          return {
+            id,
+            label: str(node.label, id),
+            hasChildren: children.length > 0,
+            open: isOpen,
+            expanded: children.length ? (isOpen ? 'true' : 'false') : null,
+            selected: selected === id ? 'true' : 'false',
+            icon: iconPaths[isOpen ? 'chevronDown' : 'chevronRight'],
+            iconClass: isOpen ? 'wpl-icon' : 'wpl-icon wpl-icon-dir',
+            children,
+          };
+        });
       },
     },
     methods: {
       pick(node, event) {
-        bubble(event as Event, 'wpl-select', { id: str((node as { id?: string }).id) });
+        const item = node as { id?: string; hasChildren?: boolean };
+        const id = str(item.id);
+        this.state.selected = id;
+        bubble(event as Event, 'wpl-select', { id });
+        if (!item.hasChildren) return;
+        const open = list<string>(this.state.open);
+        this.state.open = open.includes(id) ? open.filter((entry) => entry !== id) : [...open, id];
+      },
+      move(node, event) {
+        const item = node as { id?: string; hasChildren?: boolean; open?: boolean };
+        const keyEvent = event as KeyboardEvent;
+        if (!item.hasChildren) return;
+        const action = treeExpandAction(keyEvent.key, keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null, Boolean(item.open));
+        if (!action) return;
+        keyEvent.preventDefault();
+        if (action === 'stay') return;
+        const id = str(item.id);
+        const open = list<string>(this.state.open);
+        this.state.open = action === 'open' ? [...open, id] : open.filter((entry) => entry !== id);
       },
     },
   },

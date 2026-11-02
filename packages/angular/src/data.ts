@@ -10,7 +10,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { chartLayout, chartMessage, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartLayout, chartMessage, formatNumber, queryTable, resolveDirection, toggleSort, treeExpandAction, type ColumnSpec } from '@white-plumeria/core';
 import { EmptyState } from './display';
 import { SearchInput } from './form';
 import { Icon } from './icon';
@@ -374,7 +374,7 @@ export class TreeView {
         @if (hasChildren()) {
           <wpl-icon [name]="isOpen() ? 'chevronDown' : 'chevronRight'" />
         } @else {
-          <span style="inline-size: 1.1em"></span>
+          <span class="wpl-tree-spacer" aria-hidden="true"></span>
         }
         {{ node().label }}
       </button>
@@ -409,9 +409,12 @@ export class TreeNodeView {
   }
 
   onKey(event: KeyboardEvent) {
-    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    if (!this.hasChildren()) return;
+    const host = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    const action = treeExpandAction(event.key, host, this.isOpen());
+    if (!action) return;
     event.preventDefault();
-    if (this.hasChildren()) this.toggle.emit(this.node().id);
+    if (action !== 'stay') this.toggle.emit(this.node().id);
   }
 }
 

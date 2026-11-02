@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import Button from './lib/Button.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
+import TreeView from './lib/TreeView.svelte';
 import Switch from './lib/Switch.svelte';
 
 describe('svelte adapter', () => {
@@ -47,5 +48,19 @@ describe('svelte adapter', () => {
     separator.focus();
     await user.keyboard('{ArrowRight}');
     expect(separator.getAttribute('aria-valuenow')).toBe('45');
+  });
+
+  it('expands a tree toward the inline end', async () => {
+    const user = userEvent.setup();
+    const view = render(TreeView, {
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }],
+    });
+    view.container.style.direction = 'rtl';
+    const row = screen.getByRole('treeitem', { name: 'src' });
+    row.focus();
+    await user.keyboard('{ArrowLeft}');
+    expect(row.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
   });
 });

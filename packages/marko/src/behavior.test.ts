@@ -15,6 +15,7 @@ import Provider from './tags/wpl-provider.marko';
 import Slider from './tags/wpl-slider.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
+import TreeView from './tags/wpl-tree-view.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
 const templates = import.meta.glob('./tags/wpl-*.marko', { eager: true });
@@ -222,6 +223,21 @@ describe('Marko adapter', () => {
     start?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     await flush();
     expect(view.container.querySelector('[aria-checked="true"]')?.textContent).toBe('End');
+  });
+
+  it('expands a tree toward the inline end', async () => {
+    const view = await render(TreeView, {
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }],
+    });
+    view.container.style.direction = 'rtl';
+    const row = view.container.querySelector('[role="treeitem"]');
+    expect(row?.className).toContain('wpl-tree-row');
+    expect(row?.getAttribute('aria-expanded')).toBe('false');
+    row?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[aria-expanded="true"]')?.textContent).toContain('src');
+    expect(view.container.textContent).toContain('button.tsx');
   });
 
   it('moves a carousel and a step', async () => {
