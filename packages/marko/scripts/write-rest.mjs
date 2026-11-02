@@ -314,14 +314,46 @@ export interface Input { label?: string; value?: string; options?: Option[]; onC
   </ul>
 </div>
 `,
-  'wpl-pagination.marko': `import { emit } from "../emit.ts";
-export interface Input { page?: number; pageCount?: number; label?: string; onChange?: (page: number) => void; }
+  'wpl-pagination.marko': `import { iconPaths } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+import { text } from "../text.ts";
+
+export interface Input {
+  page?: number;
+  pageCount?: number;
+  label?: string;
+  onChange?: (page: number) => void;
+}
+
 <let/page=Math.max(1, Number(input.page) || 1)>
 <const/count=Math.max(1, Number(input.pageCount) || 1)>
-<nav/host class="wpl-pagination" aria-label=input.label || "Pagination">
-  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Previous" disabled=page <= 1 onClick() { page = Math.max(1, page - 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>Previous</button>
-  <span>\${page} / \${count}</span>
-  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label="Next" disabled=page >= count onClick() { page = Math.min(count, page + 1); emit(host(), "wpl-change", { page }); input.onChange?.(page); }>Next</button>
+<const/pages=Array.from({ length: count }, (_, index) => index + 1).filter((item) => item === 1 || item === count || Math.abs(item - page) <= 1)>
+
+<nav/host class="wpl-pagination" aria-label=input.label || text("pagination")>
+  <button type="button" class="wpl-page" disabled=page <= 1 onClick() {
+    page = Math.max(1, page - 1);
+    emit(host(), "wpl-change", { page });
+    input.onChange?.(page);
+  }>
+    <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg>
+    <span class="wpl-sr-only">\${text("previous")}</span>
+  </button>
+  <for|item, index| of=pages>
+    <if=(index > 0 && item - (pages[index - 1] ?? item) > 1)><span aria-hidden="true">…</span></if>
+    <button type="button" class="wpl-page" aria-current=(item === page ? "page" : null) onClick() {
+      page = item;
+      emit(host(), "wpl-change", { page });
+      input.onChange?.(page);
+    }>\${item}</button>
+  </for>
+  <button type="button" class="wpl-page" disabled=page >= count onClick() {
+    page = Math.min(count, page + 1);
+    emit(host(), "wpl-change", { page });
+    input.onChange?.(page);
+  }>
+    <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg>
+    <span class="wpl-sr-only">\${text("next")}</span>
+  </button>
 </nav>
 `,
   'wpl-breadcrumb.marko': `export interface Crumb { href?: string; label: string; current?: boolean; }

@@ -150,18 +150,39 @@ export const Pagination = defineComponent({
   emits: ['page'],
   setup(props, { emit }) {
     const { t } = useWhitePlumeria();
-    return () =>
-      h('nav', { class: 'wpl-pagination', 'aria-label': props.label || t('pagination') }, [
-        h('button', { type: 'button', class: 'wpl-page', disabled: props.page <= 1, onClick: () => emit('page', props.page - 1) }, [
+    return () => {
+      const pageCount = Math.max(1, props.pageCount);
+      const page = Math.min(pageCount, Math.max(1, props.page));
+      const pages = Array.from({ length: pageCount }, (_, index) => index + 1).filter(
+        (item) => item === 1 || item === pageCount || Math.abs(item - page) <= 1,
+      );
+      return h('nav', { class: 'wpl-pagination', 'aria-label': props.label || t('pagination') }, [
+        h('button', { type: 'button', class: 'wpl-page', disabled: page <= 1, onClick: () => emit('page', page - 1) }, [
           h(Icon, { name: 'chevronLeft' }),
           h('span', { class: 'wpl-sr-only' }, t('previous')),
         ]),
-        h('span', `${t('page')} ${props.page}`),
-        h('button', { type: 'button', class: 'wpl-page', disabled: props.page >= props.pageCount, onClick: () => emit('page', props.page + 1) }, [
+        ...pages.flatMap((item, index) => {
+          const previous = pages[index - 1];
+          const gap = previous !== undefined && item - previous > 1;
+          const button = h(
+            'button',
+            {
+              key: item,
+              type: 'button',
+              class: 'wpl-page',
+              'aria-current': item === page ? 'page' : undefined,
+              onClick: () => emit('page', item),
+            },
+            String(item),
+          );
+          return gap ? [h('span', { key: `gap-${item}`, 'aria-hidden': 'true' }, '…'), button] : [button];
+        }),
+        h('button', { type: 'button', class: 'wpl-page', disabled: page >= pageCount, onClick: () => emit('page', page + 1) }, [
           h(Icon, { name: 'chevronRight' }),
           h('span', { class: 'wpl-sr-only' }, t('next')),
         ]),
       ]);
+    };
   },
 });
 

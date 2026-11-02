@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   Accordion,
   Button,
+  Pagination,
   Carousel,
   Chart,
   components,
@@ -36,6 +37,18 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('marks the current pagination page', async () => {
+    const host = mount(Pagination, { page: 5, pageCount: 10 });
+    await renderSettled();
+    expect(host.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');
+    expect(host.querySelector('.wpl-icon-dir')).toBeTruthy();
+    expect(host.textContent).toContain('…');
+    const six = [...host.querySelectorAll('button')].find((button) => button.textContent?.trim() === '6');
+    six?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('6');
+  });
+
   it('renders every catalog component as a Glimmer class', () => {
     expect(Object.keys(components)).toHaveLength(catalog.length);
     for (const component of catalog) {

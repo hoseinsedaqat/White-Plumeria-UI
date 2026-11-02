@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -33,6 +33,16 @@ afterEach(() => {
 });
 
 describe('Alpine adapter', () => {
+  it('marks the current pagination page', () => {
+    const host = mount(Pagination, { page: 5, pageCount: 10 });
+    expect(host.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');
+    expect(host.querySelector('.wpl-icon-dir')).toBeTruthy();
+    expect(host.textContent).toContain('…');
+    const six = [...host.querySelectorAll('button')].find((button) => button.textContent?.trim() === '6');
+    six?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(host.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('6');
+  });
+
   it('registers every catalog component once', () => {
     whitePlumeria(Alpine);
     whitePlumeria(Alpine);
