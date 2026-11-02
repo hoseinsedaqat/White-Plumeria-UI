@@ -155,6 +155,8 @@ export type {
 } from './calendar.ts';
 export { queryTable, toggleSort } from './table.ts';
 export type { ColumnSpec, TableQuery, TableResult } from './table.ts';
+export { chartFigureHtml, chartLayout, chartMessage, chartType, chartTypes } from './chart.ts';
+export type { ChartLayout, ChartPoint, ChartReason, ChartType } from './chart.ts';
 export { directionalIcons, iconMarkup, iconPaths } from './icons.ts';
 export type { IconName } from './icons.ts';
 export {

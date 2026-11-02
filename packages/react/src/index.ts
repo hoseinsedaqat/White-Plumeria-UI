@@ -12,6 +12,7 @@ export { CommandPalette } from './command.tsx';
 export type { CommandItem } from './command.tsx';
 export {
   Breadcrumb,
+  Chart,
   ChartContainer,
   DataTable,
   List,

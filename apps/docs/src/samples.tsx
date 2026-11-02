@@ -7,6 +7,7 @@ import {
   Calendar,
   Card,
   Carousel,
+  Chart,
   ChartContainer,
   Checkbox,
   Combobox,
@@ -607,6 +608,75 @@ export const samples: Record<string, Sample[]> = {
       title: 'Marked range',
       code: '<Calendar rangeStart={start} rangeEnd={end} />',
       children: <Calendar value={new Date(2026, 9, 14)} rangeStart={new Date(2026, 9, 12)} rangeEnd={new Date(2026, 9, 18)} />,
+    },
+  ],
+  chart: [
+    {
+      title: 'Area',
+      code: '<Chart title="Sample volume" type="area" data={[{ label: "Mon", value: 12 }, { label: "Tue", value: 18 }, { label: "Wed", value: 9 }, { label: "Thu", value: 15 }, { label: "Fri", value: 21 }]} />',
+      children: (
+        <Chart
+          title="Sample volume"
+          description="Fixture values for the docs preview."
+          type="area"
+          data={[
+            { label: 'Mon', value: 12 },
+            { label: 'Tue', value: 18 },
+            { label: 'Wed', value: 9 },
+            { label: 'Thu', value: 15 },
+            { label: 'Fri', value: 21 },
+          ]}
+        />
+      ),
+    },
+    {
+      title: 'Line',
+      code: '<Chart title="Sample volume" type="line" data={[{ label: "Mon", value: 12 }, { label: "Fri", value: 21 }]} />',
+      children: (
+        <Chart
+          title="Sample volume"
+          type="line"
+          data={[
+            { label: 'Mon', value: 12 },
+            { label: 'Tue', value: 18 },
+            { label: 'Wed', value: 9 },
+            { label: 'Thu', value: 15 },
+            { label: 'Fri', value: 21 },
+          ]}
+        />
+      ),
+    },
+    {
+      title: 'Columns',
+      code: '<Chart title="Sample volume" type="bar" data={[{ label: "Mon", value: 12 }, { label: "Fri", value: 21 }]} />',
+      children: (
+        <Chart
+          title="Sample volume"
+          type="bar"
+          data={[
+            { label: 'Mon', value: 12 },
+            { label: 'Tue', value: 18 },
+            { label: 'Wed', value: 9 },
+            { label: 'Thu', value: 15 },
+            { label: 'Fri', value: 21 },
+          ]}
+        />
+      ),
+    },
+    {
+      title: 'One point',
+      code: '<Chart title="Today" data={[{ label: "Today", value: 8 }]} />',
+      children: <Chart title="Today" data={[{ label: 'Today', value: 8 }]} />,
+    },
+    {
+      title: 'No data',
+      code: '<Chart title="Sample volume" data={[]} />',
+      children: <Chart title="Sample volume" data={[]} />,
+    },
+    {
+      title: 'Invalid value',
+      code: '<Chart title="Sample volume" data={[{ label: "Mon", value: -1 }]} />',
+      children: <Chart title="Sample volume" data={[{ label: 'Mon', value: -1 }]} />,
     },
   ],
   'chart-container': [

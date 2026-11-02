@@ -1,7 +1,9 @@
 import {
+  chartFigureHtml,
   formatNumber,
   queryTable,
   readingDirection,
+  resolveDirection,
   toggleSort,
   type ColumnSpec,
 } from '@white-plumeria/core';
@@ -451,4 +453,27 @@ export function ChartContainer({
       </table>
     </figure>
   );
+}
+
+export function Chart({
+  title,
+  data,
+  description,
+  type = 'area',
+}: {
+  title: string;
+  data: ChartPoint[];
+  description?: string;
+  type?: 'line' | 'area' | 'bar';
+}) {
+  const { locale, preferences } = useWhitePlumeria();
+  const markup = chartFigureHtml({
+    title,
+    description,
+    data,
+    type,
+    direction: resolveDirection(preferences),
+    locale,
+  });
+  return <figure className="wpl-graph" dangerouslySetInnerHTML={{ __html: markup }} />;
 }

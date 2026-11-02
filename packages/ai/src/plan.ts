@@ -152,7 +152,7 @@ const layouts: Record<string, PreviewNode[]> = {
       ],
     },
     {
-      component: 'ChartContainer',
+      component: 'Chart',
       props: { title: 'Sample volume' },
     },
     {

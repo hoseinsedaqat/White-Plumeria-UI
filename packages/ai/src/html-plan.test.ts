@@ -32,7 +32,8 @@ describe('css planner', () => {
     const html = dashboard.code.html.files[0]?.contents ?? '';
     expect(html).toMatch(/<div class="wpl-grid wpl-grid-3">\n {2}<article class="wpl-card wpl-stat">/);
     expect(html).toContain('<header class="wpl-page-header">');
-    expect(html).toContain('<figure class="wpl-chart">');
+    expect(html).toContain('<figure class="wpl-graph">');
+    expect(html).toContain('wpl-graph-line');
     expect(html).toContain('class="wpl-alert wpl-alert-info"');
     expect(dashboard.code.html.notes.join(' ')).toContain('Tailwind is not required');
 

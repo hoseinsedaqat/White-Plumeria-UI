@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   Button,
   Carousel,
+  Chart,
   components,
   DataTable,
   Dialog,
@@ -38,6 +39,22 @@ describe('Ember adapter', () => {
     }
     expect(catalog.find((item) => item.name === 'Button')?.examples.ember).toContain('Save changes');
     expect(catalog.find((item) => item.name === 'Toast')?.examples.ember).toContain('pushToast');
+  });
+
+  it('draws a chart as SVG and keeps the values in a table', async () => {
+    const host = mount(Chart, {
+      title: 'Sample volume',
+      type: 'area',
+      data: [
+        { label: 'Mon', value: 12 },
+        { label: 'Tue', value: 18 },
+      ],
+    });
+    await renderSettled();
+    expect(host.querySelector('.wpl-graph-line')).toBeTruthy();
+    expect(host.querySelector('.wpl-graph-area')).toBeTruthy();
+    expect(host.querySelector('table')?.textContent).toContain('Mon');
+    expect(host.querySelector('.wpl-chart')).toBeNull();
   });
 
   it('renders a notification in the status color and does not hide it on dismiss', async () => {

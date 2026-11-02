@@ -1,0 +1,70 @@
+import { chartLayout, chartMessage, formatNumber } from "@white-plumeria/core";
+
+export interface Point { label: string; value: number; }
+export interface Input {
+  title?: string;
+  description?: string;
+  type?: "line" | "area" | "bar";
+  data?: Point[];
+}
+
+<const/points=(Array.isArray(input.data) ? input.data : [])>
+<const/direction=(typeof document !== "undefined" && document.documentElement.dir === "rtl" ? "rtl" : "ltr")>
+<const/layout=chartLayout(points, { type: input.type, direction })>
+<const/status=chartMessage(layout.reason)>
+<figure class="wpl-graph">
+  <figcaption class="wpl-card-title">${input.title || "Chart"}</figcaption>
+  <if=input.description>
+    <p class="wpl-muted">${input.description}</p>
+  </if>
+  <if=status>
+    <if=(layout.reason === "invalid")>
+      <p class="wpl-field-error" role="alert">${status}</p>
+    </if>
+    <else>
+      <p class="wpl-muted">${status}</p>
+    </else>
+  </if>
+  <if=layout.ok>
+    <svg class="wpl-graph-svg" viewBox=`0 0 ${layout.width} ${layout.height}` aria-hidden="true" focusable="false" direction=layout.direction>
+      <for|line| of=layout.grid>
+        <line class="wpl-graph-grid" x1=line.x1 x2=line.x2 y1=line.y y2=line.y fill="none" stroke="currentColor"></line>
+      </for>
+      <line class="wpl-graph-axis" x1=layout.axis.x1 x2=layout.axis.x2 y1=layout.axis.y y2=layout.axis.y fill="none" stroke="currentColor"></line>
+      <if=layout.area>
+        <path class="wpl-graph-area" fill="currentColor" d=layout.area></path>
+      </if>
+      <for|column| of=layout.columns>
+        <path class="wpl-graph-column" fill="currentColor" d=column></path>
+      </for>
+      <if=layout.line>
+        <path class="wpl-graph-line" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d=layout.line></path>
+      </if>
+      <for|dot| of=layout.dots>
+        <circle class="wpl-graph-dot" cx=dot.cx cy=dot.cy r="3.5" fill="currentColor" stroke="currentColor"></circle>
+      </for>
+      <for|label| of=layout.yLabels>
+        <text class="wpl-graph-label" x=label.x y=label.y text-anchor=label.anchor dominant-baseline="middle">${label.text}</text>
+      </for>
+      <for|label| of=layout.xLabels>
+        <text class="wpl-graph-label" x=label.x y=label.y text-anchor="middle">${label.text}</text>
+      </for>
+    </svg>
+  </if>
+  <if=points.length>
+    <table class="wpl-table wpl-chart-table">
+      <caption class="wpl-sr-only">${input.title || "Chart"}</caption>
+      <thead>
+        <tr><th scope="col">Label</th><th scope="col">Value</th></tr>
+      </thead>
+      <tbody>
+        <for|point| of=points>
+          <tr>
+            <th scope="row">${point.label}</th>
+            <td>${Number.isFinite(point.value) ? formatNumber(point.value, "en") : String(point.value)}</td>
+          </tr>
+        </for>
+      </tbody>
+    </table>
+  </if>
+</figure>

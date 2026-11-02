@@ -7,6 +7,7 @@ import { Combobox } from './menu';
 import { CommandPalette } from './command';
 import {
   Breadcrumb,
+  Chart,
   ChartContainer,
   DataTable,
   List,
@@ -81,6 +82,7 @@ export { CommandPalette } from './command';
 export type { CommandItem } from './command';
 export {
   Breadcrumb,
+  Chart,
   ChartContainer,
   DataTable,
   List,
@@ -167,6 +169,7 @@ const tags: Array<[string, CustomElementConstructor]> = [
   ['wpl-calendar', Calendar],
   ['wpl-card', Card],
   ['wpl-carousel', Carousel],
+  ['wpl-chart', Chart],
   ['wpl-chart-container', ChartContainer],
   ['wpl-checkbox', Checkbox],
   ['wpl-combobox', Combobox],

@@ -15,6 +15,7 @@ const attributeHosts: Record<string, AngularHost> = {
 const elementAliases: Record<string, string> = {
   EmptyState: 'wpl-empty',
   StatCard: 'wpl-stat',
+  Chart: 'wpl-chart-graph',
   ChartContainer: 'wpl-chart',
   TreeView: 'wpl-tree',
   WhitePlumeriaProvider: 'wpl-provider',

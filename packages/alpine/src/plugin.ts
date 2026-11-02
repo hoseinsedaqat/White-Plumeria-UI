@@ -42,6 +42,7 @@ import {
 import {
   Breadcrumb,
   Calendar,
+  Chart,
   ChartContainer,
   DataTable,
   DatePicker,
@@ -103,6 +104,7 @@ export const components = {
   Calendar,
   Card,
   Carousel,
+  Chart,
   ChartContainer,
   Checkbox,
   Combobox,

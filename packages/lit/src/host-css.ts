@@ -30,6 +30,7 @@ export const hostCss = `/* Host box model for White Plumeria Lit elements.
   wpl-accordion,
   wpl-steps,
   wpl-file-upload,
+  wpl-chart,
   wpl-chart-container,
   wpl-empty-state,
   wpl-notification,

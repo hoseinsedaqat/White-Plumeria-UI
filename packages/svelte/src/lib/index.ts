@@ -8,6 +8,7 @@ export { default as Carousel } from './Carousel.svelte';
 export { default as ButtonGroup } from './ButtonGroup.svelte';
 export { default as Calendar } from './Calendar.svelte';
 export { default as Card } from './Card.svelte';
+export { default as Chart } from './Chart.svelte';
 export { default as ChartContainer } from './ChartContainer.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as Combobox } from './Combobox.svelte';

@@ -2,6 +2,7 @@ import {
   addMonths,
   buildMonthGrid,
   calendarDayClass,
+  chartFigureHtml,
   createId,
   formatDate,
   formatNumber,
@@ -452,6 +453,23 @@ export const DateRangePicker = glimmer(
           }
         }
       },
+    },
+  },
+);
+
+export const Chart = glimmer(
+  `<figure class="wpl-graph">{{{this.markup}}}</figure>`,
+  {
+    getters: {
+      markup: (host) =>
+        chartFigureHtml({
+          title: str(host.args.title, 'Chart'),
+          description: str(host.args.description),
+          data: list(host.args.data),
+          type: host.args.type,
+          direction: typeof document !== 'undefined' && document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr',
+          locale: localeOf(typeof document === 'undefined' ? undefined : document.documentElement),
+        }),
     },
   },
 );

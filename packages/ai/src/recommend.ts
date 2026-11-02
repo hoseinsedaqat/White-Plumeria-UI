@@ -2,10 +2,10 @@ import { catalog, searchComponents, type ComponentDoc } from '@white-plumeria/co
 import type { Recommendation } from './types.ts';
 
 const synonyms: Record<string, string[]> = {
-  dashboard: ['statcard', 'chartcontainer', 'pageheader', 'grid'],
+  dashboard: ['statcard', 'chart', 'pageheader', 'grid'],
   finance: ['datatable', 'statcard', 'datepicker', 'badge'],
   مالی: ['datatable', 'statcard', 'datepicker'],
-  داشبورد: ['statcard', 'chartcontainer', 'pageheader'],
+  داشبورد: ['statcard', 'chart', 'pageheader'],
   table: ['datatable', 'table', 'pagination'],
   جدول: ['datatable', 'table'],
   form: ['formfield', 'input', 'button', 'validationmessage'],
@@ -16,7 +16,9 @@ const synonyms: Record<string, string[]> = {
   range: ['daterangepicker', 'date-range-picker'],
   بازه: ['daterangepicker', 'date-range-picker'],
   nav: ['navbar', 'sidebar', 'breadcrumb'],
-  chart: ['chartcontainer'],
+  chart: ['chart'],
+  graph: ['chart'],
+  نمودار: ['chart'],
   upload: ['fileupload'],
   search: ['searchinput', 'combobox'],
   steps: ['steps'],

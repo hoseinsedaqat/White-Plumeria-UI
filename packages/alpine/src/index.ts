@@ -48,6 +48,7 @@ export {
 export {
   Breadcrumb,
   Calendar,
+  Chart,
   ChartContainer,
   DataTable,
   DatePicker,
