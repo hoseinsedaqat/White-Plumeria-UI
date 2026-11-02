@@ -6,6 +6,7 @@ import {
   Breadcrumb,
   Button,
   Calendar,
+  DatePicker,
   Link,
   Pagination,
   Carousel,
@@ -40,6 +41,22 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('names the date picker calendar button', async () => {
+    const host = mount(DatePicker, { label: 'Start' });
+    await renderSettled();
+    const button = host.querySelector('button[aria-label="Choose date"]');
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+    expect(host.querySelector('.wpl-calendar')).toBeNull();
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(button?.getAttribute('aria-expanded')).toBe('true');
+    const day = host.querySelector('.wpl-day:not([disabled])');
+    day?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('input')?.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(host.querySelector('.wpl-calendar')).toBeNull();
+  });
+
   it('marks the selected calendar day and today', async () => {
     const host = mount(Calendar, { value: toIsoDate(new Date()) });
     await renderSettled();

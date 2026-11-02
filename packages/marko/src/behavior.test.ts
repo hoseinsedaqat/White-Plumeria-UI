@@ -19,6 +19,7 @@ import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
 import Calendar from './tags/wpl-calendar.marko';
+import DatePicker from './tags/wpl-date-picker.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
@@ -44,6 +45,21 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('names the date picker calendar button', async () => {
+    const view = await render(DatePicker, { label: 'Start' });
+    const button = view.container.querySelector('button[aria-label="Choose date"]');
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+    expect(view.container.querySelector('.wpl-calendar')).toBeNull();
+    button?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(button?.getAttribute('aria-expanded')).toBe('true');
+    const day = view.container.querySelector('.wpl-day:not([disabled])');
+    day?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('input')?.value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(view.container.querySelector('.wpl-calendar')).toBeNull();
+  });
+
   it('marks the selected calendar day and today', async () => {
     const today = toIsoDate(new Date());
     const view = await render(Calendar, { value: today });
