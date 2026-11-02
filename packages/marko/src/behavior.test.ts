@@ -129,6 +129,13 @@ describe('Marko adapter', () => {
     expect(early).not.toBeNull();
     expect(view.container.textContent).toContain(formatDate(early ?? new Date(), 'en'));
     expect(events.at(-1)).toEqual({ start: '2026-05-02', end: '2026-05-10' });
+    start.value = '2026-13-01';
+    start.dispatchEvent(new Event('change', { bubbles: true }));
+    await flush();
+    const alert = view.container.querySelector('[role="alert"]');
+    expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
+    expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
   });
 
   it('selects a menu item and ignores a disabled one', async () => {
@@ -233,6 +240,8 @@ describe('Marko adapter', () => {
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
     expect(view.container.textContent).toContain('plan.pdf');
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe(view.container.querySelector('[role="alert"]')?.id);
 
     const values: unknown[] = [];
     const slider = await render(Slider, { label: 'Nights', min: 1, max: 7, value: 2 });

@@ -349,8 +349,10 @@ export function DatePicker(config: Config = {}) {
       let time = text(config.time);
       let error = '';
       const id = uid('date');
+      const timeId = uid('time');
+      const errorId = `${id}-error`;
       const hint = h('p', { className: 'wpl-field-hint' });
-      const errorEl = h('p', { className: 'wpl-field-error', attrs: { role: 'alert', hidden: true } });
+      const errorEl = h('p', { className: 'wpl-field-error', attrs: { id: errorId, role: 'alert', hidden: true } });
       const input = h('input', {
         className: 'wpl-input',
         attrs: { id, value, placeholder: 'YYYY-MM-DD', 'aria-invalid': undefined },
@@ -358,7 +360,7 @@ export function DatePicker(config: Config = {}) {
       });
       const timeInput = h('input', {
         className: 'wpl-input',
-        attrs: { type: 'time', value: time },
+        attrs: { id: timeId, type: 'time', value: time },
         on: { change: () => commitTime(timeInput.value) },
       });
       const paintHint = () => {
@@ -370,6 +372,14 @@ export function DatePicker(config: Config = {}) {
         errorEl.textContent = error;
         input.value = value;
         input.setAttribute('aria-invalid', error ? 'true' : 'false');
+        timeInput.setAttribute('aria-invalid', error ? 'true' : 'false');
+        if (error) {
+          input.setAttribute('aria-describedby', errorId);
+          timeInput.setAttribute('aria-describedby', errorId);
+        } else {
+          input.removeAttribute('aria-describedby');
+          timeInput.removeAttribute('aria-describedby');
+        }
       };
       const commit = (next: string) => {
         if (next && !parseIsoDate(next)) {
@@ -410,7 +420,7 @@ export function DatePicker(config: Config = {}) {
       this.$el.replaceChildren(h('div', { className: 'wpl-date' }, [
         h('label', { className: 'wpl-label', text: text(config.label, translate(this.$el, 'chooseDate')), attrs: { for: id } }),
         input,
-        flag(config.showTime) ? h('label', { className: 'wpl-label', text: translate(this.$el, 'time') }) : null,
+        flag(config.showTime) ? h('label', { className: 'wpl-label', text: translate(this.$el, 'time'), attrs: { for: timeId } }) : null,
         flag(config.showTime) ? timeInput : null,
         errorEl,
         hint,
@@ -434,8 +444,11 @@ export function DateRangePicker(config: Config = {}) {
       let anchor = parseIsoDate(start) ?? parseIsoDate(end) ?? new Date();
       const startId = uid('start');
       const endId = uid('end');
+      const startTimeId = uid('start-time');
+      const endTimeId = uid('end-time');
+      const errorId = `${startId}-error`;
       const hint = h('p', { className: 'wpl-field-hint' });
-      const errorEl = h('p', { className: 'wpl-field-error', attrs: { role: 'alert', hidden: true } });
+      const errorEl = h('p', { className: 'wpl-field-error', attrs: { id: errorId, role: 'alert', hidden: true } });
       const startInput = h('input', {
         className: 'wpl-input',
         attrs: { id: startId, value: start, 'data-wpl-edge': 'start', placeholder: 'YYYY-MM-DD' },
@@ -448,12 +461,12 @@ export function DateRangePicker(config: Config = {}) {
       });
       const startTimeInput = h('input', {
         className: 'wpl-input',
-        attrs: { type: 'time', value: startTime, 'data-wpl-edge': 'start-time' },
+        attrs: { id: startTimeId, type: 'time', value: startTime, 'data-wpl-edge': 'start-time' },
         on: { change: () => commitTime('start', startTimeInput.value) },
       });
       const endTimeInput = h('input', {
         className: 'wpl-input',
-        attrs: { type: 'time', value: endTime, 'data-wpl-edge': 'end-time' },
+        attrs: { id: endTimeId, type: 'time', value: endTime, 'data-wpl-edge': 'end-time' },
         on: { change: () => commitTime('end', endTimeInput.value) },
       });
       const grid = h('div', { className: 'wpl-calendar' });
@@ -478,8 +491,11 @@ export function DateRangePicker(config: Config = {}) {
             : translate(this.$el, 'chooseDate');
         errorEl.hidden = !error;
         errorEl.textContent = error;
-        startInput.setAttribute('aria-invalid', error ? 'true' : 'false');
-        endInput.setAttribute('aria-invalid', error ? 'true' : 'false');
+        for (const field of [startInput, endInput, startTimeInput, endTimeInput]) {
+          field.setAttribute('aria-invalid', error ? 'true' : 'false');
+          if (error) field.setAttribute('aria-describedby', errorId);
+          else field.removeAttribute('aria-describedby');
+        }
         paintGrid();
       };
       const emitRange = () => {
@@ -583,8 +599,8 @@ export function DateRangePicker(config: Config = {}) {
           h('div', { className: 'wpl-field' }, [h('label', { className: 'wpl-label', text: translate(this.$el, 'endDate'), attrs: { for: endId } }), endInput]),
         ]),
         showTime ? h('div', { className: 'wpl-date-row' }, [
-          h('div', { className: 'wpl-field wpl-time' }, [h('label', { className: 'wpl-label', text: translate(this.$el, 'startTime') }), startTimeInput]),
-          h('div', { className: 'wpl-field wpl-time' }, [h('label', { className: 'wpl-label', text: translate(this.$el, 'endTime') }), endTimeInput]),
+          h('div', { className: 'wpl-field wpl-time' }, [h('label', { className: 'wpl-label', text: translate(this.$el, 'startTime'), attrs: { for: startTimeId } }), startTimeInput]),
+          h('div', { className: 'wpl-field wpl-time' }, [h('label', { className: 'wpl-label', text: translate(this.$el, 'endTime'), attrs: { for: endTimeId } }), endTimeInput]),
         ]) : null,
         errorEl,
         hint,

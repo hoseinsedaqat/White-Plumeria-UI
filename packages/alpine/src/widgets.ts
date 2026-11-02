@@ -661,9 +661,10 @@ export function FileUpload(config: Config = {}) {
       const maxSize = num(config.maxSize, 0);
       const accept = text(config.accept);
       const names = h('ul', { className: 'wpl-file-list' });
+      const errorId = uid('file-error');
       const errors = h('p', {
         className: 'wpl-field-error',
-        attrs: { role: 'alert', hidden: true },
+        attrs: { id: errorId, role: 'alert', hidden: true },
       });
       const input = h('input', {
         className: 'wpl-file-input',
@@ -708,6 +709,13 @@ export function FileUpload(config: Config = {}) {
         );
         errors.hidden = rejected.length === 0;
         errors.textContent = rejected.map((item) => `${item.name}: ${item.reason}`).join(' ');
+        if (rejected.length) {
+          input.setAttribute('aria-invalid', 'true');
+          input.setAttribute('aria-describedby', errorId);
+        } else {
+          input.removeAttribute('aria-invalid');
+          input.removeAttribute('aria-describedby');
+        }
         if (accepted.length) emit(this, 'wpl-change', { files: accepted });
         if (rejected.length) emit(this, 'wpl-reject', { files: rejected });
       };

@@ -82,6 +82,8 @@ export const FileUpload = defineComponent({
               type: 'file',
               accept: props.accept || undefined,
               multiple: props.multiple,
+              'aria-invalid': errors.value.length ? true : undefined,
+              'aria-describedby': errors.value.length ? `${id}-error` : undefined,
               onChange: (event: Event) => take((event.target as HTMLInputElement).files),
             }),
           ],
@@ -89,8 +91,9 @@ export const FileUpload = defineComponent({
         errors.value.length
           ? h(
               'ul',
+              { id: `${id}-error`, role: 'alert' },
               errors.value.map((error) =>
-                h('li', { key: error.name, class: 'wpl-field-error', role: 'alert' }, `${error.name}: ${error.reason}`),
+                h('li', { key: error.name, class: 'wpl-field-error' }, `${error.name}: ${error.reason}`),
               ),
             )
           : null,

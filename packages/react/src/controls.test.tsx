@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DatePicker, DateRangePicker } from './calendar.tsx';
+import { FileUpload } from './file-upload.tsx';
 import { Notification } from './toast.tsx';
 import { Combobox } from './combobox.tsx';
 import { RangeSlider, SearchInput, ToggleGroup } from './form.tsx';
@@ -62,7 +63,10 @@ describe('new controls', () => {
     );
     await user.clear(screen.getByLabelText('Start'));
     await user.type(screen.getByLabelText('Start'), '2026-13-01');
-    expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    const alert = screen.getByRole('alert');
+    expect(alert.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    expect(screen.getByLabelText('Start').getAttribute('aria-describedby')).toBe(alert.id);
+    expect(screen.getByLabelText('End').getAttribute('aria-describedby')).toBe(alert.id);
   });
 
   it('orders a same-day time range and rejects an impossible time', async () => {
@@ -96,7 +100,10 @@ describe('new controls', () => {
     });
     await user.clear(screen.getByLabelText('End time'));
     await user.type(screen.getByLabelText('End time'), '25:00');
-    expect(screen.getByRole('alert').textContent).toContain('Use a 24-hour time: HH:mm.');
+    const alert = screen.getByRole('alert');
+    expect(alert.textContent).toContain('Use a 24-hour time: HH:mm.');
+    expect(screen.getByLabelText('End time').getAttribute('aria-describedby')).toBe(alert.id);
+    expect(screen.getByLabelText('Start time').getAttribute('aria-describedby')).toBe(alert.id);
   });
 
   it('draws date controls with icons instead of placeholder glyphs', async () => {
@@ -115,7 +122,30 @@ describe('new controls', () => {
     const user = userEvent.setup();
     render(<DatePicker label="From" />);
     await user.type(screen.getByLabelText('From'), 'nope');
-    expect(screen.getByRole('alert').textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    const alert = screen.getByRole('alert');
+    expect(alert.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    expect(screen.getByLabelText('From').getAttribute('aria-describedby')).toBe(alert.id);
+  });
+
+  it('names an invalid time from the time field', async () => {
+    const user = userEvent.setup();
+    render(<DatePicker label="From" showTime />);
+    await user.type(screen.getByLabelText('Time'), '25:00');
+    const alert = screen.getByRole('alert');
+    expect(alert.textContent).toContain('Use a 24-hour time: HH:mm.');
+    expect(screen.getByLabelText('Time').getAttribute('aria-describedby')).toBe(alert.id);
+  });
+
+  it('names a rejected file from the file input', () => {
+    const view = render(<FileUpload label="Statement" maxSize={4} />);
+    const input = view.container.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['12345'], 'plan.txt', { type: 'text/plain' });
+    Object.defineProperty(input, 'files', { configurable: true, value: [file] });
+    fireEvent.change(input);
+    const alert = screen.getByRole('alert');
+    expect(alert.textContent).toContain('plan.txt');
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe(alert.id);
   });
 
   it('stops a range thumb at the other thumb and names both edges', () => {

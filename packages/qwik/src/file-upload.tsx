@@ -78,6 +78,8 @@ export const FileUpload = component$<{
           type="file"
           accept={props.accept}
           multiple={props.multiple}
+          aria-invalid={errors.value.length ? true : undefined}
+          aria-describedby={errors.value.length ? `${id}-error` : undefined}
           onChange$={(_, element) => {
             if (element.files) void acceptFiles(element.files);
             element.value = '';
@@ -85,9 +87,9 @@ export const FileUpload = component$<{
         />
       </label>
       {errors.value.length ? (
-        <ul>
+        <ul id={`${id}-error`} role="alert">
           {errors.value.map((error) => (
-            <li key={error.name} class="wpl-field-error" role="alert">{error.name}: {error.reason}</li>
+            <li key={error.name} class="wpl-field-error">{error.name}: {error.reason}</li>
           ))}
         </ul>
       ) : null}

@@ -13,15 +13,19 @@ export interface Input {
 
 <let/names=[]>
 <let/rejected=[]>
+<id/fileId/>
 
 <div/host class="wpl-file">
   <label class="wpl-file-drop">
     ${input.label || "Choose a file"}
     <input
+      id=fileId
       class="wpl-file-input"
       type="file"
       accept=input.accept
       multiple=input.multiple
+      aria-invalid=String(rejected.length > 0)
+      aria-describedby=(rejected.length ? fileId + "-error" : undefined)
       onChange(_event, el) {
         const taken = takeFiles(el.files, input.accept, Number(input.maxSize) || 0, localeOf(el));
         names = taken.accepted;
@@ -41,6 +45,6 @@ export interface Input {
     <for|name| of=names><li class="wpl-file-item">${name}</li></for>
   </ul>
   <if=rejected.length>
-    <p class="wpl-field-error" role="alert">${rejected.map((item) => item.name).join(", ")}</p>
+    <p id=(fileId + "-error") class="wpl-field-error" role="alert">${rejected.map((item) => item.name).join(", ")}</p>
   </if>
 </div>

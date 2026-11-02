@@ -154,6 +154,7 @@ export class Calendar {
             inputmode="numeric"
             placeholder="HH:mm"
             [attr.aria-invalid]="error() ? true : null"
+            [attr.aria-describedby]="error() ? inputId + '-error' : null"
             (input)="commitTime($any($event.target).value)"
           />
         </div>
@@ -275,11 +276,11 @@ export class DatePicker {
       <div class="wpl-date-row">
         <div class="wpl-field">
           <label class="wpl-label" [attr.for]="startId">{{ startLabel() }}</label>
-          <input class="wpl-input" [id]="startId" [value]="startText()" inputmode="numeric" placeholder="YYYY-MM-DD" [attr.aria-invalid]="error() ? true : null" (input)="commit('start', $any($event.target).value)" />
+          <input class="wpl-input" [id]="startId" [value]="startText()" inputmode="numeric" placeholder="YYYY-MM-DD" [attr.aria-invalid]="error() ? true : null" [attr.aria-describedby]="error() ? startId + '-error' : null" (input)="commit('start', $any($event.target).value)" />
         </div>
         <div class="wpl-field">
           <label class="wpl-label" [attr.for]="endId">{{ endLabel() }}</label>
-          <input class="wpl-input" [id]="endId" [value]="endText()" inputmode="numeric" placeholder="YYYY-MM-DD" [attr.aria-invalid]="error() ? true : null" (input)="commit('end', $any($event.target).value)" />
+          <input class="wpl-input" [id]="endId" [value]="endText()" inputmode="numeric" placeholder="YYYY-MM-DD" [attr.aria-invalid]="error() ? true : null" [attr.aria-describedby]="error() ? startId + '-error' : null" (input)="commit('end', $any($event.target).value)" />
         </div>
         <button wplIconButton [label]="chooseLabel()" [attr.aria-expanded]="open()" [hasIcon]="true" (click)="open.set(!open())"><wpl-icon name="calendar" /></button>
       </div>
@@ -287,16 +288,16 @@ export class DatePicker {
         <div class="wpl-date-row">
           <div class="wpl-field wpl-time">
             <label class="wpl-label" [attr.for]="startTimeId">{{ startTimeLabel() }}</label>
-            <input class="wpl-input" [id]="startTimeId" [value]="startTimeText()" inputmode="numeric" placeholder="HH:mm" [attr.aria-invalid]="error() ? true : null" (input)="commitTime('start', $any($event.target).value)" />
+            <input class="wpl-input" [id]="startTimeId" [value]="startTimeText()" inputmode="numeric" placeholder="HH:mm" [attr.aria-invalid]="error() ? true : null" [attr.aria-describedby]="error() ? startId + '-error' : null" (input)="commitTime('start', $any($event.target).value)" />
           </div>
           <div class="wpl-field wpl-time">
             <label class="wpl-label" [attr.for]="endTimeId">{{ endTimeLabel() }}</label>
-            <input class="wpl-input" [id]="endTimeId" [value]="endTimeText()" inputmode="numeric" placeholder="HH:mm" [attr.aria-invalid]="error() ? true : null" (input)="commitTime('end', $any($event.target).value)" />
+            <input class="wpl-input" [id]="endTimeId" [value]="endTimeText()" inputmode="numeric" placeholder="HH:mm" [attr.aria-invalid]="error() ? true : null" [attr.aria-describedby]="error() ? startId + '-error' : null" (input)="commitTime('end', $any($event.target).value)" />
           </div>
         </div>
       }
       @if (error()) {
-        <p class="wpl-field-error" role="alert">{{ error() }}</p>
+        <p class="wpl-field-error" role="alert" [id]="startId + '-error'">{{ error() }}</p>
       }
       @if (open()) {
         <wpl-calendar [calendar]="calendar()" [locale]="activeLocale()" [min]="minDate()" [max]="maxDate()" [rangeStart]="startDate()" [rangeEnd]="endDate()" (valueChange)="pick($event)" />

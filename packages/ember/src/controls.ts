@@ -116,7 +116,7 @@ export const ButtonGroup = glimmer(
 );
 
 export const Input = glimmer(
-  `<div class={{this.fieldClass}}><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class={{this.controlClass}} type={{this.inputType}} value={{this.value}} placeholder={{@placeholder}} name={{@name}} disabled={{this.disabled}} aria-invalid={{this.invalid}} {{on "input" this.commit}} />{{#if @hint}}<p class="wpl-field-hint">{{@hint}}</p>{{/if}}{{#if @error}}<p class="wpl-field-error" role="alert">{{@error}}</p>{{/if}}</div>`,
+  `<div class={{this.fieldClass}}><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class={{this.controlClass}} type={{this.inputType}} value={{this.value}} placeholder={{@placeholder}} name={{@name}} disabled={{this.disabled}} aria-invalid={{this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "input" this.commit}} />{{#if @hint}}<p id={{this.hintId}} class="wpl-field-hint">{{@hint}}</p>{{/if}}{{#if @error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{@error}}</p>{{/if}}</div>`,
   {
     state: (args) => ({ value: str(args.value), fieldId: createId('input') }),
     getters: {
@@ -125,6 +125,15 @@ export const Input = glimmer(
       value: (host) => str(host.state.value, str(host.args.value)),
       disabled: (host) => flag(host.args.disabled),
       invalid: (host) => (flag(host.args.invalid) || str(host.args.error) ? 'true' : ''),
+      hintId: (host) => `${str(host.state.fieldId)}-hint`,
+      errorId: (host) => `${str(host.state.fieldId)}-error`,
+      describedBy: (host) =>
+        [
+          str(host.args.hint) ? `${str(host.state.fieldId)}-hint` : '',
+          str(host.args.error) ? `${str(host.state.fieldId)}-error` : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
       inputType: (host) => str(host.args.type, 'text'),
       fieldClass: (host) =>
         fieldClassName(flag(host.args.invalid) || Boolean(str(host.args.error))),
@@ -367,10 +376,15 @@ export const Label = glimmer(
 );
 
 export const FormField = glimmer(
-  `<div class={{this.className}}>{{#if @label}}<label class="wpl-label" for={{@for}}>{{@label}}</label>{{/if}}{{yield}}{{#if @hint}}<p class="wpl-field-hint">{{@hint}}</p>{{/if}}{{#if @error}}<p class="wpl-field-error" role="alert">{{@error}}</p>{{/if}}</div>`,
+  `<div class={{this.className}} {{wireField this.errorId this.hintId this.invalid}}>{{#if @label}}<label class="wpl-label" for={{@for}}>{{@label}}</label>{{/if}}{{yield}}{{#if @hint}}<p id={{this.hintId}} class="wpl-field-hint">{{@hint}}</p>{{/if}}{{#if @error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{@error}}</p>{{/if}}</div>`,
   {
+    state: () => ({ fieldId: createId('field') }),
     getters: {
       className: (host) => fieldClassName(flag(host.args.invalid) || Boolean(str(host.args.error))),
+      fieldId: (host) => str(host.state.fieldId),
+      hintId: (host) => (str(host.args.hint) ? `${str(host.state.fieldId)}-hint` : ''),
+      errorId: (host) => (str(host.args.error) ? `${str(host.state.fieldId)}-error` : ''),
+      invalid: (host) => (flag(host.args.invalid) || Boolean(str(host.args.error)) ? 'true' : ''),
     },
   },
 );
@@ -677,13 +691,17 @@ export const NumberField = glimmer(
 );
 
 export const FileUpload = glimmer(
-  `<div class="wpl-file"><label class="wpl-file-drop">{{this.label}}<input class="wpl-file-input" type="file" accept={{@accept}} {{on "change" this.take}} /></label>{{#if this.names}}<ul class="wpl-file-list">{{#each this.names as |name|}}<li class="wpl-file-item">{{name}}</li>{{/each}}</ul>{{/if}}{{#if this.reason}}<p class="wpl-field-error" role="alert">{{this.reason}}</p>{{/if}}</div>`,
+  `<div class="wpl-file"><label class="wpl-file-drop">{{this.label}}<input id={{this.fileId}} class="wpl-file-input" type="file" accept={{@accept}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.take}} /></label>{{#if this.names}}<ul class="wpl-file-list">{{#each this.names as |name|}}<li class="wpl-file-item">{{name}}</li>{{/each}}</ul>{{/if}}{{#if this.reason}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.reason}}</p>{{/if}}</div>`,
   {
-    state: () => ({ names: [] as string[], reason: '' }),
+    state: () => ({ names: [] as string[], reason: '', fileId: createId('file') }),
     getters: {
       label: (host) => str(host.args.label, 'Choose a file'),
       names: (host) => list<string>(host.state.names),
       reason: (host) => str(host.state.reason),
+      fileId: (host) => str(host.state.fileId),
+      errorId: (host) => `${str(host.state.fileId)}-error`,
+      invalid: (host) => (str(host.state.reason) ? 'true' : ''),
+      describedBy: (host) => (str(host.state.reason) ? `${str(host.state.fileId)}-error` : ''),
     },
     methods: {
       take(event) {

@@ -91,6 +91,8 @@ export function FileUpload({
           type="file"
           accept={accept}
           multiple={multiple}
+          aria-invalid={errors.length ? true : undefined}
+          aria-describedby={errors.length ? `${id}-error` : undefined}
           onChange={(event) => {
             if (event.currentTarget.files) acceptFiles(event.currentTarget.files);
             event.currentTarget.value = '';
@@ -98,9 +100,9 @@ export function FileUpload({
         />
       </label>
       {errors.length ? (
-        <ul>
+        <ul id={`${id}-error`} role="alert">
           {errors.map((error) => (
-            <li key={error.name} className="wpl-field-error" role="alert">
+            <li key={error.name} className="wpl-field-error">
               {error.name}: {error.reason}
             </li>
           ))}

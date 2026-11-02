@@ -262,7 +262,7 @@ AI tools may only name components from this list, and may only use the classes i
 - DropdownMenu: One submenu level. Deeper items are not opened.
 - DropdownMenu: Typeahead matches a label prefix. Letters typed within half a second narrow it; the same letter cycles.
 - FileUpload: Does not upload to a server. Rejected files are reported in the error list and are not executed.
-- FormField: Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember. HTML users set ids manually.
+- FormField: React, Vue, Svelte, Angular, Solid, Preact, Qwik, and Lit pass aria-invalid and aria-describedby through context. Alpine, Marko, and Ember connect the nested control when the field is created. HTML users set ids manually.
 - Grid: Collapses to one column when the grid is narrower than 48rem. Three and four columns use two tracks from 48rem to 64rem. Not a masonry layout.
 - Kbd: Visual only. Pair it with a real keydown listener in your application if the shortcut must work.
 - Modal: This is a Dialog preset, not a second focus system.

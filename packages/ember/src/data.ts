@@ -300,15 +300,19 @@ export const Calendar = glimmer(
 );
 
 export const DatePicker = glimmer(
-  `<div class="wpl-date"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" value={{this.value}} placeholder="YYYY-MM-DD" {{on "change" this.commit}} />{{#if this.showTime}}<label class="wpl-label" for={{this.timeId}}>{{this.timeLabel}}</label><input id={{this.timeId}} class="wpl-input" type="time" value={{this.time}} data-wpl-edge="time" {{on "change" this.commitTime}} />{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
+  `<div class="wpl-date"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" value={{this.value}} placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commit}} />{{#if this.showTime}}<label class="wpl-label" for={{this.timeId}}>{{this.timeLabel}}</label><input id={{this.timeId}} class="wpl-input" type="time" value={{this.time}} data-wpl-edge="time" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitTime}} />{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
   {
-    state: (args) => ({ value: str(args.value), time: str(args.time), fieldId: createId('date'), timeId: createId('time') }),
+    state: (args) => ({ value: str(args.value), time: str(args.time), error: '', fieldId: createId('date'), timeId: createId('time') }),
     getters: {
       label: (host) => str(host.args.label, 'Date'),
       fieldId: (host) => str(host.state.fieldId),
       timeId: (host) => str(host.state.timeId),
       value: (host) => str(host.state.value, str(host.args.value)),
       time: (host) => str(host.state.time, str(host.args.time)),
+      error: (host) => str(host.state.error),
+      invalid: (host) => (str(host.state.error) ? 'true' : ''),
+      errorId: (host) => `${str(host.state.fieldId)}-error`,
+      describedBy: (host) => (str(host.state.error) ? `${str(host.state.fieldId)}-error` : ''),
       showTime: (host) => flag(host.args.showTime),
       timeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'time'),
       hint(this: Host) {
@@ -321,13 +325,24 @@ export const DatePicker = glimmer(
     methods: {
       commit(event) {
         const value = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
+        const locale = localeOf(event instanceof Event && event.target instanceof Element ? event.target : null);
         this.state.value = value;
+        if (value && !parseIsoDate(value)) {
+          this.state.error = message(locale, 'invalidDate');
+          return;
+        }
+        this.state.error = '';
         bubble(event as Event, 'wpl-change', { value });
       },
       commitTime(event) {
         const time = event instanceof Event && event.target instanceof HTMLInputElement ? event.target.value : '';
-        if (time && !parseTimeValue(time)) return;
+        const locale = localeOf(event instanceof Event && event.target instanceof Element ? event.target : null);
         this.state.time = time;
+        if (time && !parseTimeValue(time)) {
+          this.state.error = message(locale, 'invalidTime');
+          return;
+        }
+        this.state.error = '';
         bubble(event as Event, 'wpl-time', { time });
       },
     },
@@ -335,15 +350,18 @@ export const DatePicker = glimmer(
 );
 
 export const DateRangePicker = glimmer(
-  `<div class="wpl-date"><span class="wpl-label">{{this.label}}</span><div class="wpl-date-row"><div class="wpl-field"><label class="wpl-label" for={{this.startId}}>{{this.startLabel}}</label><input id={{this.startId}} class="wpl-input" value={{this.start}} data-wpl-edge="start" placeholder="YYYY-MM-DD" {{on "change" this.commitStart}} /></div><div class="wpl-field"><label class="wpl-label" for={{this.endId}}>{{this.endLabel}}</label><input id={{this.endId}} class="wpl-input" value={{this.end}} data-wpl-edge="end" placeholder="YYYY-MM-DD" {{on "change" this.commitEnd}} /></div></div>{{#if this.showTime}}<div class="wpl-date-row"><input class="wpl-input" type="time" value={{this.startTime}} data-wpl-edge="start-time" aria-label={{this.startTimeLabel}} {{on "change" this.commitStartTime}} /><input class="wpl-input" type="time" value={{this.endTime}} data-wpl-edge="end-time" aria-label={{this.endTimeLabel}} {{on "change" this.commitEndTime}} /></div>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
+  `<div class="wpl-date"><span class="wpl-label">{{this.label}}</span><div class="wpl-date-row"><div class="wpl-field"><label class="wpl-label" for={{this.startId}}>{{this.startLabel}}</label><input id={{this.startId}} class="wpl-input" value={{this.start}} data-wpl-edge="start" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStart}} /></div><div class="wpl-field"><label class="wpl-label" for={{this.endId}}>{{this.endLabel}}</label><input id={{this.endId}} class="wpl-input" value={{this.end}} data-wpl-edge="end" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEnd}} /></div></div>{{#if this.showTime}}<div class="wpl-date-row"><input id={{this.startTimeId}} class="wpl-input" type="time" value={{this.startTime}} data-wpl-edge="start-time" aria-label={{this.startTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStartTime}} /><input id={{this.endTimeId}} class="wpl-input" type="time" value={{this.endTime}} data-wpl-edge="end-time" aria-label={{this.endTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEndTime}} /></div>{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
   {
     state: (args) => ({
       start: str(args.start),
       end: str(args.end),
       startTime: str(args.startTime),
       endTime: str(args.endTime),
+      error: '',
       startId: createId('start'),
       endId: createId('end'),
+      startTimeId: createId('start-time'),
+      endTimeId: createId('end-time'),
     }),
     getters: {
       label: (host) => str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'chooseDate')),
@@ -353,6 +371,12 @@ export const DateRangePicker = glimmer(
       endTimeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'endTime'),
       startId: (host) => str(host.state.startId),
       endId: (host) => str(host.state.endId),
+      startTimeId: (host) => str(host.state.startTimeId),
+      endTimeId: (host) => str(host.state.endTimeId),
+      error: (host) => str(host.state.error),
+      invalid: (host) => (str(host.state.error) ? 'true' : ''),
+      errorId: (host) => `${str(host.state.startId)}-error`,
+      describedBy: (host) => (str(host.state.error) ? `${str(host.state.startId)}-error` : ''),
       start: (host) => str(host.state.start),
       end: (host) => str(host.state.end),
       startTime: (host) => str(host.state.startTime),
@@ -393,7 +417,11 @@ export const DateRangePicker = glimmer(
         else this.state.end = next;
         const start = str(this.state.start);
         const end = str(this.state.end);
-        if ((start && !parseIsoDate(start)) || (end && !parseIsoDate(end))) return;
+        if ((start && !parseIsoDate(start)) || (end && !parseIsoDate(end))) {
+          this.state.error = message(localeOf(input instanceof Element ? input : null), 'invalidDate');
+          return;
+        }
+        this.state.error = '';
         if (start && end) {
           if (flag(this.args.showTime)) {
             const ordered = orderDateTimeRange({ start, end, startTime: str(this.state.startTime), endTime: str(this.state.endTime) });
@@ -413,9 +441,13 @@ export const DateRangePicker = glimmer(
       commitTime(which, event) {
         const input = (event as Event).target;
         const next = input instanceof HTMLInputElement ? input.value : '';
-        if (next && !parseTimeValue(next)) return;
         if (which === 'start') this.state.startTime = next;
         else this.state.endTime = next;
+        if (next && !parseTimeValue(next)) {
+          this.state.error = message(localeOf(input instanceof Element ? input : null), 'invalidTime');
+          return;
+        }
+        this.state.error = '';
         if (str(this.state.start) && str(this.state.end)) {
           const ordered = orderDateTimeRange({
             start: str(this.state.start),

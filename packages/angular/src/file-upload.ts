@@ -31,12 +31,12 @@ function matchesAccept(file: File, accept: string): boolean {
       <label class="wpl-file-drop" [attr.data-active]="active() ? 'true' : null" [attr.for]="inputId" (dragover)="onDrag($event)" (dragleave)="active.set(false)" (drop)="onDrop($event)">
         <span class="wpl-label">{{ label() }}</span>
         <span class="wpl-field-hint">{{ hint() }}</span>
-        <input class="wpl-file-input" type="file" [id]="inputId" [accept]="accept() || null" [multiple]="multiple()" (change)="onChange($event)" />
+        <input class="wpl-file-input" type="file" [id]="inputId" [accept]="accept() || null" [multiple]="multiple()" [attr.aria-invalid]="errors().length ? true : null" [attr.aria-describedby]="errors().length ? inputId + '-error' : null" (change)="onChange($event)" />
       </label>
       @if (errors().length) {
-        <ul>
+        <ul [id]="inputId + '-error'" role="alert">
           @for (error of errors(); track error.name) {
-            <li class="wpl-field-error" role="alert">{{ error.name }}: {{ error.reason }}</li>
+            <li class="wpl-field-error">{{ error.name }}: {{ error.reason }}</li>
           }
         </ul>
       }

@@ -232,7 +232,7 @@ export class DatePicker extends WplElement {
       ${this.showTime
         ? html`<div class="wpl-field wpl-time">
             <label class="wpl-label" for=${this.timeId}>${translate(this, 'time')}</label>
-            <input id=${this.timeId} class="wpl-input" .value=${this.timeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} @input=${(event: Event) => {
+            <input id=${this.timeId} class="wpl-input" .value=${this.timeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} aria-describedby=${this.error ? `${this.inputId}-error` : nothing} @input=${(event: Event) => {
               const element = event.target instanceof HTMLInputElement ? event.target : null;
               if (element) this.commitTime(element.value);
             }} />
@@ -360,14 +360,14 @@ export class DateRangePicker extends WplElement {
       <div class="wpl-date-row">
         <div class="wpl-field">
           <label class="wpl-label" for=${this.startId}>${translate(this, 'startDate')}</label>
-          <input id=${this.startId} class="wpl-input" .value=${this.startText} inputmode="numeric" placeholder="YYYY-MM-DD" aria-invalid=${this.error ? 'true' : nothing} @input=${(event: Event) => {
+          <input id=${this.startId} class="wpl-input" .value=${this.startText} inputmode="numeric" placeholder="YYYY-MM-DD" aria-invalid=${this.error ? 'true' : nothing} aria-describedby=${this.error ? `${this.startId}-error` : nothing} @input=${(event: Event) => {
             const element = event.target instanceof HTMLInputElement ? event.target : null;
             if (element) this.apply(element.value, this.endText, this.startTimeText, this.endTimeText, 'start', element.value);
           }} />
         </div>
         <div class="wpl-field">
           <label class="wpl-label" for=${this.endId}>${translate(this, 'endDate')}</label>
-          <input id=${this.endId} class="wpl-input" .value=${this.endText} inputmode="numeric" placeholder="YYYY-MM-DD" aria-invalid=${this.error ? 'true' : nothing} @input=${(event: Event) => {
+          <input id=${this.endId} class="wpl-input" .value=${this.endText} inputmode="numeric" placeholder="YYYY-MM-DD" aria-invalid=${this.error ? 'true' : nothing} aria-describedby=${this.error ? `${this.startId}-error` : nothing} @input=${(event: Event) => {
             const element = event.target instanceof HTMLInputElement ? event.target : null;
             if (element) this.apply(this.startText, element.value, this.startTimeText, this.endTimeText, 'end', element.value);
           }} />
@@ -378,21 +378,21 @@ export class DateRangePicker extends WplElement {
         ? html`<div class="wpl-date-row">
             <div class="wpl-field wpl-time">
               <label class="wpl-label" for=${this.startTimeId}>${translate(this, 'startTime')}</label>
-              <input id=${this.startTimeId} class="wpl-input" .value=${this.startTimeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} @input=${(event: Event) => {
+              <input id=${this.startTimeId} class="wpl-input" .value=${this.startTimeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} aria-describedby=${this.error ? `${this.startId}-error` : nothing} @input=${(event: Event) => {
                 const element = event.target instanceof HTMLInputElement ? event.target : null;
                 if (element) this.apply(this.startText, this.endText, element.value, this.endTimeText, 'startTime', element.value);
               }} />
             </div>
             <div class="wpl-field wpl-time">
               <label class="wpl-label" for=${this.endTimeId}>${translate(this, 'endTime')}</label>
-              <input id=${this.endTimeId} class="wpl-input" .value=${this.endTimeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} @input=${(event: Event) => {
+              <input id=${this.endTimeId} class="wpl-input" .value=${this.endTimeText} inputmode="numeric" placeholder="HH:mm" aria-invalid=${this.error ? 'true' : nothing} aria-describedby=${this.error ? `${this.startId}-error` : nothing} @input=${(event: Event) => {
                 const element = event.target instanceof HTMLInputElement ? event.target : null;
                 if (element) this.apply(this.startText, this.endText, this.startTimeText, element.value, 'endTime', element.value);
               }} />
             </div>
           </div>`
         : nothing}
-      ${this.error ? html`<p class="wpl-field-error" role="alert">${this.error}</p>` : nothing}
+      ${this.error ? html`<p id=${`${this.startId}-error`} class="wpl-field-error" role="alert">${this.error}</p>` : nothing}
       ${this.open
         ? html`<wpl-calendar
             calendar=${calendar}

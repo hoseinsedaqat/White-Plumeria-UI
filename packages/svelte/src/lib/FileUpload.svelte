@@ -67,12 +67,18 @@
       type="file"
       {accept}
       {multiple}
+      aria-invalid={errors.length ? true : undefined}
+      aria-describedby={errors.length ? `${id}-error` : undefined}
       onchange={(event) => take((event.currentTarget as HTMLInputElement).files)}
     />
   </label>
-  {#each errors as error (error)}
-    <p class="wpl-field-error" role="alert">{error}: {wpl.t('fileRejected')}</p>
-  {/each}
+  {#if errors.length}
+    <ul id="{id}-error" role="alert">
+      {#each errors as error (error)}
+        <li class="wpl-field-error">{error}: {wpl.t('fileRejected')}</li>
+      {/each}
+    </ul>
+  {/if}
   {#if files.length}
     <ul class="wpl-file-list">
       {#each files as file (file.name)}
