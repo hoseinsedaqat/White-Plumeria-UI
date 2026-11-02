@@ -423,14 +423,15 @@ export function NumberField(props: {
     props.onValueChange?.(bounded);
   }
   return (
-    <div class="wpl-number">
-      <label for={props.name}>{props.label}</label>
-      <div class="wpl-number-control">
-        <button type="button" aria-label="Decrease" disabled={props.disabled} onClick={() => commit(value() - step())}>
+    <div class="wpl-field">
+      <label class="wpl-label" for={props.name}>{props.label}</label>
+      <div class="wpl-number">
+        <button type="button" class="wpl-number-step" aria-label="Decrease" disabled={props.disabled} onClick={() => commit(value() - step())}>
           −
         </button>
         <input
           id={props.name}
+          class="wpl-input"
           name={props.name}
           type="number"
           value={value()}
@@ -440,7 +441,7 @@ export function NumberField(props: {
           disabled={props.disabled}
           onInput={(event) => commit(Number(event.currentTarget.value))}
         />
-        <button type="button" aria-label="Increase" disabled={props.disabled} onClick={() => commit(value() + step())}>
+        <button type="button" class="wpl-number-step" aria-label="Increase" disabled={props.disabled} onClick={() => commit(value() + step())}>
           +
         </button>
       </div>
@@ -457,7 +458,7 @@ export function PasswordInput(
   return (
     <div class="wpl-password">
       <input {...rest} type={visible() ? 'text' : 'password'} class={inputClassName({ size: local.size ?? 'md', className: local.class })} />
-        <button type="button" class="wpl-password-toggle" aria-pressed={visible()} onClick={() => setVisible((current) => !current)}>
+        <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-pressed={visible()} onClick={() => setVisible((current) => !current)}>
         <Icon name={visible() ? 'eyeOff' : 'eye'} />
         <span class="wpl-sr-only">{visible() ? t('hidePassword') : t('showPassword')}</span>
       </button>

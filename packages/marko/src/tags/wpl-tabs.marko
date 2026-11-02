@@ -17,8 +17,8 @@ export interface Input {
 <const/tabs=input.tabs ?? []>
 <id/tablistId/>
 
-<div/host class="wpl-tabs" data-orientation=input.orientation || "horizontal">
-  <div role="tablist" id=tablistId aria-orientation=input.orientation || "horizontal">
+<div/host class=(input.orientation === "vertical" ? "wpl-tabs wpl-tabs-vertical" : "wpl-tabs")>
+  <div class="wpl-tablist" role="tablist" id=tablistId aria-orientation=input.orientation || "horizontal">
     <for|tab| of=tabs>
       <button
         type="button"
@@ -35,6 +35,6 @@ export interface Input {
     </for>
   </div>
   <for|tab| of=tabs>
-    <div class="wpl-tab-panel" role="tabpanel" hidden=value !== tab.id>${tab.panel || ""}</div>
+    <div class="wpl-tabpanel" role="tabpanel" hidden=value !== tab.id>${tab.panel || ""}</div>
   </for>
 </div>

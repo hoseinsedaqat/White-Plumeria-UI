@@ -3,6 +3,6 @@
 </script>
 <nav class="wpl-sidebar" aria-label={label}>
   {#each items as item (item.href + item.label)}
-    <a href={item.href} class="wpl-sidebar-link" aria-current={item.current ? 'page' : undefined}>{item.label}</a>
+    <a href={item.href} aria-current={item.current ? 'page' : undefined}>{item.label}</a>
   {/each}
 </nav>

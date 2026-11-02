@@ -61,13 +61,20 @@
   />
   </div>
   {#if open}
-    <ul id="{id}-list" role="listbox" class="wpl-menu-panel">
+    <ul id="{id}-list" role="listbox" class="wpl-listbox">
       {#if filtered.length === 0}
-        <li class="wpl-muted">{wpl.t('noResults')}</li>
+        <li class="wpl-listbox-item">{wpl.t('noResults')}</li>
       {:else}
         {#each filtered as option, index (option.value)}
           <li>
-            <button type="button" role="option" class="wpl-menu-item" aria-selected={value === option.value} onclick={() => choose(option)}>
+            <button
+              type="button"
+              role="option"
+              class="wpl-listbox-item"
+              aria-selected={value === option.value}
+              data-active={index === active ? 'true' : undefined}
+              onclick={() => choose(option)}
+            >
               {option.label}
             </button>
           </li>

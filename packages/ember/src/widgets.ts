@@ -364,7 +364,7 @@ export const ContextMenu = glimmer(
 );
 
 export const Tabs = glimmer(
-  `<div class="wpl-tabs"><div role="tablist" aria-label={{this.label}}>{{#each this.items as |item|}}<button type="button" class="wpl-tab" role="tab" aria-selected={{item.selected}} {{on "click" (fn this.pick item)}}>{{item.label}}</button>{{/each}}</div><div class="wpl-tab-panel" role="tabpanel">{{this.panel}}</div></div>`,
+  `<div class="wpl-tabs"><div class="wpl-tablist" role="tablist" aria-label={{this.label}}>{{#each this.items as |item|}}<button type="button" class="wpl-tab" role="tab" aria-selected={{item.selected}} {{on "click" (fn this.pick item)}}>{{item.label}}</button>{{/each}}</div><div class="wpl-tabpanel" role="tabpanel">{{this.panel}}</div></div>`,
   {
     state: (args) => ({ value: str(args.value) }),
     getters: {

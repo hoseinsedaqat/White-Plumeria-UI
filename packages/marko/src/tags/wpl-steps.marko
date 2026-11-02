@@ -20,7 +20,7 @@ export interface Input {
 <const/items=input.items ?? []>
 <const/current=stepIndex(items, value)>
 
-<ol/host class="wpl-steps" aria-label=input.label || "Steps" data-orientation=input.orientation || "horizontal">
+<ol/host class=(input.orientation === "vertical" ? "wpl-steps wpl-steps-vertical" : "wpl-steps") aria-label=input.label || "Steps">
   <for|item, index| of=items>
     <li class="wpl-step" data-state=stepState(index, current)>
       <button

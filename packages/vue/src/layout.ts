@@ -74,9 +74,19 @@ export const NavigationMenu = defineComponent({
     return () =>
       h(
         'nav',
-        { class: 'wpl-nav', 'aria-label': props.label },
-        props.items.map((item) =>
-          h('a', { href: item.href, 'aria-current': item.current ? 'page' : undefined, class: 'wpl-nav-link' }, item.label),
+        { 'aria-label': props.label },
+        h(
+          'ul',
+          { class: 'wpl-nav-menu' },
+          props.items.map((item) =>
+            h('li', { key: item.href }, [
+              h(
+                'a',
+                { href: item.href, class: 'wpl-nav-link', 'aria-current': item.current ? 'page' : undefined },
+                item.label,
+              ),
+            ]),
+          ),
         ),
       );
   },
@@ -141,7 +151,7 @@ export const Sidebar = defineComponent({
         'nav',
         { class: 'wpl-sidebar', 'aria-label': props.label },
         props.items.map((item) =>
-          h('a', { href: item.href, class: 'wpl-sidebar-link', 'aria-current': item.current ? 'page' : undefined }, item.label),
+          h('a', { href: item.href, 'aria-current': item.current ? 'page' : undefined }, item.label),
         ),
       );
   },
@@ -205,7 +215,7 @@ export const SplitPane = defineComponent({
             'aria-label': props.label,
             'aria-valuenow': current,
             tabindex: 0,
-            class: 'wpl-split-handle',
+            class: 'wpl-split-separator',
             onKeydown: (event: KeyboardEvent) => {
               const delta = event.key === 'ArrowRight' ? 5 : event.key === 'ArrowLeft' ? -5 : 0;
               if (!delta) return;

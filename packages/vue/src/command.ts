@@ -35,11 +35,12 @@ export const CommandPalette = defineComponent({
           open: props.open,
           title: t('command'),
           hideTitle: true,
+          panelClass: 'wpl-command',
           'onUpdate:open': (open: boolean) => emit('update:open', open),
         },
         () => [
           h('input', {
-            class: 'wpl-input',
+            class: 'wpl-input wpl-command-input',
             value: query.value,
             placeholder: t('search'),
             'aria-label': t('search'),
@@ -63,11 +64,17 @@ export const CommandPalette = defineComponent({
           }),
           h(
             'ul',
-            { role: 'listbox', class: 'wpl-menu-panel' },
+            { role: 'listbox', class: 'wpl-command-list' },
             filtered.value.map((command, index) =>
               h(
                 'li',
-                { key: command.id, role: 'option', 'aria-selected': index === active.value, class: 'wpl-menu-item' },
+                {
+                  key: command.id,
+                  role: 'option',
+                  'aria-selected': index === active.value,
+                  class: 'wpl-menu-item',
+                  'data-active': index === active.value ? 'true' : undefined,
+                },
                 [command.group ? h('span', { class: 'wpl-muted' }, command.group) : null, ' ', command.label],
               ),
             ),

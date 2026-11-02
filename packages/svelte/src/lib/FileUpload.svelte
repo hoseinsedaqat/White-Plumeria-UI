@@ -43,11 +43,11 @@
   }
 </script>
 
-<div class="wpl-field">
-  <label class="wpl-label" for={id}>{label}</label>
-  <div
-    role="group"
-    class={active ? 'wpl-dropzone wpl-dropzone-active' : 'wpl-dropzone'}
+<div class="wpl-file">
+  <label
+    class="wpl-file-drop"
+    for={id}
+    data-active={active ? 'true' : undefined}
     ondragover={(event) => {
       event.preventDefault();
       active = true;
@@ -59,14 +59,25 @@
       take(event.dataTransfer?.files ?? null);
     }}
   >
-    <input {id} type="file" {accept} {multiple} onchange={(event) => take((event.currentTarget as HTMLInputElement).files)} />
-    <p class="wpl-muted">{label}</p>
-  </div>
-  {#each files as file (file.name)}
-    <p>{file.name} · {formatNumber(file.size, wpl.preferences.locale)}</p>
-  {/each}
+    <span class="wpl-label">{label}</span>
+    <span class="wpl-field-hint">Files stay in the browser. Nothing is uploaded.</span>
+    <input
+      {id}
+      class="wpl-file-input"
+      type="file"
+      {accept}
+      {multiple}
+      onchange={(event) => take((event.currentTarget as HTMLInputElement).files)}
+    />
+  </label>
   {#each errors as error (error)}
     <p class="wpl-field-error" role="alert">{error}: {wpl.t('fileRejected')}</p>
   {/each}
-  <p class="wpl-field-hint">Files stay in the browser. Nothing is uploaded.</p>
+  {#if files.length}
+    <ul class="wpl-file-list">
+      {#each files as file (file.name)}
+        <li class="wpl-file-item">{file.name} · {formatNumber(file.size, wpl.preferences.locale)}</li>
+      {/each}
+    </ul>
+  {/if}
 </div>
