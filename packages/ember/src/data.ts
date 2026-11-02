@@ -11,6 +11,7 @@ import {
   orderDateTimeRange,
   parseIsoDate,
   parseTimeValue,
+  sameDay,
   queryTable,
   toIsoDate,
   toggleSort,
@@ -297,7 +298,7 @@ const calendarChevron = (name: 'chevronLeft' | 'chevronRight') =>
   `<svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths[name]}"></path></svg>`;
 
 export const Calendar = glimmer(
-  `<div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>${calendarChevron('chevronLeft')}</button><strong>{{this.title}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>${calendarChevron('chevronRight')}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.title}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} aria-label={{day.aria}} disabled={{day.disabled}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div>`,
+  `<div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>${calendarChevron('chevronLeft')}</button><strong>{{this.title}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>${calendarChevron('chevronRight')}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.title}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} role="gridcell" aria-label={{day.aria}} disabled={{day.disabled}} {{flagAttr "aria-selected" day.selected}} {{flagAttr "aria-current" day.current}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div>`,
   {
     state: (args) => ({ anchor: str(args.value) || toIsoDate(new Date()), value: str(args.value) }),
     getters: {
@@ -323,10 +324,13 @@ export const Calendar = glimmer(
       },
       days(this: Host) {
         const selected = parseIsoDate(str(this.state.value));
+        const today = new Date();
         return this.grid.cells.map((cell: { date: Date; label: string; disabled?: boolean; inMonth: boolean }) => ({
           iso: toIsoDate(cell.date),
           label: cell.label,
           disabled: cell.disabled,
+          selected: Boolean(selected && sameDay(selected, cell.date)),
+          current: sameDay(today, cell.date) ? 'date' : '',
           aria: formatDate(cell.date, localeOf(typeof document === 'undefined' ? null : document.body), { dateStyle: 'full' }, calendarOf(this.args.calendar)),
           className: calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: selected, rangeEnd: selected }),
         }));

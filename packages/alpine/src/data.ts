@@ -9,6 +9,7 @@ import {
   orderDateTimeRange,
   parseIsoDate,
   parseTimeValue,
+  sameDay,
   queryTable,
   readingDirection,
   toIsoDate,
@@ -383,7 +384,14 @@ export function Calendar(config: Config = {}) {
             ...grid.cells.map((cell) => h('button', {
               className: calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: selectedDate, rangeEnd: selectedDate }),
               text: cell.label,
-              attrs: { type: 'button', disabled: cell.disabled || undefined, 'aria-pressed': selected === cell.key ? 'true' : undefined, 'aria-label': formatDate(cell.date, localeOf(this.$el), { dateStyle: 'full' }, calendar) },
+              attrs: {
+                type: 'button',
+                role: 'gridcell',
+                disabled: cell.disabled || undefined,
+                'aria-selected': selectedDate && sameDay(selectedDate, cell.date) ? 'true' : undefined,
+                'aria-current': sameDay(new Date(), cell.date) ? 'date' : undefined,
+                'aria-label': formatDate(cell.date, localeOf(this.$el), { dateStyle: 'full' }, calendar),
+              },
               on: {
                 click: () => {
                   selected = toIsoDate(cell.date);
@@ -646,7 +654,14 @@ export function DateRangePicker(config: Config = {}) {
             ...month.cells.map((cell) => h('button', {
               className: calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: startDate, rangeEnd: endDate }),
               text: cell.label,
-              attrs: { type: 'button', disabled: cell.disabled || undefined, 'aria-label': formatDate(cell.date, localeOf(this.$el), { dateStyle: 'full' }, calendar) },
+              attrs: {
+                type: 'button',
+                role: 'gridcell',
+                disabled: cell.disabled || undefined,
+                'aria-selected': (startDate && sameDay(startDate, cell.date)) || (endDate && sameDay(endDate, cell.date)) ? 'true' : undefined,
+                'aria-current': sameDay(new Date(), cell.date) ? 'date' : undefined,
+                'aria-label': formatDate(cell.date, localeOf(this.$el), { dateStyle: 'full' }, calendar),
+              },
               on: { click: () => pick(cell.date) },
             })),
           ]),

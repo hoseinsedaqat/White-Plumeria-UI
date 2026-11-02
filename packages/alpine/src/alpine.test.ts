@@ -1,7 +1,7 @@
-import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
+import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Breadcrumb, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Breadcrumb, Calendar, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -33,6 +33,17 @@ afterEach(() => {
 });
 
 describe('Alpine adapter', () => {
+  it('marks the selected calendar day and today', () => {
+    const today = toIsoDate(new Date());
+    const host = mount(Calendar, { value: today });
+    const selected = host.querySelector('[aria-selected="true"]');
+    expect(selected?.getAttribute('aria-current')).toBe('date');
+    expect(selected?.getAttribute('role')).toBe('gridcell');
+    expect(host.querySelectorAll('[aria-selected="true"]')).toHaveLength(1);
+    const range = mount(DateRangePicker, { start: today, end: today });
+    expect(range.querySelector('[aria-current="date"]')?.getAttribute('aria-selected')).toBe('true');
+  });
+
   it('announces that an external link opens in a new tab', () => {
     const host = mount(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
     const link = host.querySelector('a');

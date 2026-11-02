@@ -5,6 +5,7 @@ import {
   formatDate,
   iconPaths,
   parseIsoDate,
+  sameDay,
   type CalendarSystem,
 } from "@white-plumeria/core";
 import { emit, oneOf } from "../emit.ts";
@@ -39,6 +40,7 @@ static function publish(
 <const/calendar=oneOf(input.calendar, calendars, "gregory")>
 <const/startDate=parseIsoDate(start)>
 <const/endDate=parseIsoDate(end)>
+<const/today=new Date()>
 <const/month=buildMonthGrid({
   anchor,
   calendar,
@@ -105,9 +107,12 @@ static function publish(
       <for|cell| of=month.cells>
         <button
           type="button"
+          role="gridcell"
           class=calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: startDate, rangeEnd: endDate })
           disabled=cell.disabled
           aria-label=formatDate(cell.date, activeLocale(), { dateStyle: "full" }, calendar)
+          aria-selected=((startDate && sameDay(startDate, cell.date)) || (endDate && sameDay(endDate, cell.date)) ? "true" : null)
+          aria-current=(sameDay(today, cell.date) ? "date" : null)
           onClick() {
             const result = pickRange(cell.date, start, end, localeOf(host()));
             start = result.start;
