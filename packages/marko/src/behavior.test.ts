@@ -17,6 +17,7 @@ import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
+import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
@@ -40,6 +41,17 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('marks the current pagination page', async () => {
+    const view = await render(Pagination, { page: 5, pageCount: 10 });
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');
+    expect(view.container.querySelector('.wpl-icon-dir')).toBeTruthy();
+    expect(view.container.textContent).toContain('…');
+    const six = [...view.container.querySelectorAll('button')].find((button) => button.textContent?.trim() === '6');
+    six?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('6');
+  });
+
   it('draws a chart line from the supplied points', async () => {
     const view = await render(Chart, {
       title: 'Sample volume',

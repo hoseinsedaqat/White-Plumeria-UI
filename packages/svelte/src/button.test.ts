@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Accordion from './lib/Accordion.svelte';
+import Pagination from './lib/Pagination.svelte';
 import Button from './lib/Button.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
@@ -9,6 +10,17 @@ import TreeView from './lib/TreeView.svelte';
 import Switch from './lib/Switch.svelte';
 
 describe('svelte adapter', () => {
+  it('marks the current pagination page', async () => {
+    const user = userEvent.setup();
+    const view = render(Pagination, { page: 5, pageCount: 10 });
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');
+    expect(view.container.querySelector('.wpl-icon-dir')).toBeTruthy();
+    expect(view.container.textContent).toContain('…');
+    const six = [...view.container.querySelectorAll('button')].find((button) => button.textContent?.trim() === '6');
+    await user.click(six!);
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('6');
+  });
+
   it('names an accordion panel from its trigger', () => {
     const view = render(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
     const trigger = view.container.querySelector('.wpl-accordion-trigger');

@@ -145,21 +145,48 @@ export function Pagination(config: Config = {}) {
       let page = Math.min(pageCount, Math.max(1, num(config.page, 1)));
       const nav = h('nav', { className: 'wpl-pagination', attrs: { 'aria-label': text(config.label, translate(this.$el, 'pagination')) } });
       const paint = () => {
-        const previous = h('button', {
-          className: 'wpl-page',
-          attrs: { type: 'button', disabled: page <= 1 || undefined, 'aria-label': translate(this.$el, 'previous') },
-          on: { click: () => go(page - 1) },
-        }, [svgIcon('chevronLeft')]);
-        const next = h('button', {
-          className: 'wpl-page',
-          attrs: { type: 'button', disabled: page >= pageCount || undefined, 'aria-label': translate(this.$el, 'next') },
-          on: { click: () => go(page + 1) },
-        }, [svgIcon('chevronRight')]);
-        const current = h('span', { text: `${translate(this.$el, 'page')} ${formatNumber(page, localeOf(this.$el))} ${translate(this.$el, 'of')} ${formatNumber(pageCount, localeOf(this.$el))}` });
-        nav.replaceChildren(previous, current, next);
+        const pages = Array.from({ length: pageCount }, (_, index) => index + 1).filter(
+          (item) => item === 1 || item === pageCount || Math.abs(item - page) <= 1,
+        );
+        const previous = h(
+          'button',
+          {
+            className: 'wpl-page',
+            attrs: { type: 'button', disabled: page <= 1 || undefined },
+            on: { click: () => go(page - 1) },
+          },
+          [
+            svgIcon('chevronLeft', 'wpl-icon wpl-icon-dir'),
+            h('span', { className: 'wpl-sr-only', text: translate(this.$el, 'previous') }),
+          ],
+        );
+        const next = h(
+          'button',
+          {
+            className: 'wpl-page',
+            attrs: { type: 'button', disabled: page >= pageCount || undefined },
+            on: { click: () => go(page + 1) },
+          },
+          [
+            svgIcon('chevronRight', 'wpl-icon wpl-icon-dir'),
+            h('span', { className: 'wpl-sr-only', text: translate(this.$el, 'next') }),
+          ],
+        );
+        const buttons = pages.flatMap((item, index) => {
+          const earlier = pages[index - 1];
+          const gap = earlier !== undefined && item - earlier > 1;
+          const button = h('button', {
+            className: 'wpl-page',
+            text: String(item),
+            attrs: { type: 'button', 'aria-current': item === page ? 'page' : undefined },
+            on: { click: () => go(item) },
+          });
+          return gap ? [h('span', { text: '…', attrs: { 'aria-hidden': 'true' } }), button] : [button];
+        });
+        nav.replaceChildren(previous, ...buttons, next);
       };
-      const go = (next: number) => {
-        page = Math.min(pageCount, Math.max(1, next));
+      const go = (nextPage: number) => {
+        page = Math.min(pageCount, Math.max(1, nextPage));
         paint();
         emit(this, 'wpl-change', { page });
       };

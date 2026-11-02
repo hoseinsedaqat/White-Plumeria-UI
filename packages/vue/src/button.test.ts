@@ -2,9 +2,36 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Accordion, Button, Notification, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('marks the current pagination page', async () => {
+    const user = userEvent.setup();
+    const page = ref(5);
+    const view = render(
+      defineComponent({
+        setup() {
+          return () =>
+            h(WhitePlumeriaProvider, () =>
+              h(Pagination, {
+                page: page.value,
+                pageCount: 10,
+                onPage: (next: number) => {
+                  page.value = next;
+                },
+              }),
+            );
+        },
+      }),
+    );
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');
+    expect(view.container.querySelector('.wpl-icon-dir')).toBeTruthy();
+    expect(view.container.textContent).toContain('…');
+    const six = [...view.container.querySelectorAll('button')].find((button) => button.textContent?.trim() === '6');
+    await user.click(six!);
+    expect(page.value).toBe(6);
+  });
+
   it('names an accordion panel from its trigger', () => {
     const view = render(
       defineComponent({

@@ -18,6 +18,7 @@ import {
   type CalendarSystem,
   type ColumnSpec,
   type TableQuery,
+  iconMarkup,
   iconPaths,
 } from '@white-plumeria/core';
 import { bubble, flag, glimmer, list, localeOf, num, rowId, str, type Host } from './runtime.ts';
@@ -131,7 +132,7 @@ export const DataTable = glimmer(
 );
 
 export const Pagination = glimmer(
-  `<nav class="wpl-pagination" aria-label={{this.label}}><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" disabled={{this.atStart}} {{on "click" this.previous}}>{{this.previousLabel}}</button><span>{{this.pageLabel}}</span><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" disabled={{this.atEnd}} {{on "click" this.next}}>{{this.nextLabel}}</button></nav>`,
+  `<nav class="wpl-pagination" aria-label={{this.label}}><button type="button" class="wpl-page" disabled={{this.atStart}} {{on "click" this.previous}}>${iconMarkup('chevronLeft')}<span class="wpl-sr-only">{{this.previousLabel}}</span></button>{{#each this.pages as |item|}}{{#if item.gap}}<span aria-hidden="true">…</span>{{/if}}<button type="button" class="wpl-page" {{flagAttr "aria-current" item.current}} {{on "click" (fn this.pick item)}}>{{item.value}}</button>{{/each}}<button type="button" class="wpl-page" disabled={{this.atEnd}} {{on "click" this.next}}>${iconMarkup('chevronRight')}<span class="wpl-sr-only">{{this.nextLabel}}</span></button></nav>`,
   {
     state: (args) => ({ page: num(args.page, 1) }),
     getters: {
@@ -144,9 +145,20 @@ export const Pagination = glimmer(
       atEnd(this: Host) {
         return num(this.state.page, 1) >= Math.max(1, num(this.args.pageCount, 1));
       },
-      pageLabel(this: Host) {
-        const locale = localeOf(typeof document === 'undefined' ? null : document.body);
-        return `${message(locale, 'page')} ${formatNumber(num(this.state.page, 1), locale)} ${message(locale, 'of')} ${formatNumber(Math.max(1, num(this.args.pageCount, 1)), locale)}`;
+      pages(this: Host) {
+        const page = num(this.state.page, num(this.args.page, 1));
+        const pageCount = Math.max(1, num(this.args.pageCount, 1));
+        const values = Array.from({ length: pageCount }, (_, index) => index + 1).filter(
+          (item) => item === 1 || item === pageCount || Math.abs(item - page) <= 1,
+        );
+        return values.map((value, index) => {
+          const previous = values[index - 1];
+          return {
+            value: String(value),
+            current: value === page ? 'page' : null,
+            gap: previous !== undefined && value - previous > 1,
+          };
+        });
       },
     },
     methods: {
@@ -157,6 +169,11 @@ export const Pagination = glimmer(
       },
       next(event) {
         const page = Math.min(Math.max(1, num(this.args.pageCount, 1)), num(this.state.page, 1) + 1);
+        this.state.page = page;
+        bubble(event as Event, 'wpl-change', { page });
+      },
+      pick(item, event) {
+        const page = num((item as { value?: string }).value, 1);
         this.state.page = page;
         bubble(event as Event, 'wpl-change', { page });
       },
