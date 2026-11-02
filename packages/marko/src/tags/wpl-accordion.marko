@@ -18,21 +18,23 @@ export interface Input {
 
 <div/host class="wpl-accordion">
   <for|item| of=items>
-    <h3 class="wpl-accordion-heading">
-      <button
-        type="button"
-        class="wpl-accordion-trigger"
-        aria-expanded=String(open.includes(item.id))
-        onClick() {
-          const has = open.includes(item.id);
-          open = input.multiple
-            ? (has ? open.filter((id) => id !== item.id) : open.concat(item.id))
-            : (has ? [] : [item.id]);
-          emit(host(), "wpl-change", { value: open });
-          input.onValueChange?.(open);
-        }
-      >${item.title}</button>
-    </h3>
-    <div class="wpl-accordion-panel" hidden=!open.includes(item.id)>${item.content || ""}</div>
+    <div class="wpl-accordion-item">
+      <h3 style="margin: 0; font: inherit">
+        <button
+          type="button"
+          class="wpl-accordion-trigger"
+          aria-expanded=String(open.includes(item.id))
+          onClick() {
+            const has = open.includes(item.id);
+            open = input.multiple
+              ? (has ? open.filter((id) => id !== item.id) : open.concat(item.id))
+              : (has ? [] : [item.id]);
+            emit(host(), "wpl-change", { value: open });
+            input.onValueChange?.(open);
+          }
+        >${item.title}</button>
+      </h3>
+      <div class="wpl-accordion-panel" hidden=!open.includes(item.id)>${item.content || ""}</div>
+    </div>
   </for>
 </div>

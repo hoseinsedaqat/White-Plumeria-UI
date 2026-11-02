@@ -104,7 +104,7 @@ export const Footer = glimmer(`<footer class="wpl-footer"><p>{{this.note}}</p>{{
 });
 
 export const ResponsiveLayout = glimmer(
-  `<div class="wpl-responsive" data-open={{this.open}}><div class="wpl-sidebar">{{yield to="sidebar"}}</div><div class="wpl-responsive-main">{{yield}}</div></div>`,
+  `<div class="wpl-layout" data-open={{this.open}}><div class="wpl-sidebar">{{yield to="sidebar"}}</div><div class="wpl-layout-main">{{yield}}</div></div>`,
   { getters: { open: (host) => (flag(host.args.open) ? 'true' : 'false') } },
 );
 
