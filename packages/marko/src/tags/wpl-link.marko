@@ -1,5 +1,12 @@
+import { iconPaths } from "@white-plumeria/core";
+import { text } from "../text.ts";
+
 export interface Input { href?: string; label?: string; external?: boolean; content?: Marko.Body; }
-<a class="wpl-link" href=input.href || "#" target=(input.external ? "_blank" : null) rel=(input.external ? "noreferrer" : null)>
+<a class="wpl-link" href=input.href || "#" target=(input.external ? "_blank" : null) rel=(input.external ? "noreferrer noopener" : null)>
   <if=input.label>${input.label}</if>
   <${input.content}/>
+  <if=input.external>
+    <span class="wpl-sr-only"> (${text("newTab")})</span>
+    <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.external/></svg>
+  </if>
 </a>

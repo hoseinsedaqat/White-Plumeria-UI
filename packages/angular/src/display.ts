@@ -52,7 +52,7 @@ export class Link {
   readonly className = input('', { alias: 'class' });
   private readonly wpl = injectWhitePlumeria();
   readonly classes = computed(() => cx('wpl-link', this.className()));
-  readonly newTab = computed(() => (this.wpl.preferences().locale === 'fa' ? 'در زبانهٔ جدید باز می‌شود' : 'opens in a new tab'));
+  readonly newTab = computed(() => this.wpl.t('newTab'));
 }
 
 @Component({

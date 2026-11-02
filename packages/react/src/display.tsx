@@ -4,6 +4,7 @@ import {
   badgeClassName,
   cardClassName,
   cx,
+  message,
   spinnerClassName,
 } from '@white-plumeria/core';
 import type { AlertVariant, AvatarSize, BadgeVariant, ControlSize } from '@white-plumeria/core';
@@ -33,7 +34,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   ref,
 ) {
   const { locale } = useWhitePlumeria();
-  const newTab = locale === 'fa' ? 'در زبانهٔ جدید باز می‌شود' : 'opens in a new tab';
+  const newTab = message(locale, 'newTab');
   return (
     <a
       ref={ref}

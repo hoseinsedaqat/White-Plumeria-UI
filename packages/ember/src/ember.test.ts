@@ -5,6 +5,7 @@ import {
   Accordion,
   Breadcrumb,
   Button,
+  Link,
   Pagination,
   Carousel,
   Chart,
@@ -38,6 +39,16 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('announces that an external link opens in a new tab', async () => {
+    const host = mount(Link, { href: 'https://example.com/docs', label: 'Docs', external: true });
+    await renderSettled();
+    const link = host.querySelector('a');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(link?.querySelector('.wpl-sr-only')?.textContent).toContain('opens in a new tab');
+    expect(link?.querySelector('.wpl-icon-dir')).toBeTruthy();
+  });
+
   it('separates breadcrumbs toward the inline end', async () => {
     const host = mount(Breadcrumb, {
       items: [
