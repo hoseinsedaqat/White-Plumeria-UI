@@ -2,9 +2,25 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Button, Notification, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Notification, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('names an accordion panel from its trigger', () => {
+    const view = render(
+      defineComponent({
+        setup() {
+          return () =>
+            h(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
+        },
+      }),
+    );
+    const trigger = view.container.querySelector('.wpl-accordion-trigger');
+    const panel = view.container.querySelector('[role="region"]');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    expect(panel?.textContent).toContain('No monthly fee.');
+  });
+
   it('colors a notification and shows dismiss only when requested', async () => {
     const user = userEvent.setup();
     const dismissed: string[] = [];

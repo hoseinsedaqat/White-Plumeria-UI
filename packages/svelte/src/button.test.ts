@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import Accordion from './lib/Accordion.svelte';
 import Button from './lib/Button.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
@@ -8,6 +9,15 @@ import TreeView from './lib/TreeView.svelte';
 import Switch from './lib/Switch.svelte';
 
 describe('svelte adapter', () => {
+  it('names an accordion panel from its trigger', () => {
+    const view = render(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
+    const trigger = view.container.querySelector('.wpl-accordion-trigger');
+    const panel = view.container.querySelector('[role="region"]');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    expect(panel?.textContent).toContain('No monthly fee.');
+  });
+
   it('does not activate a loading button', async () => {
     const user = userEvent.setup();
     let clicks = 0;

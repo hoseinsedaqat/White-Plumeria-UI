@@ -493,7 +493,7 @@ export function Accordion(config: Config = {}) {
         root.replaceChildren();
         for (const item of items) {
           const expanded = open.has(item.id);
-          const panelId = uid('acc');
+          const panelId = `wpl-accordion-${item.id}`;
           root.append(
             h('div', { className: 'wpl-accordion-item' }, [
               h(
@@ -503,6 +503,7 @@ export function Accordion(config: Config = {}) {
                   text: item.title,
                   attrs: {
                     type: 'button',
+                    id: `${panelId}-trigger`,
                     'aria-expanded': String(expanded),
                     'aria-controls': panelId,
                   },
@@ -518,12 +519,17 @@ export function Accordion(config: Config = {}) {
                     },
                   },
                 },
-                [svgIcon(expanded ? 'chevronDown' : 'chevronRight')],
+                [svgIcon(expanded ? 'chevronDown' : 'chevronRight', expanded ? 'wpl-icon' : 'wpl-icon wpl-icon-dir')],
               ),
               h('div', {
                 className: 'wpl-accordion-panel',
                 text: item.content ?? '',
-                attrs: { id: panelId, hidden: expanded ? undefined : true },
+                attrs: {
+                  id: panelId,
+                  role: 'region',
+                  'aria-labelledby': `${panelId}-trigger`,
+                  hidden: expanded ? undefined : true,
+                },
               }),
             ]),
           );

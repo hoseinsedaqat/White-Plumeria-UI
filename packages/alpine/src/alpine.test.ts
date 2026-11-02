@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -157,6 +157,20 @@ describe('Alpine adapter', () => {
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
     [...steps.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'))?.click();
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+  });
+
+  it('names an accordion panel from its trigger', () => {
+    const host = mount(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
+    const trigger = host.querySelector('.wpl-accordion-trigger');
+    const panel = host.querySelector('.wpl-accordion-panel');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.getAttribute('role')).toBe('region');
+    expect(panel?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    expect(panel?.hasAttribute('hidden')).toBe(true);
+    expect(trigger?.querySelector('.wpl-icon-dir')).toBeTruthy();
+    trigger?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(host.querySelector('.wpl-accordion-panel')?.hasAttribute('hidden')).toBe(false);
+    expect(host.textContent).toContain('No monthly fee.');
   });
 
   it('moves a carousel toward the inline end', () => {

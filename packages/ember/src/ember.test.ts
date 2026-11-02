@@ -2,6 +2,7 @@ import { catalog, formatDate, parseIsoDate } from '@white-plumeria/core';
 import { renderComponent, renderSettled } from '@ember/renderer';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  Accordion,
   Button,
   Carousel,
   Chart,
@@ -206,6 +207,22 @@ describe('Ember adapter', () => {
     const first = host.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+  });
+
+  it('names an accordion panel from its trigger', async () => {
+    const host = mount(Accordion, { items: [{ id: 'fees', title: 'Fees', content: 'No monthly fee.' }] });
+    await renderSettled();
+    const trigger = host.querySelector('.wpl-accordion-trigger');
+    const panel = host.querySelector('.wpl-accordion-panel');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.getAttribute('role')).toBe('region');
+    expect(panel?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    expect(panel?.hasAttribute('hidden')).toBe(true);
+    expect(trigger?.querySelector('.wpl-icon-dir')).toBeTruthy();
+    trigger?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('.wpl-accordion-panel')?.hasAttribute('hidden')).toBe(false);
+    expect(host.textContent).toContain('No monthly fee.');
   });
 
   it('moves a carousel toward the inline end', async () => {

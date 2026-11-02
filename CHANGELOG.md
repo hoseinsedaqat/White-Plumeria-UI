@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Accordion triggers name their panels, and a titled panel is a region, in Vue, Svelte, Alpine, Marko, and Ember. A collapsed chevron uses the directional icon. Packages are still not published.
 - Carousel arrow keys and a pointer drag follow writing direction in Alpine, Marko, and Ember. Dots are tabs, and an inactive slide is inert. Packages are still not published.
 - Tab arrow keys follow writing direction in Alpine, Marko, and Ember. ArrowRight moves to the previous tab in RTL. Packages are still not published.
 - A tree expands toward the inline end and collapses toward the inline start in every adapter. ArrowRight no longer toggles a closed branch in RTL. Packages are still not published.
