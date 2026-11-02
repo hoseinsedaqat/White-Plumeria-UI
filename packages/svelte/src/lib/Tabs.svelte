@@ -16,6 +16,7 @@
 <div class={orientation === 'vertical' ? 'wpl-tabs wpl-tabs-vertical' : 'wpl-tabs'}>
   <div
     role="tablist"
+    class="wpl-tablist"
     tabindex="-1"
     aria-orientation={orientation}
     onkeydown={(event) => {
@@ -47,6 +48,6 @@
     {/each}
   </div>
   {#each tabs as tab (tab.id)}
-    <div id="{base}-{tab.id}" role="tabpanel" class="wpl-tab-panel" hidden={selected !== tab.id}>{tab.panel}</div>
+    <div id="{base}-{tab.id}" role="tabpanel" class="wpl-tabpanel" hidden={selected !== tab.id}>{tab.panel}</div>
   {/each}
 </div>

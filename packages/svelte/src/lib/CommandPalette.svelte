@@ -21,9 +21,9 @@
   });
 </script>
 
-<Dialog bind:open title={wpl.t('command')} hideTitle>
+<Dialog bind:open title={wpl.t('command')} hideTitle panelClass="wpl-command">
   <input
-    class="wpl-input"
+    class="wpl-input wpl-command-input"
     bind:value={query}
     placeholder={wpl.t('search')}
     aria-label={wpl.t('search')}
@@ -41,9 +41,9 @@
       }
     }}
   />
-  <ul role="listbox" class="wpl-menu-panel">
+  <ul role="listbox" class="wpl-command-list">
     {#each filtered as command, index (command.id)}
-      <li role="option" aria-selected={index === active} class="wpl-menu-item">{command.label}</li>
+      <li role="option" aria-selected={index === active} class="wpl-menu-item" data-active={index === active ? 'true' : undefined}>{command.label}</li>
     {/each}
   </ul>
 </Dialog>

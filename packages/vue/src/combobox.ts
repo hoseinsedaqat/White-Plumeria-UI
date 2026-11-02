@@ -78,7 +78,7 @@ export const Combobox = defineComponent({
         open.value
           ? h(
               'ul',
-              { id: listId, role: 'listbox', class: 'wpl-menu-panel' },
+              { id: listId, role: 'listbox', class: 'wpl-listbox' },
               filtered.value.length
                 ? filtered.value.map((option, index) =>
                     h(
@@ -87,7 +87,8 @@ export const Combobox = defineComponent({
                         key: option.value,
                         role: 'option',
                         'aria-selected': props.modelValue === option.value,
-                        class: index === active.value ? 'wpl-menu-item wpl-menu-item-active' : 'wpl-menu-item',
+                        class: 'wpl-listbox-item',
+                        'data-active': index === active.value ? 'true' : undefined,
                         onMousedown: (event: MouseEvent) => {
                           event.preventDefault();
                           emit('update:modelValue', option.value);

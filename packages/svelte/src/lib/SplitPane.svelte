@@ -14,7 +14,7 @@
     aria-valuemin={20}
     aria-valuemax={80}
     tabindex="0"
-    class="wpl-split-handle"
+    class="wpl-split-separator"
     onkeydown={(event) => {
       if (event.key === 'ArrowRight') size = Math.min(80, size + 5);
       if (event.key === 'ArrowLeft') size = Math.max(20, size - 5);

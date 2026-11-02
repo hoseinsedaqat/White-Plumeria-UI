@@ -12,14 +12,16 @@ export function Steps(props: { label: string; steps: StepItem[]; current: number
       {props.steps.map((step, index) => {
         const state = index < props.current ? 'complete' : index === props.current ? 'current' : 'upcoming';
         return (
-          <li class={cx('wpl-step', `wpl-step-${state}`)} aria-current={state === 'current' ? 'step' : undefined}>
-            <span class="wpl-step-index" aria-hidden="true">
-              {index + 1}
-            </span>
-            <span>
-              <span class="wpl-step-label">{step.label}</span>
-              {step.description ? <span class="wpl-step-description">{step.description}</span> : null}
-            </span>
+          <li class="wpl-step" data-state={state}>
+            <div class="wpl-step-trigger" aria-current={state === 'current' ? 'step' : undefined}>
+              <span class="wpl-step-marker" aria-hidden="true">
+                {index + 1}
+              </span>
+              <span>
+                <span class="wpl-step-title">{step.label}</span>
+                {step.description ? <span class="wpl-step-desc">{step.description}</span> : null}
+              </span>
+            </div>
           </li>
         );
       })}

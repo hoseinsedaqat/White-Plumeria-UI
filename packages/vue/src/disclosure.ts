@@ -29,6 +29,7 @@ export const Tabs = defineComponent({
           'div',
           {
             role: 'tablist',
+            class: 'wpl-tablist',
             'aria-orientation': props.orientation,
             onKeydown: (event: KeyboardEvent) => {
               const dir = readingDirection(event.currentTarget as HTMLElement);
@@ -65,7 +66,7 @@ export const Tabs = defineComponent({
               key: tab.id,
               id: `${base}-panel-${tab.id}`,
               role: 'tabpanel',
-              class: 'wpl-tab-panel',
+              class: 'wpl-tabpanel',
               hidden: selected !== tab.id,
               'aria-labelledby': `${base}-tab-${tab.id}`,
             },

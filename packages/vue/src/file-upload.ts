@@ -55,12 +55,13 @@ export const FileUpload = defineComponent({
     }
 
     return () =>
-      h('div', { class: 'wpl-field' }, [
-        h('label', { class: 'wpl-label', for: id }, props.label),
+      h('div', { class: 'wpl-file' }, [
         h(
-          'div',
+          'label',
           {
-            class: active.value ? 'wpl-dropzone wpl-dropzone-active' : 'wpl-dropzone',
+            class: 'wpl-file-drop',
+            for: id,
+            'data-active': active.value ? 'true' : undefined,
             onDragover: (event: DragEvent) => {
               event.preventDefault();
               active.value = true;
@@ -73,21 +74,39 @@ export const FileUpload = defineComponent({
             },
           },
           [
+            h('span', { class: 'wpl-label' }, props.label),
+            h('span', { class: 'wpl-field-hint' }, 'Files stay in the browser. Nothing is uploaded.'),
             h('input', {
               id,
+              class: 'wpl-file-input',
               type: 'file',
               accept: props.accept || undefined,
               multiple: props.multiple,
               onChange: (event: Event) => take((event.target as HTMLInputElement).files),
             }),
-            h('p', { class: 'wpl-muted' }, props.label),
           ],
         ),
-        files.value.map((file) =>
-          h('p', { key: file.name }, `${file.name} · ${formatNumber(file.size, locale.value)}`),
-        ),
-        errors.value.map((error) => h('p', { key: error.name, class: 'wpl-field-error', role: 'alert' }, `${error.name}: ${error.reason}`)),
-        h('p', { class: 'wpl-field-hint' }, 'Files stay in the browser. Nothing is uploaded.'),
+        errors.value.length
+          ? h(
+              'ul',
+              errors.value.map((error) =>
+                h('li', { key: error.name, class: 'wpl-field-error', role: 'alert' }, `${error.name}: ${error.reason}`),
+              ),
+            )
+          : null,
+        files.value.length
+          ? h(
+              'ul',
+              { class: 'wpl-file-list' },
+              files.value.map((file) =>
+                h(
+                  'li',
+                  { key: file.name, class: 'wpl-file-item' },
+                  `${file.name} · ${formatNumber(file.size, locale.value)}`,
+                ),
+              ),
+            )
+          : null,
       ]);
   },
 });

@@ -26,14 +26,14 @@ export interface Input {
   <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = true; input.onOpenChange?.(true); }>${input.label || "Commands"}</button>
   <div class="wpl-command" role="dialog" aria-label=input.label || "Commands" hidden=!open>
     <input
-      class="wpl-input"
+      class="wpl-input wpl-command-input"
       type="search"
       placeholder="Search commands"
       value=query
       valueChange(next) { query = String(next); }
       aria-label="Search commands"
     >
-    <ul class="wpl-list" role="listbox">
+    <ul class="wpl-command-list" role="listbox">
       <for|item| of=commands>
         <li>
           <button
