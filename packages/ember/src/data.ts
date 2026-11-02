@@ -182,7 +182,7 @@ export const Pagination = glimmer(
 );
 
 export const Breadcrumb = glimmer(
-  `<nav class="wpl-breadcrumb" aria-label={{this.label}}><ol>{{#each this.items as |item|}}<li>{{#if item.href}}<a href={{item.href}}>{{item.label}}</a>{{else}}<span aria-current="page">{{item.label}}</span>{{/if}}</li>{{/each}}</ol></nav>`,
+  `<nav class="wpl-breadcrumb" aria-label={{this.label}}><ol>{{#each this.items as |item|}}<li>{{#if item.separator}}${iconMarkup('chevronRight')}{{/if}}{{#if item.href}}<a class="wpl-link" href={{item.href}}>{{item.label}}</a>{{else}}<span {{flagAttr "aria-current" item.current}}>{{item.label}}</span>{{/if}}</li>{{/each}}</ol></nav>`,
   {
     getters: {
       label: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'breadcrumb'),
@@ -191,6 +191,8 @@ export const Breadcrumb = glimmer(
         return items.map((item, index) => ({
           label: str(item.label),
           href: index === items.length - 1 ? '' : str(item.href),
+          separator: index > 0,
+          current: index === items.length - 1 ? 'page' : null,
         }));
       },
     },

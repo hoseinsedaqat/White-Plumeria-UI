@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Breadcrumb, DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -33,6 +33,19 @@ afterEach(() => {
 });
 
 describe('Alpine adapter', () => {
+  it('separates breadcrumbs toward the inline end', () => {
+    const host = mount(Breadcrumb, {
+      items: [
+        { href: '/home', label: 'Home' },
+        { href: '/docs', label: 'Docs' },
+        { label: 'Button' },
+      ],
+    });
+    expect(host.querySelectorAll('.wpl-icon-dir')).toHaveLength(2);
+    expect(host.querySelector('[aria-current="page"]')?.textContent).toBe('Button');
+    expect(host.querySelector('a')?.getAttribute('href')).toBe('/home');
+  });
+
   it('marks the current pagination page', () => {
     const host = mount(Pagination, { page: 5, pageCount: 10 });
     expect(host.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('5');

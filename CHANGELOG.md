@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Breadcrumb separators follow writing direction in Alpine, Marko, and Ember. The last crumb is the current page. Packages are still not published.
 - Pagination marks the current page and uses directional previous and next icons in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
 - Accordion triggers name their panels, and a titled panel is a region, in Vue, Svelte, Alpine, Marko, and Ember. A collapsed chevron uses the directional icon. Packages are still not published.
 - Carousel arrow keys and a pointer drag follow writing direction in Alpine, Marko, and Ember. Dots are tabs, and an inactive slide is inert. Packages are still not published.

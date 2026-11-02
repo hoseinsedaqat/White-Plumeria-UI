@@ -1,9 +1,33 @@
-export interface Crumb { href?: string; label: string; current?: boolean; }
-export interface Input { items?: Crumb[]; }
-<nav aria-label="Breadcrumb">
-  <ol class="wpl-breadcrumb">
-    <for|item| of=(input.items ?? [])>
-      <li><a href=item.href || "#" aria-current=(item.current ? "page" : null)>${item.label}</a></li>
+import { iconPaths } from "@white-plumeria/core";
+import { text } from "../text.ts";
+
+export interface Crumb {
+  href?: string;
+  label: string;
+  current?: boolean;
+}
+
+export interface Input {
+  items?: Crumb[];
+}
+
+<const/items=input.items ?? []>
+<const/last=items.length - 1>
+
+<nav class="wpl-breadcrumb" aria-label=text("breadcrumb")>
+  <ol>
+    <for|item, index| of=items>
+      <li>
+        <if=(index > 0)>
+          <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg>
+        </if>
+        <if=(index === last || !item.href)>
+          <span aria-current=(index === last ? "page" : null)>${item.label}</span>
+        </if>
+        <else>
+          <a class="wpl-link" href=item.href>${item.label}</a>
+        </else>
+      </li>
     </for>
   </ol>
 </nav>
