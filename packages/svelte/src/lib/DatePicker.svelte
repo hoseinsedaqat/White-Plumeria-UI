@@ -104,6 +104,7 @@
         placeholder="HH:mm"
         inputmode="numeric"
         aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
         oninput={(event) => commitTime((event.currentTarget as HTMLInputElement).value)}
       />
     </div>

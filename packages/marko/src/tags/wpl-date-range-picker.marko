@@ -68,6 +68,7 @@ static function publish(
         data-wpl-edge="start"
         placeholder="YYYY-MM-DD"
         aria-invalid=String(Boolean(error))
+        aria-describedby=(error ? startId + "-error" : undefined)
         valueChange(next) { apply("start", String(next)) }
       >
     </div>
@@ -80,11 +81,12 @@ static function publish(
         data-wpl-edge="end"
         placeholder="YYYY-MM-DD"
         aria-invalid=String(Boolean(error))
+        aria-describedby=(error ? startId + "-error" : undefined)
         valueChange(next) { apply("end", String(next)) }
       >
     </div>
   </div>
-  <if=error><p class="wpl-field-error" role="alert">${error}</p></if>
+  <if=error><p id=(startId + "-error") class="wpl-field-error" role="alert">${error}</p></if>
   <p class="wpl-field-hint">
     <if=(startDate && endDate)>${formatDate(startDate, "en")} – ${formatDate(endDate, "en")}</if>
     <else if=startDate>${formatDate(startDate, "en")}</else>

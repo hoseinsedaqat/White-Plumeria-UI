@@ -794,7 +794,13 @@ export function FormField(config: Config = {}) {
   return {
     init(this: Magic) {
       this.$el.classList.add('wpl-field');
-      if (flag(config.invalid)) this.$el.classList.add('wpl-field-invalid');
+      const errorText = text(config.error);
+      const hintText = text(config.hint);
+      const invalid = flag(config.invalid) || Boolean(errorText);
+      if (invalid) this.$el.classList.add('wpl-field-invalid');
+      const fieldId = uid('field');
+      const errorId = errorText ? `${fieldId}-error` : '';
+      const hintId = hintText ? `${fieldId}-hint` : '';
       const label = text(config.label);
       if (label && !this.$el.querySelector('.wpl-label')) {
         this.$el.prepend(
@@ -805,18 +811,35 @@ export function FormField(config: Config = {}) {
           }),
         );
       }
-      if (text(config.hint) && !this.$el.querySelector('.wpl-field-hint')) {
-        this.$el.append(h('p', { className: 'wpl-field-hint', text: text(config.hint) }));
+      if (hintText && !this.$el.querySelector('.wpl-field-hint')) {
+        this.$el.append(
+          h('p', { className: 'wpl-field-hint', text: hintText, attrs: { id: hintId } }),
+        );
       }
-      if (text(config.error) && !this.$el.querySelector('.wpl-field-error')) {
+      if (errorText && !this.$el.querySelector('.wpl-field-error')) {
         this.$el.append(
           h('p', {
             className: 'wpl-field-error',
-            attrs: { role: 'alert' },
-            text: text(config.error),
+            attrs: { id: errorId, role: 'alert' },
+            text: errorText,
           }),
         );
       }
+      const host = this.$el;
+      queueMicrotask(() => {
+        const control = host.querySelector('input, textarea, select');
+        if (!(control instanceof HTMLElement)) return;
+        if (invalid) control.setAttribute('aria-invalid', 'true');
+        const described = [hintId, errorId].filter(Boolean).join(' ');
+        if (!described) return;
+        const current = (control.getAttribute('aria-describedby') ?? '')
+          .split(/\s+/)
+          .filter(Boolean);
+        control.setAttribute(
+          'aria-describedby',
+          [...new Set([...current, ...described.split(' ')])].join(' '),
+        );
+      });
     },
   };
 }

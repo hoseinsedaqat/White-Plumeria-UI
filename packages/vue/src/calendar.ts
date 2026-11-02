@@ -168,6 +168,7 @@ export const DatePicker = defineComponent({
                 inputmode: 'numeric',
                 placeholder: 'HH:mm',
                 'aria-invalid': error.value ? true : undefined,
+                'aria-describedby': error.value ? `${id}-error` : undefined,
                 onInput: (event: Event) => commitTime((event.target as HTMLInputElement).value),
               }),
             ])
@@ -322,6 +323,7 @@ export const DateRangePicker = defineComponent({
               inputmode: 'numeric',
               placeholder: 'YYYY-MM-DD',
               'aria-invalid': error.value ? true : undefined,
+              'aria-describedby': error.value ? `${startId}-error` : undefined,
               onInput: (event: Event) => commit('start', (event.target as HTMLInputElement).value),
             }),
           ]),
@@ -334,6 +336,7 @@ export const DateRangePicker = defineComponent({
               inputmode: 'numeric',
               placeholder: 'YYYY-MM-DD',
               'aria-invalid': error.value ? true : undefined,
+              'aria-describedby': error.value ? `${startId}-error` : undefined,
               onInput: (event: Event) => commit('end', (event.target as HTMLInputElement).value),
             }),
           ]),
@@ -354,6 +357,7 @@ export const DateRangePicker = defineComponent({
                   inputmode: 'numeric',
                   placeholder: 'HH:mm',
                   'aria-invalid': error.value ? true : undefined,
+                  'aria-describedby': error.value ? `${startId}-error` : undefined,
                   onInput: (event: Event) => commitTime('start', (event.target as HTMLInputElement).value),
                 }),
               ]),
@@ -366,12 +370,13 @@ export const DateRangePicker = defineComponent({
                   inputmode: 'numeric',
                   placeholder: 'HH:mm',
                   'aria-invalid': error.value ? true : undefined,
+                  'aria-describedby': error.value ? `${startId}-error` : undefined,
                   onInput: (event: Event) => commitTime('end', (event.target as HTMLInputElement).value),
                 }),
               ]),
             ])
           : null,
-        error.value ? h('p', { class: 'wpl-field-error', role: 'alert' }, error.value) : null,
+        error.value ? h('p', { id: `${startId}-error`, class: 'wpl-field-error', role: 'alert' }, error.value) : null,
         open.value
           ? h(Calendar, {
               calendar: props.calendar,

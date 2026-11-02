@@ -564,7 +564,7 @@ export const formCatalog: ComponentDoc[] = [
     ],
     rtl: ['Stack is block direction, so it does not depend on left/right.'],
     limitations: [
-      'Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember. HTML users set ids manually.',
+      'React, Vue, Svelte, Angular, Solid, Preact, Qwik, and Lit pass aria-invalid and aria-describedby through context. Alpine, Marko, and Ember connect the nested control when the field is created. HTML users set ids manually.',
     ],
     element: false,
     examples: examples('FormField', {
@@ -762,6 +762,7 @@ export const formCatalog: ComponentDoc[] = [
     ],
     a11y: [
       'The real control is a native file input inside a label. Drag and drop is an extra, not the only path.',
+      'A rejected file sets aria-invalid on that input, and the input names the error.',
     ],
     rtl: [],
     limitations: [

@@ -195,6 +195,7 @@ export function DatePicker({
             inputMode="numeric"
             placeholder="HH:mm"
             aria-invalid={error ? true : undefined}
+            aria-describedby={error ? `${id}-error` : undefined}
             onInput={(event) => commitTime(event.currentTarget.value)}
           />
         </div>
@@ -381,6 +382,7 @@ export function DateRangePicker({
             inputMode="numeric"
             placeholder="YYYY-MM-DD"
             aria-invalid={error ? true : undefined}
+            aria-describedby={error ? `${startId}-error` : undefined}
             onInput={(event) => commit('start', event.currentTarget.value)}
           />
         </div>
@@ -395,6 +397,7 @@ export function DateRangePicker({
             inputMode="numeric"
             placeholder="YYYY-MM-DD"
             aria-invalid={error ? true : undefined}
+            aria-describedby={error ? `${startId}-error` : undefined}
             onInput={(event) => commit('end', event.currentTarget.value)}
           />
         </div>
@@ -419,6 +422,7 @@ export function DateRangePicker({
               inputMode="numeric"
               placeholder="HH:mm"
               aria-invalid={error ? true : undefined}
+              aria-describedby={error ? `${startId}-error` : undefined}
               onInput={(event) => commitTime('start', event.currentTarget.value)}
             />
           </div>
@@ -433,13 +437,14 @@ export function DateRangePicker({
               inputMode="numeric"
               placeholder="HH:mm"
               aria-invalid={error ? true : undefined}
+              aria-describedby={error ? `${startId}-error` : undefined}
               onInput={(event) => commitTime('end', event.currentTarget.value)}
             />
           </div>
         </div>
       ) : null}
       {error ? (
-        <p className="wpl-field-error" role="alert">
+        <p id={`${startId}-error`} className="wpl-field-error" role="alert">
           {error}
         </p>
       ) : null}

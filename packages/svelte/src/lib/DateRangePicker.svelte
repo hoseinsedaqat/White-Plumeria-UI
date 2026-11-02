@@ -137,6 +137,7 @@
         placeholder="YYYY-MM-DD"
         inputmode="numeric"
         aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${startId}-error` : undefined}
         oninput={(event) => commit('start', (event.currentTarget as HTMLInputElement).value)}
       />
     </div>
@@ -149,6 +150,7 @@
         placeholder="YYYY-MM-DD"
         inputmode="numeric"
         aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${startId}-error` : undefined}
         oninput={(event) => commit('end', (event.currentTarget as HTMLInputElement).value)}
       />
     </div>
@@ -165,6 +167,7 @@
           placeholder="HH:mm"
           inputmode="numeric"
           aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${startId}-error` : undefined}
           oninput={(event) => commitTime('start', (event.currentTarget as HTMLInputElement).value)}
         />
       </div>
@@ -177,12 +180,13 @@
           placeholder="HH:mm"
           inputmode="numeric"
           aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${startId}-error` : undefined}
           oninput={(event) => commitTime('end', (event.currentTarget as HTMLInputElement).value)}
         />
       </div>
     </div>
   {/if}
-  {#if error}<p class="wpl-field-error" role="alert">{error}</p>{/if}
+  {#if error}<p id="{startId}-error" class="wpl-field-error" role="alert">{error}</p>{/if}
   {#if open}
     <Calendar
       bind:value={picked}

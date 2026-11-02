@@ -81,6 +81,13 @@ describe('@white-plumeria/lit', () => {
     expect(end.value).toBe('2026-05-10');
     expect(picker.textContent).toContain('May 2, 2026');
     expect(picker.textContent).toContain('May 10, 2026');
+    start.value = '2026-13-01';
+    start.dispatchEvent(new Event('input', { bubbles: true }));
+    await picker.updateComplete;
+    const alert = picker.querySelector('[role="alert"]');
+    expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
+    expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
   });
 
   it('opens a menu and reports the selected item', async () => {

@@ -434,7 +434,7 @@
     "summary": "Connects label, control, hint, and error by id.",
     "summaryFa": "برچسب، کنترل، راهنما و خطا را با شناسه وصل می‌کند.",
     "limitations": [
-      "Context wiring is implemented in React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember. HTML users set ids manually."
+      "React, Vue, Svelte, Angular, Solid, Preact, Qwik, and Lit pass aria-invalid and aria-describedby through context. Alpine, Marko, and Ember connect the nested control when the field is created. HTML users set ids manually."
     ],
     "classes": [
       "wpl-field",

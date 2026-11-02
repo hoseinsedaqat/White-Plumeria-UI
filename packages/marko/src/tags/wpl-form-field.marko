@@ -1,7 +1,20 @@
 import { fieldClassName } from "@white-plumeria/core";
-export interface Input { label?: string; invalid?: boolean; hint?: string; content?: Marko.Body; }
-<div class=fieldClassName(Boolean(input.invalid))>
+export interface Input { label?: string; invalid?: boolean; hint?: string; error?: string; content?: Marko.Body; }
+<id/fieldId/>
+<const/hintId=fieldId + "-hint">
+<const/errorId=fieldId + "-error">
+<div/host class=fieldClassName(Boolean(input.invalid || input.error))>
   <if=input.label><span class="wpl-label">${input.label}</span></if>
   <${input.content}/>
-  <if=input.hint><p class="wpl-field-hint">${input.hint}</p></if>
+  <if=input.hint><p id=hintId class="wpl-field-hint">${input.hint}</p></if>
+  <if=input.error><p id=errorId class="wpl-field-error" role="alert">${input.error}</p></if>
+  <lifecycle
+    onMount() {
+      const control = host().querySelector("input, textarea, select");
+      if (!(control instanceof HTMLElement)) return;
+      if (input.invalid || input.error) control.setAttribute("aria-invalid", "true");
+      const described = [input.hint ? hintId : "", input.error ? errorId : ""].filter(Boolean).join(" ");
+      if (described) control.setAttribute("aria-describedby", described);
+    }
+  />
 </div>

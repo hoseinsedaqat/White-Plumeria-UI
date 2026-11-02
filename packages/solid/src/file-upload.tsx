@@ -84,6 +84,8 @@ export function FileUpload(props: {
           type="file"
           accept={props.accept}
           multiple={props.multiple}
+          aria-invalid={errors().length ? true : undefined}
+          aria-describedby={errors().length ? `${id}-error` : undefined}
           onChange={(event) => {
             if (event.currentTarget.files) acceptFiles(event.currentTarget.files);
             event.currentTarget.value = '';
@@ -91,9 +93,9 @@ export function FileUpload(props: {
         />
       </label>
       {errors().length ? (
-        <ul>
+        <ul id={`${id}-error`} role="alert">
           {errors().map((error) => (
-            <li class="wpl-field-error" role="alert">
+            <li class="wpl-field-error">
               {error.name}: {error.reason}
             </li>
           ))}

@@ -7,7 +7,7 @@ export interface Input { label?: string; value?: string; onChange?: (value: stri
 <id/fieldId/>
 <div/host class="wpl-date">
   <label class="wpl-label" for=fieldId>${input.label || text("chooseDate")}</label>
-  <input/field id=fieldId class="wpl-input" value=value placeholder="YYYY-MM-DD" data-wpl-edge="value" aria-invalid=String(Boolean(error)) valueChange(next) {
+  <input/field id=fieldId class="wpl-input" value=value placeholder="YYYY-MM-DD" data-wpl-edge="value" aria-invalid=String(Boolean(error)) aria-describedby=(error ? fieldId + "-error" : undefined) valueChange(next) {
     value = String(next);
     if (value && !parseIsoDate(value)) {
       error = textAt(host(), "invalidDate");
@@ -17,7 +17,7 @@ export interface Input { label?: string; value?: string; onChange?: (value: stri
     emit(host(), "wpl-change", { value });
     input.onChange?.(value);
   }>
-  <if=error><p class="wpl-field-error" role="alert">${error}</p></if>
+  <if=error><p id=(fieldId + "-error") class="wpl-field-error" role="alert">${error}</p></if>
   <lifecycle
     onMount() {
       const forward = () => field().dispatchEvent(new Event("input", { bubbles: true }));

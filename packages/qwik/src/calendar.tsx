@@ -160,6 +160,7 @@ export const DatePicker = component$<{
             inputMode="numeric"
             placeholder="HH:mm"
             aria-invalid={error.value ? true : undefined}
+            aria-describedby={error.value ? `${id}-error` : undefined}
             onInput$={(_, element) => {
               const next = element.value;
               timeText.value = next;
@@ -256,6 +257,7 @@ export const DateRangePicker = component$<{
             inputMode="numeric"
             placeholder="YYYY-MM-DD"
             aria-invalid={error.value ? true : undefined}
+            aria-describedby={error.value ? `${startId}-error` : undefined}
             onInput$={(_, element) => {
               const result = applyRange(Boolean(props.showTime), element.value, endText.value, startTimeText.value, endTimeText.value, wpl.t('invalidDate'), wpl.t('invalidTime'));
               if (!result.ok) {
@@ -283,6 +285,7 @@ export const DateRangePicker = component$<{
             inputMode="numeric"
             placeholder="YYYY-MM-DD"
             aria-invalid={error.value ? true : undefined}
+            aria-describedby={error.value ? `${startId}-error` : undefined}
             onInput$={(_, element) => {
               const result = applyRange(Boolean(props.showTime), startText.value, element.value, startTimeText.value, endTimeText.value, wpl.t('invalidDate'), wpl.t('invalidTime'));
               if (!result.ok) {
@@ -314,6 +317,7 @@ export const DateRangePicker = component$<{
               inputMode="numeric"
               placeholder="HH:mm"
               aria-invalid={error.value ? true : undefined}
+              aria-describedby={error.value ? `${startId}-error` : undefined}
               onInput$={(_, element) => {
                 const result = applyRange(true, startText.value, endText.value, element.value, endTimeText.value, wpl.t('invalidDate'), wpl.t('invalidTime'));
                 startTimeText.value = element.value;
@@ -341,6 +345,7 @@ export const DateRangePicker = component$<{
               inputMode="numeric"
               placeholder="HH:mm"
               aria-invalid={error.value ? true : undefined}
+              aria-describedby={error.value ? `${startId}-error` : undefined}
               onInput$={(_, element) => {
                 const result = applyRange(true, startText.value, endText.value, startTimeText.value, element.value, wpl.t('invalidDate'), wpl.t('invalidTime'));
                 endTimeText.value = element.value;
@@ -361,7 +366,7 @@ export const DateRangePicker = component$<{
           </div>
         </div>
       ) : null}
-      {error.value ? <p class="wpl-field-error" role="alert">{error.value}</p> : null}
+      {error.value ? <p id={`${startId}-error`} class="wpl-field-error" role="alert">{error.value}</p> : null}
       {open.value ? (
         <Calendar
           calendar={calendar}

@@ -23,17 +23,22 @@ export function registerHelper(name: string, value: unknown): void {
   extras[name] = value;
 }
 
+interface ModifierState {
+  element: Element | null;
+}
+
 const flagAttr = setModifierManager(
   () => ({
     capabilities: capabilities('3.22'),
-    createModifier() {
-      return {};
+    createModifier(): ModifierState {
+      return { element: null };
     },
-    installModifier(_state: object, element: Element, args: { positional: unknown[] }) {
+    installModifier(state: ModifierState, element: Element, args: { positional: unknown[] }) {
+      state.element = element;
       applyFlag(element, args.positional);
     },
-    updateModifier(_state: object, element: Element, args: { positional: unknown[] }) {
-      applyFlag(element, args.positional);
+    updateModifier(state: ModifierState, args: { positional: unknown[] }) {
+      if (state.element) applyFlag(state.element, args.positional);
     },
     destroyModifier() {},
   }),
@@ -43,7 +48,10 @@ const flagAttr = setModifierManager(
 function applyFlag(element: Element, positional: unknown[]): void {
   const name = str(positional[0]);
   const value = positional[1];
-  const onValue = value === true || value === 'true' || (typeof value === 'string' && value !== '' && value !== 'false');
+  const onValue =
+    value === true ||
+    value === 'true' ||
+    (typeof value === 'string' && value !== '' && value !== 'false');
   if (name === 'disabled' && element instanceof HTMLButtonElement) {
     element.disabled = Boolean(value);
     return;
@@ -53,8 +61,40 @@ function applyFlag(element: Element, positional: unknown[]): void {
   else element.setAttribute(name, onValue && value === true ? 'true' : String(value));
 }
 
+const wireField = setModifierManager(
+  () => ({
+    capabilities: capabilities('3.22'),
+    createModifier(): ModifierState {
+      return { element: null };
+    },
+    installModifier(state: ModifierState, element: Element, args: { positional: unknown[] }) {
+      state.element = element;
+      applyField(element, args.positional);
+    },
+    updateModifier(state: ModifierState, args: { positional: unknown[] }) {
+      if (state.element) applyField(state.element, args.positional);
+    },
+    destroyModifier() {},
+  }),
+  class WireFieldModifier {},
+);
+
+function applyField(element: Element, positional: unknown[]): void {
+  const errorId = str(positional[0]);
+  const hintId = str(positional[1]);
+  const invalid = positional[2] === true || positional[2] === 'true';
+  const described = [hintId, errorId].filter(Boolean);
+  if (!invalid && described.length === 0) return;
+  const control = element.querySelector('input, textarea, select');
+  if (!(control instanceof HTMLElement)) return;
+  if (invalid) control.setAttribute('aria-invalid', 'true');
+  if (described.length === 0) return;
+  const current = (control.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean);
+  control.setAttribute('aria-describedby', [...new Set([...current, ...described])].join(' '));
+}
+
 export function scope(): Record<string, unknown> {
-  return { on, eq, fn, not, or, and, gt, gte, lt, lte, flag, ...extras };
+  return { on, eq, fn, not, or, and, gt, gte, lt, lte, flag, flagAttr, wireField, ...extras };
 }
 
 export type EmberComponent = new (owner: unknown, args: Record<string, unknown>) => Host;
@@ -117,7 +157,9 @@ export function list<T>(value: unknown): T[] {
 }
 
 export function localeOf(element: Element | null | undefined): Locale {
-  const lang = element?.closest('[lang]')?.getAttribute('lang') ?? element?.ownerDocument?.documentElement.lang;
+  const lang =
+    element?.closest('[lang]')?.getAttribute('lang') ??
+    element?.ownerDocument?.documentElement.lang;
   return lang === 'fa' ? 'fa' : 'en';
 }
 

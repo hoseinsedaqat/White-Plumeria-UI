@@ -97,6 +97,8 @@ export class FileUpload extends WplElement {
           type="file"
           accept=${this.accept || nothing}
           ?multiple=${this.multiple}
+          aria-invalid=${this.errors.length ? 'true' : nothing}
+          aria-describedby=${this.errors.length ? `${this.inputId}-error` : nothing}
           @change=${(event: Event) => {
             const element = event.target instanceof HTMLInputElement ? event.target : null;
             if (element?.files) this.acceptFiles(element.files);
@@ -105,8 +107,8 @@ export class FileUpload extends WplElement {
         />
       </label>
       ${this.errors.length
-        ? html`<ul>
-            ${this.errors.map((error) => html`<li class="wpl-field-error" role="alert">${error.name}: ${error.reason}</li>`)}
+        ? html`<ul id=${`${this.inputId}-error`} role="alert">
+            ${this.errors.map((error) => html`<li class="wpl-field-error">${error.name}: ${error.reason}</li>`)}
           </ul>`
         : nothing}
       ${this.files.length

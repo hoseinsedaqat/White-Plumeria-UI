@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DataTable, DateRangePicker, DropdownMenu, FileUpload, Notification, Slider, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { DataTable, DateRangePicker, DropdownMenu, FileUpload, FormField, Notification, Slider, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -88,6 +88,12 @@ describe('Alpine adapter', () => {
     expect(early).not.toBeNull();
     expect(host.textContent).toContain(formatDate(early ?? new Date(), 'en'));
     expect(events.at(-1)).toEqual({ start: '2026-05-02', end: '2026-05-10' });
+    start.value = '2026-13-01';
+    start.dispatchEvent(new Event('change', { bubbles: true }));
+    const alert = host.querySelector('[role="alert"]');
+    expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
+    expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
+    expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
   });
 
   it('selects a menu item and ignores a disabled one', () => {
@@ -152,6 +158,19 @@ describe('Alpine adapter', () => {
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
   });
 
+  it('names a form-field error from the nested control', async () => {
+    const host = document.createElement('div');
+    host.append(document.createElement('input'));
+    document.body.append(host);
+    FormField({ label: 'Email', error: 'Enter a valid email' }).init?.call(magicFor(host));
+    await Promise.resolve();
+    const input = host.querySelector('input');
+    const alert = host.querySelector('[role="alert"]');
+    expect(alert?.textContent).toContain('Enter a valid email');
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(input?.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
   it('rejects an oversized file and reports a slider value', () => {
     const rejected: unknown[] = [];
     const host = mount(FileUpload, { label: 'Floor plan', maxSize: 4 });
@@ -162,6 +181,8 @@ describe('Alpine adapter', () => {
     input.dispatchEvent(new Event('change', { bubbles: true }));
     expect(host.textContent).toContain('plan.pdf');
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe(host.querySelector('[role="alert"]')?.id);
 
     const values: unknown[] = [];
     const slider = mount(Slider, { label: 'Nights', min: 1, max: 7, value: 2 });
