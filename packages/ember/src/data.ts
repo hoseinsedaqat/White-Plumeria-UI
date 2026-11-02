@@ -457,11 +457,10 @@ export const DateRangePicker = glimmer(
 );
 
 export const ChartContainer = glimmer(
-  `<figure class="wpl-chart"><figcaption>{{this.label}}</figcaption><div class="wpl-chart-frame" role="img" aria-label={{this.label}}>{{#if this.value}}<span class="wpl-progress-bar" style={{this.bar}}></span>{{/if}}{{yield}}</div>{{#if @description}}<p class="wpl-muted">{{@description}}</p>{{/if}}</figure>`,
+  `<figure class="wpl-chart"><figcaption class="wpl-card-title">{{this.label}}</figcaption><div class="wpl-chart-bar"><span>{{this.label}}</span><span class="wpl-chart-track"><span class="wpl-chart-fill" style={{this.bar}}></span></span></div>{{yield}}{{#if @description}}<p class="wpl-muted">{{@description}}</p>{{/if}}</figure>`,
   {
     getters: {
       label: (host) => str(host.args.label, 'Chart'),
-      value: (host) => num(host.args.value, 0),
       bar: (host) => `inline-size:${Math.min(100, Math.max(0, num(host.args.value, 0)))}%`,
     },
   },

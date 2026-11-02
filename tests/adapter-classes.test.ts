@@ -13,13 +13,24 @@ const banned = [
   'wpl-step-description',
   'wpl-password-toggle',
   'wpl-number-control',
+  'wpl-rating-star',
+  'wpl-accordion-heading',
+  'wpl-chart-frame',
+  'wpl-responsive-main',
+  'wpl-responsive',
 ];
+
+function usesClass(text: string, name: string): boolean {
+  const edge = '(^|[^A-Za-z0-9_-])';
+  const end = '($|[^A-Za-z0-9_-])';
+  return new RegExp(`${edge}${name}${end}`).test(text);
+}
 
 function sources(dir: string): string[] {
   const files: string[] = [];
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
-    if (name === 'dist' || name === 'node_modules') continue;
+    if (name === 'dist' || name === 'node_modules' || name === 'scripts') continue;
     const stat = statSync(path);
     if (stat.isDirectory()) files.push(...sources(path));
     else if (/\.(ts|tsx|svelte|marko|mjs)$/.test(name)) files.push(path);
@@ -33,7 +44,7 @@ describe('adapter class contract', () => {
     for (const file of sources('packages')) {
       const text = readFileSync(file, 'utf8');
       for (const name of banned) {
-        if (text.includes(name)) hits.push(`${file} uses ${name}`);
+        if (usesClass(text, name)) hits.push(`${file} uses ${name}`);
       }
     }
     expect(hits).toEqual([]);
@@ -51,5 +62,10 @@ describe('adapter class contract', () => {
     expect(readFileSync('packages/vue/src/command.ts', 'utf8')).toContain('wpl-command-list');
     expect(readFileSync('packages/solid/src/steps.tsx', 'utf8')).toContain('data-state={state}');
     expect(readFileSync('packages/solid/src/steps.tsx', 'utf8')).toContain('wpl-step-marker');
+    expect(readFileSync('packages/marko/src/tags/wpl-responsive-layout.marko', 'utf8')).toContain('wpl-layout-main');
+    expect(readFileSync('packages/marko/src/tags/wpl-rating.marko', 'utf8')).toContain('wpl-rating-option');
+    expect(readFileSync('packages/marko/src/tags/wpl-accordion.marko', 'utf8')).toContain('wpl-accordion-item');
+    expect(readFileSync('packages/ember/src/data.ts', 'utf8')).toContain('wpl-chart-fill');
+    expect(readFileSync('packages/alpine/src/layout.ts', 'utf8')).toContain("classList.add('wpl-layout')");
   });
 });

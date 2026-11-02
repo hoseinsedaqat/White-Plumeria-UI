@@ -256,15 +256,17 @@ export function ChartContainer(config: Config = {}) {
       }
       const max = Math.max(...points.map((point) => point.value), 1);
       this.$el.replaceChildren(h('div', { className: 'wpl-chart', attrs: { role: 'img', 'aria-label': label } }, [
-        h('table', { className: 'wpl-table' }, [
+        h('table', { className: 'wpl-table wpl-chart-table' }, [
           h('caption', { text: label }),
           h('tbody', {}, points.map((point) => h('tr', {}, [
             h('th', { text: point.label, attrs: { scope: 'row' } }),
             h('td', {}, [
-              h('span', {
-                className: 'wpl-progress-bar',
-                attrs: { style: `inline-size:${Math.round((point.value / max) * 100)}%` },
-              }),
+              h('span', { className: 'wpl-chart-track' }, [
+                h('span', {
+                  className: 'wpl-chart-fill',
+                  attrs: { style: `inline-size:${Math.round((point.value / max) * 100)}%` },
+                }),
+              ]),
               ` ${formatNumber(point.value, localeOf(this.$el))}`,
             ]),
           ]))),

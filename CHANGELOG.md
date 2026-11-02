@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Marko, Ember, and Alpine layout, rating, accordion, radio, and chart markup now use the shared stylesheet classes. A responsive layout is a grid, a rating is a star control, and a chart bar has a track. Packages are still not published.
 - Vue, Svelte, Solid, Ember, and Marko controls use the same stylesheet classes as the other adapters. A file drop, tab list, split separator, command list, and step marker is no longer an unstyled name. Packages are still not published.
 - Scrolling a dialog, menu, or table no longer drags the page behind it. Reduced transparency replaces the overlay and translucent bars with a solid theme color. Packages are still not published.
 - Native accents and scrollbars follow the theme. Forced colors keep the system chrome. Focus inside a scrolling component is not clipped at the edge, and the docs bar no longer covers a focused target. Packages are still not published.

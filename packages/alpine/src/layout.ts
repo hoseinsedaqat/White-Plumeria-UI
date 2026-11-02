@@ -130,10 +130,20 @@ export function Footer(config: Config = {}) {
 export function ResponsiveLayout(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.classList.add('wpl-responsive');
+      const host = this.$el;
+      host.classList.add('wpl-layout');
+      if (config.open === true || config.open === 'true') host.setAttribute('data-open', 'true');
       const label = text(config.label);
-      if (label && !this.$el.querySelector('.wpl-sidebar')) {
-        this.$el.prepend(h('nav', { className: 'wpl-sidebar', attrs: { 'aria-label': label } }));
+      if (label && !host.querySelector('.wpl-sidebar')) {
+        host.prepend(h('nav', { className: 'wpl-sidebar', attrs: { 'aria-label': label } }));
+      }
+      if (!host.querySelector(':scope > .wpl-layout-main')) {
+        const main = h('div', { className: 'wpl-layout-main' });
+        for (const node of [...host.childNodes]) {
+          if (node instanceof Element && node.classList.contains('wpl-sidebar')) continue;
+          main.append(node);
+        }
+        if (main.childNodes.length) host.append(main);
       }
     },
   };
