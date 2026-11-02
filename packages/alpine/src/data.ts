@@ -2,6 +2,7 @@ import {
   addMonths,
   buildMonthGrid,
   calendarDayClass,
+  chartFigureHtml,
   formatDate,
   formatNumber,
   orderDateRange,
@@ -9,6 +10,7 @@ import {
   parseIsoDate,
   parseTimeValue,
   queryTable,
+  readingDirection,
   toIsoDate,
   toggleSort,
   type CalendarSystem,
@@ -243,6 +245,25 @@ export function TreeView(config: Config = {}) {
 interface Point {
   label: string;
   value: number;
+}
+
+export function Chart(config: Config = {}) {
+  return {
+    init(this: Magic) {
+      const title = text(config.title ?? config.label, 'Chart');
+      const figure = document.createElement('figure');
+      figure.className = 'wpl-graph';
+      figure.innerHTML = chartFigureHtml({
+        title,
+        description: text(config.description),
+        data: list(config.data ?? config.points),
+        type: config.type,
+        direction: readingDirection(this.$el),
+        locale: localeOf(this.$el),
+      });
+      this.$el.replaceChildren(figure);
+    },
+  };
 }
 
 export function ChartContainer(config: Config = {}) {

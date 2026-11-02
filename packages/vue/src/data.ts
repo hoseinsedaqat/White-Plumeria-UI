@@ -1,4 +1,4 @@
-import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
 import { computed, defineComponent, h, ref, type PropType } from 'vue';
 import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
@@ -309,5 +309,30 @@ export const ChartContainer = defineComponent({
         ),
       ]);
     };
+  },
+});
+
+export const Chart = defineComponent({
+  name: 'Chart',
+  props: {
+    title: { type: String, required: true },
+    description: { type: String, default: '' },
+    type: { type: String as PropType<'line' | 'area' | 'bar'>, default: 'area' },
+    data: { type: Array as PropType<Array<{ label: string; value: number }>>, default: () => [] },
+  },
+  setup(props) {
+    const { preferences } = useWhitePlumeria();
+    return () =>
+      h('figure', {
+        class: 'wpl-graph',
+        innerHTML: chartFigureHtml({
+          title: props.title,
+          description: props.description,
+          data: props.data,
+          type: props.type,
+          direction: resolveDirection(preferences.value),
+          locale: preferences.value.locale,
+        }),
+      });
   },
 });

@@ -10,6 +10,7 @@ import {
   Calendar,
   Carousel,
   Card,
+  Chart,
   ChartContainer,
   Checkbox,
   Combobox,
@@ -536,6 +537,20 @@ export function renderDemo(slug: string): ReactNode {
       return <DatePicker label="From" value="2026-10-27" />;
     case 'date-range-picker':
       return <DateRangeDemo />;
+    case 'chart':
+      return (
+        <Chart
+          title="Sample volume"
+          description="Fixture values for the docs preview."
+          data={[
+            { label: 'Mon', value: 12 },
+            { label: 'Tue', value: 18 },
+            { label: 'Wed', value: 9 },
+            { label: 'Thu', value: 15 },
+            { label: 'Fri', value: 21 },
+          ]}
+        />
+      );
     case 'chart-container':
       return (
         <ChartContainer

@@ -12,6 +12,7 @@ export { CommandPalette } from './command';
 export type { CommandItem } from './command';
 export {
   Breadcrumb,
+  Chart,
   ChartContainer,
   DataTable,
   List,

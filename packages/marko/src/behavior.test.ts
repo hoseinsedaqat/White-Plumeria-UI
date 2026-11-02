@@ -3,6 +3,7 @@ import { render } from '@marko/testing-library';
 import { afterEach, describe, expect, it } from 'vitest';
 import { pushToast } from './provider.ts';
 import { tagNames } from './index.ts';
+import Chart from './tags/wpl-chart.marko';
 import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
 import DataTable from './tags/wpl-data-table.marko';
@@ -34,6 +35,20 @@ afterEach(async () => {
 });
 
 describe('Marko adapter', () => {
+  it('draws a chart line from the supplied points', async () => {
+    const view = await render(Chart, {
+      title: 'Sample volume',
+      type: 'line',
+      data: [
+        { label: 'Mon', value: 12 },
+        { label: 'Tue', value: 18 },
+      ],
+    });
+    expect(view.container.querySelector('.wpl-graph-line')).toBeTruthy();
+    expect(view.container.textContent).toContain('Mon');
+    expect(view.container.querySelector('.wpl-graph-column')).toBeNull();
+  });
+
   it('renders every catalog tag', async () => {
     expect(Object.keys(templates)).toHaveLength(tagNames.length);
     for (const name of tagNames) {

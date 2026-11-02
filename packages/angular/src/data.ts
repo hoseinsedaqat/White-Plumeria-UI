@@ -10,7 +10,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartLayout, chartMessage, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
 import { EmptyState } from './display';
 import { SearchInput } from './form';
 import { Icon } from './icon';
@@ -474,5 +474,88 @@ export class ChartContainer {
 
   formatted(value: number): string {
     return formatNumber(value, this.wpl.preferences().locale);
+  }
+}
+
+@Component({
+  selector: 'wpl-chart-graph',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  host: { style: 'display: block; max-width: 100%; min-width: 0' },
+  template: `
+    <figure class="wpl-graph">
+      <figcaption class="wpl-card-title">{{ title() }}</figcaption>
+      @if (description()) {
+        <p class="wpl-muted">{{ description() }}</p>
+      }
+      @if (message()) {
+        <p [class]="layout().reason === 'invalid' ? 'wpl-field-error' : 'wpl-muted'" [attr.role]="layout().reason === 'invalid' ? 'alert' : null">{{ message() }}</p>
+      }
+      @if (layout().ok) {
+        <svg class="wpl-graph-svg" [attr.viewBox]="viewBox()" aria-hidden="true" focusable="false" [attr.direction]="layout().direction">
+          @for (line of layout().grid; track line.y) {
+            <line class="wpl-graph-grid" [attr.x1]="line.x1" [attr.x2]="line.x2" [attr.y1]="line.y" [attr.y2]="line.y" fill="none" stroke="currentColor"></line>
+          }
+          <line class="wpl-graph-axis" [attr.x1]="layout().axis.x1" [attr.x2]="layout().axis.x2" [attr.y1]="layout().axis.y" [attr.y2]="layout().axis.y" fill="none" stroke="currentColor"></line>
+          @if (layout().area) {
+            <path class="wpl-graph-area" fill="currentColor" [attr.d]="layout().area"></path>
+          }
+          @for (column of layout().columns; track $index) {
+            <path class="wpl-graph-column" fill="currentColor" [attr.d]="column"></path>
+          }
+          @if (layout().line) {
+            <path class="wpl-graph-line" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [attr.d]="layout().line"></path>
+          }
+          @for (dot of layout().dots; track $index) {
+            <circle class="wpl-graph-dot" [attr.cx]="dot.cx" [attr.cy]="dot.cy" r="3.5" fill="currentColor" stroke="currentColor"></circle>
+          }
+          @for (label of layout().yLabels; track label.text) {
+            <text class="wpl-graph-label" [attr.x]="label.x" [attr.y]="label.y" [attr.text-anchor]="label.anchor" dominant-baseline="middle">{{ label.text }}</text>
+          }
+          @for (label of layout().xLabels; track $index) {
+            <text class="wpl-graph-label" [attr.x]="label.x" [attr.y]="label.y" text-anchor="middle">{{ label.text }}</text>
+          }
+        </svg>
+      }
+      @if (data().length) {
+        <table class="wpl-table wpl-chart-table">
+          <caption class="wpl-sr-only">{{ title() }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Label</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (point of data(); track $index) {
+              <tr>
+                <th scope="row">{{ point.label }}</th>
+                <td>{{ formatted(point.value) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </figure>
+  `,
+})
+export class Chart {
+  readonly title = input.required<string>();
+  readonly data = input.required<ChartPoint[]>();
+  readonly description = input('');
+  readonly type = input<'line' | 'area' | 'bar'>('area');
+  private readonly wpl = injectWhitePlumeria();
+  readonly layout = computed(() =>
+    chartLayout(this.data(), {
+      type: this.type(),
+      direction: resolveDirection(this.wpl.preferences()),
+      locale: this.wpl.preferences().locale,
+    }),
+  );
+  readonly message = computed(() => chartMessage(this.layout().reason));
+  readonly viewBox = computed(() => `0 0 ${this.layout().width} ${this.layout().height}`);
+
+  formatted(value: number): string {
+    return Number.isFinite(value) ? formatNumber(value, this.wpl.preferences().locale) : String(value);
   }
 }

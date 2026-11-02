@@ -11,6 +11,7 @@ export { CommandPalette } from './command.ts';
 export type { CommandItem } from './command.ts';
 export {
   Breadcrumb,
+  Chart,
   ChartContainer,
   DataTable,
   List,

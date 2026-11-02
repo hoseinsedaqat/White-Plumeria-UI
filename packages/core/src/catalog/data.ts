@@ -283,7 +283,7 @@ export const dataCatalog: ComponentDoc[] = [
     category: 'data',
     summary: 'Accessible bar summary plus a data table. Not a charting engine.',
     summaryFa: 'خلاصهٔ میله‌ای دسترس‌پذیر به‌علاوهٔ جدول. موتور نمودار نیست.',
-    tags: ['chart', 'bar', 'نمودار'],
+    tags: ['summary', 'bar', 'جدول'],
     classes: ['wpl-chart', 'wpl-chart-bar', 'wpl-chart-fill'],
     props: [
       { name: 'title', type: 'string', description: 'Chart name.', descriptionFa: 'نام نمودار.' },
@@ -299,6 +299,38 @@ export const dataCatalog: ComponentDoc[] = [
       vue: '<ChartContainer title="Sample volume" :data="[{ label: \'Mon\', value: 12 }]" />',
       svelte: '<ChartContainer title="Sample volume" data={[{ label: "Mon", value: 12 }]} />',
       html: '<figure class="wpl-chart"><figcaption>Sample volume</figcaption></figure>',
+    }),
+  },
+  {
+    name: 'Chart',
+    slug: 'chart',
+    category: 'data',
+    summary: 'SVG line, area, or column graph for one series, with the same values in a table.',
+    summaryFa: 'نمودار خطی، سطحی یا ستونی SVG برای یک سری، با همان مقدارها در جدول.',
+    tags: ['chart', 'graph', 'line', 'area', 'نمودار'],
+    classes: ['wpl-graph', 'wpl-graph-svg', 'wpl-graph-line', 'wpl-graph-area', 'wpl-graph-column', 'wpl-graph-dot', 'wpl-graph-grid', 'wpl-graph-axis', 'wpl-graph-label', 'wpl-chart-table'],
+    props: [
+      { name: 'title', type: 'string', description: 'Name of the graph.', descriptionFa: 'نام نمودار.' },
+      { name: 'data', type: 'Array<{ label: string; value: number }>', description: 'Finite, non-negative values you supply.', descriptionFa: 'مقدارهای نامنفی و متناهی که خودتان می‌دهید.' },
+      { name: 'type', type: "'line' | 'area' | 'bar'", defaultValue: 'area', description: 'How the series is drawn.', descriptionFa: 'شکل رسم سری.' },
+      { name: 'description', type: 'string', description: 'Optional note under the title.', descriptionFa: 'یادداشت اختیاری زیر عنوان.' },
+    ],
+    events: [],
+    a11y: [
+      'The SVG is decorative. A table with the same labels and values is the accessible representation.',
+      'Invalid values are not drawn. An alert explains that values must be finite and non-negative.',
+    ],
+    rtl: ['The first point starts at the inline start. Y-axis labels sit on that side.'],
+    limitations: [
+      'One series. No zoom, pan, legend, pie, or canvas.',
+      'The line connects the supplied points. It does not forecast or smooth in extra values.',
+    ],
+    element: false,
+    examples: examples('Chart', {
+      react: '<Chart title="Sample volume" type="area" data={[{ label: "Mon", value: 12 }, { label: "Tue", value: 18 }, { label: "Wed", value: 9 }]} />',
+      vue: '<Chart title="Sample volume" type="area" :data="[{ label: \'Mon\', value: 12 }, { label: \'Tue\', value: 18 }, { label: \'Wed\', value: 9 }]" />',
+      svelte: '<Chart title="Sample volume" type="area" data={[{ label: "Mon", value: 12 }, { label: "Tue", value: 18 }, { label: "Wed", value: 9 }]} />',
+      html: '<figure class="wpl-graph"><figcaption>Sample volume</figcaption><svg class="wpl-graph-svg" viewBox="0 0 640 248" aria-hidden="true"><path class="wpl-graph-area" d="M 80 150 L 320 70 L 560 110 L 560 204 L 80 204 Z"></path><path class="wpl-graph-line" fill="none" stroke="currentColor" d="M 80 150 L 320 70 L 560 110"></path></svg><table class="wpl-table wpl-chart-table"><caption>Sample volume</caption><tbody><tr><th scope="row">Mon</th><td>12</td></tr></tbody></table></figure>',
     }),
   },
 ];

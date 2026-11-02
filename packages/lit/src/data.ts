@@ -1,9 +1,11 @@
 import {
+  chartFigureHtml,
   formatNumber,
   queryTable,
   toggleSort,
   type ColumnSpec,
 } from '@white-plumeria/core';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { defineTag, html, nothing, WplElement, type RenderResult } from './element';
 import { iconSvg } from './icon';
 import { localeOf, translate } from './provider';
@@ -433,3 +435,40 @@ defineTag('wpl-list', List);
 defineTag('wpl-timeline', Timeline);
 defineTag('wpl-tree-view', TreeView);
 defineTag('wpl-chart-container', ChartContainer);
+
+export class Chart extends WplElement {
+  static override properties = {
+    title: { type: String },
+    description: { type: String },
+    type: { type: String },
+    data: { attribute: false },
+  };
+
+  declare title: string;
+  declare description: string;
+  declare type: string;
+  declare data: ChartPoint[];
+
+  constructor() {
+    super();
+    this.title = '';
+    this.description = '';
+    this.type = 'area';
+    this.data = [];
+  }
+
+  protected override render(): RenderResult {
+    const direction = this.ownerDocument.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+    const markup = chartFigureHtml({
+      title: this.title,
+      description: this.description,
+      data: this.data,
+      type: this.type,
+      direction,
+      locale: localeOf(this),
+    });
+    return html`<figure class="wpl-graph">${unsafeHTML(markup)}</figure>`;
+  }
+}
+
+defineTag('wpl-chart', Chart);

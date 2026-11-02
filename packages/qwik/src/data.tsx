@@ -1,4 +1,4 @@
-import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
 import { $, component$, Slot, useSignal, type QRL } from '@qwik.dev/core';
 import { EmptyState } from './display';
 import { SearchInput } from './form';
@@ -354,4 +354,22 @@ export const ChartContainer = component$<{ title: string; data: ChartPoint[]; de
       </table>
     </figure>
   );
+});
+
+export const Chart = component$<{
+  title: string;
+  data: ChartPoint[];
+  description?: string;
+  type?: 'line' | 'area' | 'bar';
+}>((props) => {
+  const wpl = useWhitePlumeria();
+  const markup = chartFigureHtml({
+    title: props.title,
+    description: props.description,
+    data: props.data,
+    type: props.type,
+    direction: resolveDirection(wpl.preferences),
+    locale: wpl.locale,
+  });
+  return <figure class="wpl-graph" dangerouslySetInnerHTML={markup} />;
 });

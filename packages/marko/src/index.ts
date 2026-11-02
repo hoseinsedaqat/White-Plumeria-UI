@@ -13,6 +13,7 @@ export const tagNames = [
   'wpl-calendar',
   'wpl-card',
   'wpl-carousel',
+  'wpl-chart',
   'wpl-chart-container',
   'wpl-checkbox',
   'wpl-combobox',

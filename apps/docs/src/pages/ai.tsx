@@ -5,6 +5,7 @@ import {
   Button,
   Calendar,
   Card,
+  Chart,
   ChartContainer,
   DatePicker,
   DateRangePicker,
@@ -253,6 +254,21 @@ function PreviewNodeView({ node }: { node: PreviewNode }) {
           <PreviewNodeView key={index} node={child} />
         ))}
       </EmptyState>
+    );
+  }
+  if (node.component === 'Chart') {
+    return (
+      <Chart
+        title={textProp(node, 'title', 'Sample volume')}
+        description="Fixture values for the preview, not live metrics."
+        data={[
+          { label: 'Mon', value: 12 },
+          { label: 'Tue', value: 18 },
+          { label: 'Wed', value: 9 },
+          { label: 'Thu', value: 15 },
+          { label: 'Fri', value: 21 },
+        ]}
+      />
     );
   }
   if (node.component === 'ChartContainer') {

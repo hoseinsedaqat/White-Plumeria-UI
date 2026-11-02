@@ -1,4 +1,4 @@
-import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
 import { type ComponentChildren } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
 import { EmptyState } from './display.tsx';
@@ -460,4 +460,27 @@ export function ChartContainer({
       </table>
     </figure>
   );
+}
+
+export function Chart({
+  title,
+  data,
+  description,
+  type = 'area',
+}: {
+  title: string;
+  data: ChartPoint[];
+  description?: string;
+  type?: 'line' | 'area' | 'bar';
+}) {
+  const { locale, preferences } = useWhitePlumeria();
+  const markup = chartFigureHtml({
+    title,
+    description,
+    data,
+    type,
+    direction: resolveDirection(preferences),
+    locale,
+  });
+  return <figure className="wpl-graph" dangerouslySetInnerHTML={{ __html: markup }} />;
 }

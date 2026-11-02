@@ -163,6 +163,29 @@
     "html": "<section class=\"wpl-carousel wpl-carousel-media\" aria-roledescription=\"carousel\" aria-label=\"Theme stills\"><div class=\"wpl-carousel-viewport\"><div class=\"wpl-carousel-track\"><figure class=\"wpl-carousel-figure\"><img class=\"wpl-carousel-image\" src=\"/carousel/white.jpg\" alt=\"White plumeria flowers on pale stone\" /><figcaption class=\"wpl-carousel-caption\"><strong>White</strong><span>The default palette.</span></figcaption></figure></div></div></section>"
   },
   {
+    "name": "Chart",
+    "slug": "chart",
+    "summary": "SVG line, area, or column graph for one series, with the same values in a table.",
+    "summaryFa": "نمودار خطی، سطحی یا ستونی SVG برای یک سری، با همان مقدارها در جدول.",
+    "limitations": [
+      "One series. No zoom, pan, legend, pie, or canvas.",
+      "The line connects the supplied points. It does not forecast or smooth in extra values."
+    ],
+    "classes": [
+      "wpl-graph",
+      "wpl-graph-svg",
+      "wpl-graph-line",
+      "wpl-graph-area",
+      "wpl-graph-column",
+      "wpl-graph-dot",
+      "wpl-graph-grid",
+      "wpl-graph-axis",
+      "wpl-graph-label",
+      "wpl-chart-table"
+    ],
+    "html": "<figure class=\"wpl-graph\"><figcaption>Sample volume</figcaption><svg class=\"wpl-graph-svg\" viewBox=\"0 0 640 248\" aria-hidden=\"true\"><path class=\"wpl-graph-area\" d=\"M 80 150 L 320 70 L 560 110 L 560 204 L 80 204 Z\"></path><path class=\"wpl-graph-line\" fill=\"none\" stroke=\"currentColor\" d=\"M 80 150 L 320 70 L 560 110\"></path></svg><table class=\"wpl-table wpl-chart-table\"><caption>Sample volume</caption><tbody><tr><th scope=\"row\">Mon</th><td>12</td></tr></tbody></table></figure>"
+  },
+  {
     "name": "ChartContainer",
     "slug": "chart-container",
     "summary": "Accessible bar summary plus a data table. Not a charting engine.",

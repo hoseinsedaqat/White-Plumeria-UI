@@ -1,4 +1,4 @@
-import { formatNumber, queryTable, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
 import { createMemo, createSignal, type JSX } from 'solid-js';
 import { EmptyState } from './display.tsx';
 import { SearchInput } from './form.tsx';
@@ -361,4 +361,23 @@ export function ChartContainer(props: { title: string; data: ChartPoint[]; descr
       </table>
     </figure>
   );
+}
+
+export function Chart(props: {
+  title: string;
+  data: ChartPoint[];
+  description?: string;
+  type?: 'line' | 'area' | 'bar';
+}) {
+  const wpl = useWhitePlumeria();
+  const markup = () =>
+    chartFigureHtml({
+      title: props.title,
+      description: props.description,
+      data: props.data,
+      type: props.type,
+      direction: resolveDirection(wpl.preferences()),
+      locale: wpl.locale(),
+    });
+  return <figure class="wpl-graph" innerHTML={markup()} />;
 }

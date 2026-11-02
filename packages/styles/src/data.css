@@ -329,6 +329,141 @@
   font-size: var(--wpl-font-size-xs);
 }
 
+.wpl-graph {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpl-space-3);
+  inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--wpl-space-4);
+  border: 1px solid var(--wpl-color-border);
+  border-radius: var(--wpl-radius-lg);
+  background: var(--wpl-color-surface);
+  color: var(--wpl-color-text);
+}
+
+.wpl-graph > .wpl-card-title {
+  font-size: var(--wpl-font-size-lg);
+}
+
+.wpl-graph-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 640 / 248;
+  overflow: hidden;
+  border-radius: var(--wpl-radius-md);
+  background: color-mix(in srgb, var(--wpl-color-text) 4%, var(--wpl-color-bg));
+  color: var(--wpl-color-primary);
+}
+
+.wpl-graph-grid,
+.wpl-graph-axis {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  stroke-opacity: 1;
+}
+
+.wpl-graph-grid {
+  stroke: color-mix(in srgb, var(--wpl-color-text) 16%, transparent);
+}
+
+.wpl-graph-axis {
+  stroke: color-mix(in srgb, var(--wpl-color-text) 34%, transparent);
+}
+
+.wpl-graph-area {
+  fill: color-mix(in srgb, var(--wpl-color-primary) 24%, transparent);
+  fill-opacity: 1;
+  stroke: none;
+}
+
+.wpl-graph-line {
+  fill: none;
+  stroke: var(--wpl-color-primary);
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.wpl-graph-column {
+  fill: var(--wpl-color-primary);
+}
+
+.wpl-graph-dot {
+  fill: var(--wpl-color-surface);
+  stroke: var(--wpl-color-primary);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.wpl-graph-label {
+  fill: var(--wpl-color-text);
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.wpl-graph .wpl-chart-table {
+  inline-size: 100%;
+}
+
+@media (forced-colors: active) {
+  .wpl-graph {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+
+  .wpl-graph-svg {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .wpl-graph-grid,
+  .wpl-graph-axis,
+  .wpl-graph-label {
+    stroke: GrayText;
+    fill: CanvasText;
+  }
+
+  .wpl-graph-line,
+  .wpl-graph-dot {
+    stroke: CanvasText;
+  }
+
+  .wpl-graph-column,
+  .wpl-graph-dot {
+    fill: CanvasText;
+  }
+
+  .wpl-graph-area {
+    fill: transparent;
+    stroke: CanvasText;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .wpl-graph-svg {
+    background: var(--wpl-color-surface);
+  }
+
+  .wpl-graph-area {
+    fill: var(--wpl-color-primary-subtle);
+  }
+}
+
+@media print {
+  .wpl-graph-svg,
+  .wpl-graph-area,
+  .wpl-graph-line,
+  .wpl-graph-column {
+    print-color-adjust: exact;
+  }
+}
+
 .wpl-sort-field {
   display: none;
   min-inline-size: 0;
