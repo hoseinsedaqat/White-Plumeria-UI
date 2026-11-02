@@ -61,7 +61,7 @@ export {
   supportsModalDialog,
 } from './dom.ts';
 export type { FocusTrap } from './dom.ts';
-export { nextIndex, readingDirection, splitSizeStep, toggleGroupMove } from './keyboard.ts';
+export { nextIndex, readingDirection, splitSizeStep, toggleGroupMove, treeExpandAction } from './keyboard.ts';
 export {
   firstEnabledIndex,
   menuCommand,
@@ -85,7 +85,7 @@ export {
   stepState,
 } from './sequence.ts';
 export type { StepState } from './sequence.ts';
-export type { Direction, Orientation } from './keyboard.ts';
+export type { Direction, Orientation, TreeExpandAction } from './keyboard.ts';
 export {
   clampRangeEdge,
   nearerEdge,

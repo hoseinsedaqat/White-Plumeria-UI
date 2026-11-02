@@ -3,6 +3,7 @@ import {
   formatNumber,
   queryTable,
   toggleSort,
+  treeExpandAction,
   type ColumnSpec,
 } from '@white-plumeria/core';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
@@ -351,13 +352,14 @@ export class TreeView extends WplElement {
           if (hasChildren) this.toggle(node.id);
         }}
         @keydown=${(event: KeyboardEvent) => {
-          if ((event.key === 'ArrowRight' || event.key === 'ArrowLeft') && hasChildren) {
-            event.preventDefault();
-            this.toggle(node.id);
-          }
+          if (!hasChildren) return;
+          const action = treeExpandAction(event.key, event.currentTarget instanceof HTMLElement ? event.currentTarget : null, isOpen);
+          if (!action) return;
+          event.preventDefault();
+          if (action !== 'stay') this.toggle(node.id);
         }}
       >
-        ${hasChildren ? iconSvg(isOpen ? 'chevronDown' : 'chevronRight') : html`<span style="inline-size:1.1em"></span>`}
+        ${hasChildren ? iconSvg(isOpen ? 'chevronDown' : 'chevronRight') : html`<span class="wpl-tree-spacer" aria-hidden="true"></span>`}
         ${node.label}
       </button>
       ${hasChildren && isOpen

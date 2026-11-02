@@ -342,16 +342,73 @@ export interface Input { items?: Item[]; }
   </for>
 </ul>
 `,
-  'wpl-tree-view.marko': `export interface Node { id: string; label: string; children?: { id: string; label: string }[]; }
-export interface Input { label?: string; nodes?: Node[]; }
-<ul class="wpl-tree" role="tree" aria-label=input.label || "Tree">
+  'wpl-tree-view.marko': `import { iconPaths, treeExpandAction } from "@white-plumeria/core";
+import { emit } from "../emit.ts";
+
+export interface Node {
+  id: string;
+  label: string;
+  children?: { id: string; label: string }[];
+}
+export interface Input {
+  label?: string;
+  nodes?: Node[];
+  onSelect?: (id: string) => void;
+}
+
+<let/open=[]>
+<let/selected="">
+<ul/host class="wpl-tree" role="tree" aria-label=input.label || "Tree">
   <for|node| of=(input.nodes ?? [])>
-    <li role="treeitem" aria-expanded=(node.children?.length ? "true" : null)>
-      \${node.label}
-      <if=node.children?.length>
-        <ul role="group">
+    <li class="wpl-tree-item" role="none">
+      <button
+        type="button"
+        class="wpl-tree-row"
+        role="treeitem"
+        aria-expanded=(node.children?.length ? String(open.includes(node.id)) : null)
+        aria-selected=String(selected === node.id)
+        onClick() {
+          selected = node.id;
+          emit(host(), "wpl-select", { id: node.id });
+          input.onSelect?.(node.id);
+          if (!node.children?.length) return;
+          open = open.includes(node.id) ? open.filter((id) => id !== node.id) : open.concat(node.id);
+        }
+        onKeyDown(event) {
+          if (!node.children?.length) return;
+          const expanded = open.includes(node.id);
+          const action = treeExpandAction(event.key, host(), expanded);
+          if (!action) return;
+          event.preventDefault();
+          if (action === "stay") return;
+          open = action === "open" ? open.concat(node.id) : open.filter((id) => id !== node.id);
+        }
+      >
+        <if=node.children?.length>
+          <svg class=(open.includes(node.id) ? "wpl-icon" : "wpl-icon wpl-icon-dir") viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=(open.includes(node.id) ? iconPaths.chevronDown : iconPaths.chevronRight)/></svg>
+        </if>
+        <else><span class="wpl-tree-spacer" aria-hidden="true"></span></else>
+        \${node.label}
+      </button>
+      <if=node.children?.length && open.includes(node.id)>
+        <ul class="wpl-tree-children" role="group">
           <for|child| of=node.children>
-            <li role="treeitem">\${child.label}</li>
+            <li class="wpl-tree-item" role="none">
+              <button
+                type="button"
+                class="wpl-tree-row"
+                role="treeitem"
+                aria-selected=String(selected === child.id)
+                onClick() {
+                  selected = child.id;
+                  emit(host(), "wpl-select", { id: child.id });
+                  input.onSelect?.(child.id);
+                }
+              >
+                <span class="wpl-tree-spacer" aria-hidden="true"></span>
+                \${child.label}
+              </button>
+            </li>
           </for>
         </ul>
       </if>
@@ -359,7 +416,7 @@ export interface Input { label?: string; nodes?: Node[]; }
   </for>
 </ul>
 `,
-  'wpl-stat-card.marko': `export interface Input { label?: string; value?: string | number; hint?: string; }
+'wpl-stat-card.marko': `export interface Input { label?: string; value?: string | number; hint?: string; }
 <article class="wpl-stat">
   <p class="wpl-stat-label">\${input.label || "Stat"}</p>
   <p class="wpl-stat-value">\${input.value ?? "0"}</p>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { splitSizeStep, toggleGroupMove } from './keyboard.ts';
+import { splitSizeStep, treeExpandAction, toggleGroupMove } from './keyboard.ts';
 
 const options = [{}, { disabled: true }, {}];
 
@@ -33,6 +33,23 @@ describe('splitSizeStep', () => {
     host.append(child);
     expect(splitSizeStep('ArrowRight', child)).toBe(-5);
     expect(splitSizeStep('ArrowLeft', child)).toBe(5);
+    host.remove();
+  });
+});
+
+describe('treeExpandAction', () => {
+  it('opens toward the inline end and ignores keys that do not expand', () => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    expect(treeExpandAction('ArrowRight', host, false)).toBe('open');
+    expect(treeExpandAction('ArrowRight', host, true)).toBe('stay');
+    expect(treeExpandAction('ArrowLeft', host, true)).toBe('close');
+    expect(treeExpandAction('ArrowLeft', host, false)).toBe('stay');
+    expect(treeExpandAction('ArrowDown', host, false)).toBeNull();
+    host.style.direction = 'rtl';
+    expect(treeExpandAction('ArrowLeft', host, false)).toBe('open');
+    expect(treeExpandAction('ArrowRight', host, true)).toBe('close');
+    expect(treeExpandAction('ArrowRight', host, false)).toBe('stay');
     host.remove();
   });
 });

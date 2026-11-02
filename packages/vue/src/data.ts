@@ -1,4 +1,4 @@
-import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, treeExpandAction, type ColumnSpec } from '@white-plumeria/core';
 import { computed, defineComponent, h, ref, type PropType } from 'vue';
 import { Icon } from './icon.ts';
 import { useWhitePlumeria } from './provider.ts';
@@ -245,26 +245,41 @@ export const TreeView = defineComponent({
   setup(props, { emit }) {
     const expanded = ref<string[]>([]);
     const selected = ref<string | null>(null);
+    function toggle(id: string) {
+      expanded.value = expanded.value.includes(id) ? expanded.value.filter((item) => item !== id) : [...expanded.value, id];
+    }
     function renderNodes(nodes: TreeNode[]): ReturnType<typeof h>[] {
       return nodes.map((node) => {
         const open = expanded.value.includes(node.id);
-        return h('li', { key: node.id, role: 'treeitem', 'aria-expanded': node.children ? open : undefined, 'aria-selected': selected.value === node.id }, [
+        const hasChildren = Boolean(node.children?.length);
+        return h('li', { key: node.id, class: 'wpl-tree-item', role: 'none' }, [
           h(
             'button',
             {
               type: 'button',
-              class: 'wpl-tree-item',
+              role: 'treeitem',
+              class: 'wpl-tree-row',
+              'aria-expanded': hasChildren ? String(open) : undefined,
+              'aria-selected': selected.value === node.id ? 'true' : 'false',
               onClick: () => {
                 selected.value = node.id;
                 emit('select', node.id);
-                if (node.children) {
-                  expanded.value = open ? expanded.value.filter((id) => id !== node.id) : [...expanded.value, node.id];
-                }
+                if (hasChildren) toggle(node.id);
+              },
+              onKeydown: (event: KeyboardEvent) => {
+                if (!hasChildren) return;
+                const action = treeExpandAction(event.key, event.currentTarget instanceof HTMLElement ? event.currentTarget : null, open);
+                if (!action) return;
+                event.preventDefault();
+                if (action !== 'stay') toggle(node.id);
               },
             },
-            node.label,
+            [
+              hasChildren ? h(Icon, { name: open ? 'chevronDown' : 'chevronRight' }) : h('span', { class: 'wpl-tree-spacer', 'aria-hidden': 'true' }),
+              node.label,
+            ],
           ),
-          node.children && open ? h('ul', { role: 'group' }, renderNodes(node.children)) : null,
+          hasChildren && open ? h('ul', { class: 'wpl-tree-children', role: 'group' }, renderNodes(node.children ?? [])) : null,
         ]);
       });
     }

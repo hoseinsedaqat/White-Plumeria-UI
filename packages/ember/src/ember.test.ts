@@ -17,6 +17,7 @@ import {
   Slider,
   SplitPane,
   Steps,
+  TreeView,
   WhitePlumeriaProvider,
 } from './index.ts';
 
@@ -219,6 +220,21 @@ describe('Ember adapter', () => {
     separator?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     await renderSettled();
     expect(separator?.getAttribute('aria-valuenow')).toBe('45');
+  });
+
+  it('expands a tree toward the inline end', async () => {
+    const host = mount(TreeView, {
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }],
+    });
+    host.style.direction = 'rtl';
+    const row = host.querySelector('[role="treeitem"]');
+    expect(row?.className).toContain('wpl-tree-row');
+    expect(row?.getAttribute('aria-expanded')).toBe('false');
+    row?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('[aria-expanded="true"]')?.textContent).toContain('src');
+    expect(host.textContent).toContain('button.tsx');
   });
 
   it('moves a carousel and a step', async () => {

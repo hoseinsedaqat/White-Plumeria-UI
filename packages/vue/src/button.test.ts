@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Button, Notification, SplitPane, Steps, Switch, WhitePlumeriaProvider } from './index.ts';
+import { Button, Notification, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
   it('colors a notification and shows dismiss only when requested', async () => {
@@ -118,5 +118,26 @@ describe('vue adapter', () => {
     await user.keyboard('{ArrowRight}');
     expect(separator.getAttribute('aria-valuenow')).toBe('45');
     expect(separator.getAttribute('aria-valuemin')).toBe('20');
+  });
+
+  it('expands a tree toward the inline end', async () => {
+    const user = userEvent.setup();
+    render(
+      defineComponent({
+        setup() {
+          return () =>
+            h('div', { dir: 'rtl', style: { direction: 'rtl' } }, [
+              h(TreeView, { label: 'Files', nodes: [{ id: 'src', label: 'src', children: [{ id: 'btn', label: 'button.tsx' }] }] }),
+            ]);
+        },
+      }),
+    );
+    const row = screen.getByRole('treeitem', { name: 'src' });
+    row.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(row.getAttribute('aria-expanded')).toBe('false');
+    await user.keyboard('{ArrowLeft}');
+    expect(row.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
   });
 });

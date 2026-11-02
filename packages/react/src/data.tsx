@@ -2,8 +2,8 @@ import {
   chartFigureHtml,
   formatNumber,
   queryTable,
-  readingDirection,
   resolveDirection,
+  treeExpandAction,
   toggleSort,
   type ColumnSpec,
 } from '@white-plumeria/core';
@@ -363,14 +363,11 @@ function TreeNodeView({
           if (hasChildren) onToggle(node.id);
         }}
         onKeyDown={(event) => {
-          const direction = readingDirection(event.currentTarget);
-          const openKey = direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
-          const closeKey = direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
-          if (event.key !== openKey && event.key !== closeKey) return;
           if (!hasChildren) return;
+          const action = treeExpandAction(event.key, event.currentTarget, isOpen);
+          if (!action) return;
           event.preventDefault();
-          if (event.key === openKey && !isOpen) onToggle(node.id);
-          if (event.key === closeKey && isOpen) onToggle(node.id);
+          if (action !== 'stay') onToggle(node.id);
         }}
       >
         {hasChildren ? <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} /> : <span className="wpl-tree-spacer" aria-hidden="true" />}

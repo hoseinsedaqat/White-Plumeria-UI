@@ -1,4 +1,4 @@
-import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, type ColumnSpec } from '@white-plumeria/core';
+import { chartFigureHtml, formatNumber, queryTable, resolveDirection, toggleSort, treeExpandAction, type ColumnSpec } from '@white-plumeria/core';
 import { $, component$, Slot, useSignal, type QRL } from '@qwik.dev/core';
 import { EmptyState } from './display';
 import { SearchInput } from './form';
@@ -286,14 +286,15 @@ const TreeNodeView = component$<{
           void props.onSelect$?.(props.node.id);
           if (hasChildren) void props.onToggle$?.(props.node.id);
         }}
-        onKeyDown$={(event) => {
-          if ((event.key === 'ArrowRight' || event.key === 'ArrowLeft') && hasChildren) {
-            event.preventDefault();
-            void props.onToggle$?.(props.node.id);
-          }
+        onKeyDown$={(event, element) => {
+          if (!hasChildren) return;
+          const action = treeExpandAction(event.key, element, isOpen);
+          if (!action) return;
+          event.preventDefault();
+          if (action !== 'stay') void props.onToggle$?.(props.node.id);
         }}
       >
-        {hasChildren ? <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} /> : <span style={{ inlineSize: '1.1em' }} />}
+        {hasChildren ? <Icon name={isOpen ? 'chevronDown' : 'chevronRight'} /> : <span class="wpl-tree-spacer" aria-hidden="true" />}
         {props.node.label}
       </button>
       {hasChildren && isOpen ? (
