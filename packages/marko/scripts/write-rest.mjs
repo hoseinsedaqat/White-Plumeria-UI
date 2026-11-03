@@ -228,8 +228,15 @@ export interface Input { label?: string; min?: number; max?: number; step?: numb
   <input class="wpl-slider" type="range" min=bounds.min max=bounds.max step=bounds.step value=end aria-label="End" valueChange(next) { const ordered = normalizeRange(start, Number(next), bounds); start = ordered.start; end = ordered.end; emit(host(), "wpl-change", { start, end }); input.onChange?.({ start, end }); }>
 </div>
 `,
-  'wpl-label.marko': `export interface Input { for?: string; content?: Marko.Body; }
-<label class="wpl-label" for=input.for><\${input.content}/></label>
+  'wpl-label.marko': `import { text } from "../text.ts";
+export interface Input { for?: string; required?: boolean; content?: Marko.Body; }
+<label class="wpl-label" for=input.for>
+  <\${input.content}/>
+  <if=input.required>
+    <span class="wpl-required" aria-hidden="true">*</span>
+    <span class="wpl-sr-only">\${text("required")}</span>
+  </if>
+</label>
 `,
   'wpl-form-field.marko': `import { fieldClassName } from "@white-plumeria/core";
 export interface Input { label?: string; invalid?: boolean; hint?: string; content?: Marko.Body; }

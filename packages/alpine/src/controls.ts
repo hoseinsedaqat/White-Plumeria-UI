@@ -776,13 +776,16 @@ export function Label(config: Config = {}) {
             attrs: { for: text(config.for) || undefined },
           },
           [
-            flag(config.required)
-              ? h('span', {
-                  className: 'wpl-required',
-                  attrs: { 'aria-hidden': 'true' },
-                  text: '*',
-                })
-              : null,
+            ...(flag(config.required)
+              ? [
+                  h('span', {
+                    className: 'wpl-required',
+                    attrs: { 'aria-hidden': 'true' },
+                    text: '*',
+                  }),
+                  h('span', { className: 'wpl-sr-only', text: translate(this.$el, 'required') }),
+                ]
+              : []),
           ],
         ),
       );

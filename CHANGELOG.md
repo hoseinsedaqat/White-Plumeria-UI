@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A required label keeps the asterisk decorative and names the requirement with visually hidden text, in Alpine, Marko, and Ember. Packages are still not published.
 - A timeline uses a time element only when `dateTime` is set, in Alpine, Marko, and Ember. The machine value is the `datetime` attribute, not the visible label. Packages are still not published.
 - An avatar status is named with visually hidden text in Alpine, Marko, and Ember, not by color alone. Packages are still not published.
 - A card title stays a level-2 heading unless `titleAs` asks for another level, in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.

@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -374,6 +374,16 @@ describe('Alpine adapter', () => {
     const image = mount(Avatar, { name: 'Laleh Karimi', src: '/laleh.png' });
     expect(image.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
     expect(image.querySelector('.wpl-avatar-status')).toBeNull();
+  });
+
+  it('hides the required word on a label', () => {
+    const host = mount(Label, { label: 'Email', required: true });
+    expect(host.querySelector('.wpl-required')?.getAttribute('aria-hidden')).toBe('true');
+    expect(host.querySelector('.wpl-required')?.textContent).toBe('*');
+    expect(host.querySelector('.wpl-sr-only')?.textContent).toBe('required');
+    const optional = mount(Label, { label: 'Name' });
+    expect(optional.querySelector('.wpl-required')).toBeNull();
+    expect(optional.querySelector('.wpl-sr-only')).toBeNull();
   });
 
   it('uses a time element only when a timeline date is set', () => {

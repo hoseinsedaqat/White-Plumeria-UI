@@ -371,8 +371,16 @@ export const RangeSlider = glimmer(
 );
 
 export const Label = glimmer(
-  `<label class="wpl-label" for={{@for}}>{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}{{#if this.required}}<span class="wpl-required" aria-hidden="true">*</span>{{/if}}</label>`,
-  { getters: { required: (host) => flag(host.args.required) } },
+  `<label class="wpl-label" for={{@for}}>{{#if @text}}{{@text}}{{else}}{{yield}}{{/if}}{{#if this.required}}<span class="wpl-required" aria-hidden="true">*</span><span class="wpl-sr-only">{{this.requiredText}}</span>{{/if}}</label>`,
+  {
+    getters: {
+      required: (host) => flag(host.args.required),
+      requiredText() {
+        const element = typeof document === 'undefined' ? null : document.body;
+        return message(localeOf(element), 'required');
+      },
+    },
+  },
 );
 
 export const FormField = glimmer(

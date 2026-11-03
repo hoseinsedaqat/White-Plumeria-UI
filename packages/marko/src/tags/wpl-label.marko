@@ -1,2 +1,9 @@
-export interface Input { for?: string; content?: Marko.Body; }
-<label class="wpl-label" for=input.for><${input.content}/></label>
+import { text } from "../text.ts";
+export interface Input { for?: string; required?: boolean; content?: Marko.Body; }
+<label class="wpl-label" for=input.for>
+  <${input.content}/>
+  <if=input.required>
+    <span class="wpl-required" aria-hidden="true">*</span>
+    <span class="wpl-sr-only">${text("required")}</span>
+  </if>
+</label>
