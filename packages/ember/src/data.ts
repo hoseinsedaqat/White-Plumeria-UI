@@ -370,7 +370,7 @@ function escapeTree(value: string): string {
 }
 
 export const StatCard = glimmer(
-  `<article class="wpl-stat"><p class="wpl-stat-label">{{this.label}}</p><p class="wpl-stat-value">{{this.value}}</p>{{#if @hint}}<p class="wpl-muted">{{@hint}}</p>{{/if}}</article>`,
+  `<article class="wpl-card wpl-stat"><p class="wpl-stat-label">{{this.label}}</p><p class="wpl-stat-value">{{this.value}}</p>{{#if @hint}}<p class="wpl-stat-hint">{{@hint}}</p>{{/if}}</article>`,
   {
     getters: {
       label: (host) => str(host.args.label, 'Stat'),

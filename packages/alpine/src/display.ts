@@ -224,10 +224,10 @@ export function Spinner(config: Config = {}) {
 export function StatCard(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('article', { className: 'wpl-stat' }, [
+      this.$el.replaceChildren(h('article', { className: 'wpl-card wpl-stat' }, [
         h('p', { className: 'wpl-stat-label', text: text(config.label, 'Stat') }),
         h('p', { className: 'wpl-stat-value', text: text(config.value, '0') }),
-        text(config.hint) ? h('p', { className: 'wpl-muted', text: text(config.hint) }) : null,
+        text(config.hint) ? h('p', { className: 'wpl-stat-hint', text: text(config.hint) }) : null,
       ]));
     },
   };

@@ -19,6 +19,7 @@ import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
 import EmptyState from './tags/wpl-empty-state.marko';
+import StatCard from './tags/wpl-stat-card.marko';
 import Separator from './tags/wpl-separator.marko';
 import Skeleton from './tags/wpl-skeleton.marko';
 import Spinner from './tags/wpl-spinner.marko';
@@ -275,6 +276,15 @@ describe('Marko adapter', () => {
     const view = await render(EmptyState, { title: 'No invoices', description: 'Create the first invoice.' });
     expect(view.container.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
     expect(view.container.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
+  });
+
+  it('renders a stat card with its hint class', async () => {
+    const view = await render(StatCard, { label: 'Open invoices', value: '12', hint: 'Sample data' });
+    const card = view.container.querySelector('article');
+    expect(card?.classList.contains('wpl-card')).toBe(true);
+    expect(card?.classList.contains('wpl-stat')).toBe(true);
+    expect(view.container.querySelector('.wpl-stat-value')?.textContent).toBe('12');
+    expect(view.container.querySelector('.wpl-stat-hint')?.textContent).toBe('Sample data');
   });
 
   it('renders a navigation menu as a named list', async () => {

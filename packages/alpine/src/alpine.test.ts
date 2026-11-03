@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -234,6 +234,15 @@ describe('Alpine adapter', () => {
     const host = mount(EmptyState, { title: 'No invoices', description: 'Create the first invoice.' });
     expect(host.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
     expect(host.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
+  });
+
+  it('renders a stat card with its hint class', () => {
+    const host = mount(StatCard, { label: 'Open invoices', value: '12', hint: 'Sample data' });
+    const card = host.querySelector('article');
+    expect(card?.classList.contains('wpl-card')).toBe(true);
+    expect(card?.classList.contains('wpl-stat')).toBe(true);
+    expect(host.querySelector('.wpl-stat-value')?.textContent).toBe('12');
+    expect(host.querySelector('.wpl-stat-hint')?.textContent).toBe('Sample data');
   });
 
   it('names a button group and keeps the buttons direct children', () => {
