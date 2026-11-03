@@ -1,19 +1,43 @@
-import { iconPaths } from "@white-plumeria/core";
+import { clampInteger, iconPaths } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
-export interface Input { label?: string; value?: number; max?: number; name?: string; onChange?: (value: number) => void; }
-<let/value=Number(input.value ?? 0)>
-<const/max=Math.max(1, Number(input.max) || 5)>
+export interface Input {
+  label?: string;
+  value?: number;
+  max?: number;
+  name?: string;
+  readOnly?: boolean;
+  onChange?: (value: number) => void;
+}
+
+<const/label=input.label || "Rating">
+<const/count=clampInteger(Number(input.max) || 5, 1, 10, 5)>
+<const/current=clampInteger(Number(input.value) || 0, 0, count, 0)>
+<let/value=current>
 <id/nameId/>
-<fieldset/host class="wpl-rating">
-  <legend class="wpl-label">${input.label || "Rating"}</legend>
-  <for|n| from=1 to=max>
-    <label class="wpl-rating-option">
-      <input type="radio" name=input.name || nameId value=n checked=(value === n) onChange() { value = n; emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
-      <span class=(n <= value ? "wpl-rating-icon is-on" : "wpl-rating-icon") aria-hidden="true">
+<const/stars=Array.from({ length: count }, (_, index) => index)>
+
+<if=input.readOnly>
+  <div class="wpl-rating" role="img" aria-label=`${label}: ${current} ${text("of")} ${count}`>
+    <for|index| of=stars>
+      <span class=(index < current ? "wpl-rating-icon is-on" : "wpl-rating-icon") aria-hidden="true">
         <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.star/></svg>
       </span>
-      <span class="wpl-sr-only">${n} of ${max}</span>
-    </label>
-  </for>
-</fieldset>
+    </for>
+  </div>
+</if>
+<else>
+  <fieldset/host class="wpl-rating">
+    <legend class="wpl-label">${label}</legend>
+    <for|n| from=1 to=count>
+      <label class="wpl-rating-option">
+        <input type="radio" name=input.name || nameId value=n checked=(value === n) onChange() { value = n; emit(host(), "wpl-change", { value }); input.onChange?.(value); }>
+        <span class=(n <= value ? "wpl-rating-icon is-on" : "wpl-rating-icon") aria-hidden="true">
+          <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.star/></svg>
+        </span>
+        <span class="wpl-sr-only">${n} ${text("of")} ${count}</span>
+      </label>
+    </for>
+  </fieldset>
+</else>
