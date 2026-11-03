@@ -9,6 +9,7 @@ import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Popover from './lib/Popover.svelte';
 import Button from './lib/Button.svelte';
+import Divider from './lib/Divider.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
 import TreeView from './lib/TreeView.svelte';
@@ -16,6 +17,15 @@ import Switch from './lib/Switch.svelte';
 import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
+  it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
+    const labeled = render(Divider, { label: 'Or' });
+    expect(labeled.container.querySelector('[role="separator"]')?.textContent).toBe('Or');
+    expect(labeled.container.querySelector('.wpl-divider-labeled')).toBeTruthy();
+    const plain = render(Divider, {});
+    expect(plain.container.querySelector('hr.wpl-divider')).toBeTruthy();
+    expect(plain.container.querySelector('[role="separator"]')).toBeNull();
+  });
+
   it('announces that an external link opens in a new tab', () => {
     const view = render(Link, { href: 'https://example.com/docs', external: true });
     const link = view.container.querySelector('a');

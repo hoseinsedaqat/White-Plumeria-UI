@@ -77,7 +77,7 @@ export const Card = glimmer(
 );
 
 export const Divider = glimmer(
-  `<div class="wpl-divider" role="separator">{{#if @label}}<span>{{@label}}</span>{{/if}}</div>`,
+  `{{#if @label}}<div class="wpl-divider-labeled" role="separator">{{@label}}</div>{{else}}<hr class="wpl-divider" />{{/if}}`,
 );
 
 export const Separator = glimmer(

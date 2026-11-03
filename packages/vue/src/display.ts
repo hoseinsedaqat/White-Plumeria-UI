@@ -129,7 +129,9 @@ export const Divider = defineComponent({
   props: { label: { type: String, default: '' } },
   setup(props) {
     return () =>
-      h('div', { class: 'wpl-divider', role: 'separator' }, props.label ? [h('span', props.label)] : undefined);
+      props.label
+        ? h('div', { class: 'wpl-divider-labeled', role: 'separator' }, props.label)
+        : h('hr', { class: 'wpl-divider' });
   },
 });
 

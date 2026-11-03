@@ -92,7 +92,12 @@ export function Card(config: Config = {}) {
 export function Divider(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('hr', { className: 'wpl-divider', attrs: { 'aria-orientation': config.orientation === 'vertical' ? 'vertical' : undefined } }));
+      const label = text(config.label);
+      this.$el.replaceChildren(
+        label
+          ? h('div', { className: 'wpl-divider-labeled', text: label, attrs: { role: 'separator' } })
+          : h('hr', { className: 'wpl-divider' }),
+      );
     },
   };
 }

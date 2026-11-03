@@ -1,2 +1,7 @@
-export interface Input { orientation?: "horizontal" | "vertical"; }
-<hr class="wpl-divider" aria-orientation=(input.orientation === "vertical" ? "vertical" : null)>
+export interface Input { label?: string; }
+<if=input.label>
+  <div class="wpl-divider-labeled" role="separator">${input.label}</div>
+</if>
+<else>
+  <hr class="wpl-divider">
+</else>
