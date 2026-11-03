@@ -17,6 +17,8 @@ import {
   components,
   DataTable,
   Dialog,
+  Drawer,
+  Modal,
   DateRangePicker,
   Combobox,
   DropdownMenu,
@@ -470,6 +472,24 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('translates the dialog, modal, and drawer close buttons', async () => {
+    document.documentElement.lang = 'fa';
+    try {
+      const dialog = mount(Dialog, { title: 'تأیید', trigger: 'باز کردن' });
+      const modal = mount(Modal, { title: 'پنجره', trigger: 'باز کردن' });
+      const drawer = mount(Drawer, { title: 'کشو', trigger: 'باز کردن' });
+      dialog.querySelector('button')?.click();
+      modal.querySelector('button')?.click();
+      drawer.querySelector('button')?.click();
+      await renderSettled();
+      expect(dialog.querySelector('.wpl-dialog-header button')?.textContent).toBe('بستن');
+      expect(modal.querySelector('.wpl-dialog-header button')?.textContent).toBe('بستن');
+      expect(drawer.querySelector('.wpl-dialog-header button')?.textContent).toBe('بستن');
+    } finally {
+      document.documentElement.lang = '';
+    }
   });
 
   it('hides the required word on a label', async () => {

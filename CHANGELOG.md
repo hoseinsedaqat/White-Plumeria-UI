@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Ember dialog, modal, and drawer close buttons follow the page language. In Persian they say بستن. Packages are still not published.
 - A combobox names the active option and chooses it from the arrow keys, in Alpine, Marko, and Ember. Vue and Svelte name that option too. A disabled option is not chosen. Packages are still not published.
 - The docs homepage centers the first screen on large displays, puts install in that screen, and crosses a theme stage from light to dark as you scroll. The theme list is the registered set, with original names. Packages are still not published.
 - A required label keeps the asterisk decorative and names the requirement with visually hidden text, in Alpine, Marko, and Ember. Packages are still not published.
