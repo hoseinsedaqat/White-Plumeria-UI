@@ -491,7 +491,7 @@ export const PasswordField = glimmer(
 );
 
 export const OtpField = glimmer(
-  `<div class="wpl-field"><span class="wpl-label" id={{this.labelId}}>{{this.label}}</span><div class="wpl-otp" role="group" aria-labelledby={{this.labelId}}>{{#each this.cells as |cell|}}<input class="wpl-input wpl-otp-cell" inputmode={{this.mode}} maxlength="1" value={{cell.value}} aria-label={{cell.label}} {{on "input" (fn this.type cell.index)}} {{on "keydown" (fn this.key cell.index)}} />{{/each}}</div>{{#if @name}}<input type="hidden" name={{@name}} value={{this.value}} />{{/if}}</div>`,
+  `<div class="wpl-field"><span class="wpl-label" id={{this.labelId}}>{{this.label}}</span><div class="wpl-otp" role="group" aria-labelledby={{this.labelId}}>{{#each this.cells as |cell|}}<input class="wpl-input wpl-otp-cell" inputmode={{this.mode}} maxlength="1" autocomplete={{cell.complete}} value={{cell.value}} aria-label={{cell.label}} {{on "input" (fn this.type cell.index)}} {{on "paste" (fn this.paste cell.index)}} {{on "keydown" (fn this.key cell.index)}} />{{/each}}</div>{{#if @name}}<input type="hidden" name={{@name}} value={{this.value}} />{{/if}}</div>`,
   {
     state: (args) => ({ value: str(args.value), labelId: createId('otp') }),
     getters: {
@@ -502,10 +502,12 @@ export const OtpField = glimmer(
       cells(this: Host) {
         const length = otpLength(num(this.args.length, 6));
         const numeric = this.args.numeric !== false;
+        const locale = localeOf(typeof document === 'undefined' ? null : document.body);
         return otpCells(str(this.state.value), length, numeric).map((value, index) => ({
           index,
           value,
-          label: `${str(this.args.label, 'Code')} ${index + 1}`,
+          complete: index === 0 ? 'one-time-code' : 'off',
+          label: `${message(locale, 'character')} ${formatNumber(index + 1, locale)} ${message(locale, 'of')} ${formatNumber(length, locale)}`,
         }));
       },
     },
@@ -518,15 +520,45 @@ export const OtpField = glimmer(
         const next = otpApply(str(this.state.value), length, numeric, Number(index), text);
         this.state.value = next.value;
         bubble(event as Event, 'wpl-change', { value: next.value });
+        const cells = input instanceof HTMLElement ? input.parentElement?.querySelectorAll('input.wpl-otp-cell') : undefined;
+        const focus = cells?.[next.focus];
+        if (focus instanceof HTMLElement) focus.focus();
+      },
+      paste(index, event) {
+        const pasteEvent = event as ClipboardEvent;
+        pasteEvent.preventDefault();
+        const text = pasteEvent.clipboardData?.getData('text') ?? '';
+        const length = otpLength(num(this.args.length, 6));
+        const numeric = this.args.numeric !== false;
+        const next = otpApply(str(this.state.value), length, numeric, Number(index), text);
+        this.state.value = next.value;
+        bubble(pasteEvent, 'wpl-change', { value: next.value });
+        const input = pasteEvent.target;
+        const cells = input instanceof HTMLElement ? input.parentElement?.querySelectorAll('input.wpl-otp-cell') : undefined;
+        const focus = cells?.[next.focus];
+        if (focus instanceof HTMLElement) focus.focus();
       },
       key(index, event) {
         const keyEvent = event as KeyboardEvent;
+        if (keyEvent.key === 'ArrowRight' || keyEvent.key === 'ArrowLeft') {
+          keyEvent.preventDefault();
+          const input = keyEvent.target;
+          const cells = input instanceof HTMLElement ? input.parentElement?.querySelectorAll('input.wpl-otp-cell') : undefined;
+          const nextIndex = Number(index) + (keyEvent.key === 'ArrowRight' ? 1 : -1);
+          const focus = cells?.[Math.min((cells?.length ?? 1) - 1, Math.max(0, nextIndex))];
+          if (focus instanceof HTMLElement) focus.focus();
+          return;
+        }
         if (keyEvent.key !== 'Backspace') return;
         const length = otpLength(num(this.args.length, 6));
         const numeric = this.args.numeric !== false;
         const next = otpDelete(str(this.state.value), length, numeric, Number(index));
         this.state.value = next.value;
         bubble(keyEvent, 'wpl-change', { value: next.value });
+        const input = keyEvent.target;
+        const cells = input instanceof HTMLElement ? input.parentElement?.querySelectorAll('input.wpl-otp-cell') : undefined;
+        const focus = cells?.[next.focus];
+        if (focus instanceof HTMLElement) focus.focus();
       },
     },
   },
