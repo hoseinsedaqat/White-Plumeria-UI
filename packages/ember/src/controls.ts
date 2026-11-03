@@ -765,9 +765,9 @@ export const NumberField = glimmer(
 );
 
 export const FileUpload = glimmer(
-  `<div class="wpl-file"><label class="wpl-file-drop">{{this.label}}<input id={{this.fileId}} class="wpl-file-input" type="file" accept={{@accept}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.take}} /></label>{{#if this.names}}<ul class="wpl-file-list">{{#each this.names as |name|}}<li class="wpl-file-item">{{name}}</li>{{/each}}</ul>{{/if}}{{#if this.reason}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.reason}}</p>{{/if}}</div>`,
+  `<div class="wpl-file"><label class="wpl-file-drop" {{flagAttr "data-active" this.active}} {{on "dragover" this.dragOver}} {{on "dragleave" this.dragLeave}} {{on "drop" this.drop}}>{{this.label}}<input id={{this.fileId}} class="wpl-file-input" type="file" accept={{@accept}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.take}} /></label>{{#if this.names}}<ul class="wpl-file-list">{{#each this.names as |name|}}<li class="wpl-file-item">{{name}}</li>{{/each}}</ul>{{/if}}{{#if this.reason}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.reason}}</p>{{/if}}</div>`,
   {
-    state: () => ({ names: [] as string[], reason: '', fileId: createId('file') }),
+    state: () => ({ names: [] as string[], reason: '', fileId: createId('file'), active: false }),
     getters: {
       label: (host) => str(host.args.label, 'Choose a file'),
       names: (host) => list<string>(host.state.names),
@@ -775,17 +775,34 @@ export const FileUpload = glimmer(
       fileId: (host) => str(host.state.fileId),
       errorId: (host) => `${str(host.state.fileId)}-error`,
       invalid: (host) => (str(host.state.reason) ? 'true' : ''),
+      active: (host) => host.state.active === true,
       describedBy: (host) => (str(host.state.reason) ? `${str(host.state.fileId)}-error` : ''),
     },
     methods: {
-      take(event) {
-        const input = (event as Event).target;
+      dragOver(event: Event) {
+        event.preventDefault();
+        this.state.active = true;
+      },
+      dragLeave() {
+        this.state.active = false;
+      },
+      drop(event: Event) {
+        event.preventDefault();
+        this.state.active = false;
+        const transfer = event as DragEvent;
+        this.ingest(transfer.dataTransfer?.files ?? null, event);
+      },
+      take(event: Event) {
+        const input = event.target;
         const files = input instanceof HTMLInputElement ? input.files : null;
+        this.ingest(files, event);
+      },
+      ingest(files: FileList | null, event: Event) {
         const accepted: string[] = [];
         const rejected: Array<{ name: string; reason: string }> = [];
         const maxSize = num(this.args.maxSize, 0);
         const accept = str(this.args.accept);
-        const reason = message(localeOf(input instanceof Element ? input : null), 'fileRejected');
+        const reason = message(localeOf(event.target instanceof Element ? event.target : null), 'fileRejected');
         for (const file of files ? [...files] : []) {
           const allowed = !accept || accept.split(',').some((rule) => matches(file, rule.trim()));
           if (!allowed || (maxSize > 0 && file.size > maxSize))
@@ -794,8 +811,8 @@ export const FileUpload = glimmer(
         }
         this.state.names = accepted;
         this.state.reason = rejected.map((item) => `${item.name}: ${item.reason}`).join(' ');
-        if (accepted.length) bubble(event as Event, 'wpl-change', { files: accepted });
-        if (rejected.length) bubble(event as Event, 'wpl-reject', { files: rejected });
+        if (accepted.length) bubble(event, 'wpl-change', { files: accepted });
+        if (rejected.length) bubble(event, 'wpl-reject', { files: rejected });
       },
     },
   },
