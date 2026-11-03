@@ -10,6 +10,7 @@ import {
   Card,
   DatePicker,
   Label,
+  List,
   Link,
   Pagination,
   Carousel,
@@ -333,6 +334,14 @@ describe('Ember adapter', () => {
     expect(card?.classList.contains('wpl-stat')).toBe(true);
     expect(host.querySelector('.wpl-stat-value')?.textContent).toBe('12');
     expect(host.querySelector('.wpl-stat-hint')?.textContent).toBe('Sample data');
+  });
+
+  it('renders a list title, description, and meta', async () => {
+    const host = mount(List, { items: [{ id: '1', title: 'Invoice 104', description: 'Open', meta: 'Sample' }] });
+    await renderSettled();
+    expect(host.querySelector('.wpl-timeline-title')?.textContent).toBe('Invoice 104');
+    expect(host.querySelector('.wpl-timeline-body')?.textContent).toBe('Open');
+    expect(host.querySelector('.wpl-muted')?.textContent).toBe('Sample');
   });
 
   it('renders a navigation menu as a named list', async () => {

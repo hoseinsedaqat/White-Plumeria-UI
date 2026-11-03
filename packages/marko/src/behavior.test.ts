@@ -19,6 +19,7 @@ import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
 import EmptyState from './tags/wpl-empty-state.marko';
+import List from './tags/wpl-list.marko';
 import StatCard from './tags/wpl-stat-card.marko';
 import Separator from './tags/wpl-separator.marko';
 import Skeleton from './tags/wpl-skeleton.marko';
@@ -285,6 +286,13 @@ describe('Marko adapter', () => {
     expect(card?.classList.contains('wpl-stat')).toBe(true);
     expect(view.container.querySelector('.wpl-stat-value')?.textContent).toBe('12');
     expect(view.container.querySelector('.wpl-stat-hint')?.textContent).toBe('Sample data');
+  });
+
+  it('renders a list title, description, and meta', async () => {
+    const view = await render(List, { items: [{ id: '1', title: 'Invoice 104', description: 'Open', meta: 'Sample' }] });
+    expect(view.container.querySelector('.wpl-timeline-title')?.textContent).toBe('Invoice 104');
+    expect(view.container.querySelector('.wpl-timeline-body')?.textContent).toBe('Open');
+    expect(view.container.querySelector('.wpl-muted')?.textContent).toBe('Sample');
   });
 
   it('renders a navigation menu as a named list', async () => {
