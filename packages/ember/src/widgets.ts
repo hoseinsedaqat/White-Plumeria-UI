@@ -382,7 +382,8 @@ export const DropdownMenu = glimmer(
       typeahead: { query: '', at: 0 },
     }),
     getters: {
-      label: (host) => str(host.args.label, 'Open menu'),
+      label: (host) =>
+        str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'openMenu')),
       menuId: (host) => str(host.state.menuId),
       openState: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
@@ -685,7 +686,8 @@ export const Steps = glimmer(
   {
     state: (args) => ({ value: str(args.value) }),
     getters: {
-      label: (host) => str(host.args.label, 'Steps'),
+      label: (host) =>
+        str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'steps')),
       steps(this: Host) {
         const items = list<StepItem>(this.args.items);
         const value = str(this.state.value, str(this.args.value, items[0]?.id ?? ''));

@@ -734,7 +734,10 @@ export function Steps(config: Config = {}) {
     init(this: Magic) {
       const items = list<StepItem>(config.items);
       let value = text(config.value, items[0]?.id ?? '');
-      const listEl = h('ol', { className: 'wpl-steps' });
+      const listEl = h('ol', {
+        className: 'wpl-steps',
+        attrs: { 'aria-label': text(config.label, translate(this.$el, 'steps')) },
+      });
       const paint = () => {
         const current = stepIndex(items, value);
         listEl.replaceChildren();

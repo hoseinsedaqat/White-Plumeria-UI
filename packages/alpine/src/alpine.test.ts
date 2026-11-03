@@ -181,6 +181,15 @@ describe('Alpine adapter', () => {
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
   });
 
+  it('names steps in the provider language', () => {
+    const provider = mount(WhitePlumeriaProvider, { persist: false, locale: 'fa' });
+    const host = document.createElement('div');
+    provider.append(host);
+    const data = Steps();
+    data.init?.call({ ...data, ...magicFor(host) });
+    expect(host.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
+  });
+
   it('names a spinner in the provider language', () => {
     const provider = mount(WhitePlumeriaProvider, { persist: false, locale: 'fa' });
     const host = document.createElement('div');
