@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A chart summary keeps its data in a table and hides the bars from assistive tech, in Alpine, Marko, and Ember. Packages are still not published.
 - A switch is a button, and a named switch also submits a hidden checkbox, in Alpine, Marko, Ember, and custom elements. Packages are still not published.
 - The slider value follows the page language in Marko and Ember. Packages are still not published.
 - The range readout is hidden from assistive tech in Alpine, Marko, and Ember, and each thumb is named from the group label. Packages are still not published.

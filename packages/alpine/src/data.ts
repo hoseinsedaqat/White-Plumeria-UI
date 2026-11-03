@@ -342,30 +342,52 @@ export function Chart(config: Config = {}) {
 export function ChartContainer(config: Config = {}) {
   return {
     init(this: Magic) {
-      const points = list<Point>(config.points ?? config.data);
-      const label = text(config.label, 'Chart');
-      if (!points.length) {
-        this.$el.replaceChildren(h('p', { className: 'wpl-muted', text: translate(this.$el, 'empty') }));
-        return;
-      }
-      const max = Math.max(...points.map((point) => point.value), 1);
-      this.$el.replaceChildren(h('div', { className: 'wpl-chart', attrs: { role: 'img', 'aria-label': label } }, [
-        h('table', { className: 'wpl-table wpl-chart-table' }, [
-          h('caption', { text: label }),
-          h('tbody', {}, points.map((point) => h('tr', {}, [
-            h('th', { text: point.label, attrs: { scope: 'row' } }),
-            h('td', {}, [
+      const points = list<Point>(config.data ?? config.points);
+      const title = text(config.title ?? config.label, 'Chart');
+      const description = text(config.description);
+      const locale = localeOf(this.$el);
+      const invalid = points.some((point) => !Number.isFinite(point.value) || point.value < 0);
+      const max = Math.max(1, ...points.map((point) => point.value));
+      const bars = invalid
+        ? h('p', {
+            className: 'wpl-field-error',
+            text: 'ChartContainer accepts finite, non-negative values only.',
+            attrs: { role: 'alert' },
+          })
+        : h('div', { attrs: { 'aria-hidden': 'true' } }, points.map((point) =>
+            h('div', { className: 'wpl-chart-bar' }, [
+              h('span', { text: point.label }),
               h('span', { className: 'wpl-chart-track' }, [
                 h('span', {
                   className: 'wpl-chart-fill',
-                  attrs: { style: `inline-size:${Math.round((point.value / max) * 100)}%` },
+                  attrs: { style: `inline-size:${(point.value / max) * 100}%` },
                 }),
               ]),
-              ` ${formatNumber(point.value, localeOf(this.$el))}`,
+              h('span', { text: formatNumber(point.value, locale) }),
             ]),
-          ]))),
+          ));
+      this.$el.replaceChildren(
+        h('figure', { className: 'wpl-chart' }, [
+          h('figcaption', { className: 'wpl-card-title', text: title }),
+          description ? h('p', { className: 'wpl-muted', text: description }) : null,
+          bars,
+          h('table', { className: 'wpl-table wpl-chart-table' }, [
+            h('caption', { className: 'wpl-sr-only', text: title }),
+            h('thead', {}, [
+              h('tr', {}, [
+                h('th', { text: 'Label', attrs: { scope: 'col' } }),
+                h('th', { text: 'Value', attrs: { scope: 'col' } }),
+              ]),
+            ]),
+            h('tbody', {}, points.map((point) =>
+              h('tr', {}, [
+                h('th', { text: point.label, attrs: { scope: 'row' } }),
+                h('td', { text: Number.isFinite(point.value) ? formatNumber(point.value, locale) : String(point.value) }),
+              ]),
+            )),
+          ]),
         ]),
-      ]));
+      );
     },
   };
 }

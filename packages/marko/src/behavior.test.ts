@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { pushToast } from './provider.ts';
 import { tagNames } from './index.ts';
 import Chart from './tags/wpl-chart.marko';
+import ChartContainer from './tags/wpl-chart-container.marko';
 import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
 import DataTable from './tags/wpl-data-table.marko';
@@ -221,6 +222,18 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('keeps the chart table available and hides the bars', async () => {
+    const view = await render(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: 12 }] });
+    expect(view.container.querySelector('table caption')?.textContent).toBe('Volume');
+    expect(view.container.querySelector('tbody th')?.textContent).toBe('Mon');
+    expect(view.container.querySelector('[aria-hidden="true"] .wpl-chart-bar')).not.toBeNull();
+    expect(view.container.querySelector('[role="img"]')).toBeNull();
+    const bad = await render(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: -1 }] });
+    expect(bad.container.querySelector('[role="alert"]')?.textContent).toContain('finite');
+    expect(bad.container.querySelector('.wpl-chart-bar')).toBeNull();
+    expect(bad.container.querySelector('table')).not.toBeNull();
   });
 
   it('submits a switch through a hidden checkbox', async () => {

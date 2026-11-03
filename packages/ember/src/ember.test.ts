@@ -14,6 +14,7 @@ import {
   Pagination,
   Carousel,
   Chart,
+  ChartContainer,
   components,
   DataTable,
   Dialog,
@@ -270,6 +271,19 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('keeps the chart table available and hides the bars', async () => {
+    const host = mount(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: 12 }] });
+    await renderSettled();
+    expect(host.querySelector('table caption')?.textContent).toBe('Volume');
+    expect(host.querySelector('tbody th')?.textContent).toBe('Mon');
+    expect(host.querySelector('[aria-hidden="true"] .wpl-chart-bar')).not.toBeNull();
+    const bad = mount(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: -1 }] });
+    await renderSettled();
+    expect(bad.querySelector('[role="alert"]')?.textContent).toContain('finite');
+    expect(bad.querySelector('.wpl-chart-bar')).toBeNull();
+    expect(bad.querySelector('table')).not.toBeNull();
   });
 
   it('submits a switch through a hidden checkbox', async () => {
