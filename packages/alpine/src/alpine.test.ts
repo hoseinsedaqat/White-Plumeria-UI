@@ -227,6 +227,13 @@ describe('Alpine adapter', () => {
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
   });
 
+  it('sizes a spinner without dropping its name', () => {
+    const host = mount(Spinner, { size: 'lg', label: 'Saving' });
+    const spinner = host.querySelector('[role="status"]');
+    expect(spinner?.className).toContain('wpl-spinner-lg');
+    expect(spinner?.getAttribute('aria-label')).toBe('Saving');
+  });
+
   it('sizes a skeleton and hides it from assistive tech', () => {
     const host = mount(Skeleton, { width: '12rem', height: '2rem' });
     const bone = host.querySelector('.wpl-skeleton');

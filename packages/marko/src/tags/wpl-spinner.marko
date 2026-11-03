@@ -1,4 +1,6 @@
-import { spinnerClassName } from "@white-plumeria/core";
+import { spinnerClassName, type ControlSize } from "@white-plumeria/core";
+import { oneOf } from "../emit.ts";
 import { text } from "../text.ts";
-export interface Input { label?: string; }
-<span class=spinnerClassName() role="status" aria-label=input.label || text("loading")></span>
+export interface Input { label?: string; size?: ControlSize; }
+static const sizes = ["sm", "md", "lg"] as const;
+<span class=spinnerClassName(oneOf(input.size, sizes, "md")) role="status" aria-label=input.label || text("loading")></span>

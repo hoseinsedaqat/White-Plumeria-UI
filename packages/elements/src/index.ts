@@ -1,4 +1,4 @@
-import { buttonClassName, buttonVariants, createFocusTrap, createId, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, message, nextIndex, readingDirection, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant, type MessageKey } from '@white-plumeria/core';
+import { buttonClassName, buttonVariants, createFocusTrap, createId, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, isControlSize, message, nextIndex, readingDirection, spinnerClassName, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant, type MessageKey } from '@white-plumeria/core';
 
 export const elementTags = [
   'wpl-button',
@@ -145,8 +145,17 @@ class WplCard extends HTMLElement {
 }
 
 class WplSpinner extends HTMLElement {
+  static observedAttributes = ['size'];
   connectedCallback() {
-    this.className = 'wpl-spinner';
+    this.sync();
+  }
+  attributeChangedCallback() {
+    this.sync();
+  }
+  private sync() {
+    if (!this.isConnected) return;
+    const size = this.getAttribute('size') ?? '';
+    this.className = spinnerClassName(isControlSize(size) ? size : 'md');
     this.setAttribute('role', 'status');
     if (!this.querySelector('.wpl-sr-only')) {
       const label = document.createElement('span');

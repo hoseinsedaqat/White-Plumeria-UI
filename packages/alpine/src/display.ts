@@ -12,6 +12,7 @@ import type { IconName } from '@white-plumeria/core';
 import { iconPaths } from '@white-plumeria/core';
 
 const alerts = ['neutral', 'info', 'success', 'warning', 'danger'] as const;
+const sizes = ['sm', 'md', 'lg'] as const;
 const headings = ['h1', 'h2', 'h3', 'h4'] as const;
 const badges = ['neutral', 'primary', 'success', 'warning', 'danger'] as const;
 const avatars = ['sm', 'md', 'lg'] as const;
@@ -210,7 +211,12 @@ export function Skeleton(config: Config = {}) {
 export function Spinner(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('span', { className: spinnerClassName(), attrs: { role: 'status', 'aria-label': text(config.label, translate(this.$el, 'loading')) } }));
+      this.$el.replaceChildren(
+        h('span', {
+          className: spinnerClassName(oneOf(config.size, sizes, 'md')),
+          attrs: { role: 'status', 'aria-label': text(config.label, translate(this.$el, 'loading')) },
+        }),
+      );
     },
   };
 }
