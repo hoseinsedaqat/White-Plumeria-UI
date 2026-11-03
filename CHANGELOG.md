@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The range readout is hidden from assistive tech in Alpine, Marko, and Ember, and each thumb is named from the group label. Packages are still not published.
 - A read-only rating is a named image, not a radio group, in Alpine, Marko, and Ember. Packages are still not published.
 - The password reveal button is named and pressed, in Alpine and Marko. Packages are still not published.
 - A tooltip waits 400ms and closes on Escape, in Alpine, Marko, Ember, Svelte, Vue, and Angular. Packages are still not published.

@@ -35,6 +35,7 @@ import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Password from './tags/wpl-password-field.marko';
 import Rating from './tags/wpl-rating.marko';
+import RangeSlider from './tags/wpl-range-slider.marko';
 import Tooltip from './tags/wpl-tooltip.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -219,6 +220,16 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('hides the range readout and names each thumb from the label', async () => {
+    const view = await render(RangeSlider, { label: 'Price', start: 20, end: 80 });
+    const readout = view.container.querySelector('output');
+    expect(readout?.getAttribute('aria-hidden')).toBe('true');
+    expect(readout?.textContent).toContain('20');
+    const inputs = view.container.querySelectorAll('input');
+    expect(inputs[0]?.getAttribute('aria-label')).toBe('Price start');
+    expect(inputs[1]?.getAttribute('aria-label')).toBe('Price end');
   });
 
   it('shows a read-only rating as a named image', async () => {

@@ -313,7 +313,7 @@ export const Slider = glimmer(
 );
 
 export const RangeSlider = glimmer(
-  `<div class="wpl-field"><div class="wpl-flex wpl-flex-between"><span class="wpl-label">{{this.label}}</span><output>{{this.start}} – {{this.end}}</output></div><div class="wpl-range"><span class="wpl-range-track"><span class="wpl-range-fill" style={{this.fillStyle}}></span></span><input class="wpl-range-input" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.start}} aria-label={{this.startLabel}} {{on "input" this.moveStart}} /><input class="wpl-range-input" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.end}} aria-label={{this.endLabel}} {{on "input" this.moveEnd}} /></div></div>`,
+  `<div class="wpl-field"><div class="wpl-flex wpl-flex-between"><span class="wpl-label">{{this.label}}</span><output class="wpl-range-readout" aria-hidden="true">{{this.start}} – {{this.end}}</output></div><div class="wpl-range"><span class="wpl-range-track"><span class="wpl-range-fill" style={{this.fillStyle}}></span></span><input class="wpl-range-input" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.start}} aria-label={{this.startLabel}} {{on "input" this.moveStart}} /><input class="wpl-range-input" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.end}} aria-label={{this.endLabel}} {{on "input" this.moveEnd}} /></div></div>`,
   {
     state: (args) => {
       const bounds = rangeBounds(num(args.min, 0), num(args.max, 100), num(args.step, 1));

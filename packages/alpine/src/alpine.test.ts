@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, Rating, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,14 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('hides the range readout from assistive tech', () => {
+    const host = mount(RangeSlider, { label: 'Price', start: 20, end: 80 });
+    const readout = host.querySelector('output');
+    expect(readout?.getAttribute('aria-hidden')).toBe('true');
+    expect(readout?.textContent).toContain('20');
+    expect(host.querySelector('[data-edge="start"]')?.getAttribute('aria-label')).toBe('Price start');
   });
 
   it('shows a read-only rating as a named image', () => {
