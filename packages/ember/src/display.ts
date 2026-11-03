@@ -140,7 +140,7 @@ export const Progress = glimmer(
 );
 
 export const EmptyState = glimmer(
-  `<div class="wpl-empty"><h2>{{this.title}}</h2>{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div>`,
+  `<div class="wpl-empty"><h2 class="wpl-empty-title">{{this.title}}</h2>{{#if @description}}<p class="wpl-empty-description">{{@description}}</p>{{/if}}{{yield}}</div>`,
   { getters: { title: (host) => str(host.args.title, 'Nothing to show yet') } },
 );
 

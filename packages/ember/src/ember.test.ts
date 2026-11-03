@@ -40,6 +40,7 @@ import {
   Slider,
   Switch,
   Divider,
+  EmptyState,
   Separator,
   Spinner,
   SplitPane,
@@ -309,6 +310,13 @@ describe('Ember adapter', () => {
     expect(host.querySelector('legend')?.textContent).toBe('Plan');
     expect(host.querySelector('[role="radiogroup"]')).toBeNull();
     expect(host.querySelectorAll('input[type="radio"]').length).toBe(2);
+  });
+
+  it('renders an empty state heading and description', async () => {
+    const host = mount(EmptyState, { title: 'No invoices', description: 'Create the first invoice.' });
+    await renderSettled();
+    expect(host.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
+    expect(host.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
   });
 
   it('renders a navigation menu as a named list', async () => {

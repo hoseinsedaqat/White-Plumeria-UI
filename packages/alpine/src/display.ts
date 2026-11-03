@@ -121,8 +121,8 @@ export function EmptyState(config: Config = {}) {
   return {
     init(this: Magic) {
       this.$el.replaceChildren(h('div', { className: 'wpl-empty' }, [
-        h('h2', { text: text(config.title, 'Nothing here') }),
-        text(config.description) ? h('p', { text: text(config.description) }) : null,
+        h('h2', { className: 'wpl-empty-title', text: text(config.title, 'Nothing here') }),
+        text(config.description) ? h('p', { className: 'wpl-empty-description', text: text(config.description) }) : null,
       ]));
     },
   };
