@@ -233,6 +233,7 @@ export function SearchInput(config: Config = {}) {
     init(this: Magic) {
       const id = uid('search');
       const initial = text(config.value);
+      const labelText = text(config.label, translate(this.$el, 'search'));
       let clear: HTMLButtonElement;
       const input = h('input', {
         className: 'wpl-input',
@@ -241,13 +242,17 @@ export function SearchInput(config: Config = {}) {
           type: 'search',
           placeholder: text(config.placeholder, translate(this.$el, 'search')),
           value: initial,
-          'aria-label': text(config.label, translate(this.$el, 'search')),
+          'aria-label': labelText,
         },
         on: {
           input: (event) => {
             const value = (event.target as HTMLInputElement).value;
             clear.hidden = value.length === 0;
             changeValue(this, value);
+          },
+          keydown: (event) => {
+            if ((event as KeyboardEvent).key !== 'Enter') return;
+            emit(this, 'wpl-search', { value: (event.target as HTMLInputElement).value });
           },
         },
       });
@@ -271,6 +276,11 @@ export function SearchInput(config: Config = {}) {
         [svgIcon('close')],
       );
       const wrap = h('div', { className: 'wpl-search' }, [
+        h('label', {
+          className: flag(config.visuallyHiddenLabel) ? 'wpl-label wpl-sr-only' : 'wpl-label',
+          text: labelText,
+          attrs: { for: id },
+        }),
         h('div', { className: 'wpl-search-control' }, [
           svgIcon('search', 'wpl-icon wpl-search-icon'),
           input,
