@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A spinner uses the requested size in Alpine, Marko, Svelte, and custom elements. Packages are still not published.
 - A skeleton uses the requested height, defaulting to 1rem, in Alpine and Marko. Packages are still not published.
 - A tree expands nested branches in Marko and Ember. Packages are still not published.
 - A labeled divider is a separator, and an unlabeled divider is a horizontal rule, in Alpine, Marko, Ember, Svelte, and Vue. Packages are still not published.

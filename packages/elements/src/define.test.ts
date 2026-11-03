@@ -26,6 +26,8 @@ describe('custom elements', () => {
     dialog.setAttribute('title', 'تأیید');
     document.body.append(spinner, dialog);
     expect(spinner.querySelector('.wpl-sr-only')?.textContent).toBe('در حال بارگذاری');
+    spinner.setAttribute('size', 'lg');
+    expect(spinner.className).toContain('wpl-spinner-lg');
     expect(dialog.querySelector('.wpl-dialog-header button')?.getAttribute('aria-label')).toBe('بستن');
     spinner.remove();
     dialog.remove();

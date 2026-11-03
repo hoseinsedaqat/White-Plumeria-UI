@@ -18,6 +18,7 @@ import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
 import Separator from './tags/wpl-separator.marko';
 import Skeleton from './tags/wpl-skeleton.marko';
+import Spinner from './tags/wpl-spinner.marko';
 import Slider from './tags/wpl-slider.marko';
 import Switch from './tags/wpl-switch.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
@@ -226,6 +227,13 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('sizes a spinner without dropping its name', async () => {
+    const view = await render(Spinner, { size: 'lg', label: 'Saving' });
+    const spinner = view.container.querySelector('[role="status"]');
+    expect(spinner?.className).toContain('wpl-spinner-lg');
+    expect(spinner?.getAttribute('aria-label')).toBe('Saving');
   });
 
   it('sizes a skeleton and hides it from assistive tech', async () => {

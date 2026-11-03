@@ -9,6 +9,7 @@ import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Popover from './lib/Popover.svelte';
 import Button from './lib/Button.svelte';
+import Spinner from './lib/Spinner.svelte';
 import Divider from './lib/Divider.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
@@ -17,6 +18,13 @@ import Switch from './lib/Switch.svelte';
 import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
+  it('sizes a spinner without dropping its name', () => {
+    const view = render(Spinner, { size: 'sm', label: 'Saving' });
+    const spinner = view.container.querySelector('[role="status"]');
+    expect(spinner?.className).toContain('wpl-spinner-sm');
+    expect(spinner?.querySelector('.wpl-sr-only')?.textContent).toBe('Saving');
+  });
+
   it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
     const labeled = render(Divider, { label: 'Or' });
     expect(labeled.container.querySelector('[role="separator"]')?.textContent).toBe('Or');
