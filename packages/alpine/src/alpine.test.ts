@@ -771,6 +771,13 @@ describe('Alpine adapter', () => {
     expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 
+  it('renders a card description without inventing a title', () => {
+    const host = mount(Card, { description: 'Overview of recent activity' });
+    expect(host.querySelector('section.wpl-card header.wpl-card-header')).not.toBeNull();
+    expect(host.querySelector('.wpl-card-description')?.textContent).toBe('Overview of recent activity');
+    expect(host.querySelector('h1, h2, h3, h4')).toBeNull();
+  });
+
   it('names the active combobox option and chooses it from the keyboard', () => {
     const chosen: unknown[] = [];
     const host = mount(Combobox, {

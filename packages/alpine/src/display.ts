@@ -82,9 +82,17 @@ export function Badge(config: Config = {}) {
 export function Card(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('article', { className: 'wpl-card' }, [
-        h(oneOf(config.titleAs, headings, 'h2'), { className: 'wpl-card-title', text: text(config.title, 'Card') }),
-        text(config.description) ? h('p', { text: text(config.description) }) : null,
+      const title = text(config.title);
+      const description = text(config.description);
+      const body = [...this.$el.childNodes];
+      this.$el.replaceChildren(h('section', { className: 'wpl-card' }, [
+        title || description
+          ? h('header', { className: 'wpl-card-header' }, [
+              title ? h(oneOf(config.titleAs, headings, 'h2'), { className: 'wpl-card-title', text: title }) : null,
+              description ? h('p', { className: 'wpl-card-description', text: description }) : null,
+            ])
+          : null,
+        body.length ? h('div', { className: 'wpl-card-body' }, body) : null,
       ]));
     },
   };
