@@ -702,12 +702,51 @@ export const Chart = glimmer(
   },
 );
 
+function chartPoints(host: Host): Array<{ label: string; value: number }> {
+  return list<{ label?: unknown; value?: unknown }>(host.args.data ?? host.args.points).map((point) => ({
+    label: str(point.label),
+    value: Number(point.value),
+  }));
+}
+
+function chartLocale(): 'en' | 'fa' {
+  return localeOf(typeof document === 'undefined' ? null : document.body);
+}
+
+function chartBars(host: Host): Array<{ label: string; text: string; style: string }> {
+  const points = chartPoints(host);
+  const max = Math.max(1, ...points.map((point) => point.value).filter((value) => Number.isFinite(value)));
+  const locale = chartLocale();
+  return points.map((point) => ({
+    label: point.label,
+    text: Number.isFinite(point.value) ? formatNumber(point.value, locale) : String(point.value),
+    style: `inline-size:${Number.isFinite(point.value) ? (point.value / max) * 100 : 0}%`,
+  }));
+}
+
+function chartRows(host: Host): Array<{ label: string; text: string }> {
+  const locale = chartLocale();
+  return chartPoints(host).map((point) => ({
+    label: point.label,
+    text: Number.isFinite(point.value) ? formatNumber(point.value, locale) : String(point.value),
+  }));
+}
+
 export const ChartContainer = glimmer(
-  `<figure class="wpl-chart"><figcaption class="wpl-card-title">{{this.label}}</figcaption><div class="wpl-chart-bar"><span>{{this.label}}</span><span class="wpl-chart-track"><span class="wpl-chart-fill" style={{this.bar}}></span></span></div>{{yield}}{{#if @description}}<p class="wpl-muted">{{@description}}</p>{{/if}}</figure>`,
+  `<figure class="wpl-chart"><figcaption class="wpl-card-title">{{this.title}}</figcaption>{{#if this.description}}<p class="wpl-muted">{{this.description}}</p>{{/if}}{{#if this.invalid}}<p class="wpl-field-error" role="alert">ChartContainer accepts finite, non-negative values only.</p>{{else}}<div aria-hidden="true">{{#each this.bars as |bar|}}<div class="wpl-chart-bar"><span>{{bar.label}}</span><span class="wpl-chart-track"><span class="wpl-chart-fill" style={{bar.style}}></span></span><span>{{bar.text}}</span></div>{{/each}}</div>{{/if}}<table class="wpl-table wpl-chart-table"><caption class="wpl-sr-only">{{this.title}}</caption><thead><tr><th scope="col">Label</th><th scope="col">Value</th></tr></thead><tbody>{{#each this.rows as |row|}}<tr><th scope="row">{{row.label}}</th><td>{{row.text}}</td></tr>{{/each}}</tbody></table>{{yield}}</figure>`,
   {
     getters: {
-      label: (host) => str(host.args.label, 'Chart'),
-      bar: (host) => `inline-size:${Math.min(100, Math.max(0, num(host.args.value, 0)))}%`,
+      title: (host) => str(host.args.title, str(host.args.label, 'Chart')),
+      description: (host) => str(host.args.description),
+      invalid(this: Host) {
+        return chartPoints(this).some((point) => !Number.isFinite(point.value) || point.value < 0);
+      },
+      bars(this: Host) {
+        return chartBars(this);
+      },
+      rows(this: Host) {
+        return chartRows(this);
+      },
     },
   },
 );

@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,18 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('keeps the chart table available and hides the bars', () => {
+    const host = mount(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: 12 }] });
+    expect(host.querySelector('table caption')?.textContent).toBe('Volume');
+    expect(host.querySelector('tbody th')?.textContent).toBe('Mon');
+    expect(host.querySelector('[aria-hidden="true"] .wpl-chart-bar')).not.toBeNull();
+    expect(host.querySelector('[role="img"]')).toBeNull();
+    const bad = mount(ChartContainer, { title: 'Volume', data: [{ label: 'Mon', value: -1 }] });
+    expect(bad.querySelector('[role="alert"]')?.textContent).toContain('finite');
+    expect(bad.querySelector('.wpl-chart-bar')).toBeNull();
+    expect(bad.querySelector('table')).not.toBeNull();
   });
 
   it('submits a switch through a hidden checkbox', () => {
