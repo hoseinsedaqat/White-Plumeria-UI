@@ -152,6 +152,33 @@ describe('Alpine adapter', () => {
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
   });
 
+  it('names the active menu item and opens its submenu from the keyboard', () => {
+    const events: unknown[] = [];
+    const host = mount(DropdownMenu, {
+      label: 'Account',
+      items: [
+        { id: 'profile', label: 'Profile' },
+        { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] },
+      ],
+    });
+    host.addEventListener('wpl-select', (event) => events.push((event as CustomEvent).detail));
+    const trigger = host.querySelector('button');
+    expect(trigger?.hasAttribute('aria-activedescendant')).toBe(false);
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    const active = host.querySelector('[data-active="true"]');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toContain('Profile');
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    const nested = host.querySelector('[data-active="true"]');
+    expect(nested?.textContent).toContain('Ivory');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(nested?.id);
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(events).toEqual([{ id: 'ivory' }]);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+  });
+
   it('selects a menu item and ignores a disabled one', () => {
     const events: unknown[] = [];
     const host = mount(DropdownMenu, {

@@ -82,22 +82,44 @@ interface StepItem {
 
 function menuView(host: Host) {
   const items = list<MenuItem>(host.args.items);
+  const menuId = str(host.state.menuId);
   const active = num(host.state.active, 0);
   const sub = typeof host.state.sub === 'number' ? host.state.sub : null;
-  return items.map((item, index) => ({
-    id: str(item.id),
-    label: str(item.label, str(item.id)),
-    disabled: item.disabled === true,
-    shortcut: str(item.shortcut),
-    nested: menuHasSubmenu(item),
-    popup: menuHasSubmenu(item) ? 'menu' : '',
-    expanded: menuHasSubmenu(item) && index === active && sub !== null,
-    children: (item.items ?? []).map((child) => ({
-      id: str(child.id),
-      label: str(child.label, str(child.id)),
-      disabled: child.disabled === true,
-    })),
-  }));
+  return items.map((item, index) => {
+    const expanded = menuHasSubmenu(item) && index === active && sub !== null;
+    return {
+      id: str(item.id),
+      itemId: `${menuId}-${str(item.id)}`,
+      label: str(item.label, str(item.id)),
+      disabled: item.disabled === true,
+      shortcut: str(item.shortcut),
+      nested: menuHasSubmenu(item),
+      popup: menuHasSubmenu(item) ? 'menu' : null,
+      expanded,
+      expandedAttr: menuHasSubmenu(item) ? String(expanded) : null,
+      controls: expanded ? `${menuId}-sub-${str(item.id)}` : null,
+      subId: `${menuId}-sub-${str(item.id)}`,
+      active: sub === null && index === active ? 'true' : null,
+      children: (item.items ?? []).map((child, childIndex) => ({
+        id: str(child.id),
+        itemId: `${menuId}-${str(child.id)}`,
+        label: str(child.label, str(child.id)),
+        disabled: child.disabled === true,
+        active: childIndex === sub ? 'true' : null,
+      })),
+    };
+  });
+}
+
+function activeDescendant(host: Host): string | undefined {
+  if (!host.state.open) return undefined;
+  const items = list<MenuItem>(host.args.items);
+  const active = num(host.state.active, 0);
+  const sub = typeof host.state.sub === 'number' ? host.state.sub : null;
+  const parent = items[active];
+  const current = sub === null ? parent : parent?.items?.[sub];
+  if (!current) return undefined;
+  return `${str(host.state.menuId)}-${str(current.id)}`;
 }
 
 function menuKey(host: Host, event: Event, closeOnLeaf: boolean): void {
@@ -289,7 +311,7 @@ export const Tooltip = glimmer(
 );
 
 export const DropdownMenu = glimmer(
-  `<div class="wpl-menu-root" {{on "keydown" this.onKey}}><button type="button" class="wpl-btn wpl-btn-secondary" aria-haspopup="menu" aria-expanded={{this.expanded}} aria-controls={{this.menuId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} aria-haspopup={{item.popup}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}{{#if item.shortcut}}<span class="wpl-menu-shortcut">{{item.shortcut}}</span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
+  `<div class="wpl-menu-root" {{on "keydown" this.onKey}}><button type="button" class="wpl-btn wpl-btn-secondary" aria-haspopup="menu" aria-expanded={{this.expanded}} aria-controls={{this.menuId}} aria-activedescendant={{this.activeId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" id={{item.itemId}} class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} data-active={{item.active}} aria-haspopup={{item.popup}} aria-expanded={{item.expandedAttr}} aria-controls={{item.controls}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}{{#if item.shortcut}}<span class="wpl-menu-shortcut">{{item.shortcut}}</span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" id={{item.subId}} role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" id={{child.itemId}} class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} data-active={{child.active}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
   {
     state: () => ({
       open: false,
@@ -303,6 +325,7 @@ export const DropdownMenu = glimmer(
       menuId: (host) => str(host.state.menuId),
       openState: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
+      activeId: (host) => activeDescendant(host),
       items: (host) => menuView(host),
     },
     methods: {
@@ -334,12 +357,15 @@ export const DropdownMenu = glimmer(
 );
 
 export const ContextMenu = glimmer(
-  `<div class="wpl-menu-root" tabindex="0" {{on "contextmenu" this.open}} {{on "keydown" this.onKey}}><span>{{this.label}}</span>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} aria-haspopup={{item.popup}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
+  `<div class="wpl-menu-root" tabindex="0" aria-controls={{this.controls}} aria-activedescendant={{this.activeId}} {{on "contextmenu" this.open}} {{on "keydown" this.onKey}}><span>{{this.label}}</span>{{#if this.openState}}<div class="wpl-menu wpl-menu-panel" id={{this.menuId}} role="menu" aria-label={{this.label}}>{{#each this.items as |item|}}<div class="wpl-menu-row"><button type="button" id={{item.itemId}} class="wpl-menu-item" role="menuitem" disabled={{item.disabled}} data-active={{item.active}} aria-haspopup={{item.popup}} aria-expanded={{item.expandedAttr}} aria-controls={{item.controls}} {{on "click" (fn this.choose item)}}>{{item.label}}{{#if item.nested}}<span class="wpl-menu-caret" aria-hidden="true"></span>{{/if}}</button>{{#if item.expanded}}<div class="wpl-menu-sub" id={{item.subId}} role="menu" aria-label={{item.label}}>{{#each item.children as |child|}}<button type="button" id={{child.itemId}} class="wpl-menu-item" role="menuitem" disabled={{child.disabled}} data-active={{child.active}} {{on "click" (fn this.choose child)}}>{{child.label}}</button>{{/each}}</div>{{/if}}</div>{{/each}}</div>{{/if}}</div>`,
   {
-    state: () => ({ open: false, active: 0, sub: null, typeahead: { query: '', at: 0 } }),
+    state: () => ({ open: false, active: 0, sub: null, menuId: createId('menu'), typeahead: { query: '', at: 0 } }),
     getters: {
       label: (host) => str(host.args.label, 'Context menu'),
+      menuId: (host) => str(host.state.menuId),
+      controls: (host) => (host.state.open ? str(host.state.menuId) : undefined),
       openState: (host) => Boolean(host.state.open),
+      activeId: (host) => activeDescendant(host),
       items: (host) => menuView(host),
     },
     methods: {
@@ -348,6 +374,8 @@ export const ContextMenu = glimmer(
         this.state.open = true;
         this.state.active = firstEnabledIndex(list<MenuItem>(this.args.items));
         this.state.sub = null;
+        const node = (event as Event).currentTarget;
+        if (node instanceof HTMLElement) node.focus();
       },
       choose(item, event) {
         const chosen = item as { id?: string; disabled?: boolean; nested?: boolean };

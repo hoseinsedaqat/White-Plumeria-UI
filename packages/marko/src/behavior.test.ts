@@ -8,6 +8,7 @@ import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
 import DataTable from './tags/wpl-data-table.marko';
 import DateRange from './tags/wpl-date-range-picker.marko';
+import ContextMenu from './tags/wpl-context-menu.marko';
 import Dropdown from './tags/wpl-dropdown-menu.marko';
 import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
@@ -210,6 +211,57 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the active menu item and opens its submenu from the keyboard', async () => {
+    const events: unknown[] = [];
+    const view = await render(Dropdown, {
+      label: 'Account',
+      items: [
+        { id: 'profile', label: 'Profile' },
+        { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] },
+      ],
+    });
+    view.container.addEventListener('wpl-select', (event) => events.push((event as CustomEvent).detail));
+    const trigger = view.container.querySelector('button');
+    expect(trigger?.hasAttribute('aria-activedescendant')).toBe(false);
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    const active = view.container.querySelector('[data-active="true"]');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toContain('Profile');
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await flush();
+    const nested = view.container.querySelector('[data-active="true"]');
+    expect(nested?.textContent).toContain('Ivory');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(nested?.id);
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await flush();
+    expect(events).toEqual([{ id: 'ivory' }]);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('moves a context menu from the keyboard and closes it', async () => {
+    const view = await render(ContextMenu, {
+      label: 'Actions',
+      items: [
+        { id: 'copy', label: 'Copy' },
+        { id: 'paste', label: 'Paste' },
+      ],
+    });
+    const host = view.container.querySelector('.wpl-context');
+    host?.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: 12, clientY: 20 }));
+    await flush();
+    expect(host?.getAttribute('aria-activedescendant')).toBe(view.container.querySelector('[data-active="true"]')?.id);
+    host?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[data-active="true"]')?.textContent).toContain('Paste');
+    host?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[role="menu"]')).toBeNull();
   });
 
   it('selects a menu item and ignores a disabled one', async () => {

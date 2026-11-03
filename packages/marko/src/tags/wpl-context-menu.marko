@@ -1,4 +1,4 @@
-import { firstEnabledIndex, menuHasSubmenu, typeaheadMove } from "@white-plumeria/core";
+import { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex, readingDirection, typeaheadMove } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface Item {
@@ -22,27 +22,75 @@ export interface Input {
 <const/items=input.items ?? []>
 <const/parent=items[active]>
 <const/children=parent?.items ?? []>
+<const/current=sub === null ? parent : children[sub]>
 <id/menuId/>
 
 <div/host
   class="wpl-context"
   tabindex="0"
   aria-label=input.label || "Context menu"
+  aria-controls=(point ? menuId : null)
+  aria-activedescendant=(point && current ? `${menuId}-${current.id}` : null)
   onContextMenu(event) {
     event.preventDefault();
     point = { x: event.clientX, y: event.clientY };
     active = firstEnabledIndex(items);
     sub = null;
+    host().focus();
   }
   onKeyDown(event) {
+    if (event.key === "F10" && event.shiftKey) {
+      event.preventDefault();
+      const rect = host().getBoundingClientRect();
+      point = { x: rect.left, y: rect.bottom };
+      active = firstEnabledIndex(items);
+      sub = null;
+      return;
+    }
     if (!point) return;
-    const pool = sub === null ? items : children;
-    const from = sub === null ? active : sub;
-    const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
-    if (next === null) return;
+    const command = menuCommand({
+      key: event.key,
+      direction: readingDirection(host()),
+      open: true,
+      submenuOpen: sub !== null,
+      hasSubmenu: menuHasSubmenu(current),
+    });
+    if (!command) {
+      const pool = sub === null ? items : children;
+      const from = sub === null ? active : sub;
+      const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+      if (next === null) return;
+      event.preventDefault();
+      if (sub === null) active = next;
+      else sub = next;
+      return;
+    }
+    if (command === "open") return;
     event.preventDefault();
-    if (sub === null) active = next;
-    else sub = next;
+    if (command === "close") {
+      point = null;
+      sub = null;
+      return;
+    }
+    if (command === "close-submenu") {
+      sub = null;
+      return;
+    }
+    if (command === "open-submenu") {
+      if (menuHasSubmenu(parent)) sub = firstEnabledIndex(parent.items);
+      return;
+    }
+    if (command === "activate") {
+      if (current && !current.disabled && !menuHasSubmenu(current)) {
+        point = null;
+        sub = null;
+        emit(host(), "wpl-select", { id: current.id });
+        input.onSelect?.(current.id);
+      }
+      return;
+    }
+    if (sub === null) active = moveEnabledIndex(items, active, command);
+    else sub = moveEnabledIndex(children, sub, command);
   }
 >
   <${input.content}/>
@@ -52,11 +100,14 @@ export interface Input {
         <div class="wpl-menu-row">
           <button
             type="button"
+            id=`${menuId}-${item.id}`
             class="wpl-menu-item"
             role="menuitem"
             disabled=item.disabled
             aria-haspopup=menuHasSubmenu(item) ? "menu" : undefined
-            data-active=sub === null && index === active
+            aria-expanded=(menuHasSubmenu(item) ? String(sub !== null && index === active) : null)
+            aria-controls=(sub !== null && index === active && menuHasSubmenu(item) ? `${menuId}-sub-${item.id}` : null)
+            data-active=(sub === null && index === active ? "true" : null)
             onClick() {
               if (item.disabled) return;
               if (menuHasSubmenu(item)) {
@@ -73,14 +124,15 @@ export interface Input {
             ${item.label}
           </button>
           <if=sub !== null && index === active && menuHasSubmenu(item)>
-            <div class="wpl-menu-sub" role="menu" aria-label=item.label>
+            <div id=`${menuId}-sub-${item.id}` class="wpl-menu-sub" role="menu" aria-label=item.label>
               <for|child, childIndex| of=item.items ?? []>
                 <button
                   type="button"
+                  id=`${menuId}-${child.id}`
                   class="wpl-menu-item"
                   role="menuitem"
                   disabled=child.disabled
-                  data-active=childIndex === sub
+                  data-active=(childIndex === sub ? "true" : null)
                   onClick() {
                     if (child.disabled) return;
                     point = null;

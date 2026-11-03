@@ -1,3 +1,4 @@
+import { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex, readingDirection, typeaheadMove } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface MenuItem {
@@ -15,66 +16,139 @@ export interface Input {
 }
 
 <let/open=false>
-<let/sub=-1>
-<id/menuId/>
+<let/active=0>
+<let/sub=(null as number | null)>
+<let/typeahead={ query: "", at: 0 }>
 <const/items=input.items ?? []>
+<const/parent=items[active]>
+<const/children=parent?.items ?? []>
+<const/current=sub === null ? parent : children[sub]>
+<id/menuId/>
 
 <div/host class="wpl-dropdown">
-  <button
+  <button/trigger
     type="button"
     class="wpl-btn wpl-btn-secondary"
     aria-haspopup="menu"
     aria-expanded=String(open)
     aria-controls=menuId
-    onClick() { open = !open; sub = -1; }
+    aria-activedescendant=(open && current ? `${menuId}-${current.id}` : null)
+    onClick() {
+      open = !open;
+      sub = null;
+      if (open) active = firstEnabledIndex(items);
+    }
     onKeyDown(event) {
-      if (event.key === "Escape") open = false;
-      if (event.key === "ArrowDown") open = true;
+      const command = menuCommand({
+        key: event.key,
+        direction: readingDirection(trigger()),
+        open,
+        submenuOpen: sub !== null,
+        hasSubmenu: menuHasSubmenu(current),
+      });
+      if (!command) {
+        if (!open) return;
+        const pool = sub === null ? items : children;
+        const from = sub === null ? active : sub;
+        const next = typeaheadMove(typeahead, pool, event.key, Date.now(), from);
+        if (next === null) return;
+        event.preventDefault();
+        if (sub === null) active = next;
+        else sub = next;
+        return;
+      }
+      event.preventDefault();
+      if (command === "open") {
+        open = true;
+        active = firstEnabledIndex(items);
+        sub = null;
+        return;
+      }
+      if (command === "close") {
+        open = false;
+        sub = null;
+        return;
+      }
+      if (command === "close-submenu") {
+        sub = null;
+        return;
+      }
+      if (command === "open-submenu") {
+        open = true;
+        if (menuHasSubmenu(parent)) sub = firstEnabledIndex(parent.items);
+        return;
+      }
+      if (command === "activate") {
+        if (current && !current.disabled && !menuHasSubmenu(current)) {
+          emit(host(), "wpl-select", { id: current.id });
+          input.onSelect?.({ id: current.id });
+          open = false;
+          sub = null;
+        }
+        return;
+      }
+      if (!open) {
+        open = true;
+        active = firstEnabledIndex(items);
+        sub = null;
+        return;
+      }
+      if (sub === null) active = moveEnabledIndex(items, active, command);
+      else sub = moveEnabledIndex(children, sub, command);
     }
   >${input.label || "Open menu"}</button>
-  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" hidden=!open>
+  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" aria-label=input.label || "Open menu" hidden=!open>
     <for|item, index| of=items>
-      <button
-        type="button"
-        class="wpl-menu-item"
-        role="menuitem"
-        disabled=Boolean(item.disabled)
-        aria-disabled=(item.disabled ? "true" : null)
-        aria-haspopup=(item.items?.length ? "menu" : null)
-        onClick() {
-          if (item.disabled) return;
-          if (item.items?.length) {
-            sub = index;
-            return;
+      <div class="wpl-menu-row">
+        <button
+          type="button"
+          id=`${menuId}-${item.id}`
+          class="wpl-menu-item"
+          role="menuitem"
+          disabled=Boolean(item.disabled)
+          aria-disabled=(item.disabled ? "true" : null)
+          aria-haspopup=(item.items?.length ? "menu" : null)
+          aria-expanded=(item.items?.length ? String(sub !== null && index === active) : null)
+          aria-controls=(sub !== null && index === active && item.items?.length ? `${menuId}-sub-${item.id}` : null)
+          data-active=(sub === null && index === active ? "true" : null)
+          onClick() {
+            if (item.disabled) return;
+            if (item.items?.length) {
+              active = index;
+              sub = firstEnabledIndex(item.items);
+              return;
+            }
+            emit(host(), "wpl-select", { id: item.id });
+            input.onSelect?.({ id: item.id });
+            open = false;
+            sub = null;
           }
-          emit(host(), "wpl-select", { id: item.id });
-          input.onSelect?.({ id: item.id });
-          open = false;
-          sub = -1;
-        }
-      >
-        ${item.label}
-        <if=item.shortcut><span class="wpl-menu-shortcut">${item.shortcut}</span></if>
-      </button>
-      <if=(item.items?.length && sub === index)>
-        <div class="wpl-menu-sub" role="menu">
-          <for|child| of=item.items>
-            <button
-              type="button"
-              class="wpl-menu-item"
-              role="menuitem"
-              disabled=Boolean(child.disabled)
-              onClick() {
-                if (child.disabled) return;
-                emit(host(), "wpl-select", { id: child.id });
-                input.onSelect?.({ id: child.id });
-                open = false;
-                sub = -1;
-              }
-            >${child.label}</button>
-          </for>
-        </div>
-      </if>
+        >
+          ${item.label}
+          <if=item.shortcut><span class="wpl-menu-shortcut">${item.shortcut}</span></if>
+        </button>
+        <if=(item.items?.length && sub !== null && index === active)>
+          <div id=`${menuId}-sub-${item.id}` class="wpl-menu-sub" role="menu" aria-label=item.label>
+            <for|child, childIndex| of=item.items>
+              <button
+                type="button"
+                id=`${menuId}-${child.id}`
+                class="wpl-menu-item"
+                role="menuitem"
+                disabled=Boolean(child.disabled)
+                data-active=(childIndex === sub ? "true" : null)
+                onClick() {
+                  if (child.disabled) return;
+                  emit(host(), "wpl-select", { id: child.id });
+                  input.onSelect?.({ id: child.id });
+                  open = false;
+                  sub = null;
+                }
+              >${child.label}</button>
+            </for>
+          </div>
+        </if>
+      </div>
     </for>
   </div>
 </div>

@@ -233,6 +233,39 @@ describe('Ember adapter', () => {
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
   });
 
+  it('names the active menu item and opens its submenu from the keyboard', async () => {
+    const events: unknown[] = [];
+    const host = mount(DropdownMenu, {
+      label: 'Account',
+      items: [
+        { id: 'profile', label: 'Profile' },
+        { id: 'theme', label: 'Theme', items: [{ id: 'ivory', label: 'Ivory' }] },
+      ],
+    });
+    host.addEventListener('wpl-select', (event) => events.push((event as CustomEvent).detail));
+    await renderSettled();
+    const trigger = host.querySelector('button');
+    const root = host.querySelector('.wpl-menu-root') ?? host;
+    expect(trigger?.hasAttribute('aria-activedescendant')).toBe(false);
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    const active = host.querySelector('[data-active="true"]');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toContain('Profile');
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await renderSettled();
+    const nested = host.querySelector('[data-active="true"]');
+    expect(nested?.textContent).toContain('Ivory');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(nested?.id);
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await renderSettled();
+    expect(events).toEqual([{ id: 'ivory' }]);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+  });
+
   it('selects a menu item and ignores a disabled one', async () => {
     const events: unknown[] = [];
     const host = mount(DropdownMenu, {
