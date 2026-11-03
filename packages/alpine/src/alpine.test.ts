@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, SearchInput, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Alert, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, SearchInput, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -769,6 +769,16 @@ describe('Alpine adapter', () => {
     expect(host.querySelector('h2')).toBeNull();
     const fallback = mount(Card, { title: 'Overview' });
     expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
+  });
+
+  it('keeps an alert title and description in the catalog classes', () => {
+    const host = mount(Alert, { title: 'Review needed', description: 'Two fields are incomplete.', variant: 'warning' });
+    expect(host.querySelector('.wpl-alert-warning')?.getAttribute('role')).toBe('status');
+    expect(host.querySelector('.wpl-alert-title')?.textContent).toBe('Review needed');
+    expect(host.querySelector('.wpl-alert-description')?.textContent).toBe('Two fields are incomplete.');
+    const danger = mount(Alert, { variant: 'danger' });
+    expect(danger.querySelector('[role="alert"] .wpl-alert-title')?.textContent).toBe('Notice');
+    expect(danger.querySelector('.wpl-alert-description')).toBeNull();
   });
 
   it('renders a card description without inventing a title', () => {

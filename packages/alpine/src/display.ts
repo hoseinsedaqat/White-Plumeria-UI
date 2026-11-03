@@ -21,12 +21,13 @@ export function Alert(config: Config = {}) {
   return {
     init(this: Magic) {
       const variant = oneOf(config.variant, alerts, 'neutral');
+      const description = text(config.description || config.label);
       this.$el.replaceChildren(h('div', {
         className: alertClassName(variant as AlertVariant),
         attrs: { role: variant === 'danger' ? 'alert' : 'status' },
       }, [
-        h('strong', { text: text(config.title, 'Notice') }),
-        text(config.description || config.label) ? h('p', { text: text(config.description || config.label) }) : null,
+        h('p', { className: 'wpl-alert-title', text: text(config.title, 'Notice') }),
+        description ? h('p', { className: 'wpl-alert-description', text: description }) : null,
       ]));
     },
   };

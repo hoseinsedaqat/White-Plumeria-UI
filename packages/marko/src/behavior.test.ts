@@ -31,6 +31,7 @@ import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
+import Alert from './tags/wpl-alert.marko';
 import Avatar from './tags/wpl-avatar.marko';
 import Calendar from './tags/wpl-calendar.marko';
 import Card from './tags/wpl-card.marko';
@@ -914,6 +915,16 @@ describe('Marko adapter', () => {
     expect(view.container.querySelector('h2')).toBeNull();
     const fallback = await render(Card, { title: 'Overview' });
     expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
+  });
+
+  it('keeps an alert title and description in the catalog classes', async () => {
+    const view = await render(Alert, { title: 'Review needed', description: 'Two fields are incomplete.', variant: 'warning' });
+    expect(view.container.querySelector('.wpl-alert-warning')?.getAttribute('role')).toBe('status');
+    expect(view.container.querySelector('.wpl-alert-title')?.textContent).toBe('Review needed');
+    expect(view.container.querySelector('.wpl-alert-description')?.textContent).toBe('Two fields are incomplete.');
+    const danger = await render(Alert, { variant: 'danger' });
+    expect(danger.container.querySelector('[role="alert"] .wpl-alert-title')?.textContent).toBe('Notice');
+    expect(danger.container.querySelector('.wpl-alert-description')).toBeNull();
   });
 
   it('renders a card description without inventing a title', async () => {
