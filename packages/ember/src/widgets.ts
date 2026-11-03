@@ -702,14 +702,20 @@ export const Carousel = glimmer(
 );
 
 export const Combobox = glimmer(
-  `<div class="wpl-combo"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-combo-control"><span class="wpl-combo-icon" aria-hidden="true"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths.search}"/></svg></span><input id={{this.fieldId}} class="wpl-input" role="combobox" aria-expanded={{this.expanded}} aria-controls={{this.listId}} value={{this.query}} {{on "input" this.filter}} {{on "focus" this.open}} /></div>{{#if this.openState}}<ul class="wpl-menu" id={{this.listId}} role="listbox">{{#each this.matches as |option|}}<li><button type="button" role="option" {{on "click" (fn this.pick option)}}>{{option.label}}</button></li>{{/each}}</ul>{{/if}}</div>`,
+  `<div class="wpl-combo"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-combo-control"><span class="wpl-combo-icon" aria-hidden="true"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths.search}"/></svg></span><input id={{this.fieldId}} class="wpl-input" role="combobox" aria-expanded={{this.expanded}} aria-controls={{this.listId}} aria-autocomplete="list" aria-activedescendant={{this.activeId}} value={{this.query}} {{on "input" this.filter}} {{on "focus" this.open}} {{on "keydown" this.onKey}} /></div>{{#if this.openState}}<ul class="wpl-listbox" id={{this.listId}} role="listbox">{{#if this.empty}}<li class="wpl-listbox-item">{{this.emptyLabel}}</li>{{else}}{{#each this.matches as |option|}}<li><button type="button" class="wpl-listbox-item" id={{option.id}} role="option" aria-selected={{option.selected}} data-active={{option.active}} {{on "click" (fn this.pick option)}}>{{option.label}}</button></li>{{/each}}{{/if}}</ul>{{/if}}</div>`,
   {
-    state: (args) => ({
-      query: str(args.value),
-      open: false,
-      fieldId: createId('combo'),
-      listId: createId('combo-list'),
-    }),
+    state: (args) => {
+      const options = list<{ value?: string; label?: string }>(args.options);
+      const initial = options.find((option) => str(option.value) === str(args.value));
+      return {
+        query: initial ? str(initial.label, str(initial.value)) : str(args.value),
+        selected: initial ? str(initial.value) : str(args.value),
+        open: false,
+        active: 0,
+        fieldId: createId('combo'),
+        listId: createId('combo-list'),
+      };
+    },
     getters: {
       label: (host) => str(host.args.label, 'Choose'),
       query: (host) => str(host.state.query),
@@ -717,16 +723,35 @@ export const Combobox = glimmer(
       listId: (host) => str(host.state.listId),
       openState: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
+      empty: (host) => host.matches.length === 0,
+      emptyLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'noResults'),
+      activeId(this: Host) {
+        if (!this.state.open) return undefined;
+        const current = this.matches[Number(this.state.active)];
+        return current?.id;
+      },
       matches(this: Host) {
-        const query = str(this.state.query).toLocaleLowerCase();
-        return list<{ value?: string; label?: string }>(this.args.options)
-          .filter((option) =>
-            str(option.label, str(option.value)).toLocaleLowerCase().includes(query),
-          )
-          .map((option) => ({
+        const options = list<{ value?: string; label?: string; disabled?: boolean }>(this.args.options).map(
+          (option) => ({
             value: str(option.value),
             label: str(option.label, str(option.value)),
-          }));
+            disabled: Boolean(option.disabled),
+          }),
+        );
+        const query = str(this.state.query).toLocaleLowerCase();
+        const selected = options.find((option) => option.value === str(this.state.selected));
+        const source =
+          !query || query === selected?.label.toLocaleLowerCase()
+            ? options
+            : options.filter((option) => option.label.toLocaleLowerCase().includes(query));
+        return source.map((option, index) => ({
+          value: option.value,
+          label: option.label,
+          disabled: option.disabled,
+          id: `${str(this.state.listId)}-${index}`,
+          selected: option.value === str(this.state.selected) ? 'true' : 'false',
+          active: index === Number(this.state.active) ? 'true' : null,
+        }));
       },
     },
     methods: {
@@ -735,14 +760,40 @@ export const Combobox = glimmer(
       },
       filter(event) {
         this.state.open = true;
+        this.state.active = 0;
         this.state.query =
           event instanceof Event && event.target instanceof HTMLInputElement
             ? event.target.value
             : '';
       },
+      onKey(event) {
+        const keyEvent = event as KeyboardEvent;
+        const items = this.matches;
+        if (
+          keyEvent.key === 'ArrowDown' ||
+          keyEvent.key === 'ArrowUp' ||
+          keyEvent.key === 'Home' ||
+          keyEvent.key === 'End'
+        ) {
+          keyEvent.preventDefault();
+          this.state.open = true;
+          const next = nextIndex(Number(this.state.active) || 0, items.length, keyEvent.key, 'vertical');
+          if (next !== null) this.state.active = next;
+          return;
+        }
+        if (keyEvent.key === 'Enter' && this.state.open) {
+          keyEvent.preventDefault();
+          const option = items[Number(this.state.active)];
+          if (option && !option.disabled) this.pick(option, keyEvent);
+          return;
+        }
+        if (keyEvent.key === 'Escape') this.state.open = false;
+      },
       pick(option, event) {
-        const chosen = option as { value: string; label: string };
+        const chosen = option as { value: string; label: string; disabled?: boolean };
+        if (chosen.disabled) return;
         this.state.query = chosen.label;
+        this.state.selected = chosen.value;
         this.state.open = false;
         bubble(event as Event, 'wpl-change', { value: chosen.value });
       },

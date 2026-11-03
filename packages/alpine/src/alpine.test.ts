@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -408,6 +408,38 @@ describe('Alpine adapter', () => {
     expect(host.querySelector('h2')).toBeNull();
     const fallback = mount(Card, { title: 'Overview' });
     expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
+  });
+
+  it('names the active combobox option and chooses it from the keyboard', () => {
+    const chosen: unknown[] = [];
+    const host = mount(Combobox, {
+      label: 'Theme',
+      options: [
+        { value: 'ivory', label: 'Ivory' },
+        { value: 'ink', label: 'Ink' },
+        { value: 'saffron', label: 'Saffron', disabled: true },
+      ],
+    });
+    host.addEventListener('wpl-change', (event) => chosen.push((event as CustomEvent<{ value: string }>).detail.value));
+    const input = host.querySelector<HTMLInputElement>('[role="combobox"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
+    expect(input?.hasAttribute('aria-activedescendant')).toBe(false);
+    expect(host.querySelector('label')?.getAttribute('for')).toBe(input?.id);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    const active = host.querySelector('[data-active="true"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('true');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toBe('Ink');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(chosen).toEqual(['ink']);
+    expect(input?.value).toBe('Ink');
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    expect(host.querySelector('[data-active="true"]')?.textContent).toBe('Saffron');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(chosen).toEqual(['ink']);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('publishes an Alpine example for every catalog component', () => {

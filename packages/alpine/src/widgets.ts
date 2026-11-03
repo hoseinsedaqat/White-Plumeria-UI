@@ -843,13 +843,17 @@ export function Combobox(config: Config = {}) {
   return {
     init(this: Magic) {
       const options = list<ComboOption>(config.options);
-      let query = text(config.value);
+      const initial = options.find((option) => option.value === text(config.value));
+      let selected = initial?.value ?? '';
+      let query = initial?.label ?? text(config.value);
       let open = false;
       let active = 0;
+      const fieldId = uid('combo');
       const listId = uid('list');
       const input = h('input', {
         className: 'wpl-input',
         attrs: {
+          id: fieldId,
           role: 'combobox',
           'aria-expanded': 'false',
           'aria-controls': listId,
@@ -870,27 +874,36 @@ export function Combobox(config: Config = {}) {
         className: 'wpl-listbox',
         attrs: { id: listId, role: 'listbox', hidden: true },
       });
-      const filtered = () =>
-        options.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
+      const filtered = () => {
+        const needle = query.trim().toLowerCase();
+        const current = options.find((option) => option.value === selected);
+        if (!needle || needle === current?.label.toLowerCase()) return options;
+        return options.filter((option) => option.label.toLowerCase().includes(needle));
+      };
       const paint = () => {
         const items = filtered();
         input.setAttribute('aria-expanded', String(open));
+        const activeId = open && items[active] ? `${listId}-${active}` : '';
+        if (activeId) input.setAttribute('aria-activedescendant', activeId);
+        else input.removeAttribute('aria-activedescendant');
         listbox.hidden = !open;
         listbox.replaceChildren();
         if (!items.length) {
           listbox.append(
-            h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }),
+            h('p', { className: 'wpl-listbox-item', text: translate(this.$el, 'noResults') }),
           );
           return;
         }
         items.forEach((option, index) => {
           listbox.append(
             h('button', {
-              className: 'wpl-menu-item',
+              className: 'wpl-listbox-item',
               text: option.label,
               attrs: {
+                id: `${listId}-${index}`,
                 type: 'button',
                 role: 'option',
+                'aria-selected': option.value === selected ? 'true' : 'false',
                 'data-active': index === active ? 'true' : undefined,
                 disabled: option.disabled || undefined,
               },
@@ -901,6 +914,7 @@ export function Combobox(config: Config = {}) {
       };
       const choose = (option: ComboOption) => {
         if (option.disabled) return;
+        selected = option.value;
         query = option.label;
         input.value = option.label;
         open = false;
@@ -908,15 +922,12 @@ export function Combobox(config: Config = {}) {
         emit(this, 'wpl-change', { value: option.value });
       };
       const onKey = (event: KeyboardEvent) => {
-        const items = filtered().filter((option) => !option.disabled);
-        if (event.key === 'ArrowDown') {
+        const items = filtered();
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
           event.preventDefault();
           open = true;
-          active = Math.min(items.length - 1, active + 1);
-          paint();
-        } else if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          active = Math.max(0, active - 1);
+          const next = nextIndex(active, items.length, event.key, 'vertical');
+          if (next !== null) active = next;
           paint();
         } else if (event.key === 'Enter' && open) {
           event.preventDefault();
@@ -930,7 +941,7 @@ export function Combobox(config: Config = {}) {
       paint();
       this.$el.replaceChildren(
         h('div', { className: 'wpl-combo' }, [
-          h('label', { className: 'wpl-label', text: text(config.label, 'Choose') }),
+          h('label', { className: 'wpl-label', text: text(config.label, 'Choose'), attrs: { for: fieldId } }),
           h('div', { className: 'wpl-combo-control' }, [
             svgIcon('search', 'wpl-icon wpl-combo-icon'),
             input,

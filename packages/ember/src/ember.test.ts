@@ -18,6 +18,7 @@ import {
   DataTable,
   Dialog,
   DateRangePicker,
+  Combobox,
   DropdownMenu,
   Input,
   FileUpload,
@@ -515,6 +516,36 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(image.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
     expect(image.querySelector('.wpl-avatar-status')).toBeNull();
+  });
+
+  it('names the active combobox option and chooses it from the keyboard', async () => {
+    const chosen: unknown[] = [];
+    const host = mount(Combobox, {
+      label: 'Theme',
+      options: [
+        { value: 'ivory', label: 'Ivory' },
+        { value: 'ink', label: 'Ink' },
+        { value: 'saffron', label: 'Saffron', disabled: true },
+      ],
+    });
+    host.addEventListener('wpl-change', (event) => chosen.push((event as CustomEvent<{ value: string }>).detail.value));
+    await renderSettled();
+    const input = host.querySelector<HTMLInputElement>('[role="combobox"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
+    expect(input?.hasAttribute('aria-activedescendant')).toBe(false);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    const active = host.querySelector('[data-active="true"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('true');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toBe('Ink');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await renderSettled();
+    expect(chosen).toEqual(['ink']);
+    expect(input?.value).toBe('Ink');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await renderSettled();
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('uses the requested card heading', async () => {

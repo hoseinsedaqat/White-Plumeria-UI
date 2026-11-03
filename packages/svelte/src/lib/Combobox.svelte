@@ -43,11 +43,12 @@
     aria-expanded={open}
     aria-controls="{id}-list"
     aria-autocomplete="list"
+    aria-activedescendant={open && filtered[active] ? `${id}-list-${active}` : undefined}
     {placeholder}
     bind:value={query}
     onfocus={() => (open = true)}
     onkeydown={(event) => {
-      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
         event.preventDefault();
         open = true;
         active = nextIndex(active, filtered.length, event.key, 'vertical') ?? active;
@@ -69,6 +70,7 @@
           <li>
             <button
               type="button"
+              id="{id}-list-{index}"
               role="option"
               class="wpl-listbox-item"
               aria-selected={value === option.value}

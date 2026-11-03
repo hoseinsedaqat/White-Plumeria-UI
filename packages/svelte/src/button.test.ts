@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Accordion from './lib/Accordion.svelte';
 import Card from './lib/Card.svelte';
+import Combobox from './lib/Combobox.svelte';
 import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Button from './lib/Button.svelte';
@@ -95,6 +96,22 @@ describe('svelte adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('names the active combobox option', async () => {
+    const view = render(Combobox, {
+      label: 'Theme',
+      options: [
+        { value: 'ivory', label: 'Ivory' },
+        { value: 'ink', label: 'Ink' },
+      ],
+    });
+    const input = view.container.querySelector<HTMLInputElement>('[role="combobox"]');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await Promise.resolve();
+    const active = view.container.querySelector('[data-active="true"]');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toBe('Ink');
   });
 
   it('uses the requested card heading', () => {
