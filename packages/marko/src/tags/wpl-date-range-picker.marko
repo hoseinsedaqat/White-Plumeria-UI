@@ -90,8 +90,8 @@ static function publish(
   </div>
   <if=error><p id=(startId + "-error") class="wpl-field-error" role="alert">${error}</p></if>
   <p class="wpl-field-hint">
-    <if=(startDate && endDate)>${formatDate(startDate, "en")} – ${formatDate(endDate, "en")}</if>
-    <else if=startDate>${formatDate(startDate, "en")}</else>
+    <if=(startDate && endDate)>${formatDate(startDate, activeLocale())} – ${formatDate(endDate, activeLocale())}</if>
+    <else if=startDate>${formatDate(startDate, activeLocale())}</else>
     <else>${text("chooseDate")}</else>
   </p>
   <div class="wpl-calendar">
