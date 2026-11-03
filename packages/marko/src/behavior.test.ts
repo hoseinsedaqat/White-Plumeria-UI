@@ -789,6 +789,28 @@ describe('Marko adapter', () => {
       ?.click();
     await flush();
     expect(steps.container.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+    const gated = await render(Steps, {
+      value: 'draft',
+      orientation: 'vertical',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    expect(gated.container.querySelector('.wpl-steps')?.classList.contains('wpl-steps-vertical')).toBe(true);
+    const future = [...gated.container.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'));
+    expect(future?.hasAttribute('disabled')).toBe(true);
+    future?.click();
+    await flush();
+    expect(gated.container.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
+    const done = await render(Steps, {
+      value: 'send',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    expect(done.container.querySelector('[data-state="complete"] .wpl-step-marker svg')).not.toBeNull();
   });
 
   it('rejects an oversized file and reports a slider value', async () => {

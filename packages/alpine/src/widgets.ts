@@ -747,8 +747,9 @@ export function Steps(config: Config = {}) {
     init(this: Magic) {
       const items = list<StepItem>(config.items);
       let value = text(config.value, items[0]?.id ?? '');
+      const linear = config.linear !== false;
       const listEl = h('ol', {
-        className: 'wpl-steps',
+        className: config.orientation === 'vertical' ? 'wpl-steps wpl-steps-vertical' : 'wpl-steps',
         attrs: { 'aria-label': text(config.label, translate(this.$el, 'steps')) },
       });
       const paint = () => {
@@ -756,6 +757,7 @@ export function Steps(config: Config = {}) {
         listEl.replaceChildren();
         items.forEach((item, index) => {
           const state = stepState(index, current);
+          const blocked = linear && index > current;
           listEl.append(
             h('li', { className: 'wpl-step', attrs: { 'data-state': state } }, [
               h(
@@ -764,10 +766,12 @@ export function Steps(config: Config = {}) {
                   className: 'wpl-step-trigger',
                   attrs: {
                     type: 'button',
+                    disabled: blocked || undefined,
                     'aria-current': state === 'current' ? 'step' : undefined,
                   },
                   on: {
                     click: () => {
+                      if (blocked) return;
                       value = item.id;
                       paint();
                       emit(this, 'wpl-change', { value });
@@ -778,8 +782,7 @@ export function Steps(config: Config = {}) {
                   h('span', {
                     className: 'wpl-step-marker',
                     attrs: { 'aria-hidden': 'true' },
-                    text: String(index + 1),
-                  }),
+                  }, state === 'complete' ? [svgIcon('check')] : [String(index + 1)]),
                   h('span', { className: 'wpl-step-title', text: item.title }),
                   item.description
                     ? h('span', { className: 'wpl-step-desc', text: item.description })

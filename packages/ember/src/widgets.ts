@@ -691,16 +691,18 @@ export const CommandPalette = glimmer(
 );
 
 export const Steps = glimmer(
-  `<ol class="wpl-steps" aria-label={{this.label}}>{{#each this.steps as |step|}}<li class="wpl-step" data-state={{step.state}}><button type="button" class="wpl-step-trigger" aria-current={{step.current}} {{on "click" (fn this.pick step)}}><span class="wpl-step-marker" aria-hidden="true">{{step.index}}</span><span class="wpl-step-title">{{step.title}}</span>{{#if step.description}}<span class="wpl-step-desc">{{step.description}}</span>{{/if}}</button></li>{{/each}}</ol>`,
+  `<ol class={{this.className}} aria-label={{this.label}}>{{#each this.steps as |step|}}<li class="wpl-step" data-state={{step.state}}><button type="button" class="wpl-step-trigger" disabled={{step.blocked}} {{flagAttr "aria-current" step.current}} {{on "click" (fn this.pick step)}}><span class="wpl-step-marker" aria-hidden="true">{{#if step.complete}}<svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{step.check}}></path></svg>{{else}}{{step.index}}{{/if}}</span><span class="wpl-step-title">{{step.title}}</span>{{#if step.description}}<span class="wpl-step-desc">{{step.description}}</span>{{/if}}</button></li>{{/each}}</ol>`,
   {
     state: (args) => ({ value: str(args.value) }),
     getters: {
       label: (host) =>
         str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'steps')),
+      className: (host) => (host.args.orientation === 'vertical' ? 'wpl-steps wpl-steps-vertical' : 'wpl-steps'),
       steps(this: Host) {
         const items = list<StepItem>(this.args.items);
         const value = str(this.state.value, str(this.args.value, items[0]?.id ?? ''));
         const current = stepIndex(items, value);
+        const linear = this.args.linear !== false;
         return items.map((item, index) => {
           const state = stepState(index, current);
           return {
@@ -709,14 +711,19 @@ export const Steps = glimmer(
             description: str(item.description),
             index: String(index + 1),
             state,
-            current: state === 'current' ? 'step' : '',
+            current: state === 'current' ? 'step' : undefined,
+            complete: state === 'complete',
+            blocked: linear && index > current,
+            check: iconPaths.check,
           };
         });
       },
     },
     methods: {
       pick(step, event) {
-        const id = str((step as { id?: string }).id);
+        const chosen = step as { id?: string; blocked?: boolean };
+        if (chosen.blocked) return;
+        const id = str(chosen.id);
         this.state.value = id;
         bubble(event as Event, 'wpl-change', { value: id });
       },
