@@ -65,12 +65,13 @@ export const Table = glimmer(
 );
 
 export const DataTable = glimmer(
-  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><div class="wpl-search"><label class="wpl-sr-only" for={{this.searchId}}>{{this.searchLabel}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${iconMarkup('search')}</span><input id={{this.searchId}} class="wpl-input" type="search" value={{this.filter}} placeholder={{this.searchLabel}} aria-label={{this.searchLabel}} {{on "input" this.filterRows}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clearFilter}}>${iconMarkup('close')}</button>{{/if}}</div></div><label class="wpl-sort-field"><span class="wpl-sr-only">{{this.sortLabel}}</span><select class="wpl-select" aria-label={{this.sortLabel}} {{on "change" this.chooseSort}}><option value="">{{this.sortLabel}}</option>{{#each this.head as |column|}}<option value={{column.id}} {{flagAttr "selected" column.sorted}}>{{column.header}}</option>{{/each}}</select></label><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#if this.empty}}<tr><td colspan={{this.colspan}}><div class="wpl-empty"><h2 class="wpl-empty-title">{{this.emptyLabel}}</h2><p class="wpl-empty-description">{{this.noResultsLabel}}</p></div></td></tr>{{else}}{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}{{/if}}</tbody></table></div></div>`,
+  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><div class="wpl-search"><label class="wpl-sr-only" for={{this.searchId}}>{{this.searchLabel}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${iconMarkup('search')}</span><input id={{this.searchId}} class="wpl-input" type="search" value={{this.filter}} placeholder={{this.searchLabel}} aria-label={{this.searchLabel}} {{on "input" this.filterRows}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clearFilter}}>${iconMarkup('close')}</button>{{/if}}</div></div><label class="wpl-sort-field"><span class="wpl-sr-only">{{this.sortLabel}}</span><select class="wpl-select" aria-label={{this.sortLabel}} {{on "change" this.chooseSort}}><option value="">{{this.sortLabel}}</option>{{#each this.head as |column|}}<option value={{column.id}} {{flagAttr "selected" column.sorted}}>{{column.header}}</option>{{/each}}</select></label><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#if this.empty}}<tr><td colspan={{this.colspan}}><div class="wpl-empty"><h2 class="wpl-empty-title">{{this.emptyLabel}}</h2><p class="wpl-empty-description">{{this.noResultsLabel}}</p></div></td></tr>{{else}}{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}{{/if}}</tbody></table></div>{{#if this.paged}}<div class="wpl-flex wpl-flex-between"><span class="wpl-muted">{{this.pageLabel}}</span><nav class="wpl-pagination" aria-label={{this.paginationLabel}}><button type="button" class="wpl-page" disabled={{this.atPageStart}} {{on "click" this.previousPage}}>${iconMarkup('chevronLeft')}<span class="wpl-sr-only">{{this.previousLabel}}</span></button>{{#each this.pageItems as |item|}}{{#if item.gap}}<span aria-hidden="true">…</span>{{/if}}<button type="button" class="wpl-page" {{flagAttr "aria-current" item.current}} {{on "click" (fn this.pickPage item)}}>{{item.value}}</button>{{/each}}<button type="button" class="wpl-page" disabled={{this.atPageEnd}} {{on "click" this.nextPage}}>${iconMarkup('chevronRight')}<span class="wpl-sr-only">{{this.nextLabel}}</span></button></nav></div>{{/if}}</div>`,
   {
     state: (args) => ({
       sortId: str(args.sortId),
       sortDirection: args.sortDirection === 'desc' ? 'desc' : 'asc',
       filter: str(args.filter),
+      page: num(args.page, 1),
       searchId: createId('search'),
     }),
     getters: {
@@ -84,6 +85,31 @@ export const DataTable = glimmer(
       filter: (host) => str(host.state.filter),
       hasQuery: (host) => str(host.state.filter).length > 0,
       empty: (host) => host.result.rows.length === 0,
+      paged: (host) => host.query.pageSize !== undefined,
+      paginationLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'pagination'),
+      previousLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'previous'),
+      nextLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'next'),
+      pageLabel(this: Host) {
+        const locale = localeOf(typeof document === 'undefined' ? null : document.body);
+        return `${message(locale, 'page')} ${formatNumber(this.result.page, locale)} ${message(locale, 'of')} ${formatNumber(this.result.pageCount, locale)}`;
+      },
+      atPageStart(this: Host) {
+        return this.result.page <= 1;
+      },
+      atPageEnd(this: Host) {
+        return this.result.page >= this.result.pageCount;
+      },
+      pageItems(this: Host) {
+        const page = this.result.page;
+        const pageCount = this.result.pageCount;
+        return Array.from({ length: pageCount }, (_, index) => index + 1)
+          .filter((item) => item === 1 || item === pageCount || Math.abs(item - page) <= 1)
+          .map((value, index, pages) => ({
+            value,
+            current: value === page ? 'page' : undefined,
+            gap: index > 0 && value - (pages[index - 1] ?? value) > 1,
+          }));
+      },
       colspan: (host) => String(list<DataColumn>(host.args.columns).length || 1),
       columns: (host) => list<DataColumn>(host.args.columns),
       summary(this: Host) {
@@ -95,8 +121,8 @@ export const DataTable = glimmer(
           sortId: str(this.state.sortId) || undefined,
           sortDirection: this.state.sortDirection === 'desc' ? 'desc' : 'asc',
           filter: str(this.state.filter),
-          page: num(this.args.page, 1),
-          pageSize: num(this.args.pageSize, 0) || undefined,
+          page: num(this.state.page, 1),
+          pageSize: this.args.pageSize === undefined ? 8 : num(this.args.pageSize, 0) || undefined,
         };
       },
       result(this: Host) {
@@ -131,9 +157,20 @@ export const DataTable = glimmer(
     methods: {
       filterRows(this: Host, event: Event) {
         this.state.filter = event.target instanceof HTMLInputElement ? event.target.value : '';
+        this.state.page = 1;
       },
       clearFilter(this: Host) {
         this.state.filter = '';
+        this.state.page = 1;
+      },
+      previousPage(this: Host) {
+        this.state.page = Math.max(1, this.result.page - 1);
+      },
+      nextPage(this: Host) {
+        this.state.page = Math.min(this.result.pageCount, this.result.page + 1);
+      },
+      pickPage(this: Host, item: { value?: number }) {
+        this.state.page = num(item?.value, 1);
       },
       chooseSort(this: Host, event: Event) {
         const value = event.target instanceof HTMLSelectElement ? event.target.value : '';

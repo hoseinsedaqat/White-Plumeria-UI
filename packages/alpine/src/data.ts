@@ -68,7 +68,7 @@ export function DataTable(config: Config = {}) {
     sortDirection: config.sortDirection === 'desc' ? 'desc' : 'asc',
     filter: text(config.filter),
     page: num(config.page, 1),
-    pageSize: num(config.pageSize, 0) || undefined,
+    pageSize: config.pageSize === undefined ? 8 : num(config.pageSize, 0) || undefined,
   };
   let paint = () => undefined;
   return {
@@ -186,6 +186,38 @@ export function DataTable(config: Config = {}) {
             h('span', { className: 'wpl-muted', text: `${formatNumber(result.total, localeOf(host))} ${translate(host, 'rows')}` }),
           ]),
           h('div', { className: 'wpl-table-wrap' }, [table]),
+          ...(query.pageSize === undefined ? [] : [h('div', { className: 'wpl-flex wpl-flex-between' }, [
+            h('span', {
+              className: 'wpl-muted',
+              text: `${translate(host, 'page')} ${formatNumber(result.page, localeOf(host))} ${translate(host, 'of')} ${formatNumber(result.pageCount, localeOf(host))}`,
+            }),
+            h('nav', { className: 'wpl-pagination', attrs: { 'aria-label': translate(host, 'pagination') } }, [
+              h('button', {
+                className: 'wpl-page',
+                attrs: { type: 'button', disabled: result.page <= 1 || undefined },
+                on: { click: () => { query = { ...query, page: result.page - 1 }; paint(); } },
+              }, [svgIcon('chevronLeft', 'wpl-icon wpl-icon-dir'), h('span', { className: 'wpl-sr-only', text: translate(host, 'previous') })]),
+              ...Array.from({ length: result.pageCount }, (_, index) => index + 1)
+                .filter((item) => item === 1 || item === result.pageCount || Math.abs(item - result.page) <= 1)
+                .flatMap((item, index, pages) => {
+                  const earlier = pages[index - 1];
+                  const button = h('button', {
+                    className: 'wpl-page',
+                    text: String(item),
+                    attrs: { type: 'button', 'aria-current': item === result.page ? 'page' : undefined },
+                    on: { click: () => { query = { ...query, page: item }; paint(); } },
+                  });
+                  return earlier !== undefined && item - earlier > 1
+                    ? [h('span', { text: '…', attrs: { 'aria-hidden': 'true' } }), button]
+                    : [button];
+                }),
+              h('button', {
+                className: 'wpl-page',
+                attrs: { type: 'button', disabled: result.page >= result.pageCount || undefined },
+                on: { click: () => { query = { ...query, page: result.page + 1 }; paint(); } },
+              }, [svgIcon('chevronRight', 'wpl-icon wpl-icon-dir'), h('span', { className: 'wpl-sr-only', text: translate(host, 'next') })]),
+            ]),
+          ])]),
         );
       };
       paint();
