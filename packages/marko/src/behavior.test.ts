@@ -19,6 +19,7 @@ import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
 import Calendar from './tags/wpl-calendar.marko';
+import Card from './tags/wpl-card.marko';
 import DatePicker from './tags/wpl-date-picker.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
@@ -447,6 +448,14 @@ describe('Marko adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('uses the requested card heading', async () => {
+    const view = await render(Card, { title: 'Analytics', titleAs: 'h3' });
+    expect(view.container.querySelector('h3.wpl-card-title')?.textContent).toBe('Analytics');
+    expect(view.container.querySelector('h2')).toBeNull();
+    const fallback = await render(Card, { title: 'Overview' });
+    expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 
   it('publishes a Marko example for every catalog component', () => {

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import Accordion from './lib/Accordion.svelte';
+import Card from './lib/Card.svelte';
 import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Button from './lib/Button.svelte';
@@ -94,5 +95,14 @@ describe('svelte adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('uses the requested card heading', () => {
+    const view = render(Card, { title: 'Analytics', titleAs: 'h3' });
+    expect(view.container.querySelector('h3.wpl-card-title')?.textContent).toBe('Analytics');
+    expect(view.container.querySelector('h2')).toBeNull();
+    view.unmount();
+    const fallback = render(Card, { title: 'Overview' });
+    expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 });

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A card title stays a level-2 heading unless `titleAs` asks for another level, in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
 - An Ember date range draws calendar days and names each one with the full date. The first choice sets the start and the next sets the end. Packages are still not published.
 - A date picker has a named calendar button in Alpine, Marko, and Ember. The button opens the calendar and closes it after a day is chosen. Packages are still not published.
 - A calendar marks the selected day and marks today, in Alpine, Marko, and Ember. Alpine no longer compares the ISO value with a different day key. A range grid that already draws days does the same. Packages are still not published.

@@ -54,8 +54,16 @@ export const Avatar = glimmer(
 );
 
 export const Card = glimmer(
-  `<article class={{this.className}}>{{#if @title}}<h2 class="wpl-card-title">{{@title}}</h2>{{/if}}{{#if @description}}<p class="wpl-card-description">{{@description}}</p>{{/if}}{{yield}}</article>`,
-  { getters: { className: (host) => cardClassName(str(host.args.className) || undefined) } },
+  `<article class={{this.className}}>{{#if @title}}{{#if (eq this.titleTag "h1")}}<h1 class="wpl-card-title">{{@title}}</h1>{{else}}{{#if (eq this.titleTag "h3")}}<h3 class="wpl-card-title">{{@title}}</h3>{{else}}{{#if (eq this.titleTag "h4")}}<h4 class="wpl-card-title">{{@title}}</h4>{{else}}<h2 class="wpl-card-title">{{@title}}</h2>{{/if}}{{/if}}{{/if}}{{/if}}{{#if @description}}<p class="wpl-card-description">{{@description}}</p>{{/if}}{{yield}}</article>`,
+  {
+    getters: {
+      className: (host) => cardClassName(str(host.args.className) || undefined),
+      titleTag: (host) => {
+        const tag = str(host.args.titleAs, 'h2');
+        return tag === 'h1' || tag === 'h3' || tag === 'h4' ? tag : 'h2';
+      },
+    },
+  },
 );
 
 export const Divider = glimmer(

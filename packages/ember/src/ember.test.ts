@@ -6,6 +6,7 @@ import {
   Breadcrumb,
   Button,
   Calendar,
+  Card,
   DatePicker,
   Link,
   Pagination,
@@ -465,5 +466,15 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('uses the requested card heading', async () => {
+    const card = mount(Card, { title: 'Analytics', titleAs: 'h3' });
+    await renderSettled();
+    expect(card.querySelector('h3.wpl-card-title')?.textContent).toBe('Analytics');
+    expect(card.querySelector('h2')).toBeNull();
+    const fallback = mount(Card, { title: 'Overview' });
+    await renderSettled();
+    expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 });

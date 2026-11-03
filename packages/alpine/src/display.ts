@@ -12,6 +12,7 @@ import type { IconName } from '@white-plumeria/core';
 import { iconPaths } from '@white-plumeria/core';
 
 const alerts = ['neutral', 'info', 'success', 'warning', 'danger'] as const;
+const headings = ['h1', 'h2', 'h3', 'h4'] as const;
 const badges = ['neutral', 'primary', 'success', 'warning', 'danger'] as const;
 const avatars = ['sm', 'md', 'lg'] as const;
 
@@ -57,7 +58,7 @@ export function Card(config: Config = {}) {
   return {
     init(this: Magic) {
       this.$el.replaceChildren(h('article', { className: 'wpl-card' }, [
-        h('h2', { className: 'wpl-card-title', text: text(config.title, 'Card') }),
+        h(oneOf(config.titleAs, headings, 'h2'), { className: 'wpl-card-title', text: text(config.title, 'Card') }),
         text(config.description) ? h('p', { text: text(config.description) }) : null,
       ]));
     },
