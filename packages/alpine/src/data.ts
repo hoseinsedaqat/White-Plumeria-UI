@@ -113,6 +113,27 @@ export function DataTable(config: Config = {}) {
         ]);
         wrap.replaceChildren(
           h('div', { className: 'wpl-table-toolbar' }, [
+            h('label', { className: 'wpl-sort-field' }, [
+              h('span', { className: 'wpl-sr-only', text: translate(host, 'sort') }),
+              h('select', {
+                className: 'wpl-select',
+                attrs: { 'aria-label': translate(host, 'sort') },
+                on: {
+                  change: (event) => {
+                    const value = event.target instanceof HTMLSelectElement ? event.target.value : '';
+                    query = { ...query, sortId: value || undefined, sortDirection: 'asc' };
+                    paint();
+                    emit(this, 'wpl-sort', { sortId: query.sortId, sortDirection: query.sortDirection });
+                  },
+                },
+              }, [
+                h('option', { text: translate(host, 'sort'), attrs: { value: '' } }),
+                ...columns.map((column) => h('option', {
+                  text: column.header,
+                  attrs: { value: column.id, selected: query.sortId === column.id || undefined },
+                })),
+              ]),
+            ]),
             h('span', { className: 'wpl-muted', text: `${formatNumber(result.total, localeOf(host))} ${translate(host, 'rows')}` }),
           ]),
           h('div', { className: 'wpl-table-wrap' }, [table]),

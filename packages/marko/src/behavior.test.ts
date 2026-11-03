@@ -558,6 +558,13 @@ describe('Marko adapter', () => {
     expect(sorts).toEqual([{ sortId: 'amount', sortDirection: 'asc' }]);
     const first = view.container.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
+    const field = view.container.querySelector('.wpl-sort-field select');
+    expect(field?.getAttribute('aria-label')).toBe('Sort');
+    expect(view.container.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
+    if (field instanceof HTMLSelectElement) field.value = 'guest';
+    field?.dispatchEvent(new Event('change', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[aria-sort="ascending"]')?.textContent).toContain('Guest');
     expect(first).toContain('Pine');
   });
 

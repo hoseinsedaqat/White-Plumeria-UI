@@ -65,7 +65,7 @@ export const Table = glimmer(
 );
 
 export const DataTable = glimmer(
-  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}</tbody></table></div></div>`,
+  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><label class="wpl-sort-field"><span class="wpl-sr-only">{{this.sortLabel}}</span><select class="wpl-select" aria-label={{this.sortLabel}} {{on "change" this.chooseSort}}><option value="">{{this.sortLabel}}</option>{{#each this.head as |column|}}<option value={{column.id}} {{flagAttr "selected" column.sorted}}>{{column.header}}</option>{{/each}}</select></label><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}</tbody></table></div></div>`,
   {
     state: (args) => ({
       sortId: str(args.sortId),
@@ -73,6 +73,7 @@ export const DataTable = glimmer(
     }),
     getters: {
       caption: (host) => str(host.args.caption, 'Table'),
+      sortLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'sort'),
       columns: (host) => list<DataColumn>(host.args.columns),
       summary(this: Host) {
         const total = this.result.total;
@@ -117,6 +118,12 @@ export const DataTable = glimmer(
       },
     },
     methods: {
+      chooseSort(this: Host, event: Event) {
+        const value = event.target instanceof HTMLSelectElement ? event.target.value : '';
+        this.state.sortId = value;
+        this.state.sortDirection = 'asc';
+        bubble(event, 'wpl-sort', { sortId: value || undefined, sortDirection: 'asc' });
+      },
       sort(id, event) {
         const next = toggleSort(
           { sortId: str(this.state.sortId) || undefined, sortDirection: this.state.sortDirection === 'desc' ? 'desc' : 'asc' },

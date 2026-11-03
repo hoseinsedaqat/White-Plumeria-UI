@@ -541,6 +541,13 @@ describe('Ember adapter', () => {
     await renderSettled();
     const first = host.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
+    const field = host.querySelector('.wpl-sort-field select');
+    expect(field?.getAttribute('aria-label')).toBe('Sort');
+    expect(host.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
+    if (field instanceof HTMLSelectElement) field.value = 'guest';
+    field?.dispatchEvent(new Event('change', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('[aria-sort="ascending"]')?.textContent).toContain('Guest');
     expect(first).toContain('Pine');
   });
 
