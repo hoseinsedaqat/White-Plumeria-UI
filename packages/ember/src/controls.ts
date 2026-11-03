@@ -5,6 +5,7 @@ import {
   clampRangeEdge,
   createId,
   fieldClassName,
+  formatNumber,
   iconButtonClassName,
   inputClassName,
   iconPaths,
@@ -287,7 +288,7 @@ export const RadioGroup = glimmer(
 );
 
 export const Slider = glimmer(
-  `<div class="wpl-field"><div class="wpl-flex wpl-flex-between"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><output for={{this.fieldId}}>{{this.value}}</output></div><input id={{this.fieldId}} class="wpl-slider" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.value}} disabled={{this.disabled}} {{on "input" this.slide}} /></div>`,
+  `<div class="wpl-field"><div class="wpl-flex wpl-flex-between"><label class="wpl-label" for={{this.fieldId}}>{{this.label}}</label><output for={{this.fieldId}}>{{this.shown}}</output></div><input id={{this.fieldId}} class="wpl-slider" type="range" min={{this.min}} max={{this.max}} step={{this.step}} value={{this.value}} aria-valuetext={{this.shown}} disabled={{this.disabled}} {{on "input" this.slide}} /></div>`,
   {
     state: (args) => ({ value: num(args.value, num(args.min, 0)), fieldId: createId('slider') }),
     getters: {
@@ -297,6 +298,12 @@ export const Slider = glimmer(
       max: (host) => String(num(host.args.max, 100)),
       step: (host) => String(num(host.args.step, 1)),
       value: (host) => num(host.state.value, num(host.args.value, 0)),
+      shown(this: Host) {
+        return formatNumber(
+          num(this.state.value, num(this.args.value, 0)),
+          localeOf(typeof document === 'undefined' ? null : document.body),
+        );
+      },
       disabled: (host) => flag(host.args.disabled),
     },
     methods: {
