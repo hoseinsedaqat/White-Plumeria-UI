@@ -420,8 +420,10 @@ export const SearchInput = glimmer(
   {
     state: (args) => ({ value: str(args.value), fieldId: createId('search') }),
     getters: {
-      label: (host) => str(host.args.label, 'Search'),
-      placeholder: (host) => str(host.args.placeholder, 'Search'),
+      label: (host) =>
+        str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'search')),
+      placeholder: (host) =>
+        str(host.args.placeholder, message(localeOf(typeof document === 'undefined' ? null : document.body), 'search')),
       fieldId: (host) => str(host.state.fieldId),
       value: (host) => str(host.state.value),
       hasQuery: (host) => str(host.state.value).length > 0,

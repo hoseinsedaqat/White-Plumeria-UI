@@ -29,10 +29,11 @@ import {
   Popover,
   Progress,
   pushToast,
+  SearchInput,
+  Steps,
   Slider,
   Spinner,
   SplitPane,
-  Steps,
   Tabs,
   Timeline,
   TreeView,
@@ -265,6 +266,19 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('names a menu, a search field, and steps in the page language', async () => {
+    document.documentElement.lang = 'fa';
+    const menu = mount(DropdownMenu, { items: [{ id: 'one', label: 'یک' }] });
+    const search = mount(SearchInput, {});
+    const steps = mount(Steps, { items: [{ id: 'one', title: 'یک' }] });
+    await renderSettled();
+    expect(menu.querySelector('button')?.textContent).toBe('باز کردن منو');
+    expect(search.querySelector('input')?.getAttribute('aria-label')).toBe('جستجو');
+    expect(search.querySelector('input')?.getAttribute('placeholder')).toBe('جستجو');
+    expect(steps.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
+    document.documentElement.lang = '';
   });
 
   it('names the active menu item and opens its submenu from the keyboard', async () => {

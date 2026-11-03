@@ -12,6 +12,10 @@ describe('Marko provider locale', () => {
     expect(fa.container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('در حال بارگذاری');
     expect(fa.container.textContent).toContain('بستن');
     expect(fa.container.textContent).toContain('قبلی');
+    expect(fa.container.textContent).toContain('باز کردن منو');
+    expect(fa.container.querySelector('.wpl-search input')?.getAttribute('placeholder')).toBe('جستجو');
+    expect(fa.container.querySelector('.wpl-search-clear')?.getAttribute('aria-label')).toBe('پاک کردن');
+    expect(fa.container.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
     expect(fa.container.querySelector('[data-wpl-locale]')?.getAttribute('data-wpl-locale')).toBe(
       'fa',
     );

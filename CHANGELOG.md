@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A menu, a search field, and steps use the page language when they have no label, in Alpine, Marko, and Ember. Packages are still not published.
 - Custom elements name the spinner and the dialog close button in the page language. Packages are still not published.
 - Indeterminate progress omits `aria-valuenow`, in Alpine, Marko, and Ember. Packages are still not published.
 - A dialog and a modal return focus to the opener, in Marko and Ember. Escape closes them. Packages are still not published.

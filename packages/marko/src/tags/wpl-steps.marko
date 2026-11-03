@@ -1,5 +1,6 @@
 import { stepIndex, stepState } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface StepItem {
   id: string;
@@ -20,7 +21,7 @@ export interface Input {
 <const/items=input.items ?? []>
 <const/current=stepIndex(items, value)>
 
-<ol/host class=(input.orientation === "vertical" ? "wpl-steps wpl-steps-vertical" : "wpl-steps") aria-label=input.label || "Steps">
+<ol/host class=(input.orientation === "vertical" ? "wpl-steps wpl-steps-vertical" : "wpl-steps") aria-label=input.label || text("steps")>
   <for|item, index| of=items>
     <li class="wpl-step" data-state=stepState(index, current)>
       <button

@@ -1,5 +1,6 @@
 import { firstEnabledIndex, menuCommand, menuHasSubmenu, moveEnabledIndex, readingDirection, typeaheadMove } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface MenuItem {
   id: string;
@@ -96,8 +97,8 @@ export interface Input {
       if (sub === null) active = moveEnabledIndex(items, active, command);
       else sub = moveEnabledIndex(children, sub, command);
     }
-  >${input.label || "Open menu"}</button>
-  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" aria-label=input.label || "Open menu" hidden=!open>
+  >${input.label || text("openMenu")}</button>
+  <div id=menuId class="wpl-menu wpl-menu-panel" role="menu" aria-label=input.label || text("openMenu") hidden=!open>
     <for|item, index| of=items>
       <div class="wpl-menu-row">
         <button
