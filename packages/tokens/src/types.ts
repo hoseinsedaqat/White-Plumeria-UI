@@ -1,3 +1,5 @@
+import { galleryThemeNames } from './gallery-names.ts';
+
 export const colorKeys = [
   'bg',
   'bgMuted',
@@ -50,7 +52,15 @@ export interface ThemeDefinition {
   dark: ColorTokens;
 }
 
-export const themeNames = ['white', 'ivory', 'ink', 'saffron', 'lagoon', 'blush'] as const;
+export const themeNames = [
+  'white',
+  'ivory',
+  'ink',
+  'saffron',
+  'lagoon',
+  'blush',
+  ...galleryThemeNames,
+] as const;
 export type ThemeName = (typeof themeNames)[number];
 
 export interface SharedTokens {

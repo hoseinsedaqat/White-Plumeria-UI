@@ -35,8 +35,13 @@ if (components.length < 50) {
     `Expected the catalog parser to find the component set, found ${components.length}.`,
   );
 }
-const themeSource = readFileSync('packages/tokens/src/themes.ts', 'utf8');
-const themeNames = [...themeSource.matchAll(/name: '([a-z]+)'/g)].map((match) => match[1]);
+const themeSource = ['themes.ts', 'gallery.ts']
+  .map((file) => readFileSync(`packages/tokens/src/${file}`, 'utf8'))
+  .join('\n');
+const themeNames = [
+  ...themeSource.matchAll(/name: '([a-z]+)'/g),
+  ...themeSource.matchAll(/\btheme\(\s*'([a-z]+)'/g),
+].map((match) => match[1]);
 if (!themeNames.includes('white')) {
   throw new Error('Expected the white theme to be registered.');
 }

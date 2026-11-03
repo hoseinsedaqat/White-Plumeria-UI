@@ -44,7 +44,7 @@ export function Example() {
   },
   '/theming': {
     title: 'Theming',
-    body: 'Set data-wpl-theme and data-wpl-scheme on an ancestor. Omit the scheme to follow the system. Themes: white, ivory, ink, saffron, lagoon, and blush. Custom themes override the --wpl-color-* variables. In these docs the page chrome stays on White, and only the component preview takes the selected theme, so a color change does not blend the page into the sample.',
+    body: 'Set data-wpl-theme and data-wpl-scheme on an ancestor. Omit the scheme to follow the system. white is the default. The registered theme names live in the token package, and each one has a light and a dark scheme. Custom themes override the --wpl-color-* variables. In these docs the page chrome stays on White, and only the component preview takes the selected theme, so a color change does not blend the page into the sample.',
     code: `<html data-wpl-theme="saffron" data-wpl-scheme="dark" lang="en" dir="ltr">\n\n${themeFlashScript}`,
   },
   '/direction': {

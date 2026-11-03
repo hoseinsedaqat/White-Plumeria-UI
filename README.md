@@ -6,7 +6,7 @@
 
 <p align="center">
   A design system you can read.<br />
-  One stylesheet, six themes, and a native adapter for the framework you already use.<br />
+  One stylesheet, a full theme set, and a native adapter for the framework you already use.<br />
   Tailwind is not required.
 </p>
 

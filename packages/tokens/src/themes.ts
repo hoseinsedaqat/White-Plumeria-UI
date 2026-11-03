@@ -1,3 +1,4 @@
+import { galleryThemes } from './gallery.ts';
 import type { ColorTokens, ThemeDefinition } from './types.ts';
 
 const whiteLight: ColorTokens = {
@@ -523,6 +524,7 @@ export const themes: readonly ThemeDefinition[] = [
     light: blushLight,
     dark: blushDark,
   },
+  ...galleryThemes,
 ];
 
 export const sharedTokens = {
