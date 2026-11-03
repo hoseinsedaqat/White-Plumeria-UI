@@ -1,4 +1,4 @@
-import { catalog, formatDate, parseIsoDate, toIsoDate } from '@white-plumeria/core';
+import { catalog, formatDate, formatNumber, parseIsoDate, toIsoDate } from '@white-plumeria/core';
 import { renderComponent, renderSettled } from '@ember/renderer';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
@@ -269,6 +269,15 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('announces the slider value in the page language', async () => {
+    document.documentElement.lang = 'fa';
+    const host = mount(Slider, { label: 'Volume', value: 40 });
+    await renderSettled();
+    expect(host.querySelector('output')?.textContent).toBe(formatNumber(40, 'fa'));
+    expect(host.querySelector('input')?.getAttribute('aria-valuetext')).toBe(formatNumber(40, 'fa'));
+    document.documentElement.lang = '';
   });
 
   it('hides the range readout from assistive tech', async () => {
