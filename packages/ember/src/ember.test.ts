@@ -575,6 +575,30 @@ describe('Ember adapter', () => {
     expect(named.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Saving');
   });
 
+  it('returns focus to the dialog and modal opener', async () => {
+    const dialog = mount(Dialog, { title: 'Confirm', trigger: 'Open dialog' });
+    const modal = mount(Modal, { title: 'Window', trigger: 'Open modal' });
+    await renderSettled();
+    const dialogTrigger = dialog.querySelector('button');
+    const modalTrigger = modal.querySelector('button');
+    dialogTrigger?.focus();
+    dialogTrigger?.click();
+    await renderSettled();
+    dialog.querySelector('dialog')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await renderSettled();
+    await Promise.resolve();
+    expect(dialog.querySelector('dialog')).toBeNull();
+    expect(document.activeElement).toBe(dialogTrigger);
+    modalTrigger?.focus();
+    modalTrigger?.click();
+    await renderSettled();
+    modal.querySelector('.wpl-dialog-header button')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    await Promise.resolve();
+    expect(modal.querySelector('dialog')).toBeNull();
+    expect(document.activeElement).toBe(modalTrigger);
+  });
+
   it('returns focus to the drawer opener', async () => {
     const host = mount(Drawer, { title: 'Filters', trigger: 'Open drawer', side: 'start' });
     await renderSettled();

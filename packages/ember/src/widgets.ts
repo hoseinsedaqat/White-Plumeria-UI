@@ -217,8 +217,17 @@ function menuKey(host: Host, event: Event, closeOnLeaf: boolean): void {
   else host.state.sub = moveEnabledIndex(children, sub, command);
 }
 
+function restoreTrigger(event: Event): void {
+  const node = event.currentTarget;
+  const root = node instanceof Element ? node.closest('.wpl-dialog-root, .wpl-drawer-root') : null;
+  queueMicrotask(() => {
+    const trigger = root?.querySelector('button');
+    if (trigger instanceof HTMLElement) trigger.focus();
+  });
+}
+
 export const Dialog = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</dialog>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}} {{on "keydown" this.onKey}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</dialog>{{/if}}</div>`,
   {
     state: () => ({ open: false, titleId: createId('dialog') }),
     getters: {
@@ -233,21 +242,27 @@ export const Dialog = glimmer(
         this.state.open = true;
         bubble(event as Event, 'wpl-open', { open: true });
       },
+      onKey(event) {
+        if ((event as KeyboardEvent).key !== 'Escape') return;
+        this.close(event);
+      },
       close(event) {
         (event as Event).preventDefault();
         this.state.open = false;
         bubble(event as Event, 'wpl-close', { open: false });
+        restoreTrigger(event as Event);
       },
       confirm(event) {
         this.state.open = false;
         bubble(event as Event, 'wpl-confirm', {});
+        restoreTrigger(event as Event);
       },
     },
   },
 );
 
 export const Modal = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></dialog>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}} {{on "keydown" this.onKey}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></dialog>{{/if}}</div>`,
   {
     state: () => ({ open: false, titleId: createId('modal') }),
     getters: {
@@ -262,10 +277,15 @@ export const Modal = glimmer(
         this.state.open = true;
         bubble(event as Event, 'wpl-open', { open: true });
       },
+      onKey(event) {
+        if ((event as KeyboardEvent).key !== 'Escape') return;
+        this.close(event);
+      },
       close(event) {
         (event as Event).preventDefault();
         this.state.open = false;
         bubble(event as Event, 'wpl-close', { open: false });
+        restoreTrigger(event as Event);
       },
     },
   },

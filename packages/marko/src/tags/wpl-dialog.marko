@@ -15,9 +15,15 @@ export interface Input {
 
 <let/open=Boolean(input.open)>
 <id/titleId/>
+<const/close=() => {
+  open = false;
+  emit(host(), "wpl-close", { open: false });
+  input.onOpenChange?.(false);
+  queueMicrotask(() => trigger()?.focus());
+}>
 
 <div/host class="wpl-dialog-host">
-  <button
+  <button/trigger
     type="button"
     class="wpl-btn wpl-btn-secondary"
     onClick() {
@@ -26,17 +32,13 @@ export interface Input {
       input.onOpenChange?.(true);
     }
   >${input.trigger || "Open"}</button>
-  <dialog/frame class="wpl-dialog" open=open aria-labelledby=titleId onCancel(event) { event.preventDefault(); open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>
+  <dialog/frame class="wpl-dialog" open=open aria-labelledby=titleId onCancel(event) { event.preventDefault(); close(); } onKeyDown(event) { if (event.key !== "Escape") return; event.preventDefault(); close(); }>
     <header class="wpl-dialog-header">
       <h2 class="wpl-dialog-title" id=titleId>${input.title || "Dialog"}</h2>
       <button
         type="button"
         class="wpl-btn wpl-btn-ghost wpl-btn-sm"
-        onClick() {
-          open = false;
-          emit(host(), "wpl-close", { open: false });
-          input.onOpenChange?.(false);
-        }
+        onClick() { close(); }
       >${text("close")}</button>
     </header>
     <div class="wpl-dialog-body">
@@ -51,9 +53,7 @@ export interface Input {
           onClick() {
             emit(host(), "wpl-confirm", {});
             input.onConfirm?.();
-            open = false;
-            emit(host(), "wpl-close", { open: false });
-            input.onOpenChange?.(false);
+            close();
           }
         >${input.confirm}</button>
       </footer>
