@@ -1,5 +1,6 @@
 import { capabilities, setModifierManager } from '@ember/modifier';
 import {
+  bindDismissable,
   canMove,
   carouselIndexFromKey,
   clampIndex,
@@ -55,6 +56,30 @@ const dialogFrame = setModifierManager(
   class DialogFrame {},
 );
 registerHelper('dialogFrame', dialogFrame);
+
+const popoverDismiss = setModifierManager(
+  () => ({
+    capabilities: capabilities('3.22'),
+    createModifier() {
+      return { stop: undefined as (() => void) | undefined };
+    },
+    installModifier(state: { stop?: () => void }, element: Element) {
+      if (!(element instanceof HTMLElement)) return;
+      const owner = element.parentElement;
+      state.stop = bindDismissable({
+        root: element,
+        owner,
+        onDismiss: () => owner?.dispatchEvent(new CustomEvent('wpl-dismiss', { bubbles: true })),
+      });
+    },
+    updateModifier() {},
+    destroyModifier(state: { stop?: () => void }) {
+      state.stop?.();
+    },
+  }),
+  class PopoverDismiss {},
+);
+registerHelper('popoverDismiss', popoverDismiss);
 
 interface MenuItem {
   id: string;
@@ -284,11 +309,12 @@ export const Drawer = glimmer(
 );
 
 export const Popover = glimmer(
-  `<div class="wpl-popover-root"><button type="button" class="wpl-btn wpl-btn-secondary wpl-btn-sm" aria-expanded={{this.expanded}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div class="wpl-popover" role="dialog">{{#if @text}}<p>{{@text}}</p>{{else}}{{yield}}{{/if}}</div>{{/if}}</div>`,
+  `<div class="wpl-popover-root" {{on "wpl-dismiss" this.dismiss}}><button type="button" class="wpl-btn wpl-btn-secondary wpl-btn-sm" aria-expanded={{this.expanded}} aria-controls={{this.panelId}} {{on "click" this.toggle}}>{{this.label}}</button>{{#if this.openState}}<div id={{this.panelId}} class="wpl-popover" role="dialog" {{popoverDismiss}}>{{#if @text}}<p>{{@text}}</p>{{else}}{{yield}}{{/if}}</div>{{/if}}</div>`,
   {
-    state: () => ({ open: false }),
+    state: () => ({ open: false, panelId: createId('popover') }),
     getters: {
       label: (host) => str(host.args.label, 'Details'),
+      panelId: (host) => str(host.state.panelId),
       openState: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
     },
@@ -296,6 +322,9 @@ export const Popover = glimmer(
       toggle(event) {
         this.state.open = !this.state.open;
         bubble(event as Event, 'wpl-toggle', { open: this.state.open });
+      },
+      dismiss() {
+        this.state.open = false;
       },
     },
   },

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A popover names its panel and closes from Escape or an outside pointer, in Alpine, Marko, Ember, and Svelte. Packages are still not published.
 - A spinner without a label uses the page language. In Persian it says در حال بارگذاری, in Alpine, Marko, Ember, Vue, and Svelte. Packages are still not published.
 - A drawer uses a modal dialog, so focus stays inside it and returns to the opener, in Marko and Ember. Escape closes it. Packages are still not published.
 - A command palette names the active command and chooses it from the arrow keys, in Alpine, Marko, and Ember. A keyword filters the list, and an empty list says there are no results. Packages are still not published.

@@ -1,3 +1,4 @@
+import { bindDismissable } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 
 export interface Input {
@@ -8,16 +9,43 @@ export interface Input {
 }
 
 <let/open=Boolean(input.open)>
+<let/stop=(undefined as (() => void) | undefined)>
+<id/panelId/>
 
 <div/host class="wpl-popover-host">
   <button
     type="button"
     class="wpl-btn wpl-btn-secondary"
     aria-expanded=String(open)
+    aria-controls=panelId
     aria-haspopup="dialog"
-    onClick() { open = !open; emit(host(), "wpl-close", { open }); input.onOpenChange?.(open); }
+    onClick() {
+      open = !open;
+      emit(host(), open ? "wpl-open" : "wpl-close", { open });
+      input.onOpenChange?.(open);
+    }
   >${input.label || "Open"}</button>
-  <div class="wpl-popover" role="dialog" hidden=!open>
+  <div/panel id=panelId class="wpl-popover" role="dialog" hidden=!open>
     <${input.content}/>
   </div>
+  <lifecycle
+    onUpdate() {
+      stop?.();
+      stop = undefined;
+      const node = panel();
+      if (!open || !(node instanceof HTMLElement)) return;
+      stop = bindDismissable({
+        root: node,
+        owner: host(),
+        onDismiss() {
+          open = false;
+          emit(host(), "wpl-close", { open: false });
+          input.onOpenChange?.(false);
+        },
+      });
+    }
+    onDestroy() {
+      stop?.();
+    }
+  />
 </div>

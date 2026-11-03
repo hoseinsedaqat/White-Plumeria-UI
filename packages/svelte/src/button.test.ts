@@ -6,6 +6,7 @@ import Card from './lib/Card.svelte';
 import Combobox from './lib/Combobox.svelte';
 import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
+import Popover from './lib/Popover.svelte';
 import Button from './lib/Button.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
@@ -96,6 +97,22 @@ describe('svelte adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('closes a popover from escape and an outside pointer', async () => {
+    const view = render(Popover, { label: 'Details' });
+    const trigger = view.getByRole('button', { name: 'Details' });
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    await userEvent.click(trigger);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger.getAttribute('aria-controls')).toBe(view.container.querySelector('.wpl-popover')?.id);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await Promise.resolve();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    await userEvent.click(trigger);
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    await Promise.resolve();
+    expect(view.container.querySelector('.wpl-popover')).toBeNull();
   });
 
   it('names the active combobox option', async () => {

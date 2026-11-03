@@ -378,15 +378,16 @@ export function Popover(config: Config = {}) {
       const host = this.$el;
       let open = false;
       let stop: (() => void) | undefined;
+      const panelId = uid('popover');
       const panel = h(
         'div',
-        { className: 'wpl-popover', attrs: { role: 'dialog', hidden: true } },
+        { className: 'wpl-popover', attrs: { id: panelId, role: 'dialog', hidden: true } },
         [h('p', { text: text(config.content, labelOf(this, config, 'Details')) })],
       );
       const trigger = h('button', {
         className: 'wpl-btn wpl-btn-secondary wpl-btn-sm',
         text: text(config.label, 'Details'),
-        attrs: { type: 'button', 'aria-expanded': 'false' },
+        attrs: { type: 'button', 'aria-expanded': 'false', 'aria-controls': panelId },
         on: { click: () => setOpen(!open) },
       });
       const setOpen = (next: boolean) => {

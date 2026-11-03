@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -150,6 +150,21 @@ describe('Alpine adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('closes a popover from escape and an outside pointer', () => {
+    const host = mount(Popover, { label: 'Details', content: 'Settles tomorrow' });
+    const trigger = host.querySelector('button');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger?.getAttribute('aria-controls')).toBe(host.querySelector('.wpl-popover')?.id);
+    trigger?.click();
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+    trigger?.click();
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
   });
 
   it('names a spinner in the provider language', () => {
