@@ -33,6 +33,7 @@ import Drawer from './tags/wpl-drawer.marko';
 import Popover from './tags/wpl-popover.marko';
 import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
+import Password from './tags/wpl-password-field.marko';
 import Tooltip from './tags/wpl-tooltip.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -217,6 +218,20 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the password reveal button and keeps the field hidden until pressed', async () => {
+    const view = await render(Password, { label: 'Password' });
+    const input = view.container.querySelector('input');
+    const reveal = view.container.querySelector('button');
+    expect(input?.getAttribute('type')).toBe('password');
+    expect(reveal?.getAttribute('aria-pressed')).toBe('false');
+    expect(reveal?.getAttribute('aria-label')).toBe('Show password');
+    reveal?.click();
+    await flush();
+    expect(input?.getAttribute('type')).toBe('text');
+    expect(reveal?.getAttribute('aria-pressed')).toBe('true');
+    expect(reveal?.getAttribute('aria-label')).toBe('Hide password');
   });
 
   it('waits to show a tooltip and dismisses it with escape', async () => {

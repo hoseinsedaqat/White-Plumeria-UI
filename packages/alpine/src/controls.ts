@@ -552,22 +552,23 @@ export function PasswordField(config: Config = {}) {
         },
         on: { input: (event) => changeValue(this, (event.target as HTMLInputElement).value) },
       });
+      const revealLabel = (next: boolean) => translate(this.$el, next ? 'hidePassword' : 'showPassword');
       const toggle = h(
         'button',
         {
           className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
-          attrs: { type: 'button', 'aria-pressed': 'false', 'aria-label': 'Show password' },
+          attrs: { type: 'button', 'aria-pressed': 'false', 'aria-label': revealLabel(false) },
           on: {
             click: () => {
               visible = !visible;
               input.type = visible ? 'text' : 'password';
               toggle.setAttribute('aria-pressed', String(visible));
-              toggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
-              toggle.textContent = visible ? 'Hide' : 'Show';
+              toggle.setAttribute('aria-label', revealLabel(visible));
+              toggle.textContent = revealLabel(visible);
             },
           },
         },
-        ['Show'],
+        [revealLabel(false)],
       );
       this.$el.replaceChildren(
         field(text(config.label, 'Password'), h('div', { className: 'wpl-flex' }, [input, toggle])),

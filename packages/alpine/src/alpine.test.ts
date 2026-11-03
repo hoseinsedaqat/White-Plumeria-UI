@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,23 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('names the password reveal button in the provider language', () => {
+    const provider = mount(WhitePlumeriaProvider, { persist: false, locale: 'fa' });
+    const host = document.createElement('div');
+    provider.append(host);
+    const data = PasswordField();
+    data.init?.call({ ...data, ...magicFor(host) });
+    const reveal = host.querySelector('button');
+    const input = host.querySelector('input');
+    expect(input?.getAttribute('type')).toBe('password');
+    expect(reveal?.getAttribute('aria-pressed')).toBe('false');
+    expect(reveal?.getAttribute('aria-label')).toBe('نمایش رمز');
+    reveal?.click();
+    expect(input?.getAttribute('type')).toBe('text');
+    expect(reveal?.getAttribute('aria-pressed')).toBe('true');
+    expect(reveal?.getAttribute('aria-label')).toBe('پنهان کردن رمز');
   });
 
   it('waits to show a tooltip and dismisses it with escape', async () => {

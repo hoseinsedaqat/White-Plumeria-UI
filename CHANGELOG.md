@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The password reveal button is named and pressed, in Alpine and Marko. Packages are still not published.
 - A tooltip waits 400ms and closes on Escape, in Alpine, Marko, Ember, Svelte, Vue, and Angular. Packages are still not published.
 - Custom-element tabs move with the arrow keys. An accordion panel is a named region. Packages are still not published.
 - A menu, a search field, and steps use the page language when they have no label, in Alpine, Marko, and Ember. Packages are still not published.
