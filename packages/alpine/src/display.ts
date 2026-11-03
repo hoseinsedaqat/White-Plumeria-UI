@@ -192,7 +192,17 @@ export function Progress(config: Config = {}) {
 export function Skeleton(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('span', { className: 'wpl-skeleton', attrs: { 'aria-hidden': 'true', style: text(config.width) ? `inline-size:${text(config.width)}` : undefined } }));
+      const width = text(config.width);
+      const height = text(config.height, '1rem');
+      this.$el.replaceChildren(
+        h('span', {
+          className: 'wpl-skeleton',
+          attrs: {
+            'aria-hidden': 'true',
+            style: `${width ? `inline-size:${width};` : ''}block-size:${height}`,
+          },
+        }),
+      );
     },
   };
 }

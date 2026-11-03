@@ -1,2 +1,2 @@
-export interface Input { width?: string; }
-<span class="wpl-skeleton" aria-hidden="true" style=(input.width ? `inline-size:${input.width}` : null)></span>
+export interface Input { width?: string; height?: string; }
+<span class="wpl-skeleton" aria-hidden="true" style=`${input.width ? `inline-size:${input.width};` : ""}block-size:${input.height || "1rem"}`></span>

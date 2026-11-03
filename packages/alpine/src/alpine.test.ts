@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,15 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('sizes a skeleton and hides it from assistive tech', () => {
+    const host = mount(Skeleton, { width: '12rem', height: '2rem' });
+    const bone = host.querySelector('.wpl-skeleton');
+    expect(bone?.getAttribute('aria-hidden')).toBe('true');
+    expect(bone?.getAttribute('style')).toContain('inline-size:12rem');
+    expect(bone?.getAttribute('style')).toContain('block-size:2rem');
+    expect(mount(Skeleton, {}).querySelector('.wpl-skeleton')?.getAttribute('style')).toContain('block-size:1rem');
   });
 
   it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
