@@ -360,7 +360,7 @@ export const catalog: ComponentDoc[] = [
     summary: 'Inline status message that is part of the page.',
     summaryFa: 'پیام وضعیت درون صفحه.',
     tags: ['status', 'error', 'warning', 'هشدار'],
-    classes: ['wpl-alert', 'wpl-alert-info', 'wpl-alert-success', 'wpl-alert-warning', 'wpl-alert-danger'],
+    classes: ['wpl-alert', 'wpl-alert-title', 'wpl-alert-description', 'wpl-alert-info', 'wpl-alert-success', 'wpl-alert-warning', 'wpl-alert-danger'],
     props: [
       { name: 'variant', type: '"neutral" | "info" | "success" | "warning" | "danger"', defaultValue: 'neutral', description: 'Status.', descriptionFa: 'وضعیت.' },
       { name: 'title', type: 'string', description: 'Short title.', descriptionFa: 'عنوان کوتاه.' },
@@ -374,7 +374,7 @@ export const catalog: ComponentDoc[] = [
       react: '<Alert variant="warning" title="Review needed">Two fields are incomplete.</Alert>',
       vue: '<Alert variant="warning" title="Review needed">Two fields are incomplete.</Alert>',
       svelte: '<Alert variant="warning" title="Review needed">Two fields are incomplete.</Alert>',
-      html: '<div class="wpl-alert wpl-alert-warning" role="status"><p class="wpl-alert-title">Review needed</p></div>',
+      html: '<div class="wpl-alert wpl-alert-warning" role="status"><p class="wpl-alert-title">Review needed</p><p class="wpl-alert-description">Two fields are incomplete.</p></div>',
     }),
   },
 ];

@@ -3,6 +3,7 @@ import { renderComponent, renderSettled } from '@ember/renderer';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   Accordion,
+  Alert,
   Breadcrumb,
   Button,
   Avatar,
@@ -1040,6 +1041,19 @@ describe('Ember adapter', () => {
     const fallback = mount(Card, { title: 'Overview' });
     await renderSettled();
     expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
+  });
+
+  it('keeps an alert title and description in the catalog classes', async () => {
+    const host = mount(Alert, { title: 'Review needed', description: 'Two fields are incomplete.', variant: 'warning' });
+    await renderSettled();
+    expect(host.querySelector('.wpl-alert-warning')?.getAttribute('role')).toBe('status');
+    expect(host.querySelector('.wpl-alert-title')?.textContent).toBe('Review needed');
+    expect(host.querySelector('.wpl-alert-description')?.textContent).toBe('Two fields are incomplete.');
+    const danger = mount(Alert, { variant: 'danger' });
+    await renderSettled();
+    expect(danger.querySelector('[role="alert"]')).not.toBeNull();
+    expect(danger.querySelector('.wpl-alert-title')).toBeNull();
+    expect(danger.querySelector('.wpl-alert-description')).toBeNull();
   });
 
   it('renders a card description without inventing a title', async () => {

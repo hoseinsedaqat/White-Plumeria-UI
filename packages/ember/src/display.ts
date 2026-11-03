@@ -146,7 +146,7 @@ export const EmptyState = glimmer(
 );
 
 export const Alert = glimmer(
-  `<div class={{this.className}} role={{this.role}}>{{#if @title}}<strong>{{@title}}</strong>{{/if}}{{#if @description}}<p>{{@description}}</p>{{else}}{{yield}}{{/if}}</div>`,
+  `<div class={{this.className}} role={{this.role}}>{{#if @title}}<p class="wpl-alert-title">{{@title}}</p>{{/if}}{{#if @description}}<p class="wpl-alert-description">{{@description}}</p>{{else}}{{yield}}{{/if}}</div>`,
   {
     getters: {
       className: (host) =>
