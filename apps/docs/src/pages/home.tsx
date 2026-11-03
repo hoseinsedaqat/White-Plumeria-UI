@@ -1,13 +1,18 @@
-import { brand, buttonClassName, catalog, categoryLabels, resolveDirection } from '@white-plumeria/core';
+import { brand, catalog, categoryLabels, resolveDirection } from '@white-plumeria/core';
 import { libraryPens } from '../pen-meta.ts';
-import { themes, type ThemeDefinition } from '@white-plumeria/tokens';
+import { themes } from '@white-plumeria/tokens';
 import { Button, Card, Checkbox, Input, Mark, Switch, ToggleGroup, useWhitePlumeria } from '@white-plumeria/react';
 import type { ButtonSize } from '@white-plumeria/core';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { A } from '../router.tsx';
 import '../home.css';
 
-const install = 'npm i @white-plumeria/styles @white-plumeria/react';
+const installCommands = {
+  npm: 'npm i @white-plumeria/styles @white-plumeria/react',
+  pnpm: 'pnpm add @white-plumeria/styles @white-plumeria/react',
+  yarn: 'yarn add @white-plumeria/styles @white-plumeria/react',
+  bun: 'bun add @white-plumeria/styles @white-plumeria/react',
+} as const;
 const longStyle =
   'display:inline-flex;align-items:center;justify-content:center;height:2.75rem;padding:0 1.1rem;border:1px solid transparent;border-radius:999px;background:#1c1915;color:#fff;font-weight:650;cursor:pointer';
 const shortClass = 'wpl-btn wpl-btn-primary';
@@ -121,8 +126,11 @@ const surfaces = [
 
 export function HomePage({ onNavigate }: { onNavigate: (href: string) => void }) {
   const heroRef = useRef<HTMLElement>(null);
+  const wipeRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const [wipe, setWipe] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [manager, setManager] = useState<keyof typeof installCommands>('npm');
   const [panel, setPanel] = useState('Dashboard');
   const [tab, setTab] = useState('Features');
   const [view, setView] = useState<'auto' | 'dashboard' | 'markup'>('auto');
@@ -168,9 +176,42 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
     };
   }, []);
 
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const el = wipeRef.current;
+      if (!el) return;
+      const reduced =
+        preferences.reducedMotion === 'reduce' ||
+        (preferences.reducedMotion === 'system' &&
+          typeof window.matchMedia === 'function' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (reduced) {
+        setWipe(0.42);
+        return;
+      }
+      const total = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-el.getBoundingClientRect().top, 0), Math.max(total, 0));
+      setWipe(total <= 0 ? 0 : scrolled / total);
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [preferences.reducedMotion]);
+
   async function copyInstall() {
     try {
-      await navigator.clipboard.writeText(install);
+      await navigator.clipboard.writeText(installCommands[manager]);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1400);
     } catch {
@@ -183,12 +224,9 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
   return (
     <div className="home">
       <section className="home-hero" ref={heroRef} aria-label="Introduction">
+        <div className="home-stage">
         <div className="home-intro">
           <div className="home-intro-inner">
-            <button type="button" className="home-install" onClick={() => void copyInstall()}>
-              <CopyIcon />
-              <code>{copied ? 'Copied' : install}</code>
-            </button>
             <h1 className="home-title">
               <span className="home-title-strong">Faster, cleaner, easier</span>
               <span className="home-title-thin">component development</span>
@@ -208,7 +246,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
                 How to use?
               </A>
             </div>
-            <p className="home-note">Not on npm yet. The pill copies the intended install command.</p>
             <ul className="home-stats">
               <li>
                 <small>In this repository</small>
@@ -227,6 +264,27 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               </li>
             </ul>
           </div>
+        </div>
+
+        <div className="home-install-card" id="install">
+          <div className="home-install-head">
+            <h2>Install</h2>
+            <div className="home-install-tabs" role="tablist" aria-label="Package manager">
+              {(Object.keys(installCommands) as Array<keyof typeof installCommands>).map((item) => (
+                <button key={item} type="button" role="tab" aria-selected={manager === item} onClick={() => setManager(item)}>
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="home-install-line" role="tabpanel">
+            <code>{installCommands[manager]}</code>
+            <button type="button" className="home-install" onClick={() => void copyInstall()}>
+              <CopyIcon />
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+          <p className="home-note">Not on npm yet. This copies the command we will publish.</p>
         </div>
 
         <div className="home-rail-col">
@@ -351,6 +409,75 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             </div>
           </div>
         </div>
+        </div>
+
+      </section>
+
+      <section className="home-section home-theme-stage" aria-labelledby="themes-title">
+        <h2 id="themes-title">
+          Unlimited themes
+          <br />
+          <span>with zero extra classes</span>
+        </h2>
+        <p>Scroll the stage. A diagonal crosses from light to dark. Pick a theme from the list. The classes stay the same.</p>
+        <ToggleGroup
+          hideLabel
+          label="Color scheme"
+          value={preferences.appearance}
+          onValueChange={(appearance) => {
+            if (appearance === 'light' || appearance === 'dark' || appearance === 'system') {
+              setPreferences({ appearance });
+            }
+          }}
+          options={[
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+            { value: 'system', label: 'System' },
+          ]}
+        />
+        <div className="home-wipe" ref={wipeRef}>
+          <div className="home-wipe-sticky">
+            <div className="home-wipe-layout">
+              <div className="home-theme-menu" role="group" aria-label="Themes">
+                {themes.map((theme) => {
+                  const on = preferences.theme === theme.name;
+                  return (
+                    <button
+                      key={theme.name}
+                      type="button"
+                      className="home-theme-row"
+                      aria-pressed={on}
+                      onClick={() => setPreferences({ theme: theme.name })}
+                    >
+                      <span className="home-theme-swatch" aria-hidden="true">
+                        <i style={{ background: theme.light.primary }} />
+                        <i style={{ background: theme.light.accent }} />
+                        <i style={{ background: theme.light.success }} />
+                        <i style={{ background: theme.light.info }} />
+                      </span>
+                      <span>{theme.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="home-wipe-stage" style={{ '--wipe': String(wipe) } as CSSProperties}>
+                <div className="home-wipe-layer" data-wpl-theme={preferences.theme} data-wpl-scheme="light">
+                  <ThemeBoard />
+                </div>
+                <div className="home-wipe-layer home-wipe-dark" data-wpl-theme={preferences.theme} data-wpl-scheme="dark" aria-hidden="true">
+                  <ThemeBoard />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="home-ctas">
+          <A className="home-cta" href="/themes" onNavigate={onNavigate}>
+            Open theme lab
+          </A>
+        </div>
+      </section>
+
 
         <div className="home-beats">
           <div className="home-beat">
@@ -387,7 +514,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
             </div>
           </div>
         </div>
-      </section>
 
       <section className="home-section">
         <h2>
@@ -683,66 +809,6 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
         </div>
       </section>
 
-      <section className="home-section">
-        <h2>
-          Unlimited themes
-          <br />
-          <span>with zero extra classes</span>
-        </h2>
-        <p>Pick a theme. Each card uses the same button classes. Only the CSS variables change, and the rest of this page follows.</p>
-        <ToggleGroup
-          hideLabel
-          label="Color scheme"
-          value={preferences.appearance}
-          onValueChange={(appearance) => {
-            if (appearance === 'light' || appearance === 'dark' || appearance === 'system') {
-              setPreferences({ appearance });
-            }
-          }}
-          options={[
-            { value: 'light', label: 'Light' },
-            { value: 'dark', label: 'Dark' },
-            { value: 'system', label: 'System' },
-          ]}
-        />
-        <div className="home-theme-cards" role="group" aria-label="Themes">
-          {themes.map((theme) => {
-            const on = preferences.theme === theme.name;
-            return (
-              <button
-                key={theme.name}
-                type="button"
-                className="home-theme-card"
-                style={cssVars(theme, scheme)}
-                aria-pressed={on}
-                aria-label={on ? `${theme.label}, selected` : `Use ${theme.label}`}
-                onClick={() => setPreferences({ theme: theme.name })}
-              >
-                <span className="home-theme-card-top">
-                  <strong>{theme.label}</strong>
-                  {on ? <em>Selected</em> : null}
-                </span>
-                <span className="home-theme-sample" aria-hidden="true">
-                  <span className={buttonClassName({ size: 'sm' })}>Save</span>
-                  <span className={buttonClassName({ size: 'sm', variant: 'outline' })}>Cancel</span>
-                </span>
-                <span className="home-theme-dots" aria-hidden="true">
-                  <i style={{ background: 'var(--wpl-color-accent)' }} />
-                  <i style={{ background: 'var(--wpl-color-success)' }} />
-                  <i style={{ background: 'var(--wpl-color-warning)' }} />
-                  <i style={{ background: 'var(--wpl-color-danger)' }} />
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <div className="home-ctas">
-          <A className="home-cta" href="/themes" onNavigate={onNavigate}>
-            Open theme lab
-          </A>
-        </div>
-      </section>
-
       <section className="home-section" aria-labelledby="pure-title">
         <h2 id="pure-title">
           Pure CSS.
@@ -993,13 +1059,68 @@ function lerp(progress: number, from: number, to: number, start: number, end: nu
   return start + (end - start) * t;
 }
 
-function cssVars(theme: ThemeDefinition, scheme: 'light' | 'dark'): CSSProperties {
-  const style: Record<string, string> = {};
-  for (const [key, value] of Object.entries(theme[scheme])) {
-    const kebab = key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
-    style[`--wpl-color-${kebab}`] = value;
-  }
-  return style;
+function ThemeBoard() {
+  const colors = [
+    ['Primary', 'var(--wpl-color-primary)'],
+    ['Accent', 'var(--wpl-color-accent)'],
+    ['Success', 'var(--wpl-color-success)'],
+    ['Warning', 'var(--wpl-color-warning)'],
+    ['Danger', 'var(--wpl-color-danger)'],
+    ['Info', 'var(--wpl-color-info)'],
+  ] as const;
+  return (
+    <div className="home-board">
+      <div className="home-board-rail" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
+      <div className="home-board-menu">
+        <strong>Studio</strong>
+        <span data-current="true">Ledger</span>
+        <span>Notes</span>
+        <span>People</span>
+        <span>Archive</span>
+      </div>
+      <div className="home-board-main">
+        <p>Same classes. The theme only changes the variables.</p>
+        <div className="home-board-actions">
+          <Button variant="secondary" size="sm">
+            Neutral
+          </Button>
+          <Button size="sm">Primary</Button>
+          <Button variant="outline" size="sm">
+            Outline
+          </Button>
+          <Button variant="info" size="sm">
+            Info
+          </Button>
+          <Button variant="success" size="sm">
+            Success
+          </Button>
+          <Button variant="warning" size="sm">
+            Warning
+          </Button>
+          <Button variant="danger" size="sm">
+            Danger
+          </Button>
+        </div>
+        <div className="home-board-controls">
+          <Switch label="Published" defaultChecked />
+          <Checkbox label="Reviewed" defaultChecked />
+        </div>
+      </div>
+      <div className="home-board-colors" aria-hidden="true">
+        {colors.map(([name, background]) => (
+          <span key={name}>
+            <i style={{ background }} />
+            {name}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function useScheme(appearance: 'light' | 'dark' | 'system') {

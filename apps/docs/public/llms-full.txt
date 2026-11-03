@@ -11,7 +11,7 @@ Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for an
 Astro, Stimulus, Aurelia, Ripple, Stencil, VanJS, and LWC are not adapters in this repository.
 Packages are not on npm. Do not invent an install command.
 
-Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: white, ivory, ink, saffron, lagoon, blush. white is the default. Each theme has light and dark color tokens named --wpl-color-*.
+Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: white, ivory, ink, saffron, lagoon, blush, petal, honey, grove, ledger, neon, press, voltage, heart, lantern, orchard, canopy, tide, quiet, mist, fable, line, void, gilt, dusk, process, harvest, slate, citrus, zest, midnight, roast, frost, dimmer, fjord, amber, latte, deep, silk. white is the default. Each theme has light and dark color tokens named --wpl-color-*.
 
 ## Components
 - Accordion (accordion): Disclosure stack, single or multiple.

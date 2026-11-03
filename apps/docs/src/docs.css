@@ -271,6 +271,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  max-height: 18rem;
+  overflow: auto;
 }
 
 .docs-theme-row {
@@ -289,6 +291,18 @@ body {
 .docs-theme-row[aria-pressed='true'] {
   border-color: transparent;
   background: var(--wpl-color-bg-muted);
+}
+
+.docs-theme-row[aria-pressed='true']::after,
+.home-theme-row[aria-pressed='true']::after {
+  content: '';
+  width: 0.4rem;
+  height: 0.7rem;
+  margin-inline-start: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-1px);
+  flex: none;
 }
 
 .docs-swatch {

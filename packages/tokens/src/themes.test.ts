@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio } from './contrast.ts';
 import { themes } from './themes.ts';
-import type { ColorTokens } from './types.ts';
+import { themeNames, type ColorTokens } from './types.ts';
 
 function distinct(colors: ColorTokens, left: keyof ColorTokens, right: keyof ColorTokens) {
   expect(colors[left].toLowerCase(), `${left} should not match ${right}`).not.toBe(colors[right].toLowerCase());
 }
 
 describe('theme surfaces', () => {
+  it('registers every named theme once', () => {
+    expect(themes.map((theme) => theme.name).sort()).toEqual([...themeNames].sort());
+  });
+
   it('keeps canvas, muted, and raised fills from colliding in every theme', () => {
     for (const theme of themes) {
       for (const scheme of ['light', 'dark'] as const) {
