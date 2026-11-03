@@ -84,8 +84,49 @@ export function DataTable(config: Config = {}) {
       const columns = list<DataColumn>(config.columns);
       const host = this.$el;
       const wrap = h('div', { className: 'wpl-data-table' });
+      const filterable = config.filterable !== false;
+      const searchId = uid('search');
+      const searchInput = h('input', {
+        className: 'wpl-input',
+        attrs: {
+          id: searchId,
+          type: 'search',
+          value: query.filter,
+        },
+      });
+      const clear = h('button', {
+        className: 'wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear',
+        attrs: { type: 'button', hidden: query.filter ? undefined : true },
+        on: {
+          click: () => {
+            searchInput.value = '';
+            clear.hidden = true;
+            query = { ...query, filter: '', page: 1 };
+            paint();
+          },
+        },
+      }, [svgIcon('close')]);
+      searchInput.addEventListener('input', () => {
+        clear.hidden = searchInput.value.length === 0;
+        query = { ...query, filter: searchInput.value, page: 1 };
+        paint();
+      });
+      const searchLabel = h('label', { className: 'wpl-sr-only', attrs: { for: searchId } });
+      const search = h('div', { className: 'wpl-search' }, [
+        searchLabel,
+        h('div', { className: 'wpl-search-control' }, [
+          svgIcon('search', 'wpl-icon wpl-search-icon'),
+          searchInput,
+          clear,
+        ]),
+      ]);
       paint = () => {
         const result = queryTable(rows, specs(columns), query);
+        const searchName = translate(host, 'search');
+        searchLabel.textContent = searchName;
+        searchInput.placeholder = searchName;
+        searchInput.setAttribute('aria-label', searchName);
+        clear.setAttribute('aria-label', translate(host, 'clear'));
         const table = h('table', { className: 'wpl-table' }, [
           text(config.caption) ? h('caption', { text: text(config.caption) }) : null,
           h('thead', {}, [
@@ -107,12 +148,20 @@ export function DataTable(config: Config = {}) {
               ]);
             })),
           ]),
-          h('tbody', {}, result.rows.map((row) => h('tr', {
-            on: { click: () => emit(this, 'wpl-select', { id: text(row.id) }) },
-          }, columns.map((column) => h('td', { text: cellText(column, row) }))))),
+          h('tbody', {}, result.rows.length === 0
+            ? [h('tr', {}, [h('td', { attrs: { colspan: String(columns.length || 1) } }, [
+                h('div', { className: 'wpl-empty' }, [
+                  h('h2', { className: 'wpl-empty-title', text: translate(host, 'empty') }),
+                  h('p', { className: 'wpl-empty-description', text: translate(host, 'noResults') }),
+                ]),
+              ])])]
+            : result.rows.map((row) => h('tr', {
+              on: { click: () => emit(this, 'wpl-select', { id: text(row.id) }) },
+            }, columns.map((column) => h('td', { text: cellText(column, row) }))))),
         ]);
         wrap.replaceChildren(
           h('div', { className: 'wpl-table-toolbar' }, [
+            filterable ? search : null,
             h('label', { className: 'wpl-sort-field' }, [
               h('span', { className: 'wpl-sr-only', text: translate(host, 'sort') }),
               h('select', {
@@ -146,7 +195,7 @@ export function DataTable(config: Config = {}) {
 }
 
 export function Table(config: Config = {}) {
-  return DataTable({ ...config, pageSize: 0 });
+  return DataTable({ ...config, pageSize: 0, filterable: false });
 }
 
 export function List(config: Config = {}) {

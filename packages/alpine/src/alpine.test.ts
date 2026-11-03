@@ -468,6 +468,12 @@ describe('Alpine adapter', () => {
     const field = host.querySelector('.wpl-sort-field select');
     expect(field?.getAttribute('aria-label')).toBe('Sort');
     expect(host.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
+    const search = host.querySelector<HTMLInputElement>('input[type="search"]');
+    expect(search?.getAttribute('aria-label')).toBe('Search');
+    search.value = 'missing';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(host.querySelector('.wpl-empty-title')?.textContent).toBe('Nothing to show yet');
+    expect(host.querySelector('.wpl-empty-description')?.textContent).toBe('No matching results');
   });
 
   it('moves a carousel and a step', () => {

@@ -1,6 +1,7 @@
 import { iconPaths, queryTable, toggleSort } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 import { text } from "../text.ts";
+import Search from "./wpl-search-input.marko";
 
 export interface Column {
   id: string;
@@ -14,6 +15,7 @@ export interface Input {
   columns?: Column[];
   rows?: Record<string, unknown>[];
   pageSize?: number;
+  filterable?: boolean;
   onSortChange?: (detail: { sortId: string; sortDirection: "asc" | "desc" }) => void;
   onSelect?: (detail: { id: string }) => void;
 }
@@ -26,6 +28,7 @@ static function cell(column: Column, row: Record<string, unknown>): string {
 
 <let/sortId="">
 <let/direction="asc">
+<let/filter="">
 <const/columns=input.columns ?? []>
 <const/specs=columns.map((column) => ({
   id: column.id,
@@ -36,11 +39,16 @@ static function cell(column: Column, row: Record<string, unknown>): string {
 <const/result=queryTable(input.rows ?? [], specs, {
   sortId: sortId || undefined,
   sortDirection: direction === "desc" ? "desc" : "asc",
+  filter,
+  page: 1,
   pageSize: input.pageSize || undefined,
 })>
 
 <div/host class="wpl-data-table">
   <div class="wpl-table-toolbar">
+    <if=(input.filterable !== false)>
+      <Search label=text("search") onChange=(value) => { filter = value; }/>
+    </if>
     <label class="wpl-sort-field">
       <span class="wpl-sr-only">${text("sort")}</span>
       <select class="wpl-select" aria-label=text("sort") onChange(event) {
@@ -81,6 +89,7 @@ static function cell(column: Column, row: Record<string, unknown>): string {
         </tr>
       </thead>
       <tbody>
+        <if=result.rows.length>
         <for|row| of=result.rows>
           <tr onClick() {
             const id = String(row.id ?? "");
@@ -92,6 +101,17 @@ static function cell(column: Column, row: Record<string, unknown>): string {
             </for>
           </tr>
         </for>
+        </if>
+        <else>
+          <tr>
+            <td colspan=(columns.length || 1)>
+              <div class="wpl-empty">
+                <h2 class="wpl-empty-title">${text("empty")}</h2>
+                <p class="wpl-empty-description">${text("noResults")}</p>
+              </div>
+            </td>
+          </tr>
+        </else>
       </tbody>
     </table>
   </div>

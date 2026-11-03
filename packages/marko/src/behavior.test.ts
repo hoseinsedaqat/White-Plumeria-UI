@@ -561,6 +561,13 @@ describe('Marko adapter', () => {
     const field = view.container.querySelector('.wpl-sort-field select');
     expect(field?.getAttribute('aria-label')).toBe('Sort');
     expect(view.container.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
+    const search = view.container.querySelector<HTMLInputElement>('input[type="search"]');
+    expect(view.container.querySelector('.wpl-search label')?.textContent).toBe('Search');
+    if (search) search.value = 'missing';
+    search?.dispatchEvent(new Event('input', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('.wpl-empty-title')?.textContent).toBe('Nothing to show yet');
+    expect(view.container.querySelector('.wpl-empty-description')?.textContent).toBe('No matching results');
     if (field instanceof HTMLSelectElement) field.value = 'guest';
     field?.dispatchEvent(new Event('change', { bubbles: true }));
     await flush();

@@ -544,6 +544,13 @@ describe('Ember adapter', () => {
     const field = host.querySelector('.wpl-sort-field select');
     expect(field?.getAttribute('aria-label')).toBe('Sort');
     expect(host.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
+    const search = host.querySelector<HTMLInputElement>('input[type="search"]');
+    expect(search?.getAttribute('aria-label')).toBe('Search');
+    if (search) search.value = 'missing';
+    search?.dispatchEvent(new Event('input', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('.wpl-empty-title')?.textContent).toBe('Nothing to show yet');
+    expect(host.querySelector('.wpl-empty-description')?.textContent).toBe('No matching results');
     if (field instanceof HTMLSelectElement) field.value = 'guest';
     field?.dispatchEvent(new Event('change', { bubbles: true }));
     await renderSettled();

@@ -65,15 +65,26 @@ export const Table = glimmer(
 );
 
 export const DataTable = glimmer(
-  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><label class="wpl-sort-field"><span class="wpl-sr-only">{{this.sortLabel}}</span><select class="wpl-select" aria-label={{this.sortLabel}} {{on "change" this.chooseSort}}><option value="">{{this.sortLabel}}</option>{{#each this.head as |column|}}<option value={{column.id}} {{flagAttr "selected" column.sorted}}>{{column.header}}</option>{{/each}}</select></label><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}</tbody></table></div></div>`,
+  `<div class="wpl-data-table"><div class="wpl-table-toolbar"><div class="wpl-search"><label class="wpl-sr-only" for={{this.searchId}}>{{this.searchLabel}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${iconMarkup('search')}</span><input id={{this.searchId}} class="wpl-input" type="search" value={{this.filter}} placeholder={{this.searchLabel}} aria-label={{this.searchLabel}} {{on "input" this.filterRows}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clearFilter}}>${iconMarkup('close')}</button>{{/if}}</div></div><label class="wpl-sort-field"><span class="wpl-sr-only">{{this.sortLabel}}</span><select class="wpl-select" aria-label={{this.sortLabel}} {{on "change" this.chooseSort}}><option value="">{{this.sortLabel}}</option>{{#each this.head as |column|}}<option value={{column.id}} {{flagAttr "selected" column.sorted}}>{{column.header}}</option>{{/each}}</select></label><span class="wpl-muted">{{this.summary}}</span></div><div class="wpl-table-wrap"><table class="wpl-table"><caption>{{this.caption}}</caption><thead><tr>{{#each this.head as |column|}}<th scope="col" aria-sort={{column.sort}}><button type="button" class="wpl-sort" {{on "click" (fn this.sort column.id)}}>{{column.header}}{{#if column.sorted}}<span class="wpl-sort-mark"><svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{column.sortPath}}></path></svg></span>{{/if}}</button></th>{{/each}}</tr></thead><tbody>{{#if this.empty}}<tr><td colspan={{this.colspan}}><div class="wpl-empty"><h2 class="wpl-empty-title">{{this.emptyLabel}}</h2><p class="wpl-empty-description">{{this.noResultsLabel}}</p></div></td></tr>{{else}}{{#each this.body as |row|}}<tr {{on "click" (fn this.select row.id)}}>{{#each row.cells as |cell|}}<td>{{cell}}</td>{{/each}}</tr>{{/each}}{{/if}}</tbody></table></div></div>`,
   {
     state: (args) => ({
       sortId: str(args.sortId),
       sortDirection: args.sortDirection === 'desc' ? 'desc' : 'asc',
+      filter: str(args.filter),
+      searchId: createId('search'),
     }),
     getters: {
       caption: (host) => str(host.args.caption, 'Table'),
       sortLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'sort'),
+      searchLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'search'),
+      clearLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'clear'),
+      emptyLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'empty'),
+      noResultsLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'noResults'),
+      searchId: (host) => str(host.state.searchId),
+      filter: (host) => str(host.state.filter),
+      hasQuery: (host) => str(host.state.filter).length > 0,
+      empty: (host) => host.result.rows.length === 0,
+      colspan: (host) => String(list<DataColumn>(host.args.columns).length || 1),
       columns: (host) => list<DataColumn>(host.args.columns),
       summary(this: Host) {
         const total = this.result.total;
@@ -83,7 +94,7 @@ export const DataTable = glimmer(
         return {
           sortId: str(this.state.sortId) || undefined,
           sortDirection: this.state.sortDirection === 'desc' ? 'desc' : 'asc',
-          filter: str(this.args.filter),
+          filter: str(this.state.filter),
           page: num(this.args.page, 1),
           pageSize: num(this.args.pageSize, 0) || undefined,
         };
@@ -118,6 +129,12 @@ export const DataTable = glimmer(
       },
     },
     methods: {
+      filterRows(this: Host, event: Event) {
+        this.state.filter = event.target instanceof HTMLInputElement ? event.target.value : '';
+      },
+      clearFilter(this: Host) {
+        this.state.filter = '';
+      },
       chooseSort(this: Host, event: Event) {
         const value = event.target instanceof HTMLSelectElement ? event.target.value : '';
         this.state.sortId = value;
