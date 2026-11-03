@@ -171,12 +171,13 @@ function menuKey(host: Host, event: Event, closeOnLeaf: boolean): void {
 }
 
 export const Dialog = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</dialog>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body"><p class="wpl-dialog-description">{{@description}}</p>{{yield}}</div>{{#if @confirm}}<footer class="wpl-dialog-footer"><button type="button" class="wpl-btn wpl-btn-danger wpl-btn-sm" {{on "click" this.confirm}}>{{@confirm}}</button></footer>{{/if}}</dialog>{{/if}}</div>`,
   {
     state: () => ({ open: false, titleId: createId('dialog') }),
     getters: {
       trigger: (host) => str(host.args.trigger, 'Open'),
       title: (host) => str(host.args.title, 'Dialog'),
+      closeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'close'),
       titleId: (host) => str(host.state.titleId),
       openState: (host) => Boolean(host.state.open),
     },
@@ -199,12 +200,13 @@ export const Dialog = glimmer(
 );
 
 export const Modal = glimmer(
-  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></dialog>{{/if}}</div>`,
+  `<div class="wpl-dialog-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<dialog class="wpl-dialog" aria-labelledby={{this.titleId}} {{dialogFrame}} {{on "cancel" this.close}}><header class="wpl-dialog-header"><h2 class="wpl-dialog-title" id={{this.titleId}}>{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body">{{#if @description}}<p>{{@description}}</p>{{/if}}{{yield}}</div></dialog>{{/if}}</div>`,
   {
     state: () => ({ open: false, titleId: createId('modal') }),
     getters: {
       trigger: (host) => str(host.args.trigger, str(host.args.label, 'Open')),
       title: (host) => str(host.args.title, 'Modal'),
+      closeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'close'),
       titleId: (host) => str(host.state.titleId),
       openState: (host) => Boolean(host.state.open),
     },
@@ -223,12 +225,13 @@ export const Modal = glimmer(
 );
 
 export const Drawer = glimmer(
-  `<div class="wpl-drawer-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<div class={{this.className}} role="dialog" aria-modal="true"><header class="wpl-dialog-header"><h2 class="wpl-dialog-title">{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>Close</button></header><div class="wpl-dialog-body">{{yield}}</div></div>{{/if}}</div>`,
+  `<div class="wpl-drawer-root"><button type="button" class="wpl-btn wpl-btn-secondary" {{on "click" this.open}}>{{this.trigger}}</button>{{#if this.openState}}<div class={{this.className}} role="dialog" aria-modal="true"><header class="wpl-dialog-header"><h2 class="wpl-dialog-title">{{this.title}}</h2><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" {{on "click" this.close}}>{{this.closeLabel}}</button></header><div class="wpl-dialog-body">{{yield}}</div></div>{{/if}}</div>`,
   {
     state: () => ({ open: false }),
     getters: {
       trigger: (host) => str(host.args.trigger, 'Open'),
       title: (host) => str(host.args.title, 'Drawer'),
+      closeLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'close'),
       openState: (host) => Boolean(host.state.open),
       className: (host) =>
         str(host.args.side) === 'start' ? 'wpl-drawer wpl-drawer-start' : 'wpl-drawer',
