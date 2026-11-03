@@ -1,5 +1,6 @@
 import {
   buttonClassName,
+  clampInteger,
   buttonGroupClassName,
   clampRangeEdge,
   createId,
@@ -524,19 +525,42 @@ export const OtpField = glimmer(
 );
 
 export const Rating = glimmer(
-  `<div class="wpl-rating" role="radiogroup" aria-label={{this.label}}>{{#each this.options as |option|}}<label class="wpl-rating-option"><input type="radio" name={{this.group}} value={{option.value}} checked={{option.checked}} disabled={{this.readOnly}} {{on "change" this.commit}} /><span class="wpl-rating-icon" aria-hidden="true">★</span><span class="wpl-sr-only">{{option.value}}</span></label>{{/each}}</div>`,
+  `{{#if this.readOnly}}<div class="wpl-rating" role="img" aria-label={{this.readLabel}}>{{#each this.stars as |star|}}<span class={{star.className}} aria-hidden="true">★</span>{{/each}}</div>{{else}}<fieldset class="wpl-rating"><legend class="wpl-label">{{this.label}}</legend>{{#each this.options as |option|}}<label class="wpl-rating-option"><input type="radio" name={{this.group}} value={{option.value}} checked={{option.checked}} {{on "change" this.commit}} /><span class={{option.className}} aria-hidden="true">★</span><span class="wpl-sr-only">{{option.caption}}</span></label>{{/each}}</fieldset>{{/if}}`,
   {
     state: (args) => ({ value: num(args.value, 0), group: str(args.name, createId('rating')) }),
     getters: {
       label: (host) => str(host.args.label, 'Rating'),
       group: (host) => str(host.state.group),
-      readOnly: (host) => flag(host.args.readOnly) || flag(host.args.disabled),
+      readOnly: (host) => flag(host.args.readOnly),
+      count: (host) => clampInteger(num(host.args.max, 5), 1, 10, 5),
+      current(this: Host) {
+        return clampInteger(num(this.state.value, num(this.args.value, 0)), 0, clampInteger(num(this.args.max, 5), 1, 10, 5), 0);
+      },
+      readLabel(this: Host) {
+        const count = clampInteger(num(this.args.max, 5), 1, 10, 5);
+        const current = clampInteger(num(this.state.value, num(this.args.value, 0)), 0, count, 0);
+        const of = message(localeOf(typeof document === 'undefined' ? null : document.body), 'of');
+        return `${str(this.args.label, 'Rating')}: ${current} ${of} ${count}`;
+      },
+      stars(this: Host) {
+        const count = clampInteger(num(this.args.max, 5), 1, 10, 5);
+        const current = clampInteger(num(this.state.value, num(this.args.value, 0)), 0, count, 0);
+        return Array.from({ length: count }, (_, index) => ({
+          className: index < current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon',
+        }));
+      },
       options(this: Host) {
-        const max = Math.min(10, Math.max(1, num(this.args.max, 5)));
-        const current = num(this.state.value, num(this.args.value, 0));
-        return Array.from({ length: max }, (_, index) => {
+        const count = clampInteger(num(this.args.max, 5), 1, 10, 5);
+        const current = clampInteger(num(this.state.value, num(this.args.value, 0)), 0, count, 0);
+        const of = message(localeOf(typeof document === 'undefined' ? null : document.body), 'of');
+        return Array.from({ length: count }, (_, index) => {
           const value = index + 1;
-          return { value, checked: value === current };
+          return {
+            value,
+            checked: value === current,
+            className: value <= current ? 'wpl-rating-icon is-on' : 'wpl-rating-icon',
+            caption: `${value} ${of} ${count}`,
+          };
         });
       },
     },

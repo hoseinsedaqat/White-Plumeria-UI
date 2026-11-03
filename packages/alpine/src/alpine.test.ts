@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, Rating, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,17 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('shows a read-only rating as a named image', () => {
+    const host = mount(Rating, { label: 'Quality', value: 3, readOnly: true });
+    const image = host.querySelector('[role="img"]');
+    expect(image?.getAttribute('aria-label')).toBe('Quality: 3 of 5');
+    expect(host.querySelector('input')).toBeNull();
+    expect(host.querySelectorAll('.is-on').length).toBe(3);
+    const field = mount(Rating, { label: 'Quality', value: 2 });
+    expect(field.querySelector('fieldset')).not.toBeNull();
+    expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
   });
 
   it('names the password reveal button in the provider language', () => {

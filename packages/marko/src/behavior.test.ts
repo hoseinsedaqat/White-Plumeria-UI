@@ -34,6 +34,7 @@ import Popover from './tags/wpl-popover.marko';
 import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Password from './tags/wpl-password-field.marko';
+import Rating from './tags/wpl-rating.marko';
 import Tooltip from './tags/wpl-tooltip.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -218,6 +219,17 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('shows a read-only rating as a named image', async () => {
+    const view = await render(Rating, { label: 'Quality', value: 3, readOnly: true });
+    const image = view.container.querySelector('[role="img"]');
+    expect(image?.getAttribute('aria-label')).toBe('Quality: 3 of 5');
+    expect(view.container.querySelector('input')).toBeNull();
+    expect(view.container.querySelectorAll('.is-on').length).toBe(3);
+    const field = await render(Rating, { label: 'Quality', value: 2 });
+    expect(field.container.querySelector('fieldset')).not.toBeNull();
+    expect(field.container.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
   });
 
   it('names the password reveal button and keeps the field hidden until pressed', async () => {

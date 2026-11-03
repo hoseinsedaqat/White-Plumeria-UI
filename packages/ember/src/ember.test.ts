@@ -28,6 +28,7 @@ import {
   Notification,
   Popover,
   Progress,
+  Rating,
   pushToast,
   SearchInput,
   Steps,
@@ -267,6 +268,19 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('shows a read-only rating as a named image', async () => {
+    const host = mount(Rating, { label: 'Quality', value: 3, readOnly: true });
+    await renderSettled();
+    const image = host.querySelector('[role="img"]');
+    expect(image?.getAttribute('aria-label')).toBe('Quality: 3 of 5');
+    expect(host.querySelector('input')).toBeNull();
+    expect(host.querySelectorAll('.is-on').length).toBe(3);
+    const field = mount(Rating, { label: 'Quality', value: 2 });
+    await renderSettled();
+    expect(field.querySelector('fieldset')).not.toBeNull();
+    expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
   });
 
   it('waits to show a tooltip and dismisses it with escape', async () => {

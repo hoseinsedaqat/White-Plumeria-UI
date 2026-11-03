@@ -1,5 +1,6 @@
 import {
   buttonClassName,
+  clampInteger,
   buttonGroupClassName,
   clampRangeEdge,
   fieldClassName,
@@ -635,8 +636,24 @@ export function OtpField(config: Config = {}) {
 export function Rating(config: Config = {}) {
   return {
     init(this: Magic) {
-      const max = num(config.max, 5);
-      let value = num(config.value, 0);
+      const max = clampInteger(num(config.max, 5), 1, 10, 5);
+      let value = clampInteger(num(config.value, 0), 0, max, 0);
+      const label = text(config.label, 'Rating');
+      const of = translate(this.$el, 'of');
+      if (flag(config.readOnly)) {
+        this.$el.replaceChildren(
+          h('div', {
+            className: 'wpl-rating',
+            attrs: { role: 'img', 'aria-label': `${label}: ${value} ${of} ${max}` },
+          }, Array.from({ length: max }, (_, index) =>
+            h('span', {
+              className: index < value ? 'wpl-rating-icon is-on' : 'wpl-rating-icon',
+              attrs: { 'aria-hidden': 'true' },
+            }, [svgIcon('star')]),
+          )),
+        );
+        return;
+      }
       const name = text(config.name) || uid('rating');
       const options: HTMLLabelElement[] = [];
       const paint = () => {
@@ -659,23 +676,19 @@ export function Rating(config: Config = {}) {
         options.push(
           h('label', { className: 'wpl-rating-option' }, [
             input,
-            h('span', { className: 'wpl-rating-icon', attrs: { 'aria-hidden': 'true' } }, [
+            h('span', { className: index <= value ? 'wpl-rating-icon is-on' : 'wpl-rating-icon', attrs: { 'aria-hidden': 'true' } }, [
               svgIcon('star'),
             ]),
-            h('span', { className: 'wpl-sr-only', text: String(index) }),
+            h('span', { className: 'wpl-sr-only', text: `${index} ${of} ${max}` }),
           ]),
         );
       }
       paint();
       this.$el.replaceChildren(
-        h(
-          'div',
-          {
-            className: 'wpl-rating',
-            attrs: { role: 'radiogroup', 'aria-label': text(config.label, 'Rating') },
-          },
-          options,
-        ),
+        h('fieldset', { className: 'wpl-rating' }, [
+          h('legend', { className: 'wpl-label', text: label }),
+          ...options,
+        ]),
       );
     },
   };

@@ -18,6 +18,7 @@ describe('Marko provider locale', () => {
     expect(fa.container.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
     expect(fa.container.querySelector('.wpl-field button')?.getAttribute('aria-label')).toBe('نمایش رمز');
     expect(fa.container.querySelector('.wpl-field button')?.getAttribute('aria-pressed')).toBe('false');
+    expect(fa.container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('کیفیت: 3 از 5');
     expect(fa.container.querySelector('[data-wpl-locale]')?.getAttribute('data-wpl-locale')).toBe(
       'fa',
     );
