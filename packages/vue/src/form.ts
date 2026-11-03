@@ -470,6 +470,7 @@ export const SearchInput = defineComponent({
     label: { type: String, required: true },
     modelValue: { type: String, default: '' },
     placeholder: { type: String, default: '' },
+    visuallyHiddenLabel: { type: Boolean, default: false },
   },
   emits: ['update:modelValue', 'search'],
   setup(props, { emit }) {
@@ -477,7 +478,7 @@ export const SearchInput = defineComponent({
     const { t } = useWhitePlumeria();
     return () =>
       h('div', { class: 'wpl-search' }, [
-        h('label', { class: 'wpl-sr-only', for: id }, props.label),
+        h('label', { class: props.visuallyHiddenLabel ? 'wpl-label wpl-sr-only' : 'wpl-label', for: id }, props.label),
         h('div', { class: 'wpl-search-control' }, [
           h('span', { class: 'wpl-search-icon', 'aria-hidden': 'true' }, [h(Icon, { name: 'search' })]),
           h('input', {

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A search field shows its label in Vue and Svelte unless it is explicitly hidden. Packages are still not published.
 - A search field shows its label and reports Enter in Alpine, Marko, and Ember. Packages are still not published.
 - A card keeps its description in the catalog description class in Alpine, Marko, and Ember. Packages are still not published.
 - A list shows the catalog title, description, and trailing meta in Alpine, Marko, and Ember. Packages are still not published.
