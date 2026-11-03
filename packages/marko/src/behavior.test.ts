@@ -28,6 +28,7 @@ import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Combobox from './tags/wpl-combobox.marko';
 import CommandPalette from './tags/wpl-command-palette.marko';
+import Dialog from './tags/wpl-dialog.marko';
 import Drawer from './tags/wpl-drawer.marko';
 import Popover from './tags/wpl-popover.marko';
 import Tabs from './tags/wpl-tabs.marko';
@@ -233,6 +234,18 @@ describe('Marko adapter', () => {
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     await flush();
     expect(view.container.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('returns focus to the dialog opener', async () => {
+    const view = await render(Dialog, { title: 'Confirm', trigger: 'Open dialog' });
+    const trigger = view.container.querySelector('button');
+    trigger?.focus();
+    trigger?.click();
+    await flush();
+    view.container.querySelector('dialog')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await flush();
+    expect(document.activeElement).toBe(trigger);
+    expect(view.container.querySelector('dialog')?.hasAttribute('open')).toBe(false);
   });
 
   it('returns focus to the drawer opener', async () => {
