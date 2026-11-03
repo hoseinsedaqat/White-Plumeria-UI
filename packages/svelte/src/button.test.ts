@@ -15,10 +15,23 @@ import Divider from './lib/Divider.svelte';
 import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
 import TreeView from './lib/TreeView.svelte';
+import SearchInput from './lib/SearchInput.svelte';
 import Switch from './lib/Switch.svelte';
 import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
+  it('shows a search label and reports Enter', () => {
+    const searches: string[] = [];
+    const view = render(SearchInput, { label: 'Search docs', value: 'Button', onsearch: (value: string) => searches.push(value) });
+    const label = view.container.querySelector('label');
+    expect(label?.textContent).toBe('Search docs');
+    expect(label?.classList.contains('wpl-sr-only')).toBe(false);
+    view.container.querySelector('input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(searches).toEqual(['Button']);
+    const hidden = render(SearchInput, { label: 'Search docs', visuallyHiddenLabel: true });
+    expect(hidden.container.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(true);
+  });
+
   it('names the toast region in the page language', () => {
     const view = render(Provider, {});
     const region = view.container.querySelector('.wpl-toast-region');

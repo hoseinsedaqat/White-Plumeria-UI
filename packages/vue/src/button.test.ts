@@ -2,9 +2,20 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, nextTick, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
-import { Accordion, Button, Card, Combobox, Divider, Link, Notification, Pagination, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Card, Combobox, Divider, Link, Notification, Pagination, SearchInput, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('shows a search label unless it is hidden', async () => {
+    const view = render(SearchInput, { props: { label: 'Search docs', modelValue: 'Button' } });
+    const label = view.container.querySelector('label');
+    expect(label?.textContent).toBe('Search docs');
+    expect(label?.classList.contains('wpl-sr-only')).toBe(false);
+    view.container.querySelector('input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(view.emitted().search).toEqual([['Button']]);
+    const hidden = render(SearchInput, { props: { label: 'Search docs', visuallyHiddenLabel: true } });
+    expect(hidden.container.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(true);
+  });
+
   it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
     const labeled = render(Divider, { props: { label: 'Or' } });
     expect(labeled.container.querySelector('[role="separator"]')?.textContent).toBe('Or');
