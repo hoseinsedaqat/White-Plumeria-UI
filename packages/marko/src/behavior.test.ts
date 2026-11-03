@@ -5,6 +5,7 @@ import { pushToast } from './provider.ts';
 import { tagNames } from './index.ts';
 import Chart from './tags/wpl-chart.marko';
 import Navbar from './tags/wpl-navbar.marko';
+import NavigationMenu from './tags/wpl-navigation-menu.marko';
 import ChartContainer from './tags/wpl-chart-container.marko';
 import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
@@ -262,6 +263,15 @@ describe('Marko adapter', () => {
     expect(rule?.getAttribute('aria-orientation')).toBe('vertical');
     expect(rule?.className).toContain('wpl-separator-vertical');
     expect(view.container.querySelector('hr')).toBeNull();
+  });
+
+  it('renders a navigation menu as a named list', async () => {
+    const view = await render(NavigationMenu, { label: 'Docs', items: [{ href: '#start', label: 'Start', current: true }] });
+    const nav = view.container.querySelector('nav');
+    const current = nav?.querySelector('ul.wpl-nav-menu > li > a');
+    expect(nav?.getAttribute('aria-label')).toBe('Docs');
+    expect(current?.getAttribute('aria-current')).toBe('page');
+    expect(current?.textContent).toBe('Start');
   });
 
   it('names the navbar toggle and changes it when the menu opens', async () => {

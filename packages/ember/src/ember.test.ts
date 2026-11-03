@@ -21,6 +21,7 @@ import {
   Drawer,
   Modal,
   Navbar,
+  NavigationMenu,
   DateRangePicker,
   Combobox,
   CommandPalette,
@@ -308,6 +309,16 @@ describe('Ember adapter', () => {
     expect(host.querySelector('legend')?.textContent).toBe('Plan');
     expect(host.querySelector('[role="radiogroup"]')).toBeNull();
     expect(host.querySelectorAll('input[type="radio"]').length).toBe(2);
+  });
+
+  it('renders a navigation menu as a named list', async () => {
+    const host = mount(NavigationMenu, { label: 'Docs', items: [{ href: '#start', label: 'Start', current: true }] });
+    await renderSettled();
+    const nav = host.querySelector('nav');
+    const current = nav?.querySelector('ul.wpl-nav-menu > li > a');
+    expect(nav?.getAttribute('aria-label')).toBe('Docs');
+    expect(current?.getAttribute('aria-current')).toBe('page');
+    expect(current?.textContent).toBe('Start');
   });
 
   it('names the navbar toggle in the page language', async () => {
