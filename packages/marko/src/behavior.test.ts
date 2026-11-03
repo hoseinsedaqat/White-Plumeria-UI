@@ -29,6 +29,7 @@ import Pagination from './tags/wpl-pagination.marko';
 import Combobox from './tags/wpl-combobox.marko';
 import CommandPalette from './tags/wpl-command-palette.marko';
 import Drawer from './tags/wpl-drawer.marko';
+import Popover from './tags/wpl-popover.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -213,6 +214,25 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('closes a popover from escape and an outside pointer', async () => {
+    const view = await render(Popover, { label: 'Details' });
+    const trigger = view.container.querySelector('button');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger?.getAttribute('aria-controls')).toBe(view.container.querySelector('.wpl-popover')?.id);
+    trigger?.click();
+    await flush();
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await flush();
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(view.container.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+    trigger?.click();
+    await flush();
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
   });
 
   it('returns focus to the drawer opener', async () => {

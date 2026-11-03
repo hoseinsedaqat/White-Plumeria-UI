@@ -26,6 +26,7 @@ import {
   Input,
   FileUpload,
   Notification,
+  Popover,
   pushToast,
   Slider,
   Spinner,
@@ -537,6 +538,27 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('closes a popover from escape and an outside pointer', async () => {
+    const host = mount(Popover, { label: 'Details', text: 'Settles tomorrow' });
+    await renderSettled();
+    const trigger = host.querySelector('button');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    trigger?.click();
+    await renderSettled();
+    const panel = host.querySelector('.wpl-popover');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-controls')).toBe(panel?.id);
+    expect(panel?.textContent).toContain('Settles tomorrow');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await renderSettled();
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    trigger?.click();
+    await renderSettled();
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('.wpl-popover')).toBeNull();
   });
 
   it('names a spinner in the page language', async () => {
