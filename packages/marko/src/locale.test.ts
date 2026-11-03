@@ -1,4 +1,4 @@
-import { formatNumber } from '@white-plumeria/core';
+import { formatDate, formatNumber, parseIsoDate } from '@white-plumeria/core';
 import { render } from '@marko/testing-library';
 import { describe, expect, it } from 'vitest';
 import Sample from './locale-sample.marko';
@@ -22,6 +22,10 @@ describe('Marko provider locale', () => {
     expect(fa.container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('کیفیت: 3 از 5');
     expect(fa.container.querySelector('.wpl-slider')?.getAttribute('aria-valuetext')).toBe(
       formatNumber(40, 'fa'),
+    );
+    expect(fa.container.querySelector('.wpl-chart-table td')?.textContent).toBe(formatNumber(12, 'fa'));
+    expect(fa.container.querySelector('.wpl-field-hint')?.textContent).toContain(
+      formatDate(parseIsoDate('2026-10-12') ?? new Date(), 'fa'),
     );
     expect(fa.container.querySelector('[data-wpl-locale]')?.getAttribute('data-wpl-locale')).toBe(
       'fa',

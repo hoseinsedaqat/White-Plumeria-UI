@@ -1,3 +1,5 @@
+import Chart from "./tags/wpl-chart.marko";
+import DateRange from "./tags/wpl-date-range-picker.marko";
 import Dialog from "./tags/wpl-dialog.marko";
 import Dropdown from "./tags/wpl-dropdown-menu.marko";
 import Pagination from "./tags/wpl-pagination.marko";
@@ -10,6 +12,8 @@ import Spinner from "./tags/wpl-spinner.marko";
 import Steps from "./tags/wpl-steps.marko";
 
 <Provider locale="fa" persist=false>
+  <Chart title="حجم" data=[{ label: "دوشنبه", value: 12 }]/>
+  <DateRange label="اقامت" start="2026-10-12" end="2026-10-20"/>
   <Dialog title="Sample"/>
   <Dropdown/>
   <Pagination page=1 pageCount=3/>
