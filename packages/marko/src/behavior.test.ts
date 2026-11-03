@@ -28,6 +28,7 @@ import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Combobox from './tags/wpl-combobox.marko';
 import CommandPalette from './tags/wpl-command-palette.marko';
+import Drawer from './tags/wpl-drawer.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -212,6 +213,21 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('returns focus to the drawer opener', async () => {
+    const view = await render(Drawer, { title: 'Filters', trigger: 'Open drawer', side: 'start' });
+    const trigger = view.container.querySelector('button');
+    trigger?.focus();
+    trigger?.click();
+    await flush();
+    const dialog = view.container.querySelector('dialog');
+    expect(dialog?.className).toContain('wpl-drawer-start');
+    expect(dialog?.getAttribute('aria-labelledby')).toBe(dialog?.querySelector('h2')?.id);
+    dialog?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('dialog')?.hasAttribute('hidden') || view.container.querySelector('dialog')?.open).not.toBe(true);
+    expect(document.activeElement).toBe(trigger);
   });
 
   it('names the active command and chooses it from the keyboard', async () => {
