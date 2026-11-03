@@ -17,6 +17,7 @@ import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
 import Separator from './tags/wpl-separator.marko';
+import Skeleton from './tags/wpl-skeleton.marko';
 import Slider from './tags/wpl-slider.marko';
 import Switch from './tags/wpl-switch.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
@@ -225,6 +226,16 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('sizes a skeleton and hides it from assistive tech', async () => {
+    const sized = await render(Skeleton, { width: '12rem', height: '2rem' });
+    const bone = sized.container.querySelector('.wpl-skeleton');
+    expect(bone?.getAttribute('aria-hidden')).toBe('true');
+    expect(bone?.getAttribute('style')).toContain('inline-size:12rem');
+    expect(bone?.getAttribute('style')).toContain('block-size:2rem');
+    const plain = await render(Skeleton, {});
+    expect(plain.container.querySelector('.wpl-skeleton')?.getAttribute('style')).toContain('block-size:1rem');
   });
 
   it('renders a labeled divider as a separator and an unlabeled divider as a rule', async () => {
