@@ -43,6 +43,7 @@ import {
   Switch,
   Divider,
   EmptyState,
+  StatCard,
   Separator,
   Spinner,
   SplitPane,
@@ -322,6 +323,16 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(host.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
     expect(host.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
+  });
+
+  it('renders a stat card with its hint class', async () => {
+    const host = mount(StatCard, { label: 'Open invoices', value: '12', hint: 'Sample data' });
+    await renderSettled();
+    const card = host.querySelector('article');
+    expect(card?.classList.contains('wpl-card')).toBe(true);
+    expect(card?.classList.contains('wpl-stat')).toBe(true);
+    expect(host.querySelector('.wpl-stat-value')?.textContent).toBe('12');
+    expect(host.querySelector('.wpl-stat-hint')?.textContent).toBe('Sample data');
   });
 
   it('renders a navigation menu as a named list', async () => {
