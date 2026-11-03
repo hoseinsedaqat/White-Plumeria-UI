@@ -480,7 +480,16 @@ export function RangeSlider(config: Config = {}) {
         bounds,
       );
       const label = text(config.label, 'Range');
-      const output = h('output', { text: readout(current) });
+      const host = this.$el;
+      const readout = (range: NumberRange) => {
+        const locale = localeOf(host);
+        return `${formatNumber(range.start, locale)} – ${formatNumber(range.end, locale)}`;
+      };
+      const output = h('output', {
+        className: 'wpl-range-readout',
+        text: readout(current),
+        attrs: { 'aria-hidden': 'true' },
+      });
       const fill = h('span', { className: 'wpl-range-fill' });
       const start = rangeInput(this, 'start');
       const end = rangeInput(this, 'end');
@@ -506,10 +515,6 @@ export function RangeSlider(config: Config = {}) {
         end.value = String(current.end);
         output.textContent = readout(current);
       };
-      function readout(range: NumberRange): string {
-        const locale = localeOf(root);
-        return `${formatNumber(range.start, locale)} – ${formatNumber(range.end, locale)}`;
-      }
       function rangeInput(magic: Magic, edge: 'start' | 'end'): HTMLInputElement {
         return h('input', {
           className: 'wpl-range-input',

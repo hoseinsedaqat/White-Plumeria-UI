@@ -28,6 +28,7 @@ import {
   Notification,
   Popover,
   Progress,
+  RangeSlider,
   Rating,
   pushToast,
   SearchInput,
@@ -268,6 +269,15 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('hides the range readout from assistive tech', async () => {
+    const host = mount(RangeSlider, { label: 'Price', start: 20, end: 80 });
+    await renderSettled();
+    const readout = host.querySelector('output');
+    expect(readout?.getAttribute('aria-hidden')).toBe('true');
+    expect(readout?.textContent).toContain('20');
+    expect(host.querySelectorAll('input')[0]?.getAttribute('aria-label')).toBe('Price start');
   });
 
   it('shows a read-only rating as a named image', async () => {
