@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A spinner without a label uses the page language. In Persian it says در حال بارگذاری, in Alpine, Marko, Ember, Vue, and Svelte. Packages are still not published.
 - A drawer uses a modal dialog, so focus stays inside it and returns to the opener, in Marko and Ember. Escape closes it. Packages are still not published.
 - A command palette names the active command and chooses it from the arrow keys, in Alpine, Marko, and Ember. A keyword filters the list, and an empty list says there are no results. Packages are still not published.
 - A menu names the active item and chooses it from the keyboard, in Alpine, Marko, and Ember. Arrow keys open a submenu in the writing direction. A context menu does the same. Packages are still not published.

@@ -28,6 +28,7 @@ import {
   Notification,
   pushToast,
   Slider,
+  Spinner,
   SplitPane,
   Steps,
   Tabs,
@@ -536,6 +537,20 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('names a spinner in the page language', async () => {
+    document.documentElement.lang = 'fa';
+    try {
+      const host = mount(Spinner);
+      await renderSettled();
+      expect(host.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('در حال بارگذاری');
+    } finally {
+      document.documentElement.lang = '';
+    }
+    const named = mount(Spinner, { label: 'Saving' });
+    await renderSettled();
+    expect(named.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Saving');
   });
 
   it('returns focus to the drawer opener', async () => {

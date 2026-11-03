@@ -9,6 +9,7 @@ describe('Marko provider locale', () => {
     expect(first.container.textContent).toContain('Close');
 
     const fa = await render(Sample);
+    expect(fa.container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('در حال بارگذاری');
     expect(fa.container.textContent).toContain('بستن');
     expect(fa.container.textContent).toContain('قبلی');
     expect(fa.container.querySelector('[data-wpl-locale]')?.getAttribute('data-wpl-locale')).toBe(

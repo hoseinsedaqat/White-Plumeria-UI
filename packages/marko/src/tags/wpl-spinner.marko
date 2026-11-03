@@ -1,3 +1,4 @@
 import { spinnerClassName } from "@white-plumeria/core";
+import { text } from "../text.ts";
 export interface Input { label?: string; }
-<span class=spinnerClassName() role="status" aria-label=input.label || "Loading"></span>
+<span class=spinnerClassName() role="status" aria-label=input.label || text("loading")></span>

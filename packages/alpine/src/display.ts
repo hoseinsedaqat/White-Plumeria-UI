@@ -171,7 +171,7 @@ export function Skeleton(config: Config = {}) {
 export function Spinner(config: Config = {}) {
   return {
     init(this: Magic) {
-      this.$el.replaceChildren(h('span', { className: spinnerClassName(), attrs: { role: 'status', 'aria-label': text(config.label, 'Loading') } }));
+      this.$el.replaceChildren(h('span', { className: spinnerClassName(), attrs: { role: 'status', 'aria-label': text(config.label, translate(this.$el, 'loading')) } }));
     },
   };
 }

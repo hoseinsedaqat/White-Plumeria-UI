@@ -151,13 +151,14 @@ export const Separator = defineComponent({
 export const Spinner = defineComponent({
   name: 'Spinner',
   props: {
-    label: { type: String, default: 'Loading' },
+    label: { type: String },
     size: { type: String as PropType<ControlSize>, default: 'md' },
   },
   setup(props) {
+    const { t } = useWhitePlumeria();
     return () =>
       h('span', { class: spinnerClassName(props.size), role: 'status' }, [
-        h('span', { class: 'wpl-sr-only' }, props.label),
+        h('span', { class: 'wpl-sr-only' }, props.label || t('loading')),
       ]);
   },
 });

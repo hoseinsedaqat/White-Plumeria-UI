@@ -88,7 +88,8 @@ export const Separator = glimmer(`<hr class="wpl-divider" aria-orientation={{thi
 
 export const Spinner = glimmer(`<span class={{this.className}} role="status" aria-label={{this.label}}></span>`, {
   getters: {
-    label: (host) => str(host.args.label, 'Loading'),
+    label: (host) =>
+      str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'loading')),
     className: (host) => spinnerClassName(host.args.size === 'sm' || host.args.size === 'lg' ? host.args.size : 'md'),
   },
 });

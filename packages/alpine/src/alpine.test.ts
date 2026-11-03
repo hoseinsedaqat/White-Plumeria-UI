@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -150,6 +150,17 @@ describe('Alpine adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names a spinner in the provider language', () => {
+    const provider = mount(WhitePlumeriaProvider, { persist: false, locale: 'fa' });
+    const host = document.createElement('div');
+    provider.append(host);
+    const data = Spinner();
+    data.init?.call({ ...data, ...magicFor(host) });
+    expect(host.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('در حال بارگذاری');
+    const named = mount(Spinner, { label: 'Saving' });
+    expect(named.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Saving');
   });
 
   it('names the active command and chooses it from the keyboard', () => {
