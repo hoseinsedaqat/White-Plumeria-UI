@@ -31,6 +31,7 @@ import CommandPalette from './tags/wpl-command-palette.marko';
 import Dialog from './tags/wpl-dialog.marko';
 import Drawer from './tags/wpl-drawer.marko';
 import Popover from './tags/wpl-popover.marko';
+import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -215,6 +216,18 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('omits the current value while progress is indeterminate', async () => {
+    const waiting = await render(Progress, { label: 'Upload' });
+    const bar = waiting.container.querySelector('[role="progressbar"]');
+    expect(bar?.classList.contains('wpl-progress-indeterminate')).toBe(true);
+    expect(bar?.hasAttribute('aria-valuenow')).toBe(false);
+    const done = await render(Progress, { label: 'Upload', value: 40, max: 80 });
+    const known = done.container.querySelector('[role="progressbar"]');
+    expect(known?.getAttribute('aria-valuenow')).toBe('40');
+    expect(known?.getAttribute('aria-valuemax')).toBe('80');
+    expect(known?.querySelector('.wpl-progress-bar')?.getAttribute('style')).toContain('50%');
   });
 
   it('closes a popover from escape and an outside pointer', async () => {

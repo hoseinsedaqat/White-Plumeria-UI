@@ -105,21 +105,30 @@ export const Skeleton = glimmer(`<span class="wpl-skeleton" aria-hidden="true" s
 });
 
 export const Progress = glimmer(
-  `<div class="wpl-progress" role="progressbar" aria-label={{this.label}} aria-valuenow={{this.now}} aria-valuemin="0" aria-valuemax={{this.max}}><span class="wpl-progress-bar" style={{this.bar}}></span></div>`,
+  `<div class={{this.className}} role="progressbar" aria-label={{this.label}} aria-valuenow={{this.now}} aria-valuemin="0" aria-valuemax={{this.max}}><span class="wpl-progress-bar" style={{this.bar}}></span></div>`,
   {
     getters: {
       label: (host) => str(host.args.label, 'Progress'),
-      max: (host) => String(num(host.args.max, 100)),
-      now(this: Host) {
-        if (this.args.value == null || this.args.value === '') return '';
+      className(this: Host) {
+        const missing = this.args.value == null || this.args.value === '';
+        return missing ? 'wpl-progress-track wpl-progress-indeterminate' : 'wpl-progress-track';
+      },
+      max(this: Host) {
         const max = num(this.args.max, 100);
-        return String(Math.min(max, Math.max(0, num(this.args.value, 0))));
+        return String(max > 0 ? max : 100);
+      },
+      now(this: Host) {
+        if (this.args.value == null || this.args.value === '') return null;
+        const max = num(this.args.max, 100);
+        const safe = max > 0 ? max : 100;
+        return String(Math.min(safe, Math.max(0, num(this.args.value, 0))));
       },
       bar(this: Host) {
         if (this.args.value == null || this.args.value === '') return '';
         const max = num(this.args.max, 100);
-        const value = Math.min(max, Math.max(0, num(this.args.value, 0)));
-        return `inline-size:${max === 0 ? 0 : (value / max) * 100}%`;
+        const safe = max > 0 ? max : 100;
+        const value = Math.min(safe, Math.max(0, num(this.args.value, 0)));
+        return `inline-size:${(value / safe) * 100}%`;
       },
     },
   },
