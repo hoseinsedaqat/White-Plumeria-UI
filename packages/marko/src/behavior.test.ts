@@ -15,6 +15,7 @@ import Dropdown from './tags/wpl-dropdown-menu.marko';
 import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
+import Separator from './tags/wpl-separator.marko';
 import Slider from './tags/wpl-slider.marko';
 import Switch from './tags/wpl-switch.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
@@ -223,6 +224,15 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('orients a separator and names its axis', async () => {
+    const view = await render(Separator, { orientation: 'vertical' });
+    const rule = view.container.querySelector('[role="separator"]');
+    expect(rule?.tagName).toBe('DIV');
+    expect(rule?.getAttribute('aria-orientation')).toBe('vertical');
+    expect(rule?.className).toContain('wpl-separator-vertical');
+    expect(view.container.querySelector('hr')).toBeNull();
   });
 
   it('names the navbar toggle and changes it when the menu opens', async () => {

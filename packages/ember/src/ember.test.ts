@@ -38,6 +38,7 @@ import {
   Steps,
   Slider,
   Switch,
+  Separator,
   Spinner,
   SplitPane,
   Tabs,
@@ -273,6 +274,16 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('orients a separator and names its axis', async () => {
+    const host = mount(Separator, { orientation: 'vertical' });
+    await renderSettled();
+    const rule = host.querySelector('[role="separator"]');
+    expect(rule?.tagName).toBe('DIV');
+    expect(rule?.getAttribute('aria-orientation')).toBe('vertical');
+    expect(rule?.className).toContain('wpl-separator-vertical');
+    expect(host.querySelector('hr')).toBeNull();
   });
 
   it('renders a radio group as a fieldset', async () => {

@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,15 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('orients a separator and names its axis', () => {
+    const host = mount(Separator, { orientation: 'vertical' });
+    const rule = host.querySelector('[role="separator"]');
+    expect(rule?.tagName).toBe('DIV');
+    expect(rule?.getAttribute('aria-orientation')).toBe('vertical');
+    expect(rule?.className).toContain('wpl-separator-vertical');
+    expect(host.querySelector('hr')).toBeNull();
   });
 
   it('renders a radio group as a fieldset', () => {
