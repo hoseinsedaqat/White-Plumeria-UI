@@ -286,7 +286,7 @@ class WplCheckbox extends HTMLElement {
 }
 
 class WplSwitch extends HTMLElement {
-  static observedAttributes = ['checked', 'disabled', 'label'];
+  static observedAttributes = ['checked', 'disabled', 'label', 'name'];
   private control: HTMLButtonElement | null = null;
   connectedCallback() {
     if (!this.control) {
@@ -300,6 +300,7 @@ class WplSwitch extends HTMLElement {
       const text = document.createElement('span');
       button.append(knob, text);
       button.addEventListener('click', () => {
+        if (button.disabled) return;
         const next = button.getAttribute('aria-checked') !== 'true';
         this.toggleAttribute('checked', next);
         this.dispatchEvent(new CustomEvent('wpl-change', { bubbles: true, detail: { checked: next } }));
@@ -315,10 +316,23 @@ class WplSwitch extends HTMLElement {
   private sync() {
     const button = this.control;
     if (!button) return;
-    button.setAttribute('aria-checked', boolAttr(this, 'checked') ? 'true' : 'false');
+    const checked = boolAttr(this, 'checked');
+    button.setAttribute('aria-checked', checked ? 'true' : 'false');
     button.disabled = boolAttr(this, 'disabled');
-    const text = button.querySelector('span:last-child');
+    const text = button.querySelector('.wpl-switch-control + span');
     if (text) text.textContent = this.getAttribute('label') ?? '';
+    const name = this.getAttribute('name');
+    const existing = button.querySelector('input');
+    if (!name) {
+      existing?.remove();
+      return;
+    }
+    const box = existing ?? document.createElement('input');
+    box.type = 'checkbox';
+    box.name = name;
+    box.checked = checked;
+    box.hidden = true;
+    if (!existing) button.append(box);
   }
 }
 

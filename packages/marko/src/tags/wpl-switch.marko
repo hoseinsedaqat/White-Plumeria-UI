@@ -1,9 +1,32 @@
 import { emit } from "../emit.ts";
-export interface Input { label?: string; checked?: boolean; onChange?: (checked: boolean) => void; }
+
+export interface Input {
+  label?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  name?: string;
+  onChange?: (checked: boolean) => void;
+}
+
 <let/checked=Boolean(input.checked)>
-<id/fieldId/>
-<label/host class="wpl-switch" for=fieldId>
-  <input id=fieldId type="checkbox" role="switch" aria-checked=String(checked) checked=checked checkedChange(next) { checked = Boolean(next); emit(host(), "wpl-change", { checked }); input.onChange?.(checked); }>
+
+<button/host type="button" class="wpl-switch" role="switch" aria-checked=String(checked) disabled=input.disabled onClick() {
+  if (input.disabled) return;
+  checked = !checked;
+  const box = host()?.querySelector("input");
+  if (box instanceof HTMLInputElement) box.checked = checked;
+  emit(host(), "wpl-change", { checked });
+  input.onChange?.(checked);
+}>
   <span class="wpl-switch-control" aria-hidden="true"></span>
-  ${input.label || "Switch"}
-</label>
+  <span>${input.label || "Switch"}</span>
+  <if=input.name>
+    <input type="checkbox" name=input.name checked=checked hidden>
+  </if>
+</button>
+<lifecycle
+  onUpdate() {
+    const box = host()?.querySelector("input");
+    if (box instanceof HTMLInputElement) box.checked = checked;
+  }
+>

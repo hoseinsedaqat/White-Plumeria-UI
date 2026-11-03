@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,21 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('submits a switch through a hidden checkbox', () => {
+    const host = mount(Switch, { label: 'Reduced motion', name: 'motion', checked: true });
+    const button = host.querySelector('button');
+    expect(button?.getAttribute('role')).toBe('switch');
+    expect(button?.getAttribute('aria-checked')).toBe('true');
+    const box = host.querySelector('input') as HTMLInputElement;
+    expect(box.name).toBe('motion');
+    expect(box.hidden).toBe(true);
+    expect(box.checked).toBe(true);
+    button?.click();
+    expect(button?.getAttribute('aria-checked')).toBe('false');
+    expect(box.checked).toBe(false);
+    expect(mount(Switch, { label: 'Reduced motion' }).querySelector('input')).toBeNull();
   });
 
   it('hides the range readout from assistive tech', () => {

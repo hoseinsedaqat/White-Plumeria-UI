@@ -62,6 +62,13 @@ describe('custom elements', () => {
     expect(control?.getAttribute('aria-checked')).toBe('false');
     control?.click();
     expect(control?.getAttribute('aria-checked')).toBe('true');
+    host.setAttribute('name', 'motion');
+    const box = host.querySelector('input');
+    expect(box?.getAttribute('name')).toBe('motion');
+    expect(box?.hidden).toBe(true);
+    expect((box as HTMLInputElement).checked).toBe(true);
+    host.removeAttribute('name');
+    expect(host.querySelector('input')).toBeNull();
     host.remove();
   });
 });

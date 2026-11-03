@@ -34,6 +34,7 @@ import {
   SearchInput,
   Steps,
   Slider,
+  Switch,
   Spinner,
   SplitPane,
   Tabs,
@@ -269,6 +270,25 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('submits a switch through a hidden checkbox', async () => {
+    const host = mount(Switch, { label: 'Reduced motion', name: 'motion', checked: true });
+    await renderSettled();
+    const button = host.querySelector('button');
+    expect(button?.getAttribute('role')).toBe('switch');
+    expect(button?.getAttribute('aria-checked')).toBe('true');
+    const box = host.querySelector('input') as HTMLInputElement;
+    expect(box.name).toBe('motion');
+    expect(box.hidden).toBe(true);
+    expect(box.checked).toBe(true);
+    button?.click();
+    await renderSettled();
+    expect(button?.getAttribute('aria-checked')).toBe('false');
+    expect(box.checked).toBe(false);
+    const plain = mount(Switch, { label: 'Reduced motion' });
+    await renderSettled();
+    expect(plain.querySelector('input')).toBeNull();
   });
 
   it('announces the slider value in the page language', async () => {
