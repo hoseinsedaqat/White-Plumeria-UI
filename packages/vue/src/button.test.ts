@@ -1,10 +1,26 @@
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { defineComponent, h, ref } from 'vue';
-import { describe, expect, it } from 'vitest';
-import { Accordion, Button, Card, Combobox, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { defineComponent, h, nextTick, ref } from 'vue';
+import { describe, expect, it, vi } from 'vitest';
+import { Accordion, Button, Card, Combobox, Link, Notification, Pagination, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('waits to show a tooltip and dismisses it with escape', async () => {
+    vi.useFakeTimers();
+    try {
+      const view = render(Tooltip, { props: { content: 'Copy token' } });
+      const host = view.container.querySelector('span');
+      host?.dispatchEvent(new MouseEvent('mouseenter'));
+      await vi.advanceTimersByTimeAsync(400);
+      expect(view.container.querySelector('[role="tooltip"]')?.textContent).toBe('Copy token');
+      host?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await nextTick();
+      expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('announces that an external link opens in a new tab', () => {
     const view = render(
       defineComponent({

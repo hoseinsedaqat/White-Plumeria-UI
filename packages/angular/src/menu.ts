@@ -510,7 +510,7 @@ export class Popover {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `
-    <span [attr.aria-describedby]="open() ? id : null" (mouseenter)="show()" (mouseleave)="hide()" (focusin)="show()" (focusout)="hide()">
+    <span [attr.aria-describedby]="open() ? id : null" (mouseenter)="show()" (mouseleave)="hide()" (focusin)="show()" (focusout)="hide()" (keydown)="onKey($event)">
       <ng-content />
     </span>
     @if (open()) {
@@ -533,5 +533,13 @@ export class Tooltip {
   hide() {
     window.clearTimeout(this.timer);
     this.open.set(false);
+  }
+
+  onKey(event: KeyboardEvent) {
+    if (event.key === 'Escape') this.hide();
+  }
+
+  ngOnDestroy() {
+    window.clearTimeout(this.timer);
   }
 }

@@ -351,21 +351,30 @@ export const Popover = glimmer(
 );
 
 export const Tooltip = glimmer(
-  `<span class="wpl-tooltip-root"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-describedby={{this.tipId}} {{on "mouseenter" this.show}} {{on "focus" this.show}} {{on "mouseleave" this.hide}} {{on "blur" this.hide}}>{{this.label}}</button>{{#if this.openState}}<span class="wpl-tooltip" id={{this.tipId}} role="tooltip">{{this.text}}</span>{{/if}}</span>`,
+  `<span class="wpl-tooltip-root" style="position:relative;display:inline-flex" {{on "keydown" this.onKey}}><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-describedby={{this.describedBy}} {{on "mouseenter" this.show}} {{on "focus" this.show}} {{on "mouseleave" this.hide}} {{on "blur" this.hide}}>{{this.label}}</button>{{#if this.openState}}<span class="wpl-tooltip" id={{this.tipId}} role="tooltip">{{this.text}}</span>{{/if}}</span>`,
   {
-    state: () => ({ open: false, tipId: createId('tip') }),
+    state: () => ({ open: false, tipId: createId('tip'), timer: 0 }),
     getters: {
       label: (host) => str(host.args.label, 'Tip'),
-      text: (host) => str(host.args.text, str(host.args.label, 'Tip')),
+      text: (host) => str(host.args.text, str(host.args.content, 'Tip')),
       tipId: (host) => str(host.state.tipId),
+      describedBy: (host) => (host.state.open ? str(host.state.tipId) : null),
       openState: (host) => Boolean(host.state.open),
     },
     methods: {
       show() {
-        this.state.open = true;
+        window.clearTimeout(Number(this.state.timer) || 0);
+        this.state.timer = window.setTimeout(() => {
+          this.state.open = true;
+        }, 400);
       },
       hide() {
+        window.clearTimeout(Number(this.state.timer) || 0);
         this.state.open = false;
+      },
+      onKey(event) {
+        if ((event as KeyboardEvent).key !== 'Escape') return;
+        this.hide();
       },
     },
   },

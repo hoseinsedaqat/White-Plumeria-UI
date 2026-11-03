@@ -406,8 +406,10 @@ export function Popover(config: Config = {}) {
 export function Tooltip(config: Config = {}) {
   return {
     init(this: Magic) {
+      const host = this.$el;
       const id = uid('tip');
       let open = false;
+      let timer = 0;
       const tip = h('span', {
         className: 'wpl-tooltip',
         text: text(config.content, 'Tip'),
@@ -416,7 +418,7 @@ export function Tooltip(config: Config = {}) {
       const trigger = h('button', {
         className: 'wpl-btn wpl-btn-ghost wpl-btn-sm',
         text: text(config.label, 'Info'),
-        attrs: { type: 'button', 'aria-describedby': id },
+        attrs: { type: 'button' },
         on: {
           focus: () => show(true),
           blur: () => show(false),
@@ -428,10 +430,21 @@ export function Tooltip(config: Config = {}) {
         },
       });
       const show = (next: boolean) => {
-        open = next;
-        tip.hidden = !open;
+        window.clearTimeout(timer);
+        if (!next) {
+          open = false;
+          tip.hidden = true;
+          trigger.removeAttribute('aria-describedby');
+          return;
+        }
+        timer = window.setTimeout(() => {
+          open = true;
+          tip.hidden = false;
+          trigger.setAttribute('aria-describedby', id);
+        }, 400);
       };
-      this.$el.replaceChildren(trigger, tip);
+      onDestroy(host, () => window.clearTimeout(timer));
+      host.replaceChildren(trigger, tip);
     },
   };
 }
