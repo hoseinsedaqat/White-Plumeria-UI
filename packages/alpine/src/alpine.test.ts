@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,17 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('renders a radio group as a fieldset', () => {
+    const host = mount(RadioGroup, {
+      label: 'Plan',
+      options: [{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }],
+    });
+    expect(host.querySelector('fieldset')).not.toBeNull();
+    expect(host.querySelector('legend')?.textContent).toBe('Plan');
+    expect(host.querySelector('[role="radiogroup"]')).toBeNull();
+    expect(host.querySelectorAll('input[type="radio"]').length).toBe(2);
   });
 
   it('names the navbar toggle in the page language', () => {

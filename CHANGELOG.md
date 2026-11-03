@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A radio group is a fieldset and legend in Alpine and Ember. Packages are still not published.
 - The navbar toggle is named in the page language and changes when the menu opens, in Alpine, Marko, and Ember. Packages are still not published.
 - Marko chart values and date-range hints follow the page language. Packages are still not published.
 - A chart summary keeps its data in a table and hides the bars from assistive tech, in Alpine, Marko, and Ember. Packages are still not published.

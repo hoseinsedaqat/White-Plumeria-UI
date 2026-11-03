@@ -30,6 +30,7 @@ import {
   Notification,
   Popover,
   Progress,
+  RadioGroup,
   RangeSlider,
   Rating,
   pushToast,
@@ -272,6 +273,18 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('renders a radio group as a fieldset', async () => {
+    const host = mount(RadioGroup, {
+      label: 'Plan',
+      options: [{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }],
+    });
+    await renderSettled();
+    expect(host.querySelector('fieldset')).not.toBeNull();
+    expect(host.querySelector('legend')?.textContent).toBe('Plan');
+    expect(host.querySelector('[role="radiogroup"]')).toBeNull();
+    expect(host.querySelectorAll('input[type="radio"]').length).toBe(2);
   });
 
   it('names the navbar toggle in the page language', async () => {
