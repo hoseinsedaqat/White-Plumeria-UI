@@ -89,9 +89,15 @@ static const sizes = ["sm", "md", "lg"] as const;
 </span>
 `,
   'wpl-card.marko': `import { cardClassName } from "@white-plumeria/core";
-export interface Input { title?: string; description?: string; content?: Marko.Body; }
+import { oneOf } from "../emit.ts";
+export interface Input { title?: string; description?: string; titleAs?: "h1" | "h2" | "h3" | "h4"; content?: Marko.Body; }
+static const headings = ["h1", "h2", "h3", "h4"] as const;
+<const/heading=oneOf(input.titleAs, headings, "h2")>
 <article class=cardClassName()>
-  <h2 class="wpl-card-title">\${input.title || "Card"}</h2>
+  <if=(heading === "h1")><h1 class="wpl-card-title">\${input.title || "Card"}</h1></if>
+  <else if=(heading === "h3")><h3 class="wpl-card-title">\${input.title || "Card"}</h3></else>
+  <else if=(heading === "h4")><h4 class="wpl-card-title">\${input.title || "Card"}</h4></else>
+  <else><h2 class="wpl-card-title">\${input.title || "Card"}</h2></else>
   <if=input.description><p>\${input.description}</p></if>
   <\${input.content}/>
 </article>

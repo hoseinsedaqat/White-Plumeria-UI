@@ -105,19 +105,22 @@ export const Card = defineComponent({
   props: {
     title: { type: String, default: '' },
     description: { type: String, default: '' },
+    titleAs: { type: String as PropType<'h1' | 'h2' | 'h3' | 'h4'>, default: 'h2' },
   },
   setup(props, { slots }) {
-    return () =>
-      h('section', { class: cardClassName() }, [
+    return () => {
+      const heading = props.titleAs === 'h1' || props.titleAs === 'h3' || props.titleAs === 'h4' ? props.titleAs : 'h2';
+      return h('section', { class: cardClassName() }, [
         props.title || props.description
           ? h('header', { class: 'wpl-card-header' }, [
-              props.title ? h('h2', { class: 'wpl-card-title' }, props.title) : null,
+              props.title ? h(heading, { class: 'wpl-card-title' }, props.title) : null,
               props.description ? h('p', { class: 'wpl-card-description' }, props.description) : null,
             ])
           : null,
         slots.default ? h('div', { class: 'wpl-card-body' }, slots.default()) : null,
         slots.footer ? h('footer', { class: 'wpl-card-footer' }, slots.footer()) : null,
       ]);
+    };
   },
 });
 

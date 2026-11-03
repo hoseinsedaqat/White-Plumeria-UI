@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Breadcrumb, Calendar, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -364,6 +364,14 @@ describe('Alpine adapter', () => {
     loud.querySelector('button')?.click();
     expect(dismissed).toEqual(['event', 'closed']);
     expect(loud.querySelector('.wpl-notification')).toBeTruthy();
+  });
+
+  it('uses the requested card heading', () => {
+    const host = mount(Card, { title: 'Analytics', titleAs: 'h3' });
+    expect(host.querySelector('h3.wpl-card-title')?.textContent).toBe('Analytics');
+    expect(host.querySelector('h2')).toBeNull();
+    const fallback = mount(Card, { title: 'Overview' });
+    expect(fallback.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 
   it('publishes an Alpine example for every catalog component', () => {

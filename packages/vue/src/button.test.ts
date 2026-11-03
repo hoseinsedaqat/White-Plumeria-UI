@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Accordion, Button, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Card, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
   it('announces that an external link opens in a new tab', () => {
@@ -197,5 +197,14 @@ describe('vue adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('uses the requested card heading', () => {
+    const view = render(Card, { props: { title: 'Analytics', titleAs: 'h3' } });
+    expect(view.container.querySelector('h3.wpl-card-title')?.textContent).toBe('Analytics');
+    expect(view.container.querySelector('h2')).toBeNull();
+    view.unmount();
+    const fallback = render(Card, { props: { title: 'Overview' } });
+    expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 });

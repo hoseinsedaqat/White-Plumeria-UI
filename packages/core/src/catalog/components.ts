@@ -198,6 +198,7 @@ export const catalog: ComponentDoc[] = [
     classes: ['wpl-card', 'wpl-card-title', 'wpl-card-description', 'wpl-card-body', 'wpl-card-footer'],
     props: [
       { name: 'title', type: 'string', description: 'Optional heading.', descriptionFa: 'عنوان اختیاری.' },
+      { name: 'titleAs', type: '"h1" | "h2" | "h3" | "h4"', defaultValue: 'h2', description: 'Heading level for the title.', descriptionFa: 'سطح عنوان.' },
       { name: 'description', type: 'string', description: 'Optional supporting text.', descriptionFa: 'متن پشتیبان اختیاری.' },
     ],
     events: [],
