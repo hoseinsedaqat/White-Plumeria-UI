@@ -80,11 +80,16 @@ export const Divider = glimmer(
   `<div class="wpl-divider" role="separator">{{#if @label}}<span>{{@label}}</span>{{/if}}</div>`,
 );
 
-export const Separator = glimmer(`<hr class="wpl-divider" aria-orientation={{this.orientation}} />`, {
-  getters: {
-    orientation: (host) => (str(host.args.orientation) === 'vertical' ? 'vertical' : 'horizontal'),
+export const Separator = glimmer(
+  `<div class={{this.className}} role="separator" aria-orientation={{this.orientation}}></div>`,
+  {
+    getters: {
+      orientation: (host) => (str(host.args.orientation) === 'vertical' ? 'vertical' : 'horizontal'),
+      className: (host) =>
+        str(host.args.orientation) === 'vertical' ? 'wpl-separator wpl-separator-vertical' : 'wpl-separator',
+    },
   },
-});
+);
 
 export const Spinner = glimmer(`<span class={{this.className}} role="status" aria-label={{this.label}}></span>`, {
   getters: {

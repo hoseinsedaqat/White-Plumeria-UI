@@ -98,7 +98,17 @@ export function Divider(config: Config = {}) {
 }
 
 export function Separator(config: Config = {}) {
-  return Divider(config);
+  return {
+    init(this: Magic) {
+      const orientation = config.orientation === 'vertical' ? 'vertical' : 'horizontal';
+      this.$el.replaceChildren(
+        h('div', {
+          className: orientation === 'vertical' ? 'wpl-separator wpl-separator-vertical' : 'wpl-separator',
+          attrs: { role: 'separator', 'aria-orientation': orientation },
+        }),
+      );
+    },
+  };
 }
 
 export function EmptyState(config: Config = {}) {
