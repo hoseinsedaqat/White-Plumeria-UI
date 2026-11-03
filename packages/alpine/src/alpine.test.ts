@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,15 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('names a button group and keeps the buttons direct children', () => {
+    const host = mount(ButtonGroup, { label: 'Save options', joined: true, items: [{ label: 'Save' }, { label: 'Draft' }] });
+    expect(host.getAttribute('role')).toBe('group');
+    expect(host.getAttribute('aria-label')).toBe('Save options');
+    expect(host.className).toContain('wpl-btn-group-joined');
+    expect([...host.children].every((child) => child.tagName === 'BUTTON')).toBe(true);
+    expect(host.textContent).toContain('Save');
   });
 
   it('renders a navigation menu as a named list', () => {
