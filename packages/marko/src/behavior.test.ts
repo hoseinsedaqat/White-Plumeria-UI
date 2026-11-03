@@ -18,6 +18,7 @@ import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
 import Accordion from './tags/wpl-accordion.marko';
 import Breadcrumb from './tags/wpl-breadcrumb.marko';
+import Avatar from './tags/wpl-avatar.marko';
 import Calendar from './tags/wpl-calendar.marko';
 import Card from './tags/wpl-card.marko';
 import DatePicker from './tags/wpl-date-picker.marko';
@@ -448,6 +449,16 @@ describe('Marko adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('names an avatar status with hidden text', async () => {
+    const view = await render(Avatar, { name: 'Laleh Karimi', status: 'busy', statusLabel: 'Busy' });
+    expect(view.container.querySelector('.wpl-avatar-status')?.getAttribute('style')).toContain('--wpl-color-warning');
+    expect([...view.container.querySelectorAll('.wpl-sr-only')].map((node) => node.textContent)).toEqual(['Laleh Karimi', 'Busy']);
+    expect(view.container.querySelector('[role="img"]')).toBeNull();
+    const image = await render(Avatar, { name: 'Laleh Karimi', src: '/laleh.png' });
+    expect(image.container.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
+    expect(image.container.querySelector('.wpl-avatar-status')).toBeNull();
   });
 
   it('uses the requested card heading', async () => {

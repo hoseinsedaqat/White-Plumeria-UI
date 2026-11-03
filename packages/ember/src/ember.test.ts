@@ -5,6 +5,7 @@ import {
   Accordion,
   Breadcrumb,
   Button,
+  Avatar,
   Calendar,
   Card,
   DatePicker,
@@ -466,6 +467,18 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('names an avatar status with hidden text', async () => {
+    const host = mount(Avatar, { name: 'Laleh Karimi', status: 'busy', statusLabel: 'Busy' });
+    await renderSettled();
+    expect(host.querySelector('.wpl-avatar-status')?.getAttribute('style')).toContain('--wpl-color-warning');
+    expect(host.querySelector('.wpl-sr-only')?.textContent).toBe('Busy');
+    expect(host.querySelector('.wpl-avatar-status')?.getAttribute('aria-label')).toBeNull();
+    const image = mount(Avatar, { name: 'Laleh Karimi', src: '/laleh.png' });
+    await renderSettled();
+    expect(image.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
+    expect(image.querySelector('.wpl-avatar-status')).toBeNull();
   });
 
   it('uses the requested card heading', async () => {

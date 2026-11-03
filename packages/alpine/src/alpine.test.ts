@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -364,6 +364,16 @@ describe('Alpine adapter', () => {
     loud.querySelector('button')?.click();
     expect(dismissed).toEqual(['event', 'closed']);
     expect(loud.querySelector('.wpl-notification')).toBeTruthy();
+  });
+
+  it('names an avatar status with hidden text', () => {
+    const host = mount(Avatar, { name: 'Laleh Karimi', status: 'busy', statusLabel: 'Busy' });
+    expect(host.querySelector('.wpl-avatar-status')?.getAttribute('style')).toContain('--wpl-color-warning');
+    expect([...host.querySelectorAll('.wpl-sr-only')].map((node) => node.textContent)).toEqual(['Laleh Karimi', 'Busy']);
+    expect(host.querySelector('[role="img"]')).toBeNull();
+    const image = mount(Avatar, { name: 'Laleh Karimi', src: '/laleh.png' });
+    expect(image.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
+    expect(image.querySelector('.wpl-avatar-status')).toBeNull();
   });
 
   it('uses the requested card heading', () => {
