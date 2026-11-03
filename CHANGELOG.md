@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A labeled divider is a separator, and an unlabeled divider is a horizontal rule, in Alpine, Marko, Ember, Svelte, and Vue. Packages are still not published.
 - A separator is an oriented separator, not a horizontal rule, in Alpine, Marko, and Ember. Packages are still not published.
 - A radio group is a fieldset and legend in Alpine and Ember. Packages are still not published.
 - The navbar toggle is named in the page language and changes when the menu opens, in Alpine, Marko, and Ember. Packages are still not published.

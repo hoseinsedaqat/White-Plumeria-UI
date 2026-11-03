@@ -15,6 +15,7 @@ import Dropdown from './tags/wpl-dropdown-menu.marko';
 import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
+import Divider from './tags/wpl-divider.marko';
 import Separator from './tags/wpl-separator.marko';
 import Slider from './tags/wpl-slider.marko';
 import Switch from './tags/wpl-switch.marko';
@@ -224,6 +225,15 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('renders a labeled divider as a separator and an unlabeled divider as a rule', async () => {
+    const labeled = await render(Divider, { label: 'Or' });
+    expect(labeled.container.querySelector('[role="separator"]')?.textContent).toBe('Or');
+    expect(labeled.container.querySelector('.wpl-divider-labeled')).toBeTruthy();
+    const plain = await render(Divider, {});
+    expect(plain.container.querySelector('hr.wpl-divider')).toBeTruthy();
+    expect(plain.container.querySelector('[role="separator"]')).toBeNull();
   });
 
   it('orients a separator and names its axis', async () => {

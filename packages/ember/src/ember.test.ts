@@ -38,6 +38,7 @@ import {
   Steps,
   Slider,
   Switch,
+  Divider,
   Separator,
   Spinner,
   SplitPane,
@@ -274,6 +275,17 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('renders a labeled divider as a separator and an unlabeled divider as a rule', async () => {
+    const labeled = mount(Divider, { label: 'Or' });
+    await renderSettled();
+    expect(labeled.querySelector('[role="separator"]')?.textContent).toBe('Or');
+    expect(labeled.querySelector('.wpl-divider-labeled')).toBeTruthy();
+    const plain = mount(Divider, {});
+    await renderSettled();
+    expect(plain.querySelector('hr.wpl-divider')).toBeTruthy();
+    expect(plain.querySelector('[role="separator"]')).toBeNull();
   });
 
   it('orients a separator and names its axis', async () => {

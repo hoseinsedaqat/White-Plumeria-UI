@@ -2,9 +2,18 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, nextTick, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
-import { Accordion, Button, Card, Combobox, Link, Notification, Pagination, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Card, Combobox, Divider, Link, Notification, Pagination, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
+    const labeled = render(Divider, { props: { label: 'Or' } });
+    expect(labeled.container.querySelector('[role="separator"]')?.textContent).toBe('Or');
+    expect(labeled.container.querySelector('.wpl-divider-labeled')).toBeTruthy();
+    const plain = render(Divider, { props: {} });
+    expect(plain.container.querySelector('hr.wpl-divider')).toBeTruthy();
+    expect(plain.container.querySelector('[role="separator"]')).toBeNull();
+  });
+
   it('waits to show a tooltip and dismisses it with escape', async () => {
     vi.useFakeTimers();
     try {

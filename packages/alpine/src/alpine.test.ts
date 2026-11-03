@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,16 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('renders a labeled divider as a separator and an unlabeled divider as a rule', () => {
+    const labeled = mount(Divider, { label: 'Or' });
+    expect(labeled.querySelector('[role="separator"]')?.textContent).toBe('Or');
+    expect(labeled.querySelector('.wpl-divider-labeled')).toBeTruthy();
+    expect(labeled.querySelector('hr')).toBeNull();
+    const plain = mount(Divider, {});
+    expect(plain.querySelector('hr.wpl-divider')).toBeTruthy();
+    expect(plain.querySelector('[role="separator"]')).toBeNull();
   });
 
   it('orients a separator and names its axis', () => {
