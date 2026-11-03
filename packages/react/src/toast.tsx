@@ -23,7 +23,7 @@ export function ToastRegion() {
 
   if (typeof document === 'undefined') return null;
   return (
-    <div className="wpl-toast-region" aria-label={t('notifications')}>
+    <div className="wpl-toast-region" aria-label={t('notifications')} aria-live={toasts.some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite'}>
       {toasts.map((toast) => (
         <ToastView key={toast.id} toast={toast} onDismiss={() => dismissToast(toast.id)} />
       ))}

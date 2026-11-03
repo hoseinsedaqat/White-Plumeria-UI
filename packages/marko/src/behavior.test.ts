@@ -200,6 +200,9 @@ describe('Marko adapter', () => {
     const id = pushToast(provider, { title: 'Saved', variant: 'success' });
     expect(id).toMatch(/^toast-/);
     expect(provider.querySelector('.wpl-toast-success')?.textContent).toContain('Saved');
+    expect(provider.querySelector('.wpl-toast-region')?.getAttribute('aria-live')).toBe('polite');
+    pushToast(provider, { title: 'Failed', variant: 'danger' });
+    expect(provider.querySelector('.wpl-toast-region')?.getAttribute('aria-live')).toBe('assertive');
     provider.dispatchEvent(new CustomEvent('wpl-theme', { detail: { theme: 'ink' } }));
     expect(provider.getAttribute('data-wpl-theme')).toBe('ink');
   });

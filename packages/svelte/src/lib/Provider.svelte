@@ -47,7 +47,7 @@
 </script>
 
 {@render children?.()}
-<div class="wpl-toast-region" role="region" aria-label="Notifications">
+<div class="wpl-toast-region" role="region" aria-label={message(preferences.locale, 'notifications')} aria-live={toasts.some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite'}>
   {#each toasts as toast, index (toast.title + index)}
     <div class="wpl-toast" role={toast.variant === 'danger' ? 'alert' : 'status'}>
       <p class="wpl-toast-title">{toast.title}</p>

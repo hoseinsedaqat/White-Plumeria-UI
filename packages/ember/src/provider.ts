@@ -120,16 +120,19 @@ export function mountProvider(
       const close = () => {
         window.clearTimeout(timer);
         article.remove();
+        syncToastLive(region);
         host.dispatchEvent(new CustomEvent('wpl-dismiss', { detail: { id }, bubbles: true }));
       };
       dismiss.addEventListener('click', close);
       article.append(dismiss);
       region.append(article);
+      syncToastLive(region);
       if (!reducedMotion()) timer = window.setTimeout(close, toast.duration ?? 5000);
       return id;
     },
     dismiss(id) {
       host.querySelector(`[data-toast-id="${id}"]`)?.remove();
+      syncToastLive(region);
     },
     setTheme(theme) {
       if (preferences.theme === theme) return;
@@ -234,6 +237,10 @@ const setup = setModifierManager(
 );
 
 registerHelper('setup', setup);
+
+function syncToastLive(region: HTMLElement): void {
+  region.setAttribute('aria-live', region.querySelector('[role="alert"]') ? 'assertive' : 'polite');
+}
 
 export const WhitePlumeriaProvider = glimmer(
   `<div class="wpl-provider" {{setup (if (eq @persist false) "false" "true") (or @theme "") (or @appearance "") (or @locale "") (or @direction "")}}>{{yield}}</div>`,

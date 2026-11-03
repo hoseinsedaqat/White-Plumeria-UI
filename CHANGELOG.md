@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A toast region is polite, and assertive while a danger toast is open. Packages are still not published.
 - An empty state uses the title and description classes in Alpine, Marko, and Ember. Packages are still not published.
 - An Alpine button group is a named group, and its buttons are direct children. Packages are still not published.
 - A navigation menu is a nav and a list in Alpine, Marko, and Ember. Packages are still not published.

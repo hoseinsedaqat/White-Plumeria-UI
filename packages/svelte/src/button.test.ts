@@ -9,6 +9,7 @@ import Link from './lib/Link.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Popover from './lib/Popover.svelte';
 import Button from './lib/Button.svelte';
+import Provider from './lib/Provider.svelte';
 import Spinner from './lib/Spinner.svelte';
 import Divider from './lib/Divider.svelte';
 import SplitPane from './lib/SplitPane.svelte';
@@ -18,6 +19,13 @@ import Switch from './lib/Switch.svelte';
 import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
+  it('names the toast region in the page language', () => {
+    const view = render(Provider, {});
+    const region = view.container.querySelector('.wpl-toast-region');
+    expect(region?.getAttribute('aria-label')).toBe('Notifications');
+    expect(region?.getAttribute('aria-live')).toBe('polite');
+  });
+
   it('sizes a spinner without dropping its name', () => {
     const view = render(Spinner, { size: 'sm', label: 'Saving' });
     const spinner = view.container.querySelector('[role="status"]');

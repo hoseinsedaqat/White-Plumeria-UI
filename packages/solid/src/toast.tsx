@@ -20,7 +20,7 @@ export function ToastRegion() {
   });
 
   return (
-    <div class="wpl-toast-region" aria-label={t('notifications')}>
+    <div class="wpl-toast-region" aria-label={t('notifications')} aria-live={toasts().some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite'}>
       {toasts().map((toast) => (
         <ToastView toast={toast} onDismiss={() => dismissToast(toast.id)} />
       ))}

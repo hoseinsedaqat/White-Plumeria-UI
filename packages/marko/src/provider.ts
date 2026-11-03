@@ -137,14 +137,19 @@ export function mountProvider(host: HTMLElement, input: ProviderInput = {}): () 
       const remove = () => {
         window.clearTimeout(timer);
         article.remove();
+        syncToastLive(region);
         host.dispatchEvent(new CustomEvent('wpl-dismiss', { bubbles: true, detail: { id } }));
       };
       dismiss.addEventListener('click', remove);
       article.append(dismiss);
       region.append(article);
+      syncToastLive(region);
       const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
       const timer = reduced ? 0 : window.setTimeout(remove, toast.duration ?? 5000);
-      if (reduced) article.remove();
+      if (reduced) {
+        article.remove();
+        syncToastLive(region);
+      }
       return id;
     },
     setTheme(theme) {
@@ -195,4 +200,8 @@ export function mountProvider(host: HTMLElement, input: ProviderInput = {}): () 
     host.removeEventListener('wpl-locale', onLocale);
     providers.delete(host);
   };
+}
+
+function syncToastLive(region: HTMLElement): void {
+  region.setAttribute('aria-live', region.querySelector('[role="alert"]') ? 'assertive' : 'polite');
 }

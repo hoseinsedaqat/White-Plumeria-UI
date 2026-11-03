@@ -127,7 +127,7 @@ export class WhitePlumeriaProvider extends WplHost {
     const target = this.target ?? (typeof document === 'undefined' ? null : document.documentElement);
     if (target) applyPreferences(target, preferences);
     this.region.className = 'wpl-toasts';
-    this.region.setAttribute('aria-live', 'polite');
+    this.region.setAttribute('aria-live', this.records.some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite');
     this.region.setAttribute('aria-label', message(preferences.locale, 'notifications'));
     if (this.region.parentNode !== this) this.append(this.region);
     const dismissLabel = message(preferences.locale, 'dismiss');
