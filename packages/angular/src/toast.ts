@@ -17,7 +17,7 @@ import { injectWhitePlumeria, type ToastRecord } from './provider';
   encapsulation: ViewEncapsulation.None,
   imports: [forwardRef(() => ToastView)],
   template: `
-    <div class="wpl-toast-region" [attr.aria-label]="label()">
+    <div class="wpl-toast-region" [attr.aria-label]="label()" [attr.aria-live]="live()">
       @for (toast of wpl.toasts(); track toast.id) {
         <wpl-toast-view [toast]="toast" (dismiss)="wpl.dismissToast(toast.id)" />
       }
@@ -27,6 +27,7 @@ import { injectWhitePlumeria, type ToastRecord } from './provider';
 export class ToastRegion {
   readonly wpl = injectWhitePlumeria();
   readonly label = () => this.wpl.t('notifications');
+  readonly live = () => (this.wpl.toasts().some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite');
 
   constructor() {
     effect((onCleanup) => {

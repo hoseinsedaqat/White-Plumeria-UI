@@ -94,9 +94,9 @@ export const WhitePlumeriaProvider = component$<{
   return (
     <>
       <Slot />
-      <div class="wpl-toasts" aria-live="polite">
+      <div class="wpl-toasts" aria-live={state.toasts.some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite'}>
         {state.toasts.map((toast) => (
-          <article key={toast.id} class={`wpl-toast${toast.variant ? ` wpl-toast-${toast.variant}` : ''}`} role="status">
+          <article key={toast.id} class={`wpl-toast${toast.variant ? ` wpl-toast-${toast.variant}` : ''}`} role={toast.variant === 'danger' ? 'alert' : 'status'}>
             <strong>{toast.title}</strong>
             {toast.description ? <p>{toast.description}</p> : null}
             <button type="button" class="wpl-icon-btn wpl-btn-ghost" aria-label={message(state.preferences.locale, 'dismiss')} onClick$={() => dismissToast(toast.id)}>

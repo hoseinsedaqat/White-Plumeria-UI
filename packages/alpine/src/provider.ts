@@ -88,6 +88,7 @@ export function WhitePlumeriaProvider(config: Config = {}) {
                   click: () => {
                     window.clearTimeout(timer);
                     article.remove();
+                    syncToastLive(region);
                     host.dispatchEvent(new CustomEvent('wpl-dismiss', { detail: { id }, bubbles: true }));
                   },
                 },
@@ -95,8 +96,12 @@ export function WhitePlumeriaProvider(config: Config = {}) {
             ],
           );
           region.append(article);
+          syncToastLive(region);
           const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
-          timer = reduced ? 0 : window.setTimeout(() => article.remove(), toast.duration ?? 5000);
+          timer = reduced ? 0 : window.setTimeout(() => {
+            article.remove();
+            syncToastLive(region);
+          }, toast.duration ?? 5000);
           return id;
         },
         setTheme(theme) {
@@ -144,7 +149,12 @@ export function WhitePlumeriaProvider(config: Config = {}) {
         unregisterProvider(host);
       });
       paint();
+      syncToastLive(region);
       registerProvider(host, api);
     },
   };
+}
+
+function syncToastLive(region: HTMLElement): void {
+  region.setAttribute('aria-live', region.querySelector('[role="alert"]') ? 'assertive' : 'polite');
 }

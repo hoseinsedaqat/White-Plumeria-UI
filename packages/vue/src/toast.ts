@@ -31,7 +31,12 @@ export const ToastRegion = defineComponent({
       for (const toast of toasts.value) arm(toast.id, toast.duration);
       return h(
         'div',
-        { class: 'wpl-toast-region', role: 'region', 'aria-label': t('notifications') },
+        {
+          class: 'wpl-toast-region',
+          role: 'region',
+          'aria-label': t('notifications'),
+          'aria-live': toasts.value.some((toast) => toast.variant === 'danger') ? 'assertive' : 'polite',
+        },
         toasts.value.map((toast) =>
           h('div', { key: toast.id, class: toastClassName(toast.variant), role: toast.variant === 'danger' ? 'alert' : 'status' }, [
             h('div', [
