@@ -1,23 +1,91 @@
+import { iconPaths, nextIndex } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
-import { iconPaths } from "@white-plumeria/core";
+import { text } from "../text.ts";
+
 export interface Option { value: string; label: string; disabled?: boolean; }
 export interface Input { label?: string; value?: string; options?: Option[]; onChange?: (value: string) => void; }
-<let/query=input.value ?? "">
+
+<let/query=(input.options ?? []).find((option) => option.value === input.value)?.label ?? input.value ?? "">
+<let/selected=input.value ?? "">
 <let/open=false>
-<const/options=(input.options ?? []).filter((option) => option.label.toLowerCase().includes(query.trim().toLowerCase()))>
+<let/active=0>
+<const/options=(() => {
+  const all = input.options ?? [];
+  const needle = query.trim().toLowerCase();
+  const current = all.find((option) => option.value === selected);
+  if (!needle || needle === current?.label.toLowerCase()) return all;
+  return all.filter((option) => option.label.toLowerCase().includes(needle));
+})()>
 <id/fieldId/>
 <id/listId/>
+
 <div/host class="wpl-combo">
   <label class="wpl-label" for=fieldId>${input.label || "Choose"}</label>
   <div class="wpl-combo-control">
     <span class="wpl-combo-icon" aria-hidden="true">
       <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.search/></svg>
     </span>
-    <input id=fieldId class="wpl-input" role="combobox" aria-expanded=String(open) aria-controls=listId aria-autocomplete="list" value=query valueChange(next) { query = String(next); open = true; }>
+    <input
+      id=fieldId
+      class="wpl-input"
+      role="combobox"
+      aria-expanded=String(open)
+      aria-controls=listId
+      aria-autocomplete="list"
+      aria-activedescendant=(open && options[active] ? `${listId}-${active}` : null)
+      value=query
+      valueChange(next) {
+        query = String(next);
+        open = true;
+        active = 0;
+      }
+      onKeyDown(event) {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+          event.preventDefault();
+          open = true;
+          const next = nextIndex(active, options.length, event.key, "vertical");
+          if (next !== null) active = next;
+        } else if (event.key === "Enter" && open) {
+          event.preventDefault();
+          const option = options[active];
+          if (!option || option.disabled) return;
+          selected = option.value;
+          query = option.label;
+          open = false;
+          emit(host(), "wpl-change", { value: option.value });
+          input.onChange?.(option.value);
+        } else if (event.key === "Escape") {
+          open = false;
+        }
+      }
+    >
   </div>
-  <ul id=listId class="wpl-menu" role="listbox" hidden=!open>
-    <for|option| of=options>
-      <li><button type="button" class="wpl-menu-item" role="option" disabled=option.disabled onClick() { if (option.disabled) return; query = option.label; open = false; emit(host(), "wpl-change", { value: option.value }); input.onChange?.(option.value); }>${option.label}</button></li>
-    </for>
+  <ul id=listId class="wpl-listbox" role="listbox" hidden=!open>
+    <if=options.length>
+      <for|option, index| of=options>
+        <li>
+          <button
+            type="button"
+            id=`${listId}-${index}`
+            class="wpl-listbox-item"
+            role="option"
+            aria-selected=String(option.value === selected)
+            data-active=(index === active ? "true" : null)
+            disabled=option.disabled
+            onClick() {
+              if (option.disabled) return;
+              selected = option.value;
+              query = option.label;
+              open = false;
+              emit(host(), "wpl-change", { value: option.value });
+              input.onChange?.(option.value);
+            }
+          >${option.label}</button>
+        </li>
+      </for>
+    </if>
+    <else>
+      <li class="wpl-listbox-item">${text("noResults")}</li>
+    </else>
   </ul>
 </div>

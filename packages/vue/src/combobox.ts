@@ -49,6 +49,7 @@ export const Combobox = defineComponent({
           'aria-expanded': open.value,
           'aria-controls': listId,
           'aria-autocomplete': 'list',
+          'aria-activedescendant': open.value && filtered.value[active.value] ? `${listId}-${active.value}` : undefined,
           placeholder: props.placeholder,
           value: query.value,
           onFocus: () => (open.value = true),
@@ -58,7 +59,7 @@ export const Combobox = defineComponent({
             active.value = 0;
           },
           onKeydown: (event: KeyboardEvent) => {
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
               event.preventDefault();
               open.value = true;
               active.value = nextIndex(active.value, filtered.value.length, event.key, 'vertical') ?? active.value;
@@ -85,6 +86,7 @@ export const Combobox = defineComponent({
                       'li',
                       {
                         key: option.value,
+                        id: `${listId}-${index}`,
                         role: 'option',
                         'aria-selected': props.modelValue === option.value,
                         class: 'wpl-listbox-item',

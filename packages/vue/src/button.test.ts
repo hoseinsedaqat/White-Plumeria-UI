@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
-import { Accordion, Button, Card, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Card, Combobox, Link, Notification, Pagination, SplitPane, Steps, Switch, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
   it('announces that an external link opens in a new tab', () => {
@@ -197,6 +197,31 @@ describe('vue adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('names the active combobox option', async () => {
+    const view = render(
+      defineComponent({
+        setup() {
+          return () =>
+            h(WhitePlumeriaProvider, () =>
+              h(Combobox, {
+                label: 'Theme',
+                options: [
+                  { value: 'ivory', label: 'Ivory' },
+                  { value: 'ink', label: 'Ink' },
+                ],
+              }),
+            );
+        },
+      }),
+    );
+    const input = view.container.querySelector<HTMLInputElement>('[role="combobox"]');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    await view.rerender({});
+    const active = view.container.querySelector('[data-active="true"]');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toBe('Ink');
   });
 
   it('uses the requested card heading', () => {

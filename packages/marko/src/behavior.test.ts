@@ -25,6 +25,7 @@ import DatePicker from './tags/wpl-date-picker.marko';
 import Label from './tags/wpl-label.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
+import Combobox from './tags/wpl-combobox.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -495,6 +496,38 @@ describe('Marko adapter', () => {
     expect(view.container.querySelector('h2')).toBeNull();
     const fallback = await render(Card, { title: 'Overview' });
     expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
+  });
+
+  it('names the active combobox option and chooses it from the keyboard', async () => {
+    const chosen: unknown[] = [];
+    const view = await render(Combobox, {
+      label: 'Theme',
+      options: [
+        { value: 'ivory', label: 'Ivory' },
+        { value: 'ink', label: 'Ink' },
+        { value: 'saffron', label: 'Saffron', disabled: true },
+      ],
+      onChange: (value: string) => chosen.push(value),
+    });
+    view.container.addEventListener('wpl-change', (event) => {
+      chosen.push((event as CustomEvent<{ value: string }>).detail.value);
+    });
+    const input = view.container.querySelector<HTMLInputElement>('[role="combobox"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
+    expect(input?.hasAttribute('aria-activedescendant')).toBe(false);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    const active = view.container.querySelector('[data-active="true"]');
+    expect(input?.getAttribute('aria-expanded')).toBe('true');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    expect(active?.textContent).toBe('Ink');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await flush();
+    expect(chosen).toEqual(['ink', 'ink']);
+    expect(input?.value).toBe('Ink');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await flush();
+    expect(input?.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('publishes a Marko example for every catalog component', () => {
