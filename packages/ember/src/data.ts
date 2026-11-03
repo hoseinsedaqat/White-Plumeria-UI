@@ -22,6 +22,7 @@ import {
   iconMarkup,
   iconPaths,
 } from '@white-plumeria/core';
+import { htmlSafe } from '@ember/template';
 import { bubble, flag, glimmer, list, localeOf, num, rowId, str, type Host } from './runtime.ts';
 
 interface DataColumn {
@@ -215,60 +216,97 @@ export const List = glimmer(
 );
 
 export const TreeView = glimmer(
-  `<ul class="wpl-tree" role="tree" aria-label={{this.label}}>{{#each this.nodes as |node|}}<li class="wpl-tree-item" role="none"><button type="button" class="wpl-tree-row" role="treeitem" aria-selected={{node.selected}} {{flagAttr "aria-expanded" node.expanded}} {{on "click" (fn this.pick node)}} {{on "keydown" (fn this.move node)}}>{{#if node.hasChildren}}<svg class={{node.iconClass}} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={{node.icon}}></path></svg>{{else}}<span class="wpl-tree-spacer" aria-hidden="true"></span>{{/if}}{{node.label}}</button>{{#if node.open}}<ul class="wpl-tree-children" role="group">{{#each node.children as |child|}}<li class="wpl-tree-item" role="none"><button type="button" class="wpl-tree-row" role="treeitem" aria-selected={{child.selected}} {{on "click" (fn this.pick child)}}><span class="wpl-tree-spacer" aria-hidden="true"></span>{{child.label}}</button></li>{{/each}}</ul>{{/if}}</li>{{/each}}</ul>`,
+  `<ul class="wpl-tree" role="tree" aria-label={{this.label}} {{on "click" this.pick}} {{on "keydown" this.move}}>{{this.markup}}</ul>`,
   {
     state: () => ({ open: [] as string[], selected: '' }),
     getters: {
       label: (host) => str(host.args.label, 'Tree'),
-      nodes(this: Host) {
-        const open = list<string>(this.state.open);
-        const selected = str(this.state.selected);
-        return list<{ id?: string; label?: string; children?: Array<{ id?: string; label?: string }> }>(this.args.nodes).map((node) => {
-          const id = str(node.id);
-          const children = list<{ id?: string; label?: string }>(node.children).map((child) => {
-            const childId = str(child.id);
-            return { id: childId, label: str(child.label, childId), selected: selected === childId ? 'true' : 'false' };
-          });
-          const isOpen = children.length > 0 && open.includes(id);
-          return {
-            id,
-            label: str(node.label, id),
-            hasChildren: children.length > 0,
-            open: isOpen,
-            expanded: children.length ? (isOpen ? 'true' : 'false') : null,
-            selected: selected === id ? 'true' : 'false',
-            icon: iconPaths[isOpen ? 'chevronDown' : 'chevronRight'],
-            iconClass: isOpen ? 'wpl-icon' : 'wpl-icon wpl-icon-dir',
-            children,
-          };
-        });
+      markup(this: Host) {
+        return htmlSafe(
+          treeMarkup(
+            list<TreeNode>(this.args.nodes),
+            list<string>(this.state.open),
+            str(this.state.selected),
+          ),
+        );
       },
     },
     methods: {
-      pick(node, event) {
-        const item = node as { id?: string; hasChildren?: boolean };
-        const id = str(item.id);
+      pick(this: Host, event: Event) {
+        const button = treeButton(event);
+        if (!button) return;
+        const id = button.dataset.id ?? '';
         this.state.selected = id;
-        bubble(event as Event, 'wpl-select', { id });
-        if (!item.hasChildren) return;
+        bubble(event, 'wpl-select', { id });
+        if (!findTreeNode(list<TreeNode>(this.args.nodes), id)?.children?.length) return;
         const open = list<string>(this.state.open);
         this.state.open = open.includes(id) ? open.filter((entry) => entry !== id) : [...open, id];
       },
-      move(node, event) {
-        const item = node as { id?: string; hasChildren?: boolean; open?: boolean };
-        const keyEvent = event as KeyboardEvent;
-        if (!item.hasChildren) return;
-        const action = treeExpandAction(keyEvent.key, keyEvent.currentTarget instanceof HTMLElement ? keyEvent.currentTarget : null, Boolean(item.open));
-        if (!action) return;
-        keyEvent.preventDefault();
-        if (action === 'stay') return;
-        const id = str(item.id);
+      move(this: Host, event: Event) {
+        if (!(event instanceof KeyboardEvent)) return;
+        const button = treeButton(event);
+        if (!button) return;
+        const id = button.dataset.id ?? '';
+        if (!findTreeNode(list<TreeNode>(this.args.nodes), id)?.children?.length) return;
         const open = list<string>(this.state.open);
+        const action = treeExpandAction(event.key, button, open.includes(id));
+        if (!action) return;
+        event.preventDefault();
+        if (action === 'stay') return;
         this.state.open = action === 'open' ? [...open, id] : open.filter((entry) => entry !== id);
       },
     },
   },
 );
+
+interface TreeNode {
+  id?: string;
+  label?: string;
+  children?: TreeNode[];
+}
+
+function treeButton(event: Event): HTMLButtonElement | null {
+  const target = event.target instanceof Element ? event.target : null;
+  const button = target?.closest('button');
+  return button instanceof HTMLButtonElement ? button : null;
+}
+
+function findTreeNode(nodes: TreeNode[], id: string): TreeNode | null {
+  for (const node of nodes) {
+    if (str(node.id) === id) return node;
+    const child = findTreeNode(list<TreeNode>(node.children), id);
+    if (child) return child;
+  }
+  return null;
+}
+
+function treeMarkup(nodes: TreeNode[], open: string[], selected: string): string {
+  return nodes
+    .map((node) => {
+      const id = str(node.id);
+      const children = list<TreeNode>(node.children);
+      const isOpen = children.length > 0 && open.includes(id);
+      const expanded = children.length ? ` aria-expanded="${isOpen ? 'true' : 'false'}"` : '';
+      const icon = children.length
+        ? `<svg class="${isOpen ? 'wpl-icon' : 'wpl-icon wpl-icon-dir'}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPaths[isOpen ? 'chevronDown' : 'chevronRight']}"></path></svg>`
+        : '<span class="wpl-tree-spacer" aria-hidden="true"></span>';
+      const group = isOpen
+        ? `<ul class="wpl-tree-children" role="group">${treeMarkup(children, open, selected)}</ul>`
+        : '';
+      return `<li class="wpl-tree-item" role="none"><button type="button" class="wpl-tree-row" role="treeitem" data-id="${escapeTree(id)}" aria-selected="${selected === id ? 'true' : 'false'}"${expanded}>${icon}${escapeTree(str(node.label, id))}</button>${group}</li>`;
+    })
+    .join('');
+}
+
+function escapeTree(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => {
+    if (char === '&') return '&amp;';
+    if (char === '<') return '&lt;';
+    if (char === '>') return '&gt;';
+    if (char === '"') return '&quot;';
+    return '&#39;';
+  });
+}
 
 export const StatCard = glimmer(
   `<article class="wpl-stat"><p class="wpl-stat-label">{{this.label}}</p><p class="wpl-stat-value">{{this.value}}</p>{{#if @hint}}<p class="wpl-muted">{{@hint}}</p>{{/if}}</article>`,

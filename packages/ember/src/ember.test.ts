@@ -582,6 +582,22 @@ describe('Ember adapter', () => {
     expect(separator?.getAttribute('aria-valuenow')).toBe('45');
   });
 
+  it('expands a nested tree branch', async () => {
+    const host = mount(TreeView, {
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'ui', label: 'ui', children: [{ id: 'btn', label: 'button.tsx' }] }] }],
+    });
+    await renderSettled();
+    const row = () => [...host.querySelectorAll('[role="treeitem"]')].find((item) => item.textContent?.includes('ui'));
+    host.querySelector('[role="treeitem"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(row()?.getAttribute('aria-expanded')).toBe('false');
+    row()?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    expect(row()?.getAttribute('aria-expanded')).toBe('true');
+    expect(host.textContent).toContain('button.tsx');
+  });
+
   it('expands a tree toward the inline end', async () => {
     const host = mount(TreeView, {
       label: 'Files',
