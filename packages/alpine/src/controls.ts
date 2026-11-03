@@ -158,14 +158,15 @@ export function ButtonGroup(config: Config = {}) {
         flag(config.joined),
         text(config.className) || undefined,
       );
+      this.$el.setAttribute('role', 'group');
+      this.$el.setAttribute('aria-label', text(config.label, 'Actions'));
       const items = list<ButtonConfig>(config.items);
       if (!items.length) return;
       this.$el.replaceChildren(
         ...items.map((item) => {
-          const host = document.createElement('div');
-          const data = Button(item);
-          data.init.call({ ...this, $el: host });
-          return host;
+          const button = document.createElement('button');
+          Button(item).init.call({ ...this, $el: button });
+          return button;
         }),
       );
     },
