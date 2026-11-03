@@ -538,6 +538,23 @@ describe('Ember adapter', () => {
     expect(values).toEqual([{ value: 5 }]);
   });
 
+  it('returns focus to the drawer opener', async () => {
+    const host = mount(Drawer, { title: 'Filters', trigger: 'Open drawer', side: 'start' });
+    await renderSettled();
+    const trigger = host.querySelector('button');
+    trigger?.focus();
+    trigger?.click();
+    await renderSettled();
+    const dialog = host.querySelector('dialog');
+    expect(dialog?.className).toContain('wpl-drawer-start');
+    expect(dialog?.getAttribute('aria-labelledby')).toBe(dialog?.querySelector('h2')?.id);
+    dialog?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await renderSettled();
+    await Promise.resolve();
+    expect(host.querySelector('dialog')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+
   it('translates the dialog, modal, and drawer close buttons', async () => {
     document.documentElement.lang = 'fa';
     try {

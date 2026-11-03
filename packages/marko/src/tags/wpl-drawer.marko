@@ -1,3 +1,4 @@
+import { supportsModalDialog } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 import { text } from "../text.ts";
 
@@ -12,17 +13,62 @@ export interface Input {
 }
 
 <let/open=Boolean(input.open)>
+<id/titleId/>
 
 <div/host class="wpl-drawer-host">
-  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = !open; emit(host(), open ? "wpl-open" : "wpl-close", { open }); input.onOpenChange?.(open); }>${input.trigger || "Open"}</button>
-  <div class=["wpl-drawer", input.side === "start" && "wpl-drawer-start"] hidden=!open role="dialog" aria-label=input.title || "Drawer">
+  <button/trigger
+    type="button"
+    class="wpl-btn wpl-btn-secondary"
+    onClick() {
+      open = true;
+      emit(host(), "wpl-open", { open: true });
+      input.onOpenChange?.(true);
+    }
+  >${input.trigger || "Open"}</button>
+  <dialog/frame
+    class=["wpl-drawer", input.side === "start" && "wpl-drawer-start"]
+    open=open
+    aria-labelledby=titleId
+    onCancel(event) {
+      event.preventDefault();
+      open = false;
+      emit(host(), "wpl-close", { open: false });
+      input.onOpenChange?.(false);
+      queueMicrotask(() => trigger()?.focus());
+    }
+    onKeyDown(event) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      open = false;
+      emit(host(), "wpl-close", { open: false });
+      input.onOpenChange?.(false);
+      queueMicrotask(() => trigger()?.focus());
+    }
+  >
     <header class="wpl-dialog-header">
-      <h2 class="wpl-dialog-title">${input.title || "Drawer"}</h2>
-      <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" onClick() { open = false; emit(host(), "wpl-close", { open: false }); input.onOpenChange?.(false); }>${text("close")}</button>
+      <h2 class="wpl-dialog-title" id=titleId>${input.title || "Drawer"}</h2>
+      <button
+        type="button"
+        class="wpl-btn wpl-btn-ghost wpl-btn-sm"
+        onClick() {
+          open = false;
+          emit(host(), "wpl-close", { open: false });
+          input.onOpenChange?.(false);
+          queueMicrotask(() => trigger()?.focus());
+        }
+      >${text("close")}</button>
     </header>
     <div class="wpl-dialog-body">
       <if=input.description><p>${input.description}</p></if>
       <${input.content}/>
     </div>
-  </div>
+  </dialog>
+  <lifecycle
+    onUpdate() {
+      const node = frame();
+      if (!(node instanceof HTMLDialogElement)) return;
+      if (open && !node.open && supportsModalDialog()) node.showModal();
+      if (!open && node.open) node.close();
+    }
+  />
 </div>
