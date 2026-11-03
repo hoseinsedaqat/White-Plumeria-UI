@@ -263,12 +263,12 @@ export const Breadcrumb = glimmer(
 );
 
 export const List = glimmer(
-  `<ul class="wpl-list">{{#each this.items as |item|}}<li class="wpl-list-item"><strong>{{item.title}}</strong>{{#if item.description}}<p>{{item.description}}</p>{{/if}}{{#if item.meta}}<span class="wpl-muted">{{item.meta}}</span>{{/if}}</li>{{/each}}</ul>`,
+  `<ul class="wpl-list">{{#each this.items as |item|}}<li class="wpl-list-item"><div><p class="wpl-timeline-title">{{item.title}}</p>{{#if item.description}}<p class="wpl-timeline-body">{{item.description}}</p>{{/if}}</div>{{#if item.meta}}<span class="wpl-muted">{{item.meta}}</span>{{/if}}</li>{{/each}}</ul>`,
   {
     getters: {
       items: (host) =>
-        list<{ id?: string; title?: string; description?: string; meta?: string }>(host.args.items).map((item) => ({
-          title: str(item.title, str(item.id)),
+        list<{ id?: string; title?: string; label?: string; description?: string; meta?: string }>(host.args.items).map((item) => ({
+          title: str(item.title, str(item.label, str(item.id))),
           description: str(item.description),
           meta: str(item.meta),
         })),

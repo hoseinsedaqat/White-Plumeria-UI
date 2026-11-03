@@ -233,10 +233,13 @@ export function Table(config: Config = {}) {
 export function List(config: Config = {}) {
   return {
     init(this: Magic) {
-      const items = list<{ id?: string; label: string; description?: string }>(config.items);
+      const items = list<{ id?: string; title?: string; label?: string; description?: string; meta?: string }>(config.items);
       this.$el.replaceChildren(h('ul', { className: 'wpl-list' }, items.map((item) => h('li', { className: 'wpl-list-item' }, [
-        h('strong', { text: item.label }),
-        item.description ? h('span', { text: item.description }) : null,
+        h('div', {}, [
+          h('p', { className: 'wpl-timeline-title', text: text(item.title, text(item.label)) }),
+          item.description ? h('p', { className: 'wpl-timeline-body', text: item.description }) : null,
+        ]),
+        item.meta ? h('span', { className: 'wpl-muted', text: item.meta }) : null,
       ]))));
     },
   };
