@@ -465,6 +465,9 @@ describe('Alpine adapter', () => {
     const first = host.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+    const field = host.querySelector('.wpl-sort-field select');
+    expect(field?.getAttribute('aria-label')).toBe('Sort');
+    expect(host.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');
   });
 
   it('moves a carousel and a step', () => {

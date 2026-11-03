@@ -1,5 +1,6 @@
 import { iconPaths, queryTable, toggleSort } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface Column {
   id: string;
@@ -39,6 +40,24 @@ static function cell(column: Column, row: Record<string, unknown>): string {
 })>
 
 <div/host class="wpl-data-table">
+  <div class="wpl-table-toolbar">
+    <label class="wpl-sort-field">
+      <span class="wpl-sr-only">${text("sort")}</span>
+      <select class="wpl-select" aria-label=text("sort") onChange(event) {
+        const value = event.target instanceof HTMLSelectElement ? event.target.value : "";
+        sortId = value;
+        direction = "asc";
+        const next = { sortId: value || undefined, sortDirection: "asc" as const };
+        emit(host(), "wpl-sort", next);
+        input.onSortChange?.(next);
+      }>
+        <option value="" selected=!sortId>${text("sort")}</option>
+        <for|column| of=columns>
+          <option value=column.id selected=(sortId === column.id)>${column.header}</option>
+        </for>
+      </select>
+    </label>
+  </div>
   <div class="wpl-table-wrap">
     <table class="wpl-table">
       <if=input.caption><caption>${input.caption}</caption></if>

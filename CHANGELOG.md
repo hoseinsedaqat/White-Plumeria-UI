@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A data table keeps a labelled sort field in Alpine, Marko, and Ember. Packages are still not published.
 - A toast region is polite, and assertive while a danger toast is open. Packages are still not published.
 - An empty state uses the title and description classes in Alpine, Marko, and Ember. Packages are still not published.
 - An Alpine button group is a named group, and its buttons are direct children. Packages are still not published.
