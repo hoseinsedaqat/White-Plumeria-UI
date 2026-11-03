@@ -13,10 +13,36 @@ export interface Input {
 
 <let/names=[]>
 <let/rejected=[]>
+<let/active=false>
 <id/fileId/>
 
 <div/host class="wpl-file">
-  <label class="wpl-file-drop">
+  <label
+    class="wpl-file-drop"
+    data-active=(active ? "true" : null)
+    onDragOver(event) {
+      event.preventDefault();
+      active = true;
+    }
+    onDragLeave() {
+      active = false;
+    }
+    onDrop(event) {
+      event.preventDefault();
+      active = false;
+      const taken = takeFiles(event.dataTransfer?.files ?? null, input.accept, Number(input.maxSize) || 0, localeOf(host()));
+      names = taken.accepted;
+      rejected = taken.rejected;
+      if (taken.accepted.length) {
+        emit(host(), "wpl-change", { files: taken.accepted });
+        input.onChange?.({ files: taken.accepted });
+      }
+      if (taken.rejected.length) {
+        emit(host(), "wpl-reject", { files: taken.rejected });
+        input.onReject?.({ files: taken.rejected });
+      }
+    }
+  >
     ${input.label || "Choose a file"}
     <input
       id=fileId

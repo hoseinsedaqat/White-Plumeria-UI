@@ -829,6 +829,18 @@ describe('Marko adapter', () => {
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
     expect(input.getAttribute('aria-invalid')).toBe('true');
     expect(input.getAttribute('aria-describedby')).toBe(view.container.querySelector('[role="alert"]')?.id);
+    const dropped = new File(['ok'], 'note.txt', { type: 'text/plain' });
+    const label = view.container.querySelector('.wpl-file-drop');
+    label?.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }));
+    await flush();
+    expect(label?.getAttribute('data-active')).toBe('true');
+    label?.dispatchEvent(
+      Object.assign(new Event('drop', { bubbles: true, cancelable: true }), {
+        dataTransfer: { files: [dropped] },
+      }),
+    );
+    await flush();
+    expect(view.container.querySelector('.wpl-file-item')?.textContent).toBe('note.txt');
 
     const values: unknown[] = [];
     const slider = await render(Slider, { label: 'Nights', min: 1, max: 7, value: 2 });
