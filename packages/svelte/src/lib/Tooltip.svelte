@@ -13,7 +13,7 @@
   }
 </script>
 
-<span role="group" style:position="relative" style:display="inline-flex" onmouseenter={show} onmouseleave={hide} onfocusin={show} onfocusout={hide}>
+<span role="group" style:position="relative" style:display="inline-flex" onmouseenter={show} onmouseleave={hide} onfocusin={show} onfocusout={hide} onkeydown={(event) => event.key === 'Escape' && hide()}>
   <span aria-describedby={open ? id : undefined}>{@render children?.()}</span>
   {#if open}<span {id} role="tooltip" class="wpl-tooltip">{content}</span>{/if}
 </span>

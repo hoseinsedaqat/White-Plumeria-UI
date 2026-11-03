@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
-import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -179,6 +179,26 @@ describe('Alpine adapter', () => {
     trigger?.click();
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     expect(host.querySelector('.wpl-popover')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('waits to show a tooltip and dismisses it with escape', async () => {
+    vi.useFakeTimers();
+    try {
+      const host = mount(Tooltip, { label: 'Hint', content: 'Copy token' });
+      const trigger = host.querySelector('button');
+      expect(host.querySelector('[role="tooltip"]')?.hasAttribute('hidden')).toBe(true);
+      trigger?.dispatchEvent(new FocusEvent('focus'));
+      await vi.advanceTimersByTimeAsync(399);
+      expect(host.querySelector('[role="tooltip"]')?.hasAttribute('hidden')).toBe(true);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(host.querySelector('[role="tooltip"]')?.hasAttribute('hidden')).toBe(false);
+      expect(trigger?.getAttribute('aria-describedby')).toBe(host.querySelector('[role="tooltip"]')?.id);
+      trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(host.querySelector('[role="tooltip"]')?.hasAttribute('hidden')).toBe(true);
+      expect(trigger?.hasAttribute('aria-describedby')).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('names steps in the provider language', () => {

@@ -3,8 +3,32 @@ export interface Input {
   label?: string;
 }
 
+<let/open=false>
+<let/timer=0>
 <id/tipId/>
-<span class="wpl-tooltip-host">
-  <button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-describedby=tipId>${input.label || "Hint"}</button>
-  <span class="wpl-tooltip" role="tooltip" id=tipId>${input.content || ""}</span>
+<const/show=() => {
+  window.clearTimeout(timer);
+  timer = window.setTimeout(() => {
+    open = true;
+  }, 400);
+}>
+<const/hide=() => {
+  window.clearTimeout(timer);
+  open = false;
+}>
+
+<span/host class="wpl-tooltip-host" style="position:relative;display:inline-flex" onKeyDown(event) { if (event.key !== "Escape") return; hide(); }>
+  <button
+    type="button"
+    class="wpl-btn wpl-btn-ghost wpl-btn-sm"
+    aria-describedby=(open ? tipId : null)
+    onFocus() { show(); }
+    onBlur() { hide(); }
+    onMouseEnter() { show(); }
+    onMouseLeave() { hide(); }
+  >${input.label || "Hint"}</button>
+  <if=open>
+    <span class="wpl-tooltip" role="tooltip" id=tipId>${input.content || ""}</span>
+  </if>
+  <lifecycle onDestroy() { window.clearTimeout(timer); }/>
 </span>

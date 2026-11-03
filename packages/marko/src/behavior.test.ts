@@ -33,6 +33,7 @@ import Drawer from './tags/wpl-drawer.marko';
 import Popover from './tags/wpl-popover.marko';
 import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
+import Tooltip from './tags/wpl-tooltip.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
@@ -216,6 +217,21 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('waits to show a tooltip and dismisses it with escape', async () => {
+    const view = await render(Tooltip, { label: 'Hint', content: 'Copy token' });
+    const trigger = view.container.querySelector('button');
+    expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
+    trigger?.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 420));
+    await flush();
+    const tip = view.container.querySelector('[role="tooltip"]');
+    expect(tip?.textContent).toBe('Copy token');
+    expect(trigger?.getAttribute('aria-describedby')).toBe(tip?.id);
+    view.container.querySelector('.wpl-tooltip-host')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await flush();
+    expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
   });
 
   it('omits the current value while progress is indeterminate', async () => {

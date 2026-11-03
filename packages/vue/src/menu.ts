@@ -256,7 +256,16 @@ export const Tooltip = defineComponent({
     return () =>
       h(
         'span',
-        { style: { position: 'relative', display: 'inline-flex' }, onMouseenter: show, onMouseleave: hide, onFocusin: show, onFocusout: hide },
+        {
+          style: { position: 'relative', display: 'inline-flex' },
+          onMouseenter: show,
+          onMouseleave: hide,
+          onFocusin: show,
+          onFocusout: hide,
+          onKeydown: (event: KeyboardEvent) => {
+            if (event.key === 'Escape') hide();
+          },
+        },
         [
           h('span', { 'aria-describedby': open.value ? id : undefined }, slots.default?.()),
           open.value

@@ -36,6 +36,7 @@ import {
   SplitPane,
   Tabs,
   Timeline,
+  Tooltip,
   TreeView,
   WhitePlumeriaProvider,
 } from './index.ts';
@@ -266,6 +267,22 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('waits to show a tooltip and dismisses it with escape', async () => {
+    const host = mount(Tooltip, { label: 'Hint', text: 'Copy token' });
+    await renderSettled();
+    const trigger = host.querySelector('button');
+    expect(host.querySelector('[role="tooltip"]')).toBeNull();
+    trigger?.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 420));
+    await renderSettled();
+    const tip = host.querySelector('[role="tooltip"]');
+    expect(tip?.textContent).toBe('Copy token');
+    expect(trigger?.getAttribute('aria-describedby')).toBe(tip?.id);
+      trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await renderSettled();
+    expect(host.querySelector('[role="tooltip"]')).toBeNull();
   });
 
   it('names a menu, a search field, and steps in the page language', async () => {

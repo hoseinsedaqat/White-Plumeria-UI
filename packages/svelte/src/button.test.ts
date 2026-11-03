@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/svelte';
+import { tick } from 'svelte';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import Accordion from './lib/Accordion.svelte';
 import Card from './lib/Card.svelte';
 import Combobox from './lib/Combobox.svelte';
@@ -12,6 +13,7 @@ import SplitPane from './lib/SplitPane.svelte';
 import Steps from './lib/Steps.svelte';
 import TreeView from './lib/TreeView.svelte';
 import Switch from './lib/Switch.svelte';
+import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
   it('announces that an external link opens in a new tab', () => {
@@ -97,6 +99,22 @@ describe('svelte adapter', () => {
     await user.keyboard('{ArrowLeft}');
     expect(row.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('treeitem', { name: 'button.tsx' })).toBeTruthy();
+  });
+
+  it('waits to show a tooltip and dismisses it with escape', async () => {
+    vi.useFakeTimers();
+    try {
+      const view = render(Tooltip, { content: 'Copy token' });
+      const host = view.container.querySelector('span');
+      host?.dispatchEvent(new MouseEvent('mouseenter'));
+      await vi.advanceTimersByTimeAsync(400);
+      expect(view.container.querySelector('[role="tooltip"]')?.textContent).toBe('Copy token');
+      host?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await tick();
+      expect(view.container.querySelector('[role="tooltip"]')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('closes a popover from escape and an outside pointer', async () => {
