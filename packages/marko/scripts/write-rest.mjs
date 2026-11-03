@@ -79,13 +79,21 @@ static const variants = ["neutral", "primary", "success", "warning", "danger"] a
 `,
   'wpl-avatar.marko': `import { avatarClassName, type AvatarSize } from "@white-plumeria/core";
 import { oneOf } from "../emit.ts";
-export interface Input { name?: string; src?: string; size?: AvatarSize; }
+export interface Input { name?: string; src?: string; alt?: string; size?: AvatarSize; status?: "online" | "busy" | "offline"; statusLabel?: string; }
 static const sizes = ["sm", "md", "lg"] as const;
 <const/name=input.name || "User">
 <const/initials=name.split(" ").map((part) => part[0] || "").join("").slice(0, 2).toUpperCase()>
-<span class=avatarClassName(oneOf(input.size, sizes, "md")) role="img" aria-label=name>
-  <if=input.src><img src=input.src alt=""></if>
-  <else>\${initials}</else>
+<const/status=input.status === "online" || input.status === "busy" || input.status === "offline" ? input.status : "">
+<span class=avatarClassName(oneOf(input.size, sizes, "md"))>
+  <if=input.src><img src=input.src alt=input.alt || name></if>
+  <else>
+    <span aria-hidden="true">\${initials}</span>
+    <if=!input.alt><span class="wpl-sr-only">\${name}</span></if>
+  </else>
+  <if=(status && input.statusLabel)>
+    <span class="wpl-avatar-status" style=(status === "busy" ? "background:var(--wpl-color-warning)" : status === "offline" ? "background:var(--wpl-color-text-subtle)" : undefined)></span>
+    <span class="wpl-sr-only">\${input.statusLabel}</span>
+  </if>
 </span>
 `,
   'wpl-card.marko': `import { cardClassName } from "@white-plumeria/core";

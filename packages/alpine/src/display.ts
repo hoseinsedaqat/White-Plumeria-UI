@@ -36,9 +36,33 @@ export function Avatar(config: Config = {}) {
     init(this: Magic) {
       const size = oneOf(config.size, avatars, 'md');
       const name = text(config.name || config.label, 'User');
+      const src = text(config.src);
+      const alt = text(config.alt);
+      const status = text(config.status);
+      const statusLabel = text(config.statusLabel);
       const initials = name.split(' ').map((part) => part[0] ?? '').join('').slice(0, 2).toUpperCase();
-      const node = h('span', { className: avatarClassName(size as AvatarSize), attrs: { role: 'img', 'aria-label': name } }, [
-        text(config.src) ? h('img', { attrs: { src: text(config.src), alt: '' } }) : initials,
+      const known = status === 'online' || status === 'busy' || status === 'offline';
+      const node = h('span', { className: avatarClassName(size as AvatarSize) }, [
+        src
+          ? h('img', { attrs: { src, alt: alt || name } })
+          : h('span', { attrs: { 'aria-hidden': 'true' }, text: initials }),
+        !src && !alt ? h('span', { className: 'wpl-sr-only', text: name }) : null,
+        ...(known && statusLabel
+          ? [
+              h('span', {
+                className: 'wpl-avatar-status',
+                attrs: {
+                  style:
+                    status === 'busy'
+                      ? 'background:var(--wpl-color-warning)'
+                      : status === 'offline'
+                        ? 'background:var(--wpl-color-text-subtle)'
+                        : undefined,
+                },
+              }),
+              h('span', { className: 'wpl-sr-only', text: statusLabel }),
+            ]
+          : []),
       ]);
       this.$el.replaceChildren(node);
     },

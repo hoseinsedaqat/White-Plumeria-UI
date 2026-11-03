@@ -175,6 +175,7 @@ export const catalog: ComponentDoc[] = [
       { name: 'alt', type: 'string', description: 'Image alternative. Defaults to name.', descriptionFa: 'متن جایگزین تصویر.' },
       { name: 'size', type: '"sm" | "md" | "lg"', defaultValue: 'md', description: 'Diameter.', descriptionFa: 'قطر.' },
       { name: 'status', type: '"online" | "busy" | "offline"', description: 'Optional status dot. Requires statusLabel.', descriptionFa: 'نقطهٔ وضعیت. statusLabel لازم است.' },
+      { name: 'statusLabel', type: 'string', description: 'Visually hidden name for the status. Required when status is set.', descriptionFa: 'نام پنهان وضعیت. با status لازم است.' },
     ],
     events: [],
     a11y: ['Image has alt. Status is exposed with visually hidden text, not color alone.'],

@@ -39,7 +39,7 @@ export const Badge = glimmer(`<span class={{this.className}}>{{#if @label}}{{@la
 });
 
 export const Avatar = glimmer(
-  `<span class={{this.className}}>{{#if @src}}<img src={{@src}} alt={{this.alt}} />{{else}}<span aria-hidden="true">{{this.initials}}</span>{{/if}}{{#if @status}}<span class="wpl-avatar-status" data-status={{@status}} aria-label={{@statusLabel}}></span>{{/if}}</span>`,
+  `<span class={{this.className}}>{{#if @src}}<img src={{@src}} alt={{this.alt}} />{{else}}<span aria-hidden="true">{{this.initials}}</span>{{/if}}{{#if this.showStatus}}<span class="wpl-avatar-status" style={{this.statusColor}}></span><span class="wpl-sr-only">{{@statusLabel}}</span>{{/if}}</span>`,
   {
     getters: {
       className: (host) => avatarClassName(host.args.size === 'sm' || host.args.size === 'lg' ? host.args.size : 'md'),
@@ -48,6 +48,16 @@ export const Avatar = glimmer(
         const name = str(this.args.name, '?');
         const parts = name.split(/\s+/).filter(Boolean);
         return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || name.slice(0, 2).toUpperCase();
+      },
+      showStatus(this: Host) {
+        const status = str(this.args.status);
+        return (status === 'online' || status === 'busy' || status === 'offline') && str(this.args.statusLabel) !== '';
+      },
+      statusColor(this: Host) {
+        const status = str(this.args.status);
+        if (status === 'busy') return 'background:var(--wpl-color-warning)';
+        if (status === 'offline') return 'background:var(--wpl-color-text-subtle)';
+        return '';
       },
     },
   },
