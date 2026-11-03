@@ -743,6 +743,7 @@ describe('Ember adapter', () => {
 
     const steps = mount(Steps, {
       value: 'draft',
+      linear: false,
       items: [
         { id: 'draft', title: 'Draft' },
         { id: 'send', title: 'Send' },
@@ -752,6 +753,30 @@ describe('Ember adapter', () => {
     [...steps.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'))?.click();
     await renderSettled();
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+    const gated = mount(Steps, {
+      value: 'draft',
+      orientation: 'vertical',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    await renderSettled();
+    expect(gated.querySelector('.wpl-steps')?.classList.contains('wpl-steps-vertical')).toBe(true);
+    const future = [...gated.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'));
+    expect(future?.hasAttribute('disabled')).toBe(true);
+    future?.click();
+    await renderSettled();
+    expect(gated.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
+    const done = mount(Steps, {
+      value: 'send',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    await renderSettled();
+    expect(done.querySelector('[data-state="complete"] .wpl-step-marker svg')).not.toBeNull();
   });
 
   it('names an input error from the control', async () => {

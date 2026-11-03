@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A step list marks a finished step with a hidden check and keeps later steps closed unless linear is off, in Alpine, Marko, and Ember. Packages are still not published.
 - An OTP field names each cell in the page language and fills a pasted code in Alpine, Marko, and Ember. Packages are still not published.
 - A data table names each stacked cell and counts its rows in Alpine, Marko, and Ember. Packages are still not published.
 - A data table pages its rows and names the page controls in Alpine, Marko, and Ember. Packages are still not published.

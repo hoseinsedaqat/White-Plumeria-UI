@@ -527,6 +527,7 @@ describe('Alpine adapter', () => {
 
     const steps = mount(Steps, {
       value: 'draft',
+      linear: false,
       items: [
         { id: 'draft', title: 'Draft' },
         { id: 'send', title: 'Send' },
@@ -535,6 +536,28 @@ describe('Alpine adapter', () => {
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
     [...steps.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'))?.click();
     expect(steps.querySelector('[aria-current="step"]')?.textContent).toContain('Send');
+    const gated = mount(Steps, {
+      value: 'draft',
+      orientation: 'vertical',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    expect(gated.querySelector('.wpl-steps')?.classList.contains('wpl-steps-vertical')).toBe(true);
+    const future = [...gated.querySelectorAll('button')].find((button) => button.textContent?.includes('Send'));
+    expect(future?.hasAttribute('disabled')).toBe(true);
+    future?.click();
+    expect(gated.querySelector('[aria-current="step"]')?.textContent).toContain('Draft');
+    const done = mount(Steps, {
+      value: 'send',
+      items: [
+        { id: 'draft', title: 'Draft' },
+        { id: 'send', title: 'Send' },
+      ],
+    });
+    expect(done.querySelector('[data-state="complete"] .wpl-step-marker svg')).not.toBeNull();
+    expect(done.querySelector('[data-state="complete"] .wpl-step-marker')?.textContent).toBe('');
   });
 
   it('names an accordion panel from its trigger', () => {

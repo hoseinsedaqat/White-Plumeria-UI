@@ -1,4 +1,4 @@
-import { stepIndex, stepState } from "@white-plumeria/core";
+import { iconPaths, stepIndex, stepState } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
 import { text } from "../text.ts";
 
@@ -36,7 +36,12 @@ export interface Input {
           input.onValueChange?.(item.id);
         }
       >
-        <span class="wpl-step-marker" aria-hidden="true">${index + 1}</span>
+        <span class="wpl-step-marker" aria-hidden="true">
+          <if=(stepState(index, current) === "complete")>
+            <svg class="wpl-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.check/></svg>
+          </if>
+          <else>${index + 1}</else>
+        </span>
         <span class="wpl-step-title">${item.title}</span>
         <if=item.description><span class="wpl-step-desc">${item.description}</span></if>
       </button>
