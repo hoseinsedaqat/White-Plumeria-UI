@@ -986,6 +986,8 @@ describe('Ember adapter', () => {
     expect(host.textContent).toContain('Sent');
     expect(host.textContent).toContain('10:05');
     expect(host.textContent).toContain('Notes');
+    expect(host.querySelector('.wpl-timeline-title')?.textContent).toBe('Draft saved');
+    expect(host.querySelector('.wpl-timeline-meta')?.textContent).toContain('Notes');
   });
 
   it('names an avatar status with hidden text', async () => {
