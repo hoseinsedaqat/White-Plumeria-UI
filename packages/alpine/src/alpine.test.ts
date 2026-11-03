@@ -465,6 +465,8 @@ describe('Alpine adapter', () => {
     const first = host.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
     expect(first).toContain('Pine');
+    expect(host.querySelector('tbody td')?.getAttribute('data-label')).toBe('Guest');
+    expect(host.textContent).toContain('3 rows');
     const field = host.querySelector('.wpl-sort-field select');
     expect(field?.getAttribute('aria-label')).toBe('Sort');
     expect(host.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');

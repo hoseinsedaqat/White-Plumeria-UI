@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A data table names each stacked cell and counts its rows in Alpine, Marko, and Ember. Packages are still not published.
 - A data table pages its rows and names the page controls in Alpine, Marko, and Ember. Packages are still not published.
 - A data table filters from a labelled search field and explains an empty result in Alpine, Marko, and Ember. Packages are still not published.
 - A data table keeps a labelled sort field in Alpine, Marko, and Ember. Packages are still not published.
