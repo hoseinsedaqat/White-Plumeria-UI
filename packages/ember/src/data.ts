@@ -466,7 +466,7 @@ export const DatePicker = glimmer(
 );
 
 export const DateRangePicker = glimmer(
-  `<div class="wpl-date"><span class="wpl-label">{{this.label}}</span><div class="wpl-date-row"><div class="wpl-field"><label class="wpl-label" for={{this.startId}}>{{this.startLabel}}</label><input id={{this.startId}} class="wpl-input" value={{this.start}} data-wpl-edge="start" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStart}} /></div><div class="wpl-field"><label class="wpl-label" for={{this.endId}}>{{this.endLabel}}</label><input id={{this.endId}} class="wpl-input" value={{this.end}} data-wpl-edge="end" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEnd}} /></div></div>{{#if this.showTime}}<div class="wpl-date-row"><input id={{this.startTimeId}} class="wpl-input" type="time" value={{this.startTime}} data-wpl-edge="start-time" aria-label={{this.startTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStartTime}} /><input id={{this.endTimeId}} class="wpl-input" type="time" value={{this.endTime}} data-wpl-edge="end-time" aria-label={{this.endTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEndTime}} /></div>{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p></div>`,
+  `<div class="wpl-date"><span class="wpl-label">{{this.label}}</span><div class="wpl-date-row"><div class="wpl-field"><label class="wpl-label" for={{this.startId}}>{{this.startLabel}}</label><input id={{this.startId}} class="wpl-input" value={{this.start}} data-wpl-edge="start" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStart}} /></div><div class="wpl-field"><label class="wpl-label" for={{this.endId}}>{{this.endLabel}}</label><input id={{this.endId}} class="wpl-input" value={{this.end}} data-wpl-edge="end" placeholder="YYYY-MM-DD" {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEnd}} /></div></div>{{#if this.showTime}}<div class="wpl-date-row"><input id={{this.startTimeId}} class="wpl-input" type="time" value={{this.startTime}} data-wpl-edge="start-time" aria-label={{this.startTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitStartTime}} /><input id={{this.endTimeId}} class="wpl-input" type="time" value={{this.endTime}} data-wpl-edge="end-time" aria-label={{this.endTimeLabel}} {{flagAttr "aria-invalid" this.invalid}} {{flagAttr "aria-describedby" this.describedBy}} {{on "change" this.commitEndTime}} /></div>{{/if}}{{#if this.error}}<p id={{this.errorId}} class="wpl-field-error" role="alert">{{this.error}}</p>{{/if}}<p class="wpl-field-hint">{{this.hint}}</p><div class="wpl-calendar"><div class="wpl-calendar-head"><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.previousLabel}} {{on "click" this.previous}}>${calendarChevron('chevronLeft')}</button><strong>{{this.gridTitle}}</strong><button type="button" class="wpl-btn wpl-btn-ghost wpl-btn-sm" aria-label={{this.nextLabel}} {{on "click" this.next}}>${calendarChevron('chevronRight')}</button></div><div class="wpl-calendar-grid" role="grid" aria-label={{this.gridTitle}}>{{#each this.weekdays as |day|}}<div class="wpl-calendar-weekday" role="columnheader">{{day}}</div>{{/each}}{{#each this.days as |day|}}<button type="button" class={{day.className}} role="gridcell" aria-label={{day.aria}} disabled={{day.disabled}} {{flagAttr "aria-selected" day.selected}} {{flagAttr "aria-current" day.current}} {{on "click" (fn this.pick day.iso)}}>{{day.label}}</button>{{/each}}</div></div></div>`,
   {
     state: (args) => ({
       start: str(args.start),
@@ -478,6 +478,8 @@ export const DateRangePicker = glimmer(
       endId: createId('end'),
       startTimeId: createId('start-time'),
       endTimeId: createId('end-time'),
+      anchor: str(args.start) || str(args.end) || toIsoDate(new Date()),
+      awaitingEnd: false,
     }),
     getters: {
       label: (host) => str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'chooseDate')),
@@ -498,6 +500,37 @@ export const DateRangePicker = glimmer(
       startTime: (host) => str(host.state.startTime),
       endTime: (host) => str(host.state.endTime),
       showTime: (host) => flag(host.args.showTime),
+      previousLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'previous'),
+      nextLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'next'),
+      grid(this: Host) {
+        return buildMonthGrid({
+          anchor: parseIsoDate(str(this.state.anchor)) ?? new Date(),
+          calendar: calendarOf(this.args.calendar),
+          locale: localeOf(typeof document === 'undefined' ? null : document.body),
+          min: parseIsoDate(str(this.args.min)) ?? undefined,
+          max: parseIsoDate(str(this.args.max)) ?? undefined,
+        });
+      },
+      gridTitle(this: Host) {
+        return this.grid.title;
+      },
+      weekdays(this: Host) {
+        return this.grid.weekdays;
+      },
+      days(this: Host) {
+        const start = parseIsoDate(str(this.state.start));
+        const end = parseIsoDate(str(this.state.end));
+        const today = new Date();
+        return this.grid.cells.map((cell: { date: Date; label: string; disabled?: boolean; inMonth: boolean }) => ({
+          iso: toIsoDate(cell.date),
+          label: cell.label,
+          disabled: cell.disabled,
+          selected: Boolean((start && sameDay(start, cell.date)) || (end && sameDay(end, cell.date))),
+          current: sameDay(today, cell.date) ? 'date' : '',
+          aria: formatDate(cell.date, localeOf(typeof document === 'undefined' ? null : document.body), { dateStyle: 'full' }, calendarOf(this.args.calendar)),
+          className: calendarDayClass({ inMonth: cell.inMonth, date: cell.date, rangeStart: start, rangeEnd: end }),
+        }));
+      },
       hint(this: Host) {
         const locale = localeOf(typeof document === 'undefined' ? null : document.body);
         const calendar = calendarOf(this.args.calendar);
@@ -582,6 +615,52 @@ export const DateRangePicker = glimmer(
           end: str(this.state.end),
           startTime: str(this.state.startTime),
           endTime: str(this.state.endTime),
+        });
+      },
+      previous() {
+        const anchor = parseIsoDate(str(this.state.anchor)) ?? new Date();
+        this.state.anchor = toIsoDate(addMonths(anchor, -1, calendarOf(this.args.calendar)));
+      },
+      next() {
+        const anchor = parseIsoDate(str(this.state.anchor)) ?? new Date();
+        this.state.anchor = toIsoDate(addMonths(anchor, 1, calendarOf(this.args.calendar)));
+      },
+      pick(iso, event) {
+        const showTime = flag(this.args.showTime);
+        const chosen = String(iso);
+        if (!this.state.awaitingEnd || !str(this.state.start) || str(this.state.end)) {
+          this.state.start = chosen;
+          this.state.end = '';
+          if (showTime) this.state.endTime = '';
+          this.state.awaitingEnd = true;
+          this.state.error = '';
+          this.state.anchor = chosen;
+          bubble(event as Event, 'wpl-change', showTime ? { start: chosen, end: '', startTime: str(this.state.startTime), endTime: '' } : { start: chosen, end: '' });
+          return;
+        }
+        this.state.end = chosen;
+        this.state.awaitingEnd = false;
+        this.state.error = '';
+        if (showTime) {
+          const ordered = orderDateTimeRange({
+            start: str(this.state.start),
+            end: chosen,
+            startTime: str(this.state.startTime),
+            endTime: str(this.state.endTime),
+          });
+          this.state.start = ordered.start;
+          this.state.end = ordered.end;
+          this.state.startTime = ordered.startTime ?? '';
+          this.state.endTime = ordered.endTime ?? '';
+        } else {
+          const ordered = orderDateRange(str(this.state.start), chosen);
+          this.state.start = ordered.start;
+          this.state.end = ordered.end;
+        }
+        bubble(event as Event, 'wpl-change', {
+          start: str(this.state.start),
+          end: str(this.state.end),
+          ...(showTime ? { startTime: str(this.state.startTime), endTime: str(this.state.endTime) } : {}),
         });
       },
       paintInputs(from) {
