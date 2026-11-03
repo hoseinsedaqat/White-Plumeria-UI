@@ -17,6 +17,7 @@ describe('Marko provider locale', () => {
     expect(fa.container.querySelector('.wpl-search input')?.getAttribute('placeholder')).toBe('جستجو');
     expect(fa.container.querySelector('.wpl-search-clear')?.getAttribute('aria-label')).toBe('پاک کردن');
     expect(fa.container.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
+    expect(fa.container.querySelector('.wpl-navbar-toggle')?.getAttribute('aria-label')).toBe('باز کردن منو');
     expect(fa.container.querySelector('.wpl-field button')?.getAttribute('aria-label')).toBe('نمایش رمز');
     expect(fa.container.querySelector('.wpl-field button')?.getAttribute('aria-pressed')).toBe('false');
     expect(fa.container.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('کیفیت: 3 از 5');

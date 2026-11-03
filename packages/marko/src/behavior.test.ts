@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { pushToast } from './provider.ts';
 import { tagNames } from './index.ts';
 import Chart from './tags/wpl-chart.marko';
+import Navbar from './tags/wpl-navbar.marko';
 import ChartContainer from './tags/wpl-chart-container.marko';
 import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
@@ -222,6 +223,20 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the navbar toggle and changes it when the menu opens', async () => {
+    const view = await render(Navbar, { brand: 'White Plumeria', items: [{ href: '#docs', label: 'Docs' }] });
+    const toggle = view.container.querySelector('.wpl-navbar-toggle');
+    const nav = view.container.querySelector('nav');
+    expect(toggle?.getAttribute('aria-label')).toBe('Open menu');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('false');
+    expect(toggle?.getAttribute('aria-controls')).toBe(nav?.id);
+    expect(nav?.hasAttribute('hidden')).toBe(false);
+    toggle?.click();
+    await flush();
+    expect(toggle?.getAttribute('aria-label')).toBe('Close menu');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('true');
   });
 
   it('keeps the chart table available and hides the bars', async () => {

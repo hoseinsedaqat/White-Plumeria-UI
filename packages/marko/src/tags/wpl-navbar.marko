@@ -1,10 +1,26 @@
+import { iconButtonClassName } from "@white-plumeria/core";
+import { text, textAt } from "../text.ts";
+
 export interface Item { href?: string; label: string; current?: boolean; }
 export interface Input { brand?: string; href?: string; items?: Item[]; }
+
 <let/open=false>
+<let/toggleLabel=text("openMenu")>
 <id/menuId/>
+
 <header class="wpl-navbar" data-open=open>
   <a class="wpl-navbar-brand" href=input.href || "/">${input.brand || "White Plumeria"}</a>
-  <button type="button" class="wpl-navbar-toggle" aria-expanded=String(open) aria-controls=menuId onClick() { open = !open; }>Menu</button>
+  <button/host
+    type="button"
+    class=`${iconButtonClassName({ variant: "ghost" })} wpl-navbar-toggle`
+    aria-label=toggleLabel
+    aria-expanded=String(open)
+    aria-controls=menuId
+    onClick() {
+      open = !open;
+      toggleLabel = textAt(host(), open ? "closeMenu" : "openMenu");
+    }
+  >☰</button>
   <nav id=menuId class="wpl-nav-menu">
     <for|item| of=(input.items ?? [])>
       <a class="wpl-nav-link" href=item.href || "#" aria-current=(item.current ? "page" : null)>${item.label}</a>

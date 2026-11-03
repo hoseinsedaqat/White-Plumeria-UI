@@ -20,6 +20,7 @@ import {
   Dialog,
   Drawer,
   Modal,
+  Navbar,
   DateRangePicker,
   Combobox,
   CommandPalette,
@@ -271,6 +272,23 @@ describe('Ember adapter', () => {
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     await renderSettled();
     expect(host.textContent).toContain('No matching results');
+  });
+
+  it('names the navbar toggle in the page language', async () => {
+    document.documentElement.lang = 'fa';
+    const host = mount(Navbar, { brand: 'White Plumeria', items: [{ href: '#docs', label: 'Docs' }] });
+    await renderSettled();
+    const toggle = host.querySelector('.wpl-navbar-toggle');
+    const nav = host.querySelector('nav');
+    expect(toggle?.getAttribute('aria-label')).toBe('باز کردن منو');
+    expect(toggle?.getAttribute('aria-controls')).toBe(nav?.id);
+    expect(nav?.hasAttribute('hidden')).toBe(false);
+    toggle?.click();
+    await renderSettled();
+    expect(toggle?.getAttribute('aria-label')).toBe('بستن منو');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('true');
+    expect(host.querySelector('.wpl-navbar')?.hasAttribute('data-open')).toBe(true);
+    document.documentElement.lang = '';
   });
 
   it('keeps the chart table available and hides the bars', async () => {
