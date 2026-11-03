@@ -9,6 +9,7 @@ import {
   Calendar,
   Card,
   DatePicker,
+  Label,
   Link,
   Pagination,
   Carousel,
@@ -468,6 +469,23 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('hides the required word on a label', async () => {
+    const host = mount(Label, { text: 'Email', required: true });
+    await renderSettled();
+    expect(host.querySelector('.wpl-required')?.getAttribute('aria-hidden')).toBe('true');
+    expect(host.querySelector('.wpl-required')?.textContent).toBe('*');
+    expect(host.querySelector('.wpl-sr-only')?.textContent).toBe('required');
+    document.documentElement.lang = 'fa';
+    const persian = mount(Label, { text: 'ایمیل', required: true });
+    await renderSettled();
+    expect(persian.querySelector('.wpl-sr-only')?.textContent).toBe('الزامی');
+    document.documentElement.lang = '';
+    const optional = mount(Label, { text: 'Name' });
+    await renderSettled();
+    expect(optional.querySelector('.wpl-required')).toBeNull();
+    expect(optional.querySelector('.wpl-sr-only')).toBeNull();
   });
 
   it('uses a time element only when a timeline date is set', async () => {

@@ -22,6 +22,7 @@ import Avatar from './tags/wpl-avatar.marko';
 import Calendar from './tags/wpl-calendar.marko';
 import Card from './tags/wpl-card.marko';
 import DatePicker from './tags/wpl-date-picker.marko';
+import Label from './tags/wpl-label.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
@@ -450,6 +451,16 @@ describe('Marko adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('hides the required word on a label', async () => {
+    const view = await render(Label, { required: true });
+    expect(view.container.querySelector('.wpl-required')?.getAttribute('aria-hidden')).toBe('true');
+    expect(view.container.querySelector('.wpl-required')?.textContent).toBe('*');
+    expect(view.container.querySelector('.wpl-sr-only')?.textContent).toBe('required');
+    const optional = await render(Label, {});
+    expect(optional.container.querySelector('.wpl-required')).toBeNull();
+    expect(optional.container.querySelector('.wpl-sr-only')).toBeNull();
   });
 
   it('uses a time element only when a timeline date is set', async () => {
