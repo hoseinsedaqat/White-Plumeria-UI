@@ -45,6 +45,6 @@ export interface Input {
     <for|name| of=names><li class="wpl-file-item">${name}</li></for>
   </ul>
   <if=rejected.length>
-    <p id=(fileId + "-error") class="wpl-field-error" role="alert">${rejected.map((item) => item.name).join(", ")}</p>
+    <p id=(fileId + "-error") class="wpl-field-error" role="alert">${rejected.map((item) => `${item.name}: ${item.reason}`).join(" ")}</p>
   </if>
 </div>

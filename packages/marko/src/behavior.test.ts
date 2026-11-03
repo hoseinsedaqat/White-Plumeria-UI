@@ -825,7 +825,7 @@ describe('Marko adapter', () => {
     input.dispatchEvent(new Event('change', { bubbles: true }));
     await flush();
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
-    expect(view.container.textContent).toContain('plan.pdf');
+    expect(view.container.querySelector('[role="alert"]')?.textContent).toContain('plan.pdf: File was rejected');
     expect(rejected).toEqual([{ files: [{ name: 'plan.pdf', reason: 'File was rejected' }] }]);
     expect(input.getAttribute('aria-invalid')).toBe('true');
     expect(input.getAttribute('aria-describedby')).toBe(view.container.querySelector('[role="alert"]')?.id);
