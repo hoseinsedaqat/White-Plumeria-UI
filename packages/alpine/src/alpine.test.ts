@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -374,6 +374,22 @@ describe('Alpine adapter', () => {
     const image = mount(Avatar, { name: 'Laleh Karimi', src: '/laleh.png' });
     expect(image.querySelector('img')?.getAttribute('alt')).toBe('Laleh Karimi');
     expect(image.querySelector('.wpl-avatar-status')).toBeNull();
+  });
+
+  it('uses a time element only when a timeline date is set', () => {
+    const host = mount(Timeline, {
+      items: [
+        { id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40', meta: 'Notes' },
+        { id: '2', title: 'Sent', time: '10:05' },
+      ],
+    });
+    const dated = host.querySelector('time');
+    expect(dated?.getAttribute('datetime')).toBe('2026-10-27T09:40');
+    expect(dated?.textContent).toBe('09:40');
+    expect(host.querySelectorAll('time')).toHaveLength(1);
+    expect(host.textContent).toContain('Sent');
+    expect(host.textContent).toContain('10:05');
+    expect(host.textContent).toContain('Notes');
   });
 
   it('uses the requested card heading', () => {

@@ -281,13 +281,14 @@ export const StatCard = glimmer(
 );
 
 export const Timeline = glimmer(
-  `<ol class="wpl-timeline">{{#each this.items as |item|}}<li class="wpl-timeline-item"><time datetime={{item.time}}>{{item.time}}</time><strong>{{item.title}}</strong>{{#if item.meta}}<p class="wpl-muted">{{item.meta}}</p>{{/if}}</li>{{/each}}</ol>`,
+  `<ol class="wpl-timeline">{{#each this.items as |item|}}<li class="wpl-timeline-item"><strong>{{item.title}}</strong>{{#if item.dateTime}}<time datetime={{item.dateTime}}>{{item.time}}</time>{{else}}{{item.time}}{{/if}}{{#if item.meta}}<p class="wpl-muted">{{item.meta}}</p>{{/if}}</li>{{/each}}</ol>`,
   {
     getters: {
       items: (host) =>
-        list<{ id?: string; title?: string; time?: string; meta?: string }>(host.args.items).map((item) => ({
+        list<{ id?: string; title?: string; time?: string; dateTime?: string; meta?: string }>(host.args.items).map((item) => ({
           title: str(item.title, str(item.id)),
           time: str(item.time),
+          dateTime: str(item.dateTime),
           meta: str(item.meta),
         })),
     },

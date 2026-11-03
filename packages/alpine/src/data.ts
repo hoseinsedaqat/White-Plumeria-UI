@@ -220,11 +220,21 @@ export function Breadcrumb(config: Config = {}) {
 export function Timeline(config: Config = {}) {
   return {
     init(this: Magic) {
-      const items = list<{ id?: string; title: string; description?: string }>(config.items);
-      this.$el.replaceChildren(h('ol', { className: 'wpl-timeline' }, items.map((item) => h('li', {}, [
-        h('strong', { text: item.title }),
-        item.description ? h('p', { text: item.description }) : null,
-      ]))));
+      const items = list<{ id?: string; title?: string; time?: string; dateTime?: string; meta?: string }>(config.items);
+      this.$el.replaceChildren(h('ol', { className: 'wpl-timeline' }, items.map((item) => {
+        const time = text(item.time);
+        const dateTime = text(item.dateTime);
+        const meta = text(item.meta);
+        return h('li', { className: 'wpl-timeline-item' }, [
+          h('p', { className: 'wpl-timeline-title', text: text(item.title) }),
+          time || meta
+            ? h('p', { className: 'wpl-timeline-meta' }, [
+                dateTime ? h('time', { text: time, attrs: { datetime: dateTime } }) : time,
+                meta ? ` · ${meta}` : null,
+              ])
+            : null,
+        ]);
+      })));
     },
   };
 }
