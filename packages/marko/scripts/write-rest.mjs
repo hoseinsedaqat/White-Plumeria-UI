@@ -124,10 +124,20 @@ export interface Input { label?: string; }
   'wpl-skeleton.marko': `export interface Input { width?: string; }
 <span class="wpl-skeleton" aria-hidden="true" style=(input.width ? \`inline-size:\${input.width}\` : null)></span>
 `,
-  'wpl-progress.marko': `export interface Input { label?: string; value?: number; }
-<const/value=Math.min(100, Math.max(0, Number(input.value) || 0))>
-<div class="wpl-progress" role="progressbar" aria-label=input.label || "Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow=value>
-  <span class="wpl-progress-bar" style=\`inline-size:\${value}%\`></span>
+  'wpl-progress.marko': `export interface Input { label?: string; value?: number; max?: number; }
+<const/raw=input.value>
+<const/indeterminate=raw == null>
+<const/max=((input.max ?? 100) > 0 ? (input.max ?? 100) : 100)>
+<const/value=indeterminate ? undefined : Math.min(max, Math.max(0, Number(raw) || 0))>
+<div
+  class=(indeterminate ? "wpl-progress-track wpl-progress-indeterminate" : "wpl-progress-track")
+  role="progressbar"
+  aria-label=input.label || "Progress"
+  aria-valuemin="0"
+  aria-valuemax=max
+  aria-valuenow=(indeterminate ? null : value)
+>
+  <span class="wpl-progress-bar" style=(value == null ? null : \`inline-size:\${(value / max) * 100}%\`)></span>
 </div>
 `,
   'wpl-empty-state.marko': `export interface Input { title?: string; description?: string; content?: Marko.Body; }

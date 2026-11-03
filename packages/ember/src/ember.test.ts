@@ -27,6 +27,7 @@ import {
   FileUpload,
   Notification,
   Popover,
+  Progress,
   pushToast,
   Slider,
   Spinner,
@@ -538,6 +539,20 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('omits the current value while progress is indeterminate', async () => {
+    const waiting = mount(Progress, { label: 'Upload' });
+    await renderSettled();
+    const bar = waiting.querySelector('[role="progressbar"]');
+    expect(bar?.classList.contains('wpl-progress-indeterminate')).toBe(true);
+    expect(bar?.hasAttribute('aria-valuenow')).toBe(false);
+    const done = mount(Progress, { label: 'Upload', value: 40, max: 80 });
+    await renderSettled();
+    const known = done.querySelector('[role="progressbar"]');
+    expect(known?.getAttribute('aria-valuenow')).toBe('40');
+    expect(known?.getAttribute('aria-valuemax')).toBe('80');
+    expect(known?.querySelector('.wpl-progress-bar')?.getAttribute('style')).toContain('50%');
   });
 
   it('closes a popover from escape and an outside pointer', async () => {

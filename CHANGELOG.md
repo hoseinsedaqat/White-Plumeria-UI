@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Indeterminate progress omits `aria-valuenow`, in Alpine, Marko, and Ember. Packages are still not published.
 - A dialog and a modal return focus to the opener, in Marko and Ember. Escape closes them. Packages are still not published.
 - A popover names its panel and closes from Escape or an outside pointer, in Alpine, Marko, Ember, and Svelte. Packages are still not published.
 - A spinner without a label uses the page language. In Persian it says در حال بارگذاری, in Alpine, Marko, Ember, Vue, and Svelte. Packages are still not published.

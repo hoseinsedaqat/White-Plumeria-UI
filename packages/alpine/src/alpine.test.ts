@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Popover, Progress, Slider, Spinner, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -150,6 +150,20 @@ describe('Alpine adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('omits the current value while progress is indeterminate', () => {
+    const waiting = mount(Progress, { label: 'Upload' });
+    const bar = waiting.querySelector('[role="progressbar"]');
+    expect(bar?.classList.contains('wpl-progress-indeterminate')).toBe(true);
+    expect(bar?.hasAttribute('aria-valuenow')).toBe(false);
+    expect(bar?.getAttribute('aria-valuemin')).toBe('0');
+    expect(bar?.getAttribute('aria-valuemax')).toBe('100');
+    const done = mount(Progress, { label: 'Upload', value: 40, max: 80 });
+    const known = done.querySelector('[role="progressbar"]');
+    expect(known?.getAttribute('aria-valuenow')).toBe('40');
+    expect(known?.getAttribute('aria-valuemax')).toBe('80');
+    expect(known?.querySelector('.wpl-progress-bar')?.getAttribute('style')).toContain('50%');
   });
 
   it('closes a popover from escape and an outside pointer', () => {

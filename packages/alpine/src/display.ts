@@ -150,12 +150,26 @@ export function Link(config: Config = {}) {
 export function Progress(config: Config = {}) {
   return {
     init(this: Magic) {
-      const value = Math.min(100, Math.max(0, num(config.value, 0)));
+      const raw = config.value;
+      const indeterminate = raw == null || raw === '';
+      const max = num(config.max, 100);
+      const safeMax = max > 0 ? max : 100;
+      const value = indeterminate ? undefined : Math.min(safeMax, Math.max(0, num(raw, 0)));
       const label = text(config.label, 'Progress');
+      const attrs: Record<string, string | number> = {
+        role: 'progressbar',
+        'aria-label': label,
+        'aria-valuemin': 0,
+        'aria-valuemax': safeMax,
+      };
+      if (value !== undefined) attrs['aria-valuenow'] = value;
       this.$el.replaceChildren(h('div', {
-        className: 'wpl-progress',
-        attrs: { role: 'progressbar', 'aria-label': label, 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': value },
-      }, [h('span', { className: 'wpl-progress-bar', attrs: { style: `inline-size:${value}%` } })]));
+        className: indeterminate ? 'wpl-progress-track wpl-progress-indeterminate' : 'wpl-progress-track',
+        attrs,
+      }, [h('span', {
+        className: 'wpl-progress-bar',
+        attrs: value === undefined ? {} : { style: `inline-size:${(value / safeMax) * 100}%` },
+      })]));
     },
   };
 }
