@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -474,6 +474,23 @@ describe('Alpine adapter', () => {
     search.dispatchEvent(new Event('input', { bubbles: true }));
     expect(host.querySelector('.wpl-empty-title')?.textContent).toBe('Nothing to show yet');
     expect(host.querySelector('.wpl-empty-description')?.textContent).toBe('No matching results');
+  });
+
+  it('pages a data table and leaves the static table unfiltered', () => {
+    const rows = Array.from({ length: 9 }, (_, index) => ({ id: String(index), guest: `Guest ${index}` }));
+    const host = mount(DataTable, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    expect(host.querySelector('.wpl-pagination')?.getAttribute('aria-label')).toBe('Pagination');
+    expect(host.textContent).toContain('Page 1 of 2');
+    expect(host.querySelector('tbody')?.textContent).toContain('Guest 0');
+    expect(host.querySelector('tbody')?.textContent).not.toContain('Guest 8');
+    host.querySelector<HTMLButtonElement>('.wpl-pagination button:last-child')?.click();
+    expect(host.querySelector('[aria-current="page"]')?.textContent).toBe('2');
+    expect(host.querySelector('tbody')?.textContent).toContain('Guest 8');
+    expect(host.querySelector('tbody')?.textContent).not.toContain('Guest 0');
+    const plain = mount(Table, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    expect(plain.querySelector('input[type="search"]')).toBeNull();
+    expect(plain.querySelector('.wpl-pagination')).toBeNull();
+    expect(plain.querySelectorAll('tbody tr').length).toBe(9);
   });
 
   it('moves a carousel and a step', () => {

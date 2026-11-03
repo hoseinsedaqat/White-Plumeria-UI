@@ -10,6 +10,7 @@ import ChartContainer from './tags/wpl-chart-container.marko';
 import Button from './tags/wpl-button.marko';
 import Carousel from './tags/wpl-carousel.marko';
 import DataTable from './tags/wpl-data-table.marko';
+import Table from './tags/wpl-table.marko';
 import DateRange from './tags/wpl-date-range-picker.marko';
 import ContextMenu from './tags/wpl-context-menu.marko';
 import Dropdown from './tags/wpl-dropdown-menu.marko';
@@ -573,6 +574,24 @@ describe('Marko adapter', () => {
     await flush();
     expect(view.container.querySelector('[aria-sort="ascending"]')?.textContent).toContain('Guest');
     expect(first).toContain('Pine');
+  });
+
+  it('pages a data table and leaves the static table unfiltered', async () => {
+    const rows = Array.from({ length: 9 }, (_, index) => ({ id: String(index), guest: `Guest ${index}` }));
+    const view = await render(DataTable, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    expect(view.container.querySelector('.wpl-pagination')?.getAttribute('aria-label')).toBe('Pagination');
+    expect(view.container.textContent).toContain('Page 1 of 2');
+    expect(view.container.querySelector('tbody')?.textContent).toContain('Guest 0');
+    expect(view.container.querySelector('tbody')?.textContent).not.toContain('Guest 8');
+    view.container.querySelector<HTMLButtonElement>('.wpl-pagination button:last-child')?.click();
+    await flush();
+    expect(view.container.querySelector('[aria-current="page"]')?.textContent).toBe('2');
+    expect(view.container.querySelector('tbody')?.textContent).toContain('Guest 8');
+    expect(view.container.querySelector('tbody')?.textContent).not.toContain('Guest 0');
+    const plain = await render(Table, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    expect(plain.container.querySelector('input[type="search"]')).toBeNull();
+    expect(plain.container.querySelector('.wpl-pagination')).toBeNull();
+    expect(plain.container.querySelectorAll('tbody tr').length).toBe(9);
   });
 
   it('names an accordion panel from its trigger', async () => {

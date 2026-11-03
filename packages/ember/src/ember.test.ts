@@ -17,6 +17,7 @@ import {
   ChartContainer,
   components,
   DataTable,
+  Table,
   Dialog,
   Drawer,
   Modal,
@@ -556,6 +557,26 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(host.querySelector('[aria-sort="ascending"]')?.textContent).toContain('Guest');
     expect(first).toContain('Pine');
+  });
+
+  it('pages a data table and leaves the static table unfiltered', async () => {
+    const rows = Array.from({ length: 9 }, (_, index) => ({ id: String(index), guest: `Guest ${index}` }));
+    const host = mount(DataTable, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    await renderSettled();
+    expect(host.querySelector('.wpl-pagination')?.getAttribute('aria-label')).toBe('Pagination');
+    expect(host.textContent).toContain('Page 1 of 2');
+    expect(host.querySelector('tbody')?.textContent).toContain('Guest 0');
+    expect(host.querySelector('tbody')?.textContent).not.toContain('Guest 8');
+    host.querySelector<HTMLButtonElement>('.wpl-pagination button:last-child')?.click();
+    await renderSettled();
+    expect(host.querySelector('[aria-current="page"]')?.textContent).toBe('2');
+    expect(host.querySelector('tbody')?.textContent).toContain('Guest 8');
+    expect(host.querySelector('tbody')?.textContent).not.toContain('Guest 0');
+    const plain = mount(Table, { columns: [{ id: 'guest', header: 'Guest' }], rows });
+    await renderSettled();
+    expect(plain.querySelector('input[type="search"]')).toBeNull();
+    expect(plain.querySelector('.wpl-pagination')).toBeNull();
+    expect(plain.querySelectorAll('tbody tr').length).toBe(9);
   });
 
   it('names an accordion panel from its trigger', async () => {

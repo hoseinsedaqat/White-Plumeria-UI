@@ -1,6 +1,6 @@
-import { iconPaths, queryTable, toggleSort } from "@white-plumeria/core";
+import { formatNumber, iconPaths, queryTable, toggleSort } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
-import { text } from "../text.ts";
+import { activeLocale, text } from "../text.ts";
 import Search from "./wpl-search-input.marko";
 
 export interface Column {
@@ -29,7 +29,9 @@ static function cell(column: Column, row: Record<string, unknown>): string {
 <let/sortId="">
 <let/direction="asc">
 <let/filter="">
+<let/page=1>
 <const/columns=input.columns ?? []>
+<const/pageSize=(input.pageSize === undefined ? 8 : input.pageSize || undefined)>
 <const/specs=columns.map((column) => ({
   id: column.id,
   header: column.header,
@@ -40,14 +42,15 @@ static function cell(column: Column, row: Record<string, unknown>): string {
   sortId: sortId || undefined,
   sortDirection: direction === "desc" ? "desc" : "asc",
   filter,
-  page: 1,
-  pageSize: input.pageSize || undefined,
+  page,
+  pageSize,
 })>
+<const/pages=Array.from({ length: result.pageCount }, (_, index) => index + 1).filter((item) => item === 1 || item === result.pageCount || Math.abs(item - result.page) <= 1)>
 
 <div/host class="wpl-data-table">
   <div class="wpl-table-toolbar">
     <if=(input.filterable !== false)>
-      <Search label=text("search") onChange=(value) => { filter = value; }/>
+      <Search label=text("search") onChange=(value) => { filter = value; page = 1; }/>
     </if>
     <label class="wpl-sort-field">
       <span class="wpl-sr-only">${text("sort")}</span>
@@ -115,4 +118,23 @@ static function cell(column: Column, row: Record<string, unknown>): string {
       </tbody>
     </table>
   </div>
+  <if=pageSize>
+    <div class="wpl-flex wpl-flex-between">
+      <span class="wpl-muted">${text("page")} ${formatNumber(result.page, activeLocale())} ${text("of")} ${formatNumber(result.pageCount, activeLocale())}</span>
+      <nav class="wpl-pagination" aria-label=text("pagination")>
+        <button type="button" class="wpl-page" disabled=(result.page <= 1) onClick() { page = Math.max(1, page - 1); }>
+          <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronLeft/></svg>
+          <span class="wpl-sr-only">${text("previous")}</span>
+        </button>
+        <for|item, index| of=pages>
+          <if=(index > 0 && item - (pages[index - 1] ?? item) > 1)><span aria-hidden="true">…</span></if>
+          <button type="button" class="wpl-page" aria-current=(item === result.page ? "page" : null) onClick() { page = item; }>${item}</button>
+        </for>
+        <button type="button" class="wpl-page" disabled=(result.page >= result.pageCount) onClick() { page = Math.min(result.pageCount, page + 1); }>
+          <svg class="wpl-icon wpl-icon-dir" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=iconPaths.chevronRight/></svg>
+          <span class="wpl-sr-only">${text("next")}</span>
+        </button>
+      </nav>
+    </div>
+  </if>
 </div>
