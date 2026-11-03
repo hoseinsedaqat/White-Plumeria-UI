@@ -1,5 +1,5 @@
-import { containerClassName, gridClassName, readingDirection, splitSizeStep, stackClassName } from '@white-plumeria/core';
-import { bubble, flag, glimmer, list, num, str, type Host } from './runtime.ts';
+import { containerClassName, createId, gridClassName, iconButtonClassName, message, readingDirection, splitSizeStep, stackClassName } from '@white-plumeria/core';
+import { bubble, flag, glimmer, list, localeOf, num, str, type Host } from './runtime.ts';
 
 interface NavItem {
   href?: string;
@@ -56,15 +56,22 @@ function links(value: unknown) {
 }
 
 export const Navbar = glimmer(
-  `<header class="wpl-navbar"><a class="wpl-navbar-brand" href={{this.href}}>{{this.brand}}</a><button type="button" class="wpl-navbar-toggle" aria-expanded={{this.expanded}} aria-controls="wpl-nav-menu" {{on "click" this.toggle}}>Menu</button><nav class="wpl-nav-menu" id="wpl-nav-menu" hidden={{this.closed}}>{{#each this.items as |item|}}<a class="wpl-nav-link" href={{item.href}} aria-current={{item.current}}>{{item.label}}</a>{{/each}}</nav></header>`,
+  `<header class="wpl-navbar" {{flagAttr "data-open" this.open}}><a class="wpl-navbar-brand" href={{this.href}}>{{this.brand}}</a><button type="button" class={{this.toggleClass}} aria-label={{this.toggleLabel}} aria-expanded={{this.expanded}} aria-controls={{this.menuId}} {{on "click" this.toggle}}>☰</button><nav class="wpl-nav-menu" id={{this.menuId}}>{{#each this.items as |item|}}<a class="wpl-nav-link" href={{item.href}} aria-current={{item.current}}>{{item.label}}</a>{{/each}}</nav></header>`,
   {
-    state: () => ({ open: false }),
+    state: () => ({ open: false, menuId: createId('nav') }),
     getters: {
       brand: (host) => str(host.args.brand, 'White Plumeria'),
       href: (host) => str(host.args.href, '/'),
       items: (host) => links(host.args.items),
+      menuId: (host) => str(host.state.menuId),
+      open: (host) => Boolean(host.state.open),
       expanded: (host) => (host.state.open ? 'true' : 'false'),
-      closed: (host) => !host.state.open,
+      toggleClass: () => `${iconButtonClassName({ variant: 'ghost' })} wpl-navbar-toggle`,
+      toggleLabel: (host) =>
+        message(
+          localeOf(typeof document === 'undefined' ? null : document.body),
+          host.state.open ? 'closeMenu' : 'openMenu',
+        ),
     },
     methods: {
       toggle() {

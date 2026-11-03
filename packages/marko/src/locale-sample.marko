@@ -2,6 +2,7 @@ import Chart from "./tags/wpl-chart.marko";
 import DateRange from "./tags/wpl-date-range-picker.marko";
 import Dialog from "./tags/wpl-dialog.marko";
 import Dropdown from "./tags/wpl-dropdown-menu.marko";
+import Navbar from "./tags/wpl-navbar.marko";
 import Pagination from "./tags/wpl-pagination.marko";
 import Password from "./tags/wpl-password-field.marko";
 import Provider from "./tags/wpl-provider.marko";
@@ -16,6 +17,7 @@ import Steps from "./tags/wpl-steps.marko";
   <DateRange label="اقامت" start="2026-10-12" end="2026-10-20"/>
   <Dialog title="Sample"/>
   <Dropdown/>
+  <Navbar brand="White Plumeria" items=[{ href: "#docs", label: "Docs" }]/>
   <Pagination page=1 pageCount=3/>
   <Password/>
   <Rating label="کیفیت" value=3 readOnly=true/>

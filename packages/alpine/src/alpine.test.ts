@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Navbar, Notification, Pagination, PasswordField, Popover, Progress, RangeSlider, Rating, Slider, Spinner, SplitPane, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -225,6 +225,26 @@ describe('Alpine adapter', () => {
     const field = mount(Rating, { label: 'Quality', value: 2 });
     expect(field.querySelector('fieldset')).not.toBeNull();
     expect(field.querySelector('.wpl-sr-only')?.textContent).toBe('1 of 5');
+  });
+
+  it('names the navbar toggle in the page language', () => {
+    const host = mount(Navbar, { brand: 'White Plumeria', items: [{ href: '#docs', label: 'Docs' }] });
+    const toggle = host.querySelector('.wpl-navbar-toggle');
+    const nav = host.querySelector('nav');
+    expect(toggle?.getAttribute('aria-label')).toBe('Open menu');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('false');
+    expect(toggle?.getAttribute('aria-controls')).toBe(nav?.id);
+    expect(nav?.hasAttribute('hidden')).toBe(false);
+    toggle?.click();
+    expect(toggle?.getAttribute('aria-label')).toBe('Close menu');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('true');
+    expect(host.hasAttribute('data-open')).toBe(true);
+    const provider = mount(WhitePlumeriaProvider, { persist: false, locale: 'fa' });
+    const nested = document.createElement('div');
+    provider.append(nested);
+    const data = Navbar({ brand: 'White Plumeria' });
+    data.init?.call({ ...data, ...magicFor(nested) });
+    expect(nested.querySelector('.wpl-navbar-toggle')?.getAttribute('aria-label')).toBe('باز کردن منو');
   });
 
   it('names the password reveal button in the provider language', () => {

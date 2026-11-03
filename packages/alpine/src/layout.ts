@@ -1,13 +1,14 @@
 import {
   containerClassName,
   gridClassName,
+  iconButtonClassName,
   splitSizeStep,
   stackClassName,
   type ContainerSize,
   type GridColumns,
   type StackGap,
 } from '@white-plumeria/core';
-import { h, list, num, oneOf, text, type Config, type Magic } from './runtime.ts';
+import { h, list, num, oneOf, text, translate, uid, type Config, type Magic } from './runtime.ts';
 
 const gaps = ['sm', 'md', 'lg'] as const;
 const containers = ['sm', 'md', 'lg', 'xl'] as const;
@@ -66,17 +67,23 @@ export function Navbar(config: Config = {}) {
   return {
     init(this: Magic) {
       const items = list<NavItem>(config.items);
-      const menuId = 'wpl-nav-menu';
+      const menuId = uid('nav');
       let open = false;
       const menu = h('nav', { className: 'wpl-nav-menu', attrs: { id: menuId } }, links(items, 'wpl-nav-link'));
       const toggle = h('button', {
-        className: 'wpl-navbar-toggle',
-        text: 'Menu',
-        attrs: { type: 'button', 'aria-expanded': 'false', 'aria-controls': menuId },
+        className: `${iconButtonClassName({ variant: 'ghost' })} wpl-navbar-toggle`,
+        text: '☰',
+        attrs: {
+          type: 'button',
+          'aria-label': translate(this.$el, 'openMenu'),
+          'aria-expanded': 'false',
+          'aria-controls': menuId,
+        },
         on: {
           click: () => {
             open = !open;
             toggle.setAttribute('aria-expanded', String(open));
+            toggle.setAttribute('aria-label', translate(this.$el, open ? 'closeMenu' : 'openMenu'));
             this.$el.toggleAttribute('data-open', open);
           },
         },
