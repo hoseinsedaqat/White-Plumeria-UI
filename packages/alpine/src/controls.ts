@@ -597,11 +597,20 @@ export function OtpField(config: Config = {}) {
       const numeric = config.numeric !== false;
       let value = text(config.value);
       const cells: HTMLInputElement[] = [];
+      const labelId = uid('otp');
+      const label = text(config.label, 'Code');
+      const cellName = (index: number) => {
+        const locale = localeOf(this.$el);
+        return `${translate(this.$el, 'character')} ${formatNumber(index + 1, locale)} ${translate(this.$el, 'of')} ${formatNumber(length, locale)}`;
+      };
+      const focusAt = (index: number) => cells[Math.min(length - 1, Math.max(0, index))]?.focus();
+      const hidden = config.name ? h('input', { attrs: { type: 'hidden', name: text(config.name) } }) : null;
       const paint = () => {
         const parts = otpCells(value, length, numeric);
         cells.forEach((cell, index) => {
           cell.value = parts[index] ?? '';
         });
+        if (hidden) hidden.value = value;
       };
       for (let index = 0; index < length; index += 1) {
         const cell = h('input', {
@@ -610,7 +619,8 @@ export function OtpField(config: Config = {}) {
             type: numeric ? 'text' : 'text',
             inputmode: numeric ? 'numeric' : 'text',
             maxlength: 1,
-            'aria-label': `${text(config.label, 'Code')} ${index + 1}`,
+            autocomplete: index === 0 ? 'one-time-code' : 'off',
+            'aria-label': cellName(index),
           },
           on: {
             input: (event) => {
@@ -618,16 +628,32 @@ export function OtpField(config: Config = {}) {
               const next = otpApply(value, length, numeric, index, incoming);
               value = next.value;
               paint();
-              cells[next.focus]?.focus();
+              focusAt(next.focus);
+              emit(this, 'wpl-change', { value });
+            },
+            paste: (event) => {
+              event.preventDefault();
+              const record = event as Event & { clipboardData?: { getData: (type: string) => string } };
+              const incoming = record.clipboardData?.getData('text') ?? '';
+              const next = otpApply(value, length, numeric, index, incoming);
+              value = next.value;
+              paint();
+              focusAt(next.focus);
               emit(this, 'wpl-change', { value });
             },
             keydown: (event) => {
-              if ((event as KeyboardEvent).key !== 'Backspace') return;
+              const key = (event as KeyboardEvent).key;
+              if (key === 'ArrowRight' || key === 'ArrowLeft') {
+                event.preventDefault();
+                focusAt(index + (key === 'ArrowRight' ? 1 : -1));
+                return;
+              }
+              if (key !== 'Backspace') return;
               event.preventDefault();
               const next = otpDelete(value, length, numeric, index);
               value = next.value;
               paint();
-              cells[next.focus]?.focus();
+              focusAt(next.focus);
               emit(this, 'wpl-change', { value });
             },
           },
@@ -637,8 +663,9 @@ export function OtpField(config: Config = {}) {
       paint();
       this.$el.replaceChildren(
         h('div', { className: fieldClassName() }, [
-          h('span', { className: 'wpl-label', text: text(config.label, 'Code') }),
-          h('div', { className: 'wpl-otp' }, cells),
+          h('span', { className: 'wpl-label', attrs: { id: labelId }, text: label }),
+          h('div', { className: 'wpl-otp', attrs: { role: 'group', 'aria-labelledby': labelId } }, cells),
+          hidden,
         ]),
       );
     },

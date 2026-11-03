@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -337,6 +337,23 @@ describe('Alpine adapter', () => {
     expect(input?.getAttribute('type')).toBe('text');
     expect(reveal?.getAttribute('aria-pressed')).toBe('true');
     expect(reveal?.getAttribute('aria-label')).toBe('پنهان کردن رمز');
+  });
+
+  it('names an otp cell and fills a pasted code', () => {
+    const host = mount(OtpField, { label: 'Verification code', length: 4, name: 'code' });
+    const cells = [...host.querySelectorAll<HTMLInputElement>('input.wpl-otp-cell')];
+    expect(host.querySelector('.wpl-label')?.textContent).toBe('Verification code');
+    expect(host.querySelector('.wpl-otp')?.getAttribute('role')).toBe('group');
+    expect(cells[0]?.getAttribute('aria-label')).toBe('Character 1 of 4');
+    expect(cells[0]?.getAttribute('autocomplete')).toBe('one-time-code');
+    cells[0]?.dispatchEvent(Object.assign(new Event('paste', { bubbles: true, cancelable: true }), { clipboardData: { getData: () => '12ab' } }));
+    expect(cells[0]?.value).toBe('1');
+    expect(cells[1]?.value).toBe('2');
+    expect(cells[2]?.value).toBe('');
+    expect(host.querySelector<HTMLInputElement>('input[name="code"]')?.value).toBe('12');
+    cells[0]?.focus();
+    cells[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(document.activeElement).toBe(cells[1]);
   });
 
   it('waits to show a tooltip and dismisses it with escape', async () => {

@@ -30,6 +30,7 @@ import {
   Input,
   FileUpload,
   Notification,
+  OtpField,
   Popover,
   Progress,
   RadioGroup,
@@ -579,6 +580,24 @@ describe('Ember adapter', () => {
     expect(plain.querySelector('input[type="search"]')).toBeNull();
     expect(plain.querySelector('.wpl-pagination')).toBeNull();
     expect(plain.querySelectorAll('tbody tr').length).toBe(9);
+  });
+
+  it('names an otp cell and fills a pasted code', async () => {
+    const host = mount(OtpField, { label: 'Verification code', length: 4, name: 'code' });
+    await renderSettled();
+    const cells = [...host.querySelectorAll<HTMLInputElement>('input.wpl-otp-cell')];
+    expect(host.querySelector('.wpl-label')?.textContent).toBe('Verification code');
+    expect(host.querySelector('.wpl-otp')?.getAttribute('role')).toBe('group');
+    expect(cells[0]?.getAttribute('aria-label')).toBe('Character 1 of 4');
+    cells[0]?.dispatchEvent(Object.assign(new Event('paste', { bubbles: true, cancelable: true }), { clipboardData: { getData: () => '12ab' } }));
+    await renderSettled();
+    const filled = [...host.querySelectorAll<HTMLInputElement>('input.wpl-otp-cell')];
+    expect(filled[0]?.value).toBe('1');
+    expect(filled[1]?.value).toBe('2');
+    expect(host.querySelector<HTMLInputElement>('input[name="code"]')?.value).toBe('12');
+    filled[0]?.focus();
+    filled[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(document.activeElement).toBe(filled[1]);
   });
 
   it('names an accordion panel from its trigger', async () => {
