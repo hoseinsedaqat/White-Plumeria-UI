@@ -915,6 +915,13 @@ describe('Marko adapter', () => {
     expect(fallback.container.querySelector('h2.wpl-card-title')?.textContent).toBe('Overview');
   });
 
+  it('renders a card description without inventing a title', async () => {
+    const view = await render(Card, { description: 'Overview of recent activity' });
+    expect(view.container.querySelector('section.wpl-card header.wpl-card-header')).not.toBeNull();
+    expect(view.container.querySelector('.wpl-card-description')?.textContent).toBe('Overview of recent activity');
+    expect(view.container.querySelector('h1, h2, h3, h4')).toBeNull();
+  });
+
   it('names the active combobox option and chooses it from the keyboard', async () => {
     const chosen: unknown[] = [];
     const view = await render(Combobox, {

@@ -3,11 +3,17 @@ import { oneOf } from "../emit.ts";
 export interface Input { title?: string; description?: string; titleAs?: "h1" | "h2" | "h3" | "h4"; content?: Marko.Body; }
 static const headings = ["h1", "h2", "h3", "h4"] as const;
 <const/heading=oneOf(input.titleAs, headings, "h2")>
-<article class=cardClassName()>
-  <if=(heading === "h1")><h1 class="wpl-card-title">${input.title || "Card"}</h1></if>
-  <else if=(heading === "h3")><h3 class="wpl-card-title">${input.title || "Card"}</h3></else>
-  <else if=(heading === "h4")><h4 class="wpl-card-title">${input.title || "Card"}</h4></else>
-  <else><h2 class="wpl-card-title">${input.title || "Card"}</h2></else>
-  <if=input.description><p>${input.description}</p></if>
-  <${input.content}/>
-</article>
+<section class=cardClassName()>
+  <if=(input.title || input.description)>
+    <header class="wpl-card-header">
+      <if=input.title>
+        <if=(heading === "h1")><h1 class="wpl-card-title">${input.title}</h1></if>
+        <else if=(heading === "h3")><h3 class="wpl-card-title">${input.title}</h3></else>
+        <else if=(heading === "h4")><h4 class="wpl-card-title">${input.title}</h4></else>
+        <else><h2 class="wpl-card-title">${input.title}</h2></else>
+      </if>
+      <if=input.description><p class="wpl-card-description">${input.description}</p></if>
+    </header>
+  </if>
+  <if=input.content><div class="wpl-card-body"><${input.content}/></div></if>
+</section>

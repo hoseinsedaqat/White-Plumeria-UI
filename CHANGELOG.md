@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A card keeps its description in the catalog description class in Alpine, Marko, and Ember. Packages are still not published.
 - A list shows the catalog title, description, and trailing meta in Alpine, Marko, and Ember. Packages are still not published.
 - A stat card uses the card and hint classes in Alpine, Marko, and Ember. Packages are still not published.
 - A file drop zone accepts a dropped file in Marko and Ember. Packages are still not published.
