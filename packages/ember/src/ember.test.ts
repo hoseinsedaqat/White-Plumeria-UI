@@ -458,6 +458,8 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(menu.querySelector('button')?.textContent).toBe('باز کردن منو');
     expect(search.querySelector('input')?.getAttribute('aria-label')).toBe('جستجو');
+    expect(search.querySelector('label.wpl-label')?.textContent).toBe('جستجو');
+    expect(search.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(false);
     expect(search.querySelector('input')?.getAttribute('placeholder')).toBe('جستجو');
     expect(steps.querySelector('.wpl-steps')?.getAttribute('aria-label')).toBe('مراحل');
     document.documentElement.lang = '';
@@ -1044,5 +1046,20 @@ describe('Ember adapter', () => {
     expect(host.querySelector('section.wpl-card header.wpl-card-header')).not.toBeNull();
     expect(host.querySelector('.wpl-card-description')?.textContent).toBe('Overview of recent activity');
     expect(host.querySelector('h1, h2, h3, h4')).toBeNull();
+  });
+
+  it('shows a search label and reports Enter', async () => {
+    const searches: unknown[] = [];
+    const host = mount(SearchInput, { label: 'Search docs', value: 'Button' });
+    host.addEventListener('wpl-search', (event) => searches.push((event as CustomEvent).detail));
+    await renderSettled();
+    const label = host.querySelector('label');
+    expect(label?.textContent).toBe('Search docs');
+    expect(label?.classList.contains('wpl-sr-only')).toBe(false);
+    host.querySelector('input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(searches).toEqual([{ value: 'Button' }]);
+    const hidden = mount(SearchInput, { label: 'Search docs', visuallyHiddenLabel: true });
+    await renderSettled();
+    expect(hidden.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(true);
   });
 });

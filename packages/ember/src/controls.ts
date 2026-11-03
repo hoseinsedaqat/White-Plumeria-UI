@@ -425,12 +425,13 @@ function fieldGlyph(name: 'search' | 'close'): string {
 }
 
 export const SearchInput = glimmer(
-  `<div class="wpl-search"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${fieldGlyph('search')}</span><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.value}} placeholder={{this.placeholder}} aria-label={{this.label}} {{on "input" this.commit}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clear}}>${fieldGlyph('close')}</button>{{/if}}</div></div>`,
+  `<div class="wpl-search"><label class={{this.labelClass}} for={{this.fieldId}}>{{this.label}}</label><div class="wpl-search-control"><span class="wpl-search-icon" aria-hidden="true">${fieldGlyph('search')}</span><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.value}} placeholder={{this.placeholder}} aria-label={{this.label}} {{on "input" this.commit}} {{on "keydown" this.onKey}} />{{#if this.hasQuery}}<button type="button" class="wpl-icon-btn wpl-icon-btn-sm wpl-btn-ghost wpl-search-clear" aria-label={{this.clearLabel}} {{on "click" this.clear}}>${fieldGlyph('close')}</button>{{/if}}</div></div>`,
   {
     state: (args) => ({ value: str(args.value), fieldId: createId('search') }),
     getters: {
       label: (host) =>
         str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'search')),
+      labelClass: (host) => (flag(host.args.visuallyHiddenLabel) ? 'wpl-label wpl-sr-only' : 'wpl-label'),
       placeholder: (host) =>
         str(host.args.placeholder, message(localeOf(typeof document === 'undefined' ? null : document.body), 'search')),
       fieldId: (host) => str(host.state.fieldId),
@@ -453,6 +454,11 @@ export const SearchInput = glimmer(
       clear(event) {
         this.state.value = '';
         bubble(event as Event, 'wpl-change', { value: '' });
+      },
+      onKey(event) {
+        if (!(event instanceof KeyboardEvent) || event.key !== 'Enter') return;
+        const value = event.target instanceof HTMLInputElement ? event.target.value : str(this.state.value);
+        bubble(event, 'wpl-search', { value });
       },
     },
   },

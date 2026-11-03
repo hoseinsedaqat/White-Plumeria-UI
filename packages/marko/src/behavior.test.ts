@@ -46,6 +46,7 @@ import Popover from './tags/wpl-popover.marko';
 import Progress from './tags/wpl-progress.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Password from './tags/wpl-password-field.marko';
+import SearchInput from './tags/wpl-search-input.marko';
 import OtpField from './tags/wpl-otp-field.marko';
 import Rating from './tags/wpl-rating.marko';
 import RangeSlider from './tags/wpl-range-slider.marko';
@@ -920,6 +921,19 @@ describe('Marko adapter', () => {
     expect(view.container.querySelector('section.wpl-card header.wpl-card-header')).not.toBeNull();
     expect(view.container.querySelector('.wpl-card-description')?.textContent).toBe('Overview of recent activity');
     expect(view.container.querySelector('h1, h2, h3, h4')).toBeNull();
+  });
+
+  it('shows a search label and reports Enter', async () => {
+    const searches: unknown[] = [];
+    const view = await render(SearchInput, { label: 'Search docs', value: 'Button' });
+    view.container.addEventListener('wpl-search', (event) => searches.push((event as CustomEvent).detail));
+    const label = view.container.querySelector('label');
+    expect(label?.textContent).toBe('Search docs');
+    expect(label?.classList.contains('wpl-sr-only')).toBe(false);
+    view.container.querySelector('input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(searches).toEqual([{ value: 'Button' }]);
+    const hidden = await render(SearchInput, { label: 'Search docs', visuallyHiddenLabel: true });
+    expect(hidden.container.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(true);
   });
 
   it('names the active combobox option and chooses it from the keyboard', async () => {

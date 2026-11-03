@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, SearchInput, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -776,6 +776,20 @@ describe('Alpine adapter', () => {
     expect(host.querySelector('section.wpl-card header.wpl-card-header')).not.toBeNull();
     expect(host.querySelector('.wpl-card-description')?.textContent).toBe('Overview of recent activity');
     expect(host.querySelector('h1, h2, h3, h4')).toBeNull();
+  });
+
+  it('shows a search label and reports Enter', () => {
+    const searches: unknown[] = [];
+    const host = mount(SearchInput, { label: 'Search docs', value: 'Button' });
+    host.addEventListener('wpl-search', (event) => searches.push((event as CustomEvent).detail));
+    const label = host.querySelector('label');
+    expect(label?.textContent).toBe('Search docs');
+    expect(label?.classList.contains('wpl-sr-only')).toBe(false);
+    const input = host.querySelector('input');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(searches).toEqual([{ value: 'Button' }]);
+    const hidden = mount(SearchInput, { label: 'Search docs', visuallyHiddenLabel: true });
+    expect(hidden.querySelector('label')?.classList.contains('wpl-sr-only')).toBe(true);
   });
 
   it('names the active combobox option and chooses it from the keyboard', () => {
