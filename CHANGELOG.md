@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A navigation menu is a nav and a list in Alpine, Marko, and Ember. Packages are still not published.
 - A spinner uses the requested size in Alpine, Marko, Svelte, and custom elements. Packages are still not published.
 - A skeleton uses the requested height, defaulting to 1rem, in Alpine and Marko. Packages are still not published.
 - A tree expands nested branches in Marko and Ember. Packages are still not published.

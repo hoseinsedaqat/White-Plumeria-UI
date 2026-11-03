@@ -92,7 +92,7 @@ export const Sidebar = glimmer(
 );
 
 export const NavigationMenu = glimmer(
-  `<nav class="wpl-nav-menu" aria-label={{this.label}}>{{#each this.items as |item|}}<a class="wpl-nav-link" href={{item.href}} aria-current={{item.current}}>{{item.label}}</a>{{/each}}</nav>`,
+  `<nav aria-label={{this.label}}><ul class="wpl-nav-menu">{{#each this.items as |item|}}<li><a class="wpl-nav-link" href={{item.href}} aria-current={{item.current}}>{{item.label}}</a></li>{{/each}}</ul></nav>`,
   {
     getters: {
       label: (host) => str(host.args.label, 'Navigation'),

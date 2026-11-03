@@ -111,7 +111,23 @@ export function NavigationMenu(config: Config = {}) {
   return {
     init(this: Magic) {
       const items = list<NavItem>(config.items);
-      this.$el.replaceChildren(h('nav', { className: 'wpl-nav-menu', attrs: { 'aria-label': text(config.label, 'Navigation') } }, links(items, 'wpl-nav-link')));
+      this.$el.replaceChildren(
+        h('nav', { attrs: { 'aria-label': text(config.label, 'Navigation') } }, [
+          h(
+            'ul',
+            { className: 'wpl-nav-menu' },
+            items.map((item) =>
+              h('li', {}, [
+                h('a', {
+                  className: 'wpl-nav-link',
+                  text: item.label,
+                  attrs: { href: item.href || '#', 'aria-current': item.current ? 'page' : undefined },
+                }),
+              ]),
+            ),
+          ),
+        ]),
+      );
     },
   };
 }
