@@ -394,12 +394,10 @@ export function RadioGroup(config: Config = {}) {
       let value = text(config.value);
       const options = list<Option>(config.options);
       const group = h(
-        'div',
-        { attrs: { role: 'radiogroup', 'aria-label': text(config.label, 'Options') } },
+        'fieldset',
+        { className: 'wpl-field' },
         [
-          text(config.label)
-            ? h('span', { className: 'wpl-label', text: text(config.label) })
-            : null,
+          h('legend', { className: 'wpl-label', text: text(config.label, 'Choose one') }),
           ...options.map((option) => {
             const input = h('input', {
               attrs: {

@@ -259,11 +259,11 @@ export const Switch = glimmer(
 );
 
 export const RadioGroup = glimmer(
-  `<div class="wpl-field" role="radiogroup" aria-label={{this.label}}><span class="wpl-label">{{this.label}}</span>{{#each this.options as |option|}}<label class="wpl-radio"><input type="radio" name={{this.group}} value={{option.value}} checked={{option.checked}} disabled={{this.disabled}} {{on "change" this.commit}} /><span>{{option.label}}</span></label>{{/each}}</div>`,
+  `<fieldset class="wpl-field"><legend class="wpl-label">{{this.label}}</legend>{{#each this.options as |option|}}<label class="wpl-radio"><input type="radio" name={{this.group}} value={{option.value}} checked={{option.checked}} disabled={{this.disabled}} {{on "change" this.commit}} /><span>{{option.label}}</span></label>{{/each}}</fieldset>`,
   {
     state: (args) => ({ value: str(args.value), group: str(args.name, createId('radio')) }),
     getters: {
-      label: (host) => str(host.args.label, 'Options'),
+      label: (host) => str(host.args.label, 'Choose one'),
       group: (host) => str(host.state.group),
       disabled: (host) => flag(host.args.disabled),
       options(this: Host) {
