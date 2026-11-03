@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- A command palette names the active command and chooses it from the arrow keys, in Alpine, Marko, and Ember. A keyword filters the list, and an empty list says there are no results. Packages are still not published.
 - A menu names the active item and chooses it from the keyboard, in Alpine, Marko, and Ember. Arrow keys open a submenu in the writing direction. A context menu does the same. Packages are still not published.
 - Ember dialog, modal, and drawer close buttons follow the page language. In Persian they say بستن. Packages are still not published.
 - A combobox names the active option and chooses it from the arrow keys, in Alpine, Marko, and Ember. Vue and Svelte name that option too. A disabled option is not chosen. Packages are still not published.

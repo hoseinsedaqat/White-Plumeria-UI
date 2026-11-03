@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, DataTable, DatePicker, DateRangePicker, DropdownMenu, FileUpload, FormField, Label, Link, Notification, Pagination, Slider, SplitPane, Tabs, Timeline, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -150,6 +150,29 @@ describe('Alpine adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the active command and chooses it from the keyboard', () => {
+    const chosen: unknown[] = [];
+    const host = mount(CommandPalette, {
+      commands: [
+        { id: 'docs', label: 'Open docs', group: 'Navigate' },
+        { id: 'theme', label: 'Switch theme', keywords: ['dark'] },
+      ],
+    });
+    host.addEventListener('wpl-select', (event) => chosen.push((event as CustomEvent).detail));
+    const input = host.querySelector<HTMLInputElement>('[role="combobox"]');
+    expect(input?.getAttribute('aria-controls')).toBe(host.querySelector('[role="listbox"]')?.id);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    const active = host.querySelector('[data-active="true"]');
+    expect(active?.textContent).toContain('Switch theme');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(chosen).toEqual([{ id: 'theme' }]);
+    if (input) input.value = 'dark';
+    input?.dispatchEvent(new Event('input'));
+    expect(host.querySelectorAll('[role="option"]').length).toBe(1);
+    expect(host.querySelector('[role="option"]')?.textContent).toContain('Switch theme');
   });
 
   it('names the active menu item and opens its submenu from the keyboard', () => {

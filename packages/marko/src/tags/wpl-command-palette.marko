@@ -1,10 +1,13 @@
+import { nextIndex } from "@white-plumeria/core";
 import { emit } from "../emit.ts";
+import { text } from "../text.ts";
 
 export interface CommandItem {
   id: string;
   label: string;
   group?: string;
   keywords?: string[];
+  disabled?: boolean;
 }
 
 export interface Input {
@@ -17,39 +20,81 @@ export interface Input {
 
 <let/open=Boolean(input.open)>
 <let/query="">
-<const/commands=(input.commands ?? []).filter((item) => {
-  const haystack = [item.label, item.group, ...(item.keywords ?? [])].join(" ").toLowerCase();
-  return haystack.includes(query.trim().toLowerCase());
-})>
+<let/active=0>
+<const/commands=(() => {
+  const needle = query.trim().toLowerCase();
+  return (input.commands ?? []).filter((item) => {
+    if (item.disabled) return false;
+    if (!needle) return true;
+    return [item.label, item.group, ...(item.keywords ?? [])].join(" ").toLowerCase().includes(needle);
+  });
+})()>
+<id/listId/>
 
 <div/host class="wpl-command-host">
-  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = true; input.onOpenChange?.(true); }>${input.label || "Commands"}</button>
-  <div class="wpl-command" role="dialog" aria-label=input.label || "Commands" hidden=!open>
+  <button type="button" class="wpl-btn wpl-btn-secondary" onClick() { open = true; input.onOpenChange?.(true); }>${input.label || text("command")}</button>
+  <div class="wpl-command" role="dialog" aria-label=input.label || text("command") hidden=!open>
     <input
       class="wpl-input wpl-command-input"
       type="search"
-      placeholder="Search commands"
+      role="combobox"
+      aria-expanded="true"
+      aria-controls=listId
+      aria-autocomplete="list"
+      aria-activedescendant=(commands[active] ? `${listId}-${active}` : null)
+      placeholder=text("search")
+      aria-label=text("search")
       value=query
-      valueChange(next) { query = String(next); }
-      aria-label="Search commands"
+      valueChange(next) {
+        query = String(next);
+        active = 0;
+      }
+      onKeyDown(event) {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+          event.preventDefault();
+          const next = nextIndex(active, commands.length, event.key, "vertical");
+          if (next !== null) active = next;
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          const item = commands[active];
+          if (!item) return;
+          emit(host(), "wpl-select", { id: item.id });
+          input.onSelect?.({ id: item.id });
+          open = false;
+          input.onOpenChange?.(false);
+        } else if (event.key === "Escape") {
+          open = false;
+          input.onOpenChange?.(false);
+        }
+      }
     >
-    <ul class="wpl-command-list" role="listbox">
-      <for|item| of=commands>
-        <li>
-          <button
-            type="button"
-            class="wpl-menu-item"
-            role="option"
-            onClick() {
-              emit(host(), "wpl-select", { id: item.id });
-              input.onSelect?.({ id: item.id });
-              open = false;
-              input.onOpenChange?.(false);
-            }
-          >${item.label}</button>
-        </li>
-      </for>
+    <ul id=listId class="wpl-command-list" role="listbox">
+      <if=commands.length>
+        <for|item, index| of=commands>
+          <li>
+            <button
+              type="button"
+              id=`${listId}-${index}`
+              class="wpl-menu-item"
+              role="option"
+              aria-selected=String(index === active)
+              data-active=(index === active ? "true" : null)
+              onClick() {
+                emit(host(), "wpl-select", { id: item.id });
+                input.onSelect?.({ id: item.id });
+                open = false;
+                input.onOpenChange?.(false);
+              }
+            >
+              ${item.label}
+              <if=item.group><span class="wpl-menu-shortcut">${item.group}</span></if>
+            </button>
+          </li>
+        </for>
+      </if>
+      <else>
+        <li class="wpl-muted">${text("noResults")}</li>
+      </else>
     </ul>
-    <if=!commands.length><p class="wpl-muted">No matching results</p></if>
   </div>
 </div>
