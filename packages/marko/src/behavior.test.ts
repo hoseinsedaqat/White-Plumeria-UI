@@ -25,6 +25,7 @@ import DatePicker from './tags/wpl-date-picker.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Tabs from './tags/wpl-tabs.marko';
+import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
 
 const templates = import.meta.glob('./tags/wpl-*.marko', { eager: true });
@@ -449,6 +450,22 @@ describe('Marko adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('uses a time element only when a timeline date is set', async () => {
+    const view = await render(Timeline, {
+      items: [
+        { id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40', meta: 'Notes' },
+        { id: '2', title: 'Sent', time: '10:05' },
+      ],
+    });
+    const dated = view.container.querySelector('time');
+    expect(dated?.getAttribute('datetime')).toBe('2026-10-27T09:40');
+    expect(dated?.textContent).toBe('09:40');
+    expect(view.container.querySelectorAll('time')).toHaveLength(1);
+    expect(view.container.textContent).toContain('Sent');
+    expect(view.container.textContent).toContain('10:05');
+    expect(view.container.textContent).toContain('Notes');
   });
 
   it('names an avatar status with hidden text', async () => {

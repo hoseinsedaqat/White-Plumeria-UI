@@ -500,11 +500,20 @@ export interface Input {
   <if=input.hint><p class="wpl-muted">\${input.hint}</p></if>
 </article>
 `,
-  'wpl-timeline.marko': `export interface Item { id?: string; title: string; description?: string; }
+  'wpl-timeline.marko': `export interface Item { id?: string; title: string; time?: string; dateTime?: string; meta?: string; }
 export interface Input { items?: Item[]; }
 <ol class="wpl-timeline">
   <for|item| of=(input.items ?? [])>
-    <li><strong>\${item.title}</strong><if=item.description><p>\${item.description}</p></if></li>
+    <li class="wpl-timeline-item">
+      <p class="wpl-timeline-title">\${item.title}</p>
+      <if=(item.time || item.meta)>
+        <p class="wpl-timeline-meta">
+          <if=item.dateTime><time datetime=item.dateTime>\${item.time}</time></if>
+          <else>\${item.time}</else>
+          <if=item.meta>\${" · " + item.meta}</if>
+        </p>
+      </if>
+    </li>
   </for>
 </ol>
 `,

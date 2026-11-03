@@ -26,6 +26,7 @@ import {
   SplitPane,
   Steps,
   Tabs,
+  Timeline,
   TreeView,
   WhitePlumeriaProvider,
 } from './index.ts';
@@ -467,6 +468,23 @@ describe('Ember adapter', () => {
     range.value = '5';
     range.dispatchEvent(new Event('input', { bubbles: true }));
     expect(values).toEqual([{ value: 5 }]);
+  });
+
+  it('uses a time element only when a timeline date is set', async () => {
+    const host = mount(Timeline, {
+      items: [
+        { id: '1', title: 'Draft saved', time: '09:40', dateTime: '2026-10-27T09:40', meta: 'Notes' },
+        { id: '2', title: 'Sent', time: '10:05' },
+      ],
+    });
+    await renderSettled();
+    const dated = host.querySelector('time');
+    expect(dated?.getAttribute('datetime')).toBe('2026-10-27T09:40');
+    expect(dated?.textContent).toBe('09:40');
+    expect(host.querySelectorAll('time')).toHaveLength(1);
+    expect(host.textContent).toContain('Sent');
+    expect(host.textContent).toContain('10:05');
+    expect(host.textContent).toContain('Notes');
   });
 
   it('names an avatar status with hidden text', async () => {
