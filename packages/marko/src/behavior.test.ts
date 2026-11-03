@@ -17,6 +17,7 @@ import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
+import EmptyState from './tags/wpl-empty-state.marko';
 import Separator from './tags/wpl-separator.marko';
 import Skeleton from './tags/wpl-skeleton.marko';
 import Spinner from './tags/wpl-spinner.marko';
@@ -263,6 +264,12 @@ describe('Marko adapter', () => {
     expect(rule?.getAttribute('aria-orientation')).toBe('vertical');
     expect(rule?.className).toContain('wpl-separator-vertical');
     expect(view.container.querySelector('hr')).toBeNull();
+  });
+
+  it('renders an empty state heading and description', async () => {
+    const view = await render(EmptyState, { title: 'No invoices', description: 'Create the first invoice.' });
+    expect(view.container.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
+    expect(view.container.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
   });
 
   it('renders a navigation menu as a named list', async () => {
