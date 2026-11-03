@@ -167,7 +167,7 @@ export const PageHeader = defineComponent({
   setup(props, { slots }) {
     return () =>
       h('header', { class: 'wpl-page-header' }, [
-        h('div', [h('h1', { class: 'wpl-page-title' }, props.title), props.description ? h('p', { class: 'wpl-muted' }, props.description) : null]),
+        h('div', [h('h1', { class: 'wpl-page-title' }, props.title), props.description ? h('p', { class: 'wpl-page-description' }, props.description) : null]),
         slots.actions ? h('div', { class: 'wpl-cluster' }, slots.actions()) : null,
       ]);
   },

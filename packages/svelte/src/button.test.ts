@@ -6,6 +6,7 @@ import Accordion from './lib/Accordion.svelte';
 import Card from './lib/Card.svelte';
 import Combobox from './lib/Combobox.svelte';
 import Link from './lib/Link.svelte';
+import PageHeader from './lib/PageHeader.svelte';
 import Pagination from './lib/Pagination.svelte';
 import Popover from './lib/Popover.svelte';
 import Button from './lib/Button.svelte';
@@ -20,6 +21,15 @@ import Switch from './lib/Switch.svelte';
 import Tooltip from './lib/Tooltip.svelte';
 
 describe('svelte adapter', () => {
+  it('uses the catalog page description class', () => {
+    const view = render(PageHeader, { title: 'Invoices', description: 'Sample workspace' });
+    expect(view.container.querySelector('h1.wpl-page-title')?.textContent).toBe('Invoices');
+    expect(view.container.querySelector('.wpl-page-description')?.textContent).toBe('Sample workspace');
+    expect(view.container.querySelector('.wpl-muted')).toBeNull();
+    const plain = render(PageHeader, { title: 'Invoices' });
+    expect(plain.container.querySelector('.wpl-page-description')).toBeNull();
+  });
+
   it('shows a search label and reports Enter', () => {
     const searches: string[] = [];
     const view = render(SearchInput, { label: 'Search docs', value: 'Button', onsearch: (value: string) => searches.push(value) });

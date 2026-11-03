@@ -2,9 +2,18 @@ import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { defineComponent, h, nextTick, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
-import { Accordion, Button, Card, Combobox, Divider, Link, Notification, Pagination, SearchInput, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
+import { Accordion, Button, Card, Combobox, Divider, Link, Notification, PageHeader, Pagination, SearchInput, SplitPane, Steps, Switch, Tooltip, TreeView, WhitePlumeriaProvider } from './index.ts';
 
 describe('vue adapter', () => {
+  it('uses the catalog page description class', () => {
+    const view = render(PageHeader, { props: { title: 'Invoices', description: 'Sample workspace' } });
+    expect(view.container.querySelector('h1.wpl-page-title')?.textContent).toBe('Invoices');
+    expect(view.container.querySelector('.wpl-page-description')?.textContent).toBe('Sample workspace');
+    expect(view.container.querySelector('.wpl-muted')).toBeNull();
+    const plain = render(PageHeader, { props: { title: 'Invoices' } });
+    expect(plain.container.querySelector('.wpl-page-description')).toBeNull();
+  });
+
   it('shows a search label unless it is hidden', async () => {
     const view = render(SearchInput, { props: { label: 'Search docs', modelValue: 'Button' } });
     const label = view.container.querySelector('label');

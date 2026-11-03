@@ -5,7 +5,7 @@
 <header class="wpl-page-header">
   <div>
     <h1 class="wpl-page-title">{title}</h1>
-    {#if description}<p class="wpl-muted">{description}</p>{/if}
+    {#if description}<p class="wpl-page-description">{description}</p>{/if}
   </div>
   {#if actions}<div class="wpl-cluster">{@render actions()}</div>{/if}
 </header>
