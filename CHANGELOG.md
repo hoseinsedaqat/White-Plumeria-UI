@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Custom elements name the spinner and the dialog close button in the page language. Packages are still not published.
 - Indeterminate progress omits `aria-valuenow`, in Alpine, Marko, and Ember. Packages are still not published.
 - A dialog and a modal return focus to the opener, in Marko and Ember. Escape closes them. Packages are still not published.
 - A popover names its panel and closes from Escape or an outside pointer, in Alpine, Marko, Ember, and Svelte. Packages are still not published.

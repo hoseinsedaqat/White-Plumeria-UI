@@ -1,4 +1,4 @@
-import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant } from '@white-plumeria/core';
+import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, message, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant, type MessageKey } from '@white-plumeria/core';
 
 export const elementTags = [
   'wpl-button',
@@ -35,6 +35,11 @@ function appearanceOf(element: HTMLElement): ButtonAppearance {
 
 function boolAttr(element: HTMLElement, name: string): boolean {
   return element.hasAttribute(name);
+}
+
+function textOf(element: Element, key: MessageKey): string {
+  const lang = element.closest('[lang]')?.getAttribute('lang') ?? element.ownerDocument.documentElement.lang;
+  return message(lang === 'fa' ? 'fa' : 'en', key);
 }
 
 class WplButton extends HTMLElement {
@@ -146,7 +151,7 @@ class WplSpinner extends HTMLElement {
     if (!this.querySelector('.wpl-sr-only')) {
       const label = document.createElement('span');
       label.className = 'wpl-sr-only';
-      label.textContent = this.getAttribute('label') ?? 'Loading';
+      label.textContent = this.getAttribute('label') ?? textOf(this, 'loading');
       this.append(label);
     }
   }
@@ -331,7 +336,7 @@ class WplDialog extends HTMLElement {
       const close = document.createElement('button');
       close.type = 'button';
       close.className = 'wpl-icon-btn wpl-btn-ghost';
-      close.setAttribute('aria-label', 'Close');
+      close.setAttribute('aria-label', textOf(this, 'close'));
       close.innerHTML = iconMarkup('close');
       close.addEventListener('click', () => this.removeAttribute('open'));
       const header = document.createElement('header');
@@ -378,6 +383,7 @@ class WplDialog extends HTMLElement {
     if (!panel) return;
     const title = panel.querySelector('.wpl-dialog-title');
     if (title) title.textContent = this.getAttribute('title') ?? '';
+    panel.querySelector('.wpl-dialog-header button')?.setAttribute('aria-label', textOf(this, 'close'));
     const open = boolAttr(this, 'open');
     if (panel instanceof HTMLDialogElement) {
       if (open && !panel.open) panel.showModal();

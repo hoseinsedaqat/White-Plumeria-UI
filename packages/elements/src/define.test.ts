@@ -18,6 +18,20 @@ describe('custom elements', () => {
     host.remove();
   });
 
+  it('names the spinner and dialog close button in the page language', () => {
+    defineWhitePlumeriaElements();
+    document.documentElement.lang = 'fa';
+    const spinner = document.createElement('wpl-spinner');
+    const dialog = document.createElement('wpl-dialog');
+    dialog.setAttribute('title', 'تأیید');
+    document.body.append(spinner, dialog);
+    expect(spinner.querySelector('.wpl-sr-only')?.textContent).toBe('در حال بارگذاری');
+    expect(dialog.querySelector('.wpl-dialog-header button')?.getAttribute('aria-label')).toBe('بستن');
+    spinner.remove();
+    dialog.remove();
+    document.documentElement.lang = '';
+  });
+
   it('toggles a switch and announces the state', () => {
     defineWhitePlumeriaElements();
     const host = document.createElement('wpl-switch');
