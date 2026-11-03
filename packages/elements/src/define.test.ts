@@ -32,6 +32,27 @@ describe('custom elements', () => {
     document.documentElement.lang = '';
   });
 
+  it('moves tabs with the arrow keys and names an accordion panel', () => {
+    defineWhitePlumeriaElements();
+    const tabs = document.createElement('wpl-tabs');
+    tabs.innerHTML = '<div data-tab="one" data-label="One">First</div><div data-tab="two" data-label="Two">Second</div>';
+    const accordion = document.createElement('wpl-accordion');
+    accordion.innerHTML = '<div data-title="Fees">No monthly fee.</div>';
+    document.body.append(tabs, accordion);
+    const buttons = tabs.querySelectorAll('[role="tab"]');
+    expect(buttons[0]?.getAttribute('aria-selected')).toBe('true');
+    expect(buttons[0]?.getAttribute('aria-controls')).toBe(tabs.querySelector('[role="tabpanel"]')?.id);
+    buttons[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(buttons[1]?.getAttribute('aria-selected')).toBe('true');
+    expect(tabs.querySelector('[data-tab="two"]')?.hasAttribute('hidden')).toBe(false);
+    const trigger = accordion.querySelector('button');
+    const region = accordion.querySelector('[role="region"]');
+    expect(trigger?.getAttribute('aria-controls')).toBe(region?.id);
+    expect(region?.getAttribute('aria-labelledby')).toBe(trigger?.id);
+    tabs.remove();
+    accordion.remove();
+  });
+
   it('toggles a switch and announces the state', () => {
     defineWhitePlumeriaElements();
     const host = document.createElement('wpl-switch');

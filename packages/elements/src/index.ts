@@ -1,4 +1,4 @@
-import { buttonClassName, buttonVariants, createFocusTrap, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, message, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant, type MessageKey } from '@white-plumeria/core';
+import { buttonClassName, buttonVariants, createFocusTrap, createId, iconButtonClassName, iconMarkup, isButtonAppearance, isButtonSize, message, nextIndex, readingDirection, supportsModalDialog, type ButtonAppearance, type ButtonSize, type ButtonVariant, type MessageKey } from '@white-plumeria/core';
 
 export const elementTags = [
   'wpl-button',
@@ -401,30 +401,63 @@ class WplDialog extends HTMLElement {
 }
 
 class WplTabs extends HTMLElement {
+  private buttons: HTMLButtonElement[] = [];
+  private panels: HTMLElement[] = [];
+  private selected = 0;
+
   connectedCallback() {
     if (this.dataset.wplReady) return;
     this.dataset.wplReady = 'true';
-    const panels = Array.from(this.querySelectorAll('[data-tab]'));
+    const panels = Array.from(this.querySelectorAll('[data-tab]')).filter(
+      (panel): panel is HTMLElement => panel instanceof HTMLElement,
+    );
+    const orientation = this.getAttribute('orientation') === 'vertical' ? 'vertical' : 'horizontal';
     const list = document.createElement('div');
+    list.className = 'wpl-tablist';
     list.setAttribute('role', 'tablist');
+    list.setAttribute('aria-orientation', orientation);
+    const label = this.getAttribute('label');
+    if (label) list.setAttribute('aria-label', label);
     this.prepend(list);
     panels.forEach((panel, index) => {
-      if (!(panel instanceof HTMLElement)) return;
       const id = panel.dataset.tab ?? `tab-${index}`;
+      const tabId = panel.getAttribute('aria-labelledby') || createId('tab');
+      const panelId = panel.id || createId('tabpanel');
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'wpl-tab';
+      button.id = tabId;
       button.setAttribute('role', 'tab');
       button.textContent = panel.dataset.label ?? id;
-      button.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+      button.setAttribute('aria-controls', panelId);
+      panel.id = panelId;
       panel.setAttribute('role', 'tabpanel');
-      panel.hidden = index !== 0;
-      button.addEventListener('click', () => {
-        for (const item of list.querySelectorAll('[role="tab"]')) item.setAttribute('aria-selected', 'false');
-        button.setAttribute('aria-selected', 'true');
-        for (const item of panels) if (item instanceof HTMLElement) item.hidden = item !== panel;
+      panel.setAttribute('aria-labelledby', tabId);
+      panel.tabIndex = 0;
+      button.addEventListener('click', () => this.select(index));
+      button.addEventListener('keydown', (event) => {
+        const next = nextIndex(this.selected, this.buttons.length, event.key, orientation, readingDirection(list));
+        if (next === null) return;
+        event.preventDefault();
+        this.select(next);
+        this.buttons[next]?.focus();
       });
+      this.buttons.push(button);
       list.append(button);
+    });
+    this.panels = panels;
+    this.select(0);
+  }
+
+  private select(index: number) {
+    this.selected = index;
+    this.buttons.forEach((button, item) => {
+      const on = item === index;
+      button.setAttribute('aria-selected', on ? 'true' : 'false');
+      button.tabIndex = on ? 0 : -1;
+    });
+    this.panels.forEach((panel, item) => {
+      panel.hidden = item !== index;
     });
   }
 }
@@ -439,10 +472,15 @@ class WplAccordion extends HTMLElement {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'wpl-accordion-trigger';
+      button.id = createId('accordion');
       button.textContent = item.dataset.title ?? '';
       button.setAttribute('aria-expanded', 'false');
       const panel = document.createElement('div');
       panel.className = 'wpl-accordion-panel';
+      panel.id = createId('accordion-panel');
+      panel.setAttribute('role', 'region');
+      panel.setAttribute('aria-labelledby', button.id);
+      button.setAttribute('aria-controls', panel.id);
       panel.hidden = true;
       while (item.firstChild) panel.append(item.firstChild);
       button.addEventListener('click', () => {
