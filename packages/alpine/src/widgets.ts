@@ -168,6 +168,7 @@ function menuButton(
   item: MenuItem,
   active: boolean,
   onChoose: (item: MenuItem) => void,
+  extra: Record<string, string | undefined> = {},
 ): HTMLButtonElement {
   return h(
     'button',
@@ -181,6 +182,7 @@ function menuButton(
         'data-active': active ? 'true' : undefined,
         'aria-disabled': item.disabled ? 'true' : undefined,
         'aria-haspopup': item.items?.length ? 'menu' : undefined,
+        ...extra,
       },
       on: { click: () => onChoose(item) },
     },
@@ -232,23 +234,44 @@ function menu(config: Config, mode: 'click' | 'context') {
       });
 
       const paint = () => {
+        const parent = items[active];
+        const current = sub === null ? parent : parent?.items?.[sub];
+        const activeId = open && current ? `${menuId}-${current.id}` : '';
         trigger.setAttribute('aria-expanded', String(open));
+        if (activeId) trigger.setAttribute('aria-activedescendant', activeId);
+        else trigger.removeAttribute('aria-activedescendant');
         panel.hidden = !open;
         panel.replaceChildren();
         items.forEach((item, index) => {
-          const row = menuButton(item, index === active && sub === null, (chosen) =>
-            choose(chosen, index),
+          const expanded = Boolean(item.items?.length && sub !== null && index === active);
+          const row = menuButton(
+            item,
+            index === active && sub === null,
+            (chosen) => choose(chosen, index),
+            {
+              id: `${menuId}-${item.id}`,
+              'aria-expanded': item.items?.length ? String(expanded) : undefined,
+              'aria-controls': expanded ? `${menuId}-sub-${item.id}` : undefined,
+            },
           );
           panel.append(row);
-          if (item.items?.length && sub !== null && index === active) {
-            const nested = h('div', { className: 'wpl-menu-sub', attrs: { role: 'menu' } });
+          if (expanded && item.items) {
+            const nested = h('div', {
+              className: 'wpl-menu-sub',
+              attrs: { id: `${menuId}-sub-${item.id}`, role: 'menu', 'aria-label': item.label },
+            });
             item.items.forEach((child, childIndex) => {
               nested.append(
-                menuButton(child, childIndex === sub, (chosen) => {
-                  if (chosen.disabled) return;
-                  emit(this, 'wpl-select', { id: chosen.id });
-                  setOpen(false);
-                }),
+                menuButton(
+                  child,
+                  childIndex === sub,
+                  (chosen) => {
+                    if (chosen.disabled) return;
+                    emit(this, 'wpl-select', { id: chosen.id });
+                    setOpen(false);
+                  },
+                  { id: `${menuId}-${child.id}` },
+                ),
               );
             });
             panel.append(nested);
@@ -329,6 +352,10 @@ function menu(config: Config, mode: 'click' | 'context') {
           const child = sub === null ? undefined : parent?.items?.[sub];
           if (child) choose(child, active);
           else if (parent) choose(parent, active);
+          return;
+        }
+        if (!open) {
+          setOpen(true);
           return;
         }
         const motion = command as MenuMotion;
