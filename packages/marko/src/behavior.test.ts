@@ -27,6 +27,7 @@ import Label from './tags/wpl-label.marko';
 import Link from './tags/wpl-link.marko';
 import Pagination from './tags/wpl-pagination.marko';
 import Combobox from './tags/wpl-combobox.marko';
+import CommandPalette from './tags/wpl-command-palette.marko';
 import Tabs from './tags/wpl-tabs.marko';
 import Timeline from './tags/wpl-timeline.marko';
 import ToggleGroup from './tags/wpl-toggle-group.marko';
@@ -211,6 +212,29 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the active command and chooses it from the keyboard', async () => {
+    const chosen: unknown[] = [];
+    const view = await render(CommandPalette, {
+      open: true,
+      commands: [
+        { id: 'docs', label: 'Open docs', group: 'Navigate' },
+        { id: 'theme', label: 'Switch theme', keywords: ['dark'] },
+      ],
+    });
+    view.container.addEventListener('wpl-select', (event) => chosen.push((event as CustomEvent).detail));
+    const input = view.container.querySelector<HTMLInputElement>('[role="combobox"]');
+    expect(input?.getAttribute('aria-label')).toBe('Search');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await flush();
+    const active = view.container.querySelector('[data-active="true"]');
+    expect(active?.textContent).toContain('Switch theme');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await flush();
+    expect(chosen).toEqual([{ id: 'theme' }]);
+    expect(view.container.querySelector('.wpl-command')?.hasAttribute('hidden')).toBe(true);
   });
 
   it('names the active menu item and opens its submenu from the keyboard', async () => {

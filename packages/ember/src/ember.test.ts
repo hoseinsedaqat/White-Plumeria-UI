@@ -21,6 +21,7 @@ import {
   Modal,
   DateRangePicker,
   Combobox,
+  CommandPalette,
   DropdownMenu,
   Input,
   FileUpload,
@@ -231,6 +232,36 @@ describe('Ember adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('names the active command and filters by keyword', async () => {
+    const chosen: unknown[] = [];
+    const host = mount(CommandPalette, {
+      commands: [
+        { id: 'docs', label: 'Open docs', group: 'Navigate' },
+        { id: 'theme', label: 'Switch theme', keywords: ['dark'] },
+      ],
+    });
+    host.addEventListener('wpl-select', (event) => chosen.push((event as CustomEvent).detail));
+    await renderSettled();
+    const input = host.querySelector<HTMLInputElement>('[role="combobox"]');
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await renderSettled();
+    const active = host.querySelector('[data-active="true"]');
+    expect(active?.textContent).toContain('Switch theme');
+    expect(input?.getAttribute('aria-activedescendant')).toBe(active?.id);
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await renderSettled();
+    expect(chosen).toEqual([{ id: 'theme' }]);
+    if (input) input.value = 'dark';
+    input?.dispatchEvent(new Event('input', { bubbles: true }));
+    await renderSettled();
+    expect(host.querySelectorAll('[role="option"]').length).toBe(1);
+    expect(host.querySelector('[role="option"]')?.textContent).toContain('Switch theme');
+    if (input) input.value = 'missing';
+    input?.dispatchEvent(new Event('input', { bubbles: true }));
+    await renderSettled();
+    expect(host.textContent).toContain('No matching results');
   });
 
   it('names the active menu item and opens its submenu from the keyboard', async () => {

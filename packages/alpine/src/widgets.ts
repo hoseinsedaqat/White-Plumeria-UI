@@ -984,6 +984,8 @@ interface CommandItem {
   id: string;
   label: string;
   disabled?: boolean;
+  group?: string;
+  keywords?: string[];
 }
 
 export function CommandPalette(config: Config = {}) {
@@ -992,13 +994,21 @@ export function CommandPalette(config: Config = {}) {
       const commands = list<CommandItem>(config.commands ?? config.items);
       let query = '';
       let active = 0;
-      const results = h('div', { className: 'wpl-command-list', attrs: { role: 'listbox' } });
+      const listId = uid('command-list');
+      const results = h('div', {
+        className: 'wpl-command-list',
+        attrs: { id: listId, role: 'listbox' },
+      });
       const input = h('input', {
         className: 'wpl-input wpl-command-input',
         attrs: {
           type: 'search',
+          role: 'combobox',
+          'aria-expanded': 'true',
+          'aria-controls': listId,
+          'aria-autocomplete': 'list',
           placeholder: text(config.placeholder, translate(this.$el, 'search')),
-          'aria-label': text(config.label, translate(this.$el, 'search')),
+          'aria-label': text(config.label, translate(this.$el, 'command')),
         },
         on: {
           input: (event) => {
@@ -1006,58 +1016,73 @@ export function CommandPalette(config: Config = {}) {
             active = 0;
             paint();
           },
-          keydown: (event) => {
-            const key = (event as KeyboardEvent).key;
-            const items = filtered();
-            if (key === 'ArrowDown') {
-              event.preventDefault();
-              active = Math.min(items.length - 1, active + 1);
-              paint();
-            } else if (key === 'ArrowUp') {
-              event.preventDefault();
-              active = Math.max(0, active - 1);
-              paint();
-            } else if (key === 'Enter') {
-              event.preventDefault();
-              const item = items[active];
-              if (item) choose(item);
-            }
-          },
+          keydown: (event) => onKey(event as KeyboardEvent),
         },
       });
-      const filtered = () =>
-        commands.filter(
-          (item) => item.label.toLowerCase().includes(query.toLowerCase()) && !item.disabled,
-        );
+      const filtered = () => {
+        const needle = query.trim().toLowerCase();
+        return commands.filter((item) => {
+          if (item.disabled) return false;
+          if (!needle) return true;
+          return [item.label, item.group, ...(item.keywords ?? [])]
+            .join(' ')
+            .toLowerCase()
+            .includes(needle);
+        });
+      };
       const paint = () => {
         const items = filtered();
+        const activeId = items[active] ? `${listId}-${active}` : '';
+        if (activeId) input.setAttribute('aria-activedescendant', activeId);
+        else input.removeAttribute('aria-activedescendant');
         results.replaceChildren();
         if (!items.length) {
-          results.append(
-            h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }),
-          );
+          results.append(h('p', { className: 'wpl-muted', text: translate(this.$el, 'noResults') }));
           return;
         }
         items.forEach((item, index) => {
           results.append(
-            h('button', {
-              className: 'wpl-menu-item',
-              text: item.label,
-              attrs: {
-                type: 'button',
-                role: 'option',
-                'data-active': index === active ? 'true' : undefined,
+            h(
+              'button',
+              {
+                className: 'wpl-menu-item',
+                attrs: {
+                  id: `${listId}-${index}`,
+                  type: 'button',
+                  role: 'option',
+                  'aria-selected': index === active ? 'true' : 'false',
+                  'data-active': index === active ? 'true' : undefined,
+                },
+                on: { click: () => choose(item) },
               },
-              on: { click: () => choose(item) },
-            }),
+              [item.label, item.group ? h('span', { className: 'wpl-menu-shortcut', text: item.group }) : null],
+            ),
           );
         });
       };
       const choose = (item: CommandItem) => {
         emit(this, 'wpl-select', { id: item.id });
       };
+      const onKey = (event: KeyboardEvent) => {
+        const items = filtered();
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
+          event.preventDefault();
+          const next = nextIndex(active, items.length, event.key, 'vertical');
+          if (next !== null) active = next;
+          paint();
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          const item = items[active];
+          if (item) choose(item);
+        }
+      };
       paint();
-      this.$el.replaceChildren(h('div', { className: 'wpl-command' }, [input, results]));
+      this.$el.replaceChildren(
+        h('div', {
+          className: 'wpl-command',
+          attrs: { role: 'dialog', 'aria-label': text(config.label, translate(this.$el, 'command')) },
+        }, [input, results]),
+      );
     },
   };
 }

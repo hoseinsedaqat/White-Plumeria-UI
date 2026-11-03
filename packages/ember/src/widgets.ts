@@ -543,34 +543,76 @@ function notificationTone(value: unknown): 'neutral' | 'info' | 'success' | 'war
 }
 
 export const CommandPalette = glimmer(
-  `<div class="wpl-command"><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.query}} placeholder={{this.label}} role="combobox" aria-expanded="true" aria-controls={{this.listId}} {{on "input" this.filter}} /><ul class="wpl-command-list" id={{this.listId}} role="listbox">{{#each this.matches as |item|}}<li><button type="button" role="option" {{on "click" (fn this.pick item)}}>{{item.label}}</button></li>{{/each}}</ul></div>`,
+  `<div class="wpl-command" role="dialog" aria-label={{this.label}}><label class="wpl-sr-only" for={{this.fieldId}}>{{this.label}}</label><input id={{this.fieldId}} class="wpl-input" type="search" value={{this.query}} placeholder={{this.placeholder}} role="combobox" aria-expanded="true" aria-controls={{this.listId}} aria-autocomplete="list" aria-activedescendant={{this.activeId}} {{on "input" this.filter}} {{on "keydown" this.onKey}} /><ul class="wpl-command-list" id={{this.listId}} role="listbox">{{#if this.empty}}<li class="wpl-muted">{{this.emptyLabel}}</li>{{else}}{{#each this.matches as |item|}}<li><button type="button" id={{item.itemId}} class="wpl-menu-item" role="option" aria-selected={{item.selected}} data-active={{item.active}} {{on "click" (fn this.pick item)}}>{{item.label}}{{#if item.group}}<span class="wpl-menu-shortcut">{{item.group}}</span>{{/if}}</button></li>{{/each}}{{/if}}</ul></div>`,
   {
-    state: () => ({ query: '', fieldId: createId('command'), listId: createId('command-list') }),
+    state: () => ({ query: '', active: 0, fieldId: createId('command'), listId: createId('command-list') }),
     getters: {
-      label: (host) => str(host.args.label, 'Command palette'),
+      label: (host) =>
+        str(host.args.label, message(localeOf(typeof document === 'undefined' ? null : document.body), 'command')),
+      placeholder: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'search'),
+      emptyLabel: () => message(localeOf(typeof document === 'undefined' ? null : document.body), 'noResults'),
       query: (host) => str(host.state.query),
       fieldId: (host) => str(host.state.fieldId),
       listId: (host) => str(host.state.listId),
+      empty: (host) => host.matches.length === 0,
+      activeId(this: Host) {
+        return this.matches[num(this.state.active, 0)]?.itemId;
+      },
       matches(this: Host) {
-        const query = str(this.state.query).toLocaleLowerCase();
-        return list<{ id?: string; label?: string }>(this.args.items)
-          .filter((item) => str(item.label, str(item.id)).toLocaleLowerCase().includes(query))
-          .map((item) => ({
+        const query = str(this.state.query).trim().toLocaleLowerCase();
+        const listId = str(this.state.listId);
+        const active = num(this.state.active, 0);
+        const source = this.args.commands ?? this.args.items;
+        return list<{ id?: string; label?: string; group?: string; keywords?: unknown; disabled?: boolean }>(source)
+          .filter((item) => {
+            if (item.disabled) return false;
+            if (!query) return true;
+            const keywords = Array.isArray(item.keywords) ? item.keywords.map((word) => str(word)) : [];
+            return [str(item.label, str(item.id)), str(item.group), ...keywords]
+              .join(' ')
+              .toLocaleLowerCase()
+              .includes(query);
+          })
+          .map((item, index) => ({
             id: str(item.id),
             label: str(item.label, str(item.id)),
+            group: str(item.group),
+            itemId: `${listId}-${index}`,
+            selected: index === active ? 'true' : 'false',
+            active: index === active ? 'true' : null,
           }));
       },
     },
     methods: {
       filter(event) {
+        this.state.active = 0;
         this.state.query =
           event instanceof Event && event.target instanceof HTMLInputElement
             ? event.target.value
             : '';
       },
+      onKey(event) {
+        const keyEvent = event as KeyboardEvent;
+        const items = this.matches;
+        if (
+          keyEvent.key === 'ArrowDown' ||
+          keyEvent.key === 'ArrowUp' ||
+          keyEvent.key === 'Home' ||
+          keyEvent.key === 'End'
+        ) {
+          keyEvent.preventDefault();
+          const next = nextIndex(num(this.state.active, 0), items.length, keyEvent.key, 'vertical');
+          if (next !== null) this.state.active = next;
+          return;
+        }
+        if (keyEvent.key === 'Enter') {
+          keyEvent.preventDefault();
+          const item = items[num(this.state.active, 0)];
+          if (item) this.pick(item, keyEvent);
+        }
+      },
       pick(item, event) {
-        const chosen = item as { id: string; label: string };
-        this.state.query = chosen.label;
+        const chosen = item as { id: string };
         bubble(event as Event, 'wpl-select', { id: chosen.id });
       },
     },
