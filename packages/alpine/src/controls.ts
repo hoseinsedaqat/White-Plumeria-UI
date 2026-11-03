@@ -350,6 +350,12 @@ export function Switch(config: Config = {}) {
   return {
     init(this: Magic) {
       let checked = flag(config.checked);
+      const name = text(config.name);
+      const box = name
+        ? h('input', {
+            attrs: { type: 'checkbox', name, checked: checked || undefined, hidden: true },
+          })
+        : null;
       const button = h(
         'button',
         {
@@ -365,13 +371,15 @@ export function Switch(config: Config = {}) {
               if (flag(config.disabled)) return;
               checked = !checked;
               button.setAttribute('aria-checked', String(checked));
+              if (box) box.checked = checked;
               emit(this, 'wpl-change', { checked });
             },
           },
         },
         [
           h('span', { className: 'wpl-switch-control', attrs: { 'aria-hidden': 'true' } }),
-          text(config.label, 'Switch'),
+          h('span', { text: text(config.label, 'Switch') }),
+          box,
         ],
       );
       this.$el.replaceChildren(button);

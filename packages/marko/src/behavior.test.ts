@@ -14,6 +14,7 @@ import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Slider from './tags/wpl-slider.marko';
+import Switch from './tags/wpl-switch.marko';
 import SplitPane from './tags/wpl-split-pane.marko';
 import Steps from './tags/wpl-steps.marko';
 import TreeView from './tags/wpl-tree-view.marko';
@@ -220,6 +221,23 @@ describe('Marko adapter', () => {
     expect(alert?.textContent).toContain('Use an ISO date: YYYY-MM-DD.');
     expect(start.getAttribute('aria-describedby')).toBe(alert?.id);
     expect(end.getAttribute('aria-describedby')).toBe(alert?.id);
+  });
+
+  it('submits a switch through a hidden checkbox', async () => {
+    const view = await render(Switch, { label: 'Reduced motion', name: 'motion', checked: true });
+    const button = view.container.querySelector('button');
+    expect(button?.getAttribute('role')).toBe('switch');
+    expect(button?.getAttribute('aria-checked')).toBe('true');
+    const box = view.container.querySelector('input') as HTMLInputElement;
+    expect(box.name).toBe('motion');
+    expect(box.hidden).toBe(true);
+    expect(box.checked).toBe(true);
+    button?.click();
+    await flush();
+    expect(button?.getAttribute('aria-checked')).toBe('false');
+    expect(box.checked).toBe(false);
+    const plain = await render(Switch, { label: 'Reduced motion' });
+    expect(plain.container.querySelector('input')).toBeNull();
   });
 
   it('hides the range readout and names each thumb from the label', async () => {

@@ -236,20 +236,21 @@ export const Checkbox = glimmer(
 );
 
 export const Switch = glimmer(
-  `<label class="wpl-switch"><input type="checkbox" role="switch" class="wpl-switch-input" checked={{this.checked}} disabled={{this.disabled}} {{on "change" this.commit}} /><span class="wpl-switch-control" aria-hidden="true"></span><span>{{this.label}}</span></label>`,
+  `<button type="button" class="wpl-switch" role="switch" aria-checked={{this.checkedAttr}} disabled={{this.disabled}} {{on "click" this.toggle}}><span class="wpl-switch-control" aria-hidden="true"></span><span>{{this.label}}</span>{{#if this.named}}<input type="checkbox" name={{this.name}} checked={{this.checked}} hidden />{{/if}}</button>`,
   {
     state: (args) => ({ checked: flag(args.checked) }),
     getters: {
       label: (host) => str(host.args.label, 'Switch'),
       checked: (host) => Boolean(host.state.checked),
+      checkedAttr: (host) => (host.state.checked ? 'true' : 'false'),
       disabled: (host) => flag(host.args.disabled),
+      name: (host) => str(host.args.name),
+      named: (host) => str(host.args.name) !== '',
     },
     methods: {
-      commit(event) {
-        const checked =
-          event instanceof Event && event.target instanceof HTMLInputElement
-            ? event.target.checked
-            : !this.state.checked;
+      toggle(event) {
+        if (flag(this.args.disabled)) return;
+        const checked = !this.state.checked;
         this.state.checked = checked;
         bubble(event as Event, 'wpl-change', { checked });
       },
