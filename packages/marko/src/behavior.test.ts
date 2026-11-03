@@ -596,6 +596,21 @@ describe('Marko adapter', () => {
     expect(view.container.querySelector('[aria-checked="true"]')?.textContent).toBe('End');
   });
 
+  it('expands a nested tree branch', async () => {
+    const view = await render(TreeView, {
+      label: 'Files',
+      nodes: [{ id: 'src', label: 'src', children: [{ id: 'ui', label: 'ui', children: [{ id: 'btn', label: 'button.tsx' }] }] }],
+    });
+    const row = () => [...view.container.querySelectorAll('[role="treeitem"]')].find((item) => item.textContent?.includes('ui'));
+    view.container.querySelector('[role="treeitem"]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(row()?.getAttribute('aria-expanded')).toBe('false');
+    row()?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flush();
+    expect(row()?.getAttribute('aria-expanded')).toBe('true');
+    expect(view.container.textContent).toContain('button.tsx');
+  });
+
   it('expands a tree toward the inline end', async () => {
     const view = await render(TreeView, {
       label: 'Files',

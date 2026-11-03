@@ -1,0 +1,49 @@
+import { iconPaths } from "@white-plumeria/core";
+import Branch from "./tree-branch.marko";
+
+export interface Node {
+  id: string;
+  label: string;
+  children?: Node[];
+}
+
+export interface Input {
+  nodes?: Node[];
+  open?: string[];
+  selected?: string;
+  onPick?: (id: string) => void;
+  onToggle?: (id: string) => void;
+  onKey?: (event: KeyboardEvent, id: string, hasChildren: boolean) => void;
+}
+
+<for|node| of=(input.nodes ?? [])>
+  <const/hasChildren=Boolean(node.children?.length)>
+  <const/expanded=Boolean(input.open?.includes(node.id))>
+  <li class="wpl-tree-item" role="none">
+    <button
+      type="button"
+      class="wpl-tree-row"
+      role="treeitem"
+      aria-expanded=(hasChildren ? String(expanded) : null)
+      aria-selected=String(input.selected === node.id)
+      onClick() {
+        input.onPick?.(node.id);
+        if (hasChildren) input.onToggle?.(node.id);
+      }
+      onKeyDown(event) {
+        input.onKey?.(event, node.id, hasChildren);
+      }
+    >
+      <if=hasChildren>
+        <svg class=(expanded ? "wpl-icon" : "wpl-icon wpl-icon-dir") viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d=(expanded ? iconPaths.chevronDown : iconPaths.chevronRight)/></svg>
+      </if>
+      <else><span class="wpl-tree-spacer" aria-hidden="true"></span></else>
+      ${node.label}
+    </button>
+    <if=hasChildren && expanded>
+      <ul class="wpl-tree-children" role="group">
+        <Branch nodes=node.children open=input.open selected=input.selected onPick=input.onPick onToggle=input.onToggle onKey=input.onKey/>
+      </ul>
+    </if>
+  </li>
+</for>
