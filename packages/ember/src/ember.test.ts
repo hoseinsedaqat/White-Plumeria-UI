@@ -41,6 +41,27 @@ afterEach(() => {
 });
 
 describe('Ember adapter', () => {
+  it('names each date-range day with the full date', async () => {
+    const host = mount(DateRangePicker, { label: 'Stay' });
+    await renderSettled();
+    const days = () => [...host.querySelectorAll('.wpl-day:not(.wpl-day-outside)')].filter((day) => !day.hasAttribute('disabled'));
+    const first = days()[0];
+    expect(first?.getAttribute('aria-label')).toBe(first?.textContent);
+    expect(first?.getAttribute('aria-label')?.length ?? 0).toBeGreaterThan(8);
+    first?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    days()[3]?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await renderSettled();
+    const start = host.querySelector('[data-wpl-edge="start"]');
+    const end = host.querySelector('[data-wpl-edge="end"]');
+    expect(start).toBeInstanceOf(HTMLInputElement);
+    expect(end).toBeInstanceOf(HTMLInputElement);
+    expect((start as HTMLInputElement).value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect((end as HTMLInputElement).value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect((start as HTMLInputElement).value <= (end as HTMLInputElement).value).toBe(true);
+    expect(host.querySelectorAll('[aria-selected="true"]').length).toBeGreaterThan(0);
+  });
+
   it('names the date picker calendar button', async () => {
     const host = mount(DatePicker, { label: 'Start' });
     await renderSettled();
