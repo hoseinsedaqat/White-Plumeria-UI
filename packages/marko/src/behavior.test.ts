@@ -559,6 +559,8 @@ describe('Marko adapter', () => {
     expect(sorts).toEqual([{ sortId: 'amount', sortDirection: 'asc' }]);
     const first = view.container.querySelector('tbody tr')?.textContent ?? '';
     expect(first).toContain('10');
+    expect(view.container.querySelector('tbody td')?.getAttribute('data-label')).toBe('Guest');
+    expect(view.container.textContent).toContain('3 rows');
     const field = view.container.querySelector('.wpl-sort-field select');
     expect(field?.getAttribute('aria-label')).toBe('Sort');
     expect(view.container.querySelector('.wpl-sort-field .wpl-sr-only')?.textContent).toBe('Sort');

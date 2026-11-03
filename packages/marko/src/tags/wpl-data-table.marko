@@ -68,6 +68,7 @@ static function cell(column: Column, row: Record<string, unknown>): string {
         </for>
       </select>
     </label>
+    <span class="wpl-muted">${formatNumber(result.total, activeLocale())} ${text("rows")}</span>
   </div>
   <div class="wpl-table-wrap">
     <table class="wpl-table">
@@ -100,7 +101,7 @@ static function cell(column: Column, row: Record<string, unknown>): string {
             input.onSelect?.({ id });
           }>
             <for|column| of=columns>
-              <td>${cell(column, row)}</td>
+              <td data-label=column.header>${cell(column, row)}</td>
             </for>
           </tr>
         </for>

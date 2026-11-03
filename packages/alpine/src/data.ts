@@ -157,7 +157,7 @@ export function DataTable(config: Config = {}) {
               ])])]
             : result.rows.map((row) => h('tr', {
               on: { click: () => emit(this, 'wpl-select', { id: text(row.id) }) },
-            }, columns.map((column) => h('td', { text: cellText(column, row) }))))),
+            }, columns.map((column) => h('td', { text: cellText(column, row), attrs: { 'data-label': column.header } }))))),
         ]);
         wrap.replaceChildren(
           h('div', { className: 'wpl-table-toolbar' }, [
