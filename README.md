@@ -14,7 +14,7 @@
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-3F3F46" />
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-3F3F46" />
   <img alt="Node 22.12 or newer" src="https://img.shields.io/badge/node-%3E%3D22.12-3F3F46" />
-  <img alt="Not published to npm" src="https://img.shields.io/badge/npm-not%20published-854D0E" />
+  <img alt="npm version 0.1.0" src="https://img.shields.io/npm/v/@white-plumeria/react?label=npm" />
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@
 
 The flower is the product mark: five petals, one center. The picture above is the public logo. Inside an app, the `Mark` component is drawn in `currentColor`, so it follows the theme.
 
-Packages are **not on npm**. The samples below are the API. Until a release, clone this repository.
+Version **0.1.0** is on npm. Install `@white-plumeria/styles` with the adapter you use. Clone this repository when you want the docs site or the examples.
 
 ## Quick setup
 
@@ -74,7 +74,7 @@ That desk listens on port `5174`. The other desks are listed under [Develop](#de
 
 ## Install
 
-The intended install, once `@white-plumeria` exists on npm:
+These commands install `0.1.0` from npm:
 
 ```bash
 npm install @white-plumeria/styles @white-plumeria/react
@@ -88,7 +88,7 @@ pnpm add @white-plumeria/styles @white-plumeria/react
 yarn add @white-plumeria/styles @white-plumeria/react
 ```
 
-Those three commands **do not work today**, and they stay unpublished until the catalog, every library example, and the server hosts are complete and stable. Swap `react` for the adapter you use: `vue`, `svelte`, `angular`, `solid`, `preact`, `qwik`, `lit`, `alpine`, `marko`, `ember`, or `elements`. Always install `@white-plumeria/styles` with it. The stylesheet is not bundled into the adapter.
+Swap `react` for the adapter you use: `vue`, `svelte`, `angular`, `solid`, `preact`, `qwik`, `lit`, `alpine`, `marko`, `ember`, or `elements`. Always install `@white-plumeria/styles` with it. The stylesheet is not bundled into the adapter. `@white-plumeria/tokens`, `@white-plumeria/core`, `@white-plumeria/ai`, `@white-plumeria/cli`, and `@white-plumeria/mcp` are published at the same version. Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are not packages.
 
 Peers are the framework you already have. `@white-plumeria/styles` is also a peer, so the CSS import stays explicit.
 
@@ -437,7 +437,7 @@ wpl doctor
 wpl theme saffron
 ```
 
-`init` writes `wpl.config.json` and prints the install command. `add` prints the package install for a catalog component. `--copy` writes a thin re-export, not a fork. `doctor` checks the Node version and the catalog. It does not claim packages are published. Unknown commands exit 2.
+`init` writes `wpl.config.json` and prints the install command. `add` prints the package install for a catalog component. `--copy` writes a thin re-export, not a fork. `doctor` checks the Node version and the catalog. Unknown commands exit 2.
 
 ## Develop
 
@@ -462,7 +462,7 @@ corepack pnpm docs:build
 | `pnpm pack:dry-run`    | Dry-run tarball only. Does not publish.         |
 | `pnpm size`            | Unpacked size of those files. Does not publish. |
 
-Example desks alias workspace source, so they run before a publish:
+Example desks alias workspace source, so they run from this repository:
 
 | Desk       | Command                                                | Port |
 | ---------- | ------------------------------------------------------ | ---- |
@@ -496,7 +496,7 @@ Example desks alias workspace source, so they run before a publish:
 
 ## Not claimed
 
-- npm publish. The `@white-plumeria` scope may still need to be created.
+- A package for Next, Nuxt, SvelteKit, SolidStart, Analog, or Qwik City. Those hosts use the adapter you already install.
 - A full manual screen-reader audit. The target is WCAG 2.2 AA. Automated tests cover the critical paths only.
 - Server rendering for React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Ember, or the elements package. Marko has a tested server render for Button and Provider only.
 - A GitHub Pages deploy from every branch. The workflow is [`.github/workflows/pages.yml`](.github/workflows/pages.yml) and runs on `test` and `main`.

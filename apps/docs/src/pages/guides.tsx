@@ -4,14 +4,13 @@ import { CodeBlock } from '../copy.tsx';
 const pages: Record<string, { title: string; body: string; code?: string }> = {
   '/start': {
     title: 'Quick start',
-    body: 'Packages are not on npm. Clone the repository and start the docs site. The npm command below is the intended install, and it does not work today.',
-    code: `git clone https://github.com/hoseinsedaqat/White-Plumeria-UI.git
+    body: 'Version 0.1.0 is on npm. Install @white-plumeria/styles with the adapter you use. Clone the repository when you want the docs site.',
+    code: `${installCommand(['styles', 'react'], 'npm')}
+
+git clone https://github.com/hoseinsedaqat/White-Plumeria-UI.git
 cd White-Plumeria-UI
 corepack pnpm install
 corepack pnpm dev
-
-# Intended install, once published. It fails today.
-${installCommand(['styles', 'react'], 'npm')}
 
 import { Button, WhitePlumeriaProvider } from "@white-plumeria/react";
 import "@white-plumeria/styles";
@@ -26,7 +25,7 @@ export function Example() {
   },
   '/install': {
     title: 'Installation',
-    body: 'These are the intended install commands. They do not work until @white-plumeria is published, and nothing will be published until the catalog, every library example, and the server hosts are complete and stable. Always install @white-plumeria/styles with an adapter. Today, clone the repository and run corepack pnpm install, then corepack pnpm dev.',
+    body: 'Version 0.1.0 is on npm. Always install @white-plumeria/styles with an adapter. Swap the adapter name for vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, or elements. Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are hosts, not packages.',
     code: [
       installCommand(['styles', 'react'], 'npm'),
       installCommand(['styles', 'vue'], 'pnpm'),
@@ -57,7 +56,7 @@ export function Example() {
   },
   '/changelog': {
     title: 'Changelog',
-    body: '0.1.0 is the first implementation in this repository. See CHANGELOG.md for what shipped and what did not. Packages are not published.',
+    body: '0.1.0 is published on npm. See CHANGELOG.md for what shipped in this repository.',
   },
   '/contributing': {
     title: 'Contributing',
@@ -65,7 +64,7 @@ export function Example() {
   },
   '/servers': {
     title: 'Server hosts',
-    body: 'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are application hosts, not new component libraries. A component page shows an example for each of them, built from the adapter you already install: React for Next, Vue for Nuxt, Svelte for SvelteKit, Solid for SolidStart, Angular for Analog, and Qwik for Qwik City. There is no @white-plumeria/next, @white-plumeria/nuxt, @white-plumeria/sveltekit, @white-plumeria/solidstart, @white-plumeria/analog, or @white-plumeria/qwikcity package, and none will be published as a wrapper. Ember server render is not claimed. Each host has a static desk in this repository. The control is still the client adapter. Packages stay off npm until this set is complete and stable.',
+    body: 'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are application hosts, not new component libraries. A component page shows an example for each of them, built from the adapter you already install: React for Next, Vue for Nuxt, Svelte for SvelteKit, Solid for SolidStart, Angular for Analog, and Qwik for Qwik City. There is no @white-plumeria/next, @white-plumeria/nuxt, @white-plumeria/sveltekit, @white-plumeria/solidstart, @white-plumeria/analog, or @white-plumeria/qwikcity package. Ember server render is not claimed. Each host has a static desk in this repository. The control is still the client adapter.',
     code: `// Next.js App Router. Client file. Install @white-plumeria/styles and @white-plumeria/react.
 'use client';
 
