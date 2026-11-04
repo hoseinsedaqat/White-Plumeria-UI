@@ -284,7 +284,7 @@ export function HomePage({ onNavigate }: { onNavigate: (href: string) => void })
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <p className="home-note">Not on npm yet. This copies the command we will publish.</p>
+          <p className="home-note">Version 0.1.0 is on npm. This copies a working install.</p>
         </div>
 
         <div className="home-rail-col">
@@ -999,7 +999,7 @@ function HomeFooter({ onNavigate }: { onNavigate: (href: string) => void }) {
                 <a href={`${brand.repository}/blob/${brand.defaultBranch}/LICENSE`} rel="noreferrer">
                   {brand.license}
                 </a>
-                . Not published to npm yet.
+                . On npm as 0.1.0.
               </p>
             </div>
           </div>

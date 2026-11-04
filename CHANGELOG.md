@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Version 0.1.0 is on npm. Install `@white-plumeria/styles` with the adapter you use.
 - A page header uses the catalog description class in Vue and Svelte. Packages are still not published.
 - An alert keeps its title and description in the catalog classes in Alpine, Marko, and Ember. Packages are still not published.
 - The tree direction check follows Marko's nested branch. Packages are still not published.

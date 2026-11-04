@@ -57,7 +57,7 @@ const lines = [
   'The HTML example is the source of truth. React, Vue, Svelte, Angular, Solid, Preact, Qwik, Lit, Alpine, Marko, and Ember render those same classes.',
   'Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts for an existing adapter. They are not packages.',
   'Astro, Stimulus, Aurelia, Ripple, Stencil, VanJS, and LWC are not adapters in this repository.',
-  'Packages are not on npm. Do not invent an install command.',
+  'Version 0.1.0 is on npm. Install @white-plumeria/styles with one adapter: react, vue, svelte, angular, solid, preact, qwik, lit, alpine, marko, ember, or elements. Do not invent a package.',
   '',
   'Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an ancestor. Themes: ' +
     themeNames.join(', ') +
