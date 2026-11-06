@@ -1,4 +1,4 @@
-import { html, render } from 'lit';
+import { html, render, type LitElement } from 'lit';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { catalog, getComponent } from '@white-plumeria/core';
@@ -184,6 +184,33 @@ describe('@white-plumeria/lit', () => {
     await button?.updateComplete;
     expect(host.querySelectorAll('wpl-button')).toHaveLength(1);
     expect(host.textContent?.match(/Confirm void/g)).toHaveLength(1);
+  });
+
+  it('puts card actions in a footer row and leaves a plain card alone', async () => {
+    const card = document.createElement('wpl-card') as LitElement;
+    card.setAttribute('title', 'Invoice');
+    card.innerHTML = '<p>Invoice 1044 is open.</p><button slot="footer" type="button">Pay</button>';
+    document.body.append(card);
+    await card.updateComplete;
+    await card.updateComplete;
+    expect(card.querySelector('.wpl-card-footer button')?.textContent).toBe('Pay');
+    expect(card.querySelector('.wpl-card-body')?.textContent).toContain('Invoice 1044 is open.');
+    expect(card.querySelector('.wpl-card-body button')).toBeNull();
+
+    const text = document.createElement('wpl-card') as LitElement & { footer: string };
+    text.setAttribute('title', 'Invoice');
+    text.footer = 'Due today';
+    document.body.append(text);
+    await text.updateComplete;
+    expect(text.querySelector('.wpl-card-footer')?.textContent).toBe('Due today');
+
+    const plain = document.createElement('wpl-card') as LitElement;
+    plain.setAttribute('title', 'Invoice');
+    plain.textContent = 'Nothing to approve.';
+    document.body.append(plain);
+    await plain.updateComplete;
+    await plain.updateComplete;
+    expect(plain.querySelector('.wpl-card-footer')).toBeNull();
   });
 
   it('publishes explicit-end-tag Lit catalog examples', () => {

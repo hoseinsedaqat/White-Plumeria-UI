@@ -11,7 +11,7 @@ import {
   type BadgeVariant,
   type ControlSize,
 } from '@white-plumeria/core';
-import { component$, Slot, useSignal, type QRL } from '@qwik.dev/core';
+import { component$, Slot, useSignal, type JSXOutput, type QRL } from '@qwik.dev/core';
 import { IconButton } from './button';
 import { Icon } from './icon';
 import { useWhitePlumeria } from './provider';
@@ -82,7 +82,13 @@ export const Badge = component$<{ variant?: BadgeVariant; class?: string }>((pro
   );
 });
 
-export const Card = component$<{ title?: string; description?: string; titleAs?: 'h1' | 'h2' | 'h3' | 'h4'; class?: string }>((props) => {
+export const Card = component$<{
+  title?: string;
+  description?: string;
+  titleAs?: 'h1' | 'h2' | 'h3' | 'h4';
+  class?: string;
+  footer?: string | JSXOutput;
+}>((props) => {
   const titleAs = props.titleAs ?? 'h2';
   const title = props.title ? (
     titleAs === 'h1' ? (
@@ -106,6 +112,7 @@ export const Card = component$<{ title?: string; description?: string; titleAs?:
       <div class="wpl-card-body">
         <Slot />
       </div>
+      {props.footer ? <div class="wpl-card-footer">{props.footer}</div> : null}
     </section>
   );
 });

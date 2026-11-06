@@ -141,17 +141,38 @@ export class Card extends WplElement {
     title: { type: String },
     description: { type: String },
     titleAs: { type: String, attribute: 'title-as' },
+    footer: { type: String },
   };
 
   declare title: string;
   declare description: string;
   declare titleAs: 'h1' | 'h2' | 'h3' | 'h4';
+  declare footer: string;
+  private footerChild = false;
 
   constructor() {
     super();
     this.title = '';
     this.description = '';
     this.titleAs = 'h2';
+    this.footer = '';
+  }
+
+  /** A card without actions must not keep an empty row, because the card is a flex column with a gap. */
+  private hasFooterChild(): boolean {
+    return [...this.querySelectorAll('[slot="footer"]')].some((node) => node.closest('wpl-card') === this);
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    // The first render can run before the parser reaches the footer child.
+    queueMicrotask(() => {
+      if (this.isConnected && this.hasFooterChild() !== this.footerChild) this.requestUpdate();
+    });
+  }
+
+  protected override willUpdate(): void {
+    this.footerChild = this.hasFooterChild();
   }
 
   private titleNode(): RenderResult {
@@ -171,8 +192,14 @@ export class Card extends WplElement {
           </header>`
         : nothing}
       <div class="wpl-card-body"><span data-wpl-slot="" style="display:contents"></span></div>
+      ${this.footer
+        ? html`<div class="wpl-card-footer">${this.footer}</div>`
+        : this.footerChild
+          ? html`<div class="wpl-card-footer" data-wpl-slot="footer"></div>`
+          : nothing}
     </section>`;
   }
+
 }
 
 export class Divider extends WplElement {
