@@ -221,6 +221,7 @@ body {
   z-index: 70;
   width: min(18rem, calc(100vw - 1.5rem));
   max-height: min(28rem, calc(100vh - var(--docs-bar) - 1.5rem));
+  max-height: min(28rem, calc(100dvh - var(--docs-bar) - 1.5rem));
   overflow: auto;
   padding: 0.55rem;
   border: 1px solid var(--wpl-color-border);
@@ -552,12 +553,13 @@ body {
 }
 
 .docs-mosaic {
-  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  /* min() keeps the track from staying wider than a narrow phone screen. */
+  grid-template-columns: repeat(auto-fill, minmax(min(17.5rem, 100%), 1fr));
   align-items: start;
 }
 
 .docs-color-grid {
-  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, 100%), 1fr));
 }
 
 .docs-theme-card,
@@ -870,6 +872,11 @@ body {
   display: none;
 }
 
+.docs-tile-preview .wpl-popover,
+.docs-canvas .wpl-popover {
+  inline-size: min(18rem, calc(100vw - 5rem));
+}
+
 .docs-canvas > .wpl-input,
 .docs-canvas > .wpl-select,
 .docs-canvas > .wpl-textarea,
@@ -977,6 +984,7 @@ body {
 
 .docs-lab {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
   width: 100%;
 }
@@ -1239,6 +1247,7 @@ body {
 
 .docs-controls label {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 0.3rem;
   font-size: 0.82rem;
@@ -1249,6 +1258,7 @@ body {
 .docs-controls .wpl-input,
 .docs-controls .wpl-textarea {
   width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 1100px) {
@@ -1258,7 +1268,7 @@ body {
   .docs-hero,
   .docs-split,
   .docs-pager {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .docs-pager a:last-child {
@@ -1291,10 +1301,12 @@ body {
     display: none;
     position: fixed;
     z-index: 45;
-    top: var(--docs-bar);
+    top: var(--docs-nav-top, var(--docs-bar));
     left: 0;
     width: min(19rem, 88vw);
-    height: calc(100vh - var(--docs-bar));
+    height: calc(100vh - var(--docs-nav-top, var(--docs-bar)));
+    /* Phone browsers grow and shrink their toolbars. dvh follows that. */
+    height: calc(100dvh - var(--docs-nav-top, var(--docs-bar)));
     background: var(--wpl-color-surface);
     box-shadow: var(--wpl-shadow-lg);
   }
@@ -1307,7 +1319,7 @@ body {
     display: block;
     position: fixed;
     z-index: 35;
-    inset: var(--docs-bar) 0 0 0;
+    inset: var(--docs-nav-top, var(--docs-bar)) 0 0 0;
     background: var(--wpl-color-overlay);
   }
 
@@ -1347,7 +1359,7 @@ body {
 @media (max-width: 800px) {
   .docs-price-grid,
   .docs-stat-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1358,11 +1370,12 @@ body {
 @media (max-width: 720px) {
   .docs-pop-panel {
     position: fixed;
-    top: calc(var(--docs-bar) + 0.45rem);
+    top: calc(var(--docs-nav-top, var(--docs-bar)) + 0.45rem);
     right: 0.65rem;
     left: auto;
     width: min(18.5rem, calc(100vw - 1.3rem));
     max-height: calc(100vh - var(--docs-bar) - 1.2rem);
+    max-height: calc(100dvh - var(--docs-nav-top, var(--docs-bar)) - 1.2rem);
   }
 
   .docs-theme-name {
