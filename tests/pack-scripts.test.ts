@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -89,6 +89,37 @@ describe('package pack gate', () => {
     expect(mcp.bin['white-plumeria-mcp']).toBe('./dist/bin.js');
     expect(readFileSync('packages/cli/tsdown.config.ts', 'utf8')).toContain('fixedExtension: false');
     expect(readFileSync('packages/mcp/tsdown.config.ts', 'utf8')).toContain('fixedExtension: false');
+  });
+
+  /**
+   * npm shows a package page from the tarball, not from the repository, so the
+   * license text, the readme, and the links have to travel with the package.
+   */
+  it('ships the license and the links npm shows on a package page', () => {
+    const { packages } = listPublishablePackages(process.cwd());
+    const missing: string[] = [];
+    for (const pkg of packages) {
+      const manifest = pkg.manifest as {
+        name: string;
+        license?: string;
+        homepage?: string;
+        bugs?: { url?: string };
+        repository?: { directory?: string };
+        files?: string[];
+      };
+      const files = manifest.files ?? [];
+      if (manifest.license !== 'MIT') missing.push(`${manifest.name}: license`);
+      if (!manifest.homepage) missing.push(`${manifest.name}: homepage`);
+      if (!manifest.bugs?.url) missing.push(`${manifest.name}: bugs`);
+      if (!manifest.repository?.directory) missing.push(`${manifest.name}: repository directory`);
+      if (!files.includes('LICENSE')) missing.push(`${manifest.name}: LICENSE in files`);
+      if (!files.includes('README.md')) missing.push(`${manifest.name}: README.md in files`);
+      if (!existsSync(join(pkg.dir, 'LICENSE'))) missing.push(`${manifest.name}: LICENSE file`);
+      else if (!readFileSync(join(pkg.dir, 'LICENSE'), 'utf8').includes('MIT License')) {
+        missing.push(`${manifest.name}: LICENSE text`);
+      }
+    }
+    expect(missing).toEqual([]);
   });
 
   it('does not publish or rewrite the workspace protocol', () => {

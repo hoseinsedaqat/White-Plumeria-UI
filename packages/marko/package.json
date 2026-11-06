@@ -15,11 +15,22 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "marko", "design-system", "accessible"],
+  "keywords": [
+    "white-plumeria",
+    "marko",
+    "design-system",
+    "accessible"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "src/tags", "marko.json", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "marko.json",
+    "README.md",
+    "src/tags"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

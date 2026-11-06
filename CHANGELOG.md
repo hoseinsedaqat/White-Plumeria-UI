@@ -2,125 +2,137 @@
 
 ## Unreleased
 
-- Version 0.1.0 is on npm. Install `@white-plumeria/styles` with the adapter you use.
-- A page header uses the catalog description class in Vue and Svelte. Packages are still not published.
-- An alert keeps its title and description in the catalog classes in Alpine, Marko, and Ember. Packages are still not published.
-- The tree direction check follows Marko's nested branch. Packages are still not published.
+Merged after the 0.1.0 publish. These reach npm in the next version.
 
-- An Ember timeline uses the catalog title and meta classes. Packages are still not published.
-- A search field shows its label in Vue and Svelte unless it is explicitly hidden. Packages are still not published.
-- A search field shows its label and reports Enter in Alpine, Marko, and Ember. Packages are still not published.
-- A card keeps its description in the catalog description class in Alpine, Marko, and Ember. Packages are still not published.
-- A list shows the catalog title, description, and trailing meta in Alpine, Marko, and Ember. Packages are still not published.
-- A stat card uses the card and hint classes in Alpine, Marko, and Ember. Packages are still not published.
-- A file drop zone accepts a dropped file in Marko and Ember. Packages are still not published.
-- A rejected Marko file names the file and the rejection reason. Packages are still not published.
-- A step list marks a finished step with a hidden check and keeps later steps closed unless linear is off, in Alpine, Marko, and Ember. Packages are still not published.
-- An OTP field names each cell in the page language and fills a pasted code in Alpine, Marko, and Ember. Packages are still not published.
-- A data table names each stacked cell and counts its rows in Alpine, Marko, and Ember. Packages are still not published.
-- A data table pages its rows and names the page controls in Alpine, Marko, and Ember. Packages are still not published.
-- A data table filters from a labelled search field and explains an empty result in Alpine, Marko, and Ember. Packages are still not published.
-- A data table keeps a labelled sort field in Alpine, Marko, and Ember. Packages are still not published.
-- A toast region is polite, and assertive while a danger toast is open. Packages are still not published.
-- An empty state uses the title and description classes in Alpine, Marko, and Ember. Packages are still not published.
-- An Alpine button group is a named group, and its buttons are direct children. Packages are still not published.
-- A navigation menu is a nav and a list in Alpine, Marko, and Ember. Packages are still not published.
-- A spinner uses the requested size in Alpine, Marko, Svelte, and custom elements. Packages are still not published.
-- A skeleton uses the requested height, defaulting to 1rem, in Alpine and Marko. Packages are still not published.
-- A tree expands nested branches in Marko and Ember. Packages are still not published.
-- A labeled divider is a separator, and an unlabeled divider is a horizontal rule, in Alpine, Marko, Ember, Svelte, and Vue. Packages are still not published.
-- A separator is an oriented separator, not a horizontal rule, in Alpine, Marko, and Ember. Packages are still not published.
-- A radio group is a fieldset and legend in Alpine and Ember. Packages are still not published.
-- The navbar toggle is named in the page language and changes when the menu opens, in Alpine, Marko, and Ember. Packages are still not published.
-- Marko chart values and date-range hints follow the page language. Packages are still not published.
-- A chart summary keeps its data in a table and hides the bars from assistive tech, in Alpine, Marko, and Ember. Packages are still not published.
-- A switch is a button, and a named switch also submits a hidden checkbox, in Alpine, Marko, Ember, and custom elements. Packages are still not published.
-- The slider value follows the page language in Marko and Ember. Packages are still not published.
-- The range readout is hidden from assistive tech in Alpine, Marko, and Ember, and each thumb is named from the group label. Packages are still not published.
-- A read-only rating is a named image, not a radio group, in Alpine, Marko, and Ember. Packages are still not published.
-- The password reveal button is named and pressed, in Alpine and Marko. Packages are still not published.
-- A tooltip waits 400ms and closes on Escape, in Alpine, Marko, Ember, Svelte, Vue, and Angular. Packages are still not published.
-- Custom-element tabs move with the arrow keys. An accordion panel is a named region. Packages are still not published.
-- A menu, a search field, and steps use the page language when they have no label, in Alpine, Marko, and Ember. Packages are still not published.
-- Custom elements name the spinner and the dialog close button in the page language. Packages are still not published.
-- Indeterminate progress omits `aria-valuenow`, in Alpine, Marko, and Ember. Packages are still not published.
-- A dialog and a modal return focus to the opener, in Marko and Ember. Escape closes them. Packages are still not published.
-- A popover names its panel and closes from Escape or an outside pointer, in Alpine, Marko, Ember, and Svelte. Packages are still not published.
-- A spinner without a label uses the page language. In Persian it says در حال بارگذاری, in Alpine, Marko, Ember, Vue, and Svelte. Packages are still not published.
-- A drawer uses a modal dialog, so focus stays inside it and returns to the opener, in Marko and Ember. Escape closes it. Packages are still not published.
-- A command palette names the active command and chooses it from the arrow keys, in Alpine, Marko, and Ember. A keyword filters the list, and an empty list says there are no results. Packages are still not published.
-- A menu names the active item and chooses it from the keyboard, in Alpine, Marko, and Ember. Arrow keys open a submenu in the writing direction. A context menu does the same. Packages are still not published.
-- Ember dialog, modal, and drawer close buttons follow the page language. In Persian they say بستن. Packages are still not published.
-- A combobox names the active option and chooses it from the arrow keys, in Alpine, Marko, and Ember. Vue and Svelte name that option too. A disabled option is not chosen. Packages are still not published.
-- The docs homepage centers the first screen on large displays, puts install in that screen, and crosses a theme stage from light to dark as you scroll. The theme list is the registered set, with original names. Packages are still not published.
-- A required label keeps the asterisk decorative and names the requirement with visually hidden text, in Alpine, Marko, and Ember. Packages are still not published.
-- A timeline uses a time element only when `dateTime` is set, in Alpine, Marko, and Ember. The machine value is the `datetime` attribute, not the visible label. Packages are still not published.
-- An avatar status is named with visually hidden text in Alpine, Marko, and Ember, not by color alone. Packages are still not published.
-- A card title stays a level-2 heading unless `titleAs` asks for another level, in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
-- An Ember date range draws calendar days and names each one with the full date. The first choice sets the start and the next sets the end. Packages are still not published.
-- A date picker has a named calendar button in Alpine, Marko, and Ember. The button opens the calendar and closes it after a day is chosen. Packages are still not published.
-- A calendar marks the selected day and marks today, in Alpine, Marko, and Ember. Alpine no longer compares the ISO value with a different day key. A range grid that already draws days does the same. Packages are still not published.
-- An external link says it opens in a new tab, including in Persian, and shows a directional external icon. Vue, Alpine, and Marko also set `noopener` with `noreferrer`. Packages are still not published.
-- Breadcrumb separators follow writing direction in Alpine, Marko, and Ember. The last crumb is the current page. Packages are still not published.
-- Pagination marks the current page and uses directional previous and next icons in Vue, Svelte, Alpine, Marko, and Ember. Packages are still not published.
-- Accordion triggers name their panels, and a titled panel is a region, in Vue, Svelte, Alpine, Marko, and Ember. A collapsed chevron uses the directional icon. Packages are still not published.
-- Carousel arrow keys and a pointer drag follow writing direction in Alpine, Marko, and Ember. Dots are tabs, and an inactive slide is inert. Packages are still not published.
-- Tab arrow keys follow writing direction in Alpine, Marko, and Ember. ArrowRight moves to the previous tab in RTL. Packages are still not published.
-- A tree expands toward the inline end and collapses toward the inline start in every adapter. ArrowRight no longer toggles a closed branch in RTL. Packages are still not published.
-- A Marko toggle reads writing direction from the group, because a delegated key event has no current target. Packages are still not published.
-- A split separator follows writing direction in every adapter. ArrowRight grows the start pane in LTR and shrinks it in RTL. Ember's separator has the separator role. Packages are still not published.
-- Marko, Ember, and Alpine layout, rating, accordion, radio, and chart markup now use the shared stylesheet classes. A responsive layout is a grid, a rating is a star control, and a chart bar has a track. Packages are still not published.
-- Vue, Svelte, Solid, Ember, and Marko controls use the same stylesheet classes as the other adapters. A file drop, tab list, split separator, command list, and step marker is no longer an unstyled name. Packages are still not published.
-- Scrolling a dialog, menu, or table no longer drags the page behind it. Reduced transparency replaces the overlay and translucent bars with a solid theme color. Packages are still not published.
-- Native accents and scrollbars follow the theme. Forced colors keep the system chrome. Focus inside a scrolling component is not clipped at the edge, and the docs bar no longer covers a focused target. Packages are still not published.
-- Selected text uses the theme primary pair. Autofill keeps the field surface instead of the browser yellow. Printing hides toasts, tooltips, and pointer menus, and keeps an open dialog in the flow. Packages are still not published.
-- The stylesheet sets `color-scheme` from `data-wpl-scheme`, and a nested light scheme stays light. `forced-colors` keeps buttons, switches, checks, selected days, and focus on system colors. It does not turn forced colors off. This is not a completed screen-reader audit. Packages are still not published.
-- Component pages show several live samples for each component, including table, data table, carousel, and toast. Library tabs still show one generated example. Packages are still not published.
-- A prompt that names a catalog component now plans that component, and the CSS tab uses its HTML example instead of a generic div. MCP docs and `wpl add` return the same class list. Packages are still not published.
-- The local planner CSS tab emits catalog `wpl-` markup instead of a placeholder div. Unknown classes and host-package imports are rejected. `llms.txt` states that class contract. Packages are still not published.
+- The docs site fits a phone. Every single-column grid track states a zero minimum, `auto-fill` grids use `minmax(min(Xrem, 100%), 1fr)`, the hero stage collapses to one track under 1100px, and the drawer, backdrop, and theme panel hang from a measured `--docs-nav-top` instead of a fixed offset.
+- A card footer and a page header action cluster in Alpine, Marko, and Ember. Alpine moves a child marked `data-wpl-footer`, Marko takes a string or a body, Ember takes an argument or a named block. Each region stays out of the markup when it has no content.
+- A card footer in Qwik and Lit, the last two adapters without one. Qwik takes a `footer` prop holding a string or JSX; Lit takes a `footer` string property or a child marked `slot="footer"`.
+- ResponsiveLayout collapses. A container query styles descendants, never its own container, so the rule that made the grid one column never applied and an empty sidebar track kept its 9rem. The track is `fit-content` now, and an open sidebar on a narrow container stacks above the main region.
+- A calendar heading fits its column. Persian short weekday names are whole words, so that locale falls back to the narrow name. English, German, Japanese, and Russian keep their short names.
+- The catalog documents `footer` on Card and `actions` on PageHeader, and lists `wpl-cluster` among the page header classes.
+
+## 0.1.0 - 2026-11-04
+
+Published to npm. All eighteen packages carry `latest` 0.1.0 under the `hosein_sedaqat` account: ai, alpine, angular, cli, core, elements, ember, lit, marko, mcp, preact, qwik, react, solid, styles, svelte, tokens, and vue. Install `@white-plumeria/styles` with the adapter you use.
+
+- A page header uses the catalog description class in Vue and Svelte.
+- An alert keeps its title and description in the catalog classes in Alpine, Marko, and Ember.
+- The tree direction check follows Marko's nested branch.
+
+- An Ember timeline uses the catalog title and meta classes.
+- A search field shows its label in Vue and Svelte unless it is explicitly hidden.
+- A search field shows its label and reports Enter in Alpine, Marko, and Ember.
+- A card keeps its description in the catalog description class in Alpine, Marko, and Ember.
+- A list shows the catalog title, description, and trailing meta in Alpine, Marko, and Ember.
+- A stat card uses the card and hint classes in Alpine, Marko, and Ember.
+- A file drop zone accepts a dropped file in Marko and Ember.
+- A rejected Marko file names the file and the rejection reason.
+- A step list marks a finished step with a hidden check and keeps later steps closed unless linear is off, in Alpine, Marko, and Ember.
+- An OTP field names each cell in the page language and fills a pasted code in Alpine, Marko, and Ember.
+- A data table names each stacked cell and counts its rows in Alpine, Marko, and Ember.
+- A data table pages its rows and names the page controls in Alpine, Marko, and Ember.
+- A data table filters from a labelled search field and explains an empty result in Alpine, Marko, and Ember.
+- A data table keeps a labelled sort field in Alpine, Marko, and Ember.
+- A toast region is polite, and assertive while a danger toast is open.
+- An empty state uses the title and description classes in Alpine, Marko, and Ember.
+- An Alpine button group is a named group, and its buttons are direct children.
+- A navigation menu is a nav and a list in Alpine, Marko, and Ember.
+- A spinner uses the requested size in Alpine, Marko, Svelte, and custom elements.
+- A skeleton uses the requested height, defaulting to 1rem, in Alpine and Marko.
+- A tree expands nested branches in Marko and Ember.
+- A labeled divider is a separator, and an unlabeled divider is a horizontal rule, in Alpine, Marko, Ember, Svelte, and Vue.
+- A separator is an oriented separator, not a horizontal rule, in Alpine, Marko, and Ember.
+- A radio group is a fieldset and legend in Alpine and Ember.
+- The navbar toggle is named in the page language and changes when the menu opens, in Alpine, Marko, and Ember.
+- Marko chart values and date-range hints follow the page language.
+- A chart summary keeps its data in a table and hides the bars from assistive tech, in Alpine, Marko, and Ember.
+- A switch is a button, and a named switch also submits a hidden checkbox, in Alpine, Marko, Ember, and custom elements.
+- The slider value follows the page language in Marko and Ember.
+- The range readout is hidden from assistive tech in Alpine, Marko, and Ember, and each thumb is named from the group label.
+- A read-only rating is a named image, not a radio group, in Alpine, Marko, and Ember.
+- The password reveal button is named and pressed, in Alpine and Marko.
+- A tooltip waits 400ms and closes on Escape, in Alpine, Marko, Ember, Svelte, Vue, and Angular.
+- Custom-element tabs move with the arrow keys. An accordion panel is a named region.
+- A menu, a search field, and steps use the page language when they have no label, in Alpine, Marko, and Ember.
+- Custom elements name the spinner and the dialog close button in the page language.
+- Indeterminate progress omits `aria-valuenow`, in Alpine, Marko, and Ember.
+- A dialog and a modal return focus to the opener, in Marko and Ember. Escape closes them.
+- A popover names its panel and closes from Escape or an outside pointer, in Alpine, Marko, Ember, and Svelte.
+- A spinner without a label uses the page language. In Persian it says در حال بارگذاری, in Alpine, Marko, Ember, Vue, and Svelte.
+- A drawer uses a modal dialog, so focus stays inside it and returns to the opener, in Marko and Ember. Escape closes it.
+- A command palette names the active command and chooses it from the arrow keys, in Alpine, Marko, and Ember. A keyword filters the list, and an empty list says there are no results.
+- A menu names the active item and chooses it from the keyboard, in Alpine, Marko, and Ember. Arrow keys open a submenu in the writing direction. A context menu does the same.
+- Ember dialog, modal, and drawer close buttons follow the page language. In Persian they say بستن.
+- A combobox names the active option and chooses it from the arrow keys, in Alpine, Marko, and Ember. Vue and Svelte name that option too. A disabled option is not chosen.
+- The docs homepage centers the first screen on large displays, puts install in that screen, and crosses a theme stage from light to dark as you scroll. The theme list is the registered set, with original names.
+- A required label keeps the asterisk decorative and names the requirement with visually hidden text, in Alpine, Marko, and Ember.
+- A timeline uses a time element only when `dateTime` is set, in Alpine, Marko, and Ember. The machine value is the `datetime` attribute, not the visible label.
+- An avatar status is named with visually hidden text in Alpine, Marko, and Ember, not by color alone.
+- A card title stays a level-2 heading unless `titleAs` asks for another level, in Vue, Svelte, Alpine, Marko, and Ember.
+- An Ember date range draws calendar days and names each one with the full date. The first choice sets the start and the next sets the end.
+- A date picker has a named calendar button in Alpine, Marko, and Ember. The button opens the calendar and closes it after a day is chosen.
+- A calendar marks the selected day and marks today, in Alpine, Marko, and Ember. Alpine no longer compares the ISO value with a different day key. A range grid that already draws days does the same.
+- An external link says it opens in a new tab, including in Persian, and shows a directional external icon. Vue, Alpine, and Marko also set `noopener` with `noreferrer`.
+- Breadcrumb separators follow writing direction in Alpine, Marko, and Ember. The last crumb is the current page.
+- Pagination marks the current page and uses directional previous and next icons in Vue, Svelte, Alpine, Marko, and Ember.
+- Accordion triggers name their panels, and a titled panel is a region, in Vue, Svelte, Alpine, Marko, and Ember. A collapsed chevron uses the directional icon.
+- Carousel arrow keys and a pointer drag follow writing direction in Alpine, Marko, and Ember. Dots are tabs, and an inactive slide is inert.
+- Tab arrow keys follow writing direction in Alpine, Marko, and Ember. ArrowRight moves to the previous tab in RTL.
+- A tree expands toward the inline end and collapses toward the inline start in every adapter. ArrowRight no longer toggles a closed branch in RTL.
+- A Marko toggle reads writing direction from the group, because a delegated key event has no current target.
+- A split separator follows writing direction in every adapter. ArrowRight grows the start pane in LTR and shrinks it in RTL. Ember's separator has the separator role.
+- Marko, Ember, and Alpine layout, rating, accordion, radio, and chart markup now use the shared stylesheet classes. A responsive layout is a grid, a rating is a star control, and a chart bar has a track.
+- Vue, Svelte, Solid, Ember, and Marko controls use the same stylesheet classes as the other adapters. A file drop, tab list, split separator, command list, and step marker is no longer an unstyled name.
+- Scrolling a dialog, menu, or table no longer drags the page behind it. Reduced transparency replaces the overlay and translucent bars with a solid theme color.
+- Native accents and scrollbars follow the theme. Forced colors keep the system chrome. Focus inside a scrolling component is not clipped at the edge, and the docs bar no longer covers a focused target.
+- Selected text uses the theme primary pair. Autofill keeps the field surface instead of the browser yellow. Printing hides toasts, tooltips, and pointer menus, and keeps an open dialog in the flow.
+- The stylesheet sets `color-scheme` from `data-wpl-scheme`, and a nested light scheme stays light. `forced-colors` keeps buttons, switches, checks, selected days, and focus on system colors. It does not turn forced colors off. This is not a completed screen-reader audit.
+- Component pages show several live samples for each component, including table, data table, carousel, and toast. Library tabs still show one generated example.
+- A prompt that names a catalog component now plans that component, and the CSS tab uses its HTML example instead of a generic div. MCP docs and `wpl add` return the same class list.
+- The local planner CSS tab emits catalog `wpl-` markup instead of a placeholder div. Unknown classes and host-package imports are rejected. `llms.txt` states that class contract.
 - CI builds the packages and runs the dry-run pack check. It still does not publish.
-- Persian date and time errors are translated. Marko labels follow the provider locale instead of staying English. Packages are still not published.
-- Component-page examples indent the Nuxt control inside `ClientOnly`, and Angular examples no longer insert a second space before a binding or a self-closing slash. Packages are still not published.
+- Persian date and time errors are translated. Marko labels follow the provider locale instead of staying English.
+- Component-page examples indent the Nuxt control inside `ClientOnly`, and Angular examples no longer insert a second space before a binding or a self-closing slash.
 - `pnpm verify:dist`, `pnpm pack:dry-run`, and `pnpm size` check the eighteen package entry files and a dry-run tarball. They do not publish, and they do not rewrite `workspace:*` into an npm install. The CLI and MCP builds now emit the `.js` files those packages already export.
-- The Analog and SolidStart desks show the button when the frame opens `index.html`. Analog treats that file as the home page. SolidStart writes the Solid button into the static document instead of an empty handler shell. Neither is a server renderer. Packages are still not published.
-- The Nuxt desk opens on `index.html` without a 404. That is the file the docs frame and GitHub Pages request. The button stays inside `ClientOnly`. Packages are still not published.
-- GitHub Pages can build the Qwik City desk. The router only matches a lowercase base, so the export is built that way and the public path casing is restored afterward. Packages are still not published.
-- Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City each have a static desk in the repository. The frame is that host’s export, and the control is still the client adapter. There is no `@white-plumeria/next`, `@white-plumeria/nuxt`, `@white-plumeria/sveltekit`, `@white-plumeria/solidstart`, `@white-plumeria/analog`, or `@white-plumeria/qwikcity` package. Packages are still not published.
-- Button, Badge, Alert, Card, Switch, and Input open in each library’s own document from the component page. The frame reads `?component=` and is not drawn by the docs React runtime. Packages are still not published.
+- The Analog and SolidStart desks show the button when the frame opens `index.html`. Analog treats that file as the home page. SolidStart writes the Solid button into the static document instead of an empty handler shell. Neither is a server renderer.
+- The Nuxt desk opens on `index.html` without a 404. That is the file the docs frame and GitHub Pages request. The button stays inside `ClientOnly`.
+- GitHub Pages can build the Qwik City desk. The router only matches a lowercase base, so the export is built that way and the public path casing is restored afterward.
+- Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City each have a static desk in the repository. The frame is that host’s export, and the control is still the client adapter. There is no `@white-plumeria/next`, `@white-plumeria/nuxt`, `@white-plumeria/sveltekit`, `@white-plumeria/solidstart`, `@white-plumeria/analog`, or `@white-plumeria/qwikcity` package.
+- Button, Badge, Alert, Card, Switch, and Input open in each library’s own document from the component page. The frame reads `?component=` and is not drawn by the docs React runtime.
 - Every component page shows an example for each library, not one hidden tab. Next, Nuxt, SvelteKit, SolidStart, Analog, and Qwik City are server hosts on that page. They use the existing adapter and are not separate packages. Packages stay unpublished until the project is complete and stable.
-- The homepage “next level” section shows Button, Card, and Switch as they render, with the class each one uses. The centered call to action stays. Packages are still not published.
-- Popover and Dropdown stay in the catalog. The open panel stays inside the card instead of leaving it, and a panel that would pass the visible edge opens above the trigger. Packages are still not published.
-- The homepage framework section shows the shared button class once, above the adapter cards. Packages are still not published.
+- The homepage “next level” section shows Button, Card, and Switch as they render, with the class each one uses. The centered call to action stays.
+- Popover and Dropdown stay in the catalog. The open panel stays inside the card instead of leaving it, and a panel that would pass the visible edge opens above the trigger.
+- The homepage framework section shows the shared button class once, above the adapter cards.
 - The date-range docs test no longer assumes the calendar opens on October 2026.
-- Homepage adapter cards stay readable on the dark canvas. The role no longer depends on the primary color. Packages are still not published.
-- The homepage catalog section lists every component in its real category. The eight-name sample and the small stage are gone. Packages are still not published.
-- The homepage “Pure CSS” section shows native elements with the shared class names. The scrolling name strip is gone. Packages are still not published.
-- The homepage theme section is six cards. Each card paints the same button classes with that theme’s variables. The duplicate theme list and the extra color board are gone. Packages are still not published.
-- The homepage customizer is one plate: the button, the class string it actually uses, and a chip for each class. Outline replaces primary. The other chips add a class. Packages are still not published.
-- The homepage class-count section uses two comparison plates instead of thin bars. The counts stay on this form. Packages are still not published.
-- The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example. Packages are still not published.
-- Semantic colors are a palette board: role chips and surface chips, with the name on the color. The six empty rectangles are gone. Packages are still not published.
-- The homepage design-system block is a token board: real size buttons, radius shapes, and space insets. The duplicate gray bars are gone. Packages are still not published.
-- Accent has its own foreground, so a label or switch thumb on that color stays readable when the theme changes. Homepage code, charts, and theme frames stay visible on the dark canvas. Component usage examples use a tab strip instead of a row of action buttons. Packages are still not published.
-- Switch no longer paints a filled button behind the track when the theme changes. The thumb uses the text or primary-foreground color so it stays visible on the track. The homepage size section stacks radius and space, and the samples keep contrast on the dark canvas. Packages are still not published.
-- Homepage type, size bars, named color blocks, and the preview toggles sit closer to the daisyUI homepage without moving the existing sections. Counts stay honest. Packages are still not published.
-- The homepage size rows, semantic color blocks, markup charts, class customizer, and adapter names follow the daisyUI homepage more closely. Counts stay honest. Packages are still not published.
-- The homepage adds the daisyUI-style stats, size scale, markup bars, class customizer, semantic color board, adapter marquee, and a live component stage. Counts come from the catalog. Packages are still not published.
-- Sort marks and dismiss controls use the shared arrow and close icons. A text arrow or multiplication sign is not the control. Packages are still not published.
-- Theme changes recolor component previews without painting the docs chrome the same color. Surface, muted, and status colors stay apart in every theme, so a control does not disappear into its background. Packages are still not published.
-- Search fields and comboboxes use the shared search and close icons. The clear control is an icon button, and the combobox text is no longer indented into an empty gap. Packages are still not published.
-- Calendar and date controls use the shared icon set instead of placeholder glyphs. The docs month starts open so the selected day and range are visible. Packages are still not published.
-- The homepage centers a lone call-to-action, and the footer names the GitHub profile, the repository, and the docs paths. Packages are still not published.
+- Homepage adapter cards stay readable on the dark canvas. The role no longer depends on the primary color.
+- The homepage catalog section lists every component in its real category. The eight-name sample and the small stage are gone.
+- The homepage “Pure CSS” section shows native elements with the shared class names. The scrolling name strip is gone.
+- The homepage theme section is six cards. Each card paints the same button classes with that theme’s variables. The duplicate theme list and the extra color board are gone.
+- The homepage customizer is one plate: the button, the class string it actually uses, and a chip for each class. Outline replaces primary. The other chips add a class.
+- The homepage class-count section uses two comparison plates instead of thin bars. The counts stay on this form.
+- The homepage markup comparison shows the long-style form and the class-name form together. Style attributes and class names are marked, and the counts stay on this example.
+- Semantic colors are a palette board: role chips and surface chips, with the name on the color. The six empty rectangles are gone.
+- The homepage design-system block is a token board: real size buttons, radius shapes, and space insets. The duplicate gray bars are gone.
+- Accent has its own foreground, so a label or switch thumb on that color stays readable when the theme changes. Homepage code, charts, and theme frames stay visible on the dark canvas. Component usage examples use a tab strip instead of a row of action buttons.
+- Switch no longer paints a filled button behind the track when the theme changes. The thumb uses the text or primary-foreground color so it stays visible on the track. The homepage size section stacks radius and space, and the samples keep contrast on the dark canvas.
+- Homepage type, size bars, named color blocks, and the preview toggles sit closer to the daisyUI homepage without moving the existing sections. Counts stay honest.
+- The homepage size rows, semantic color blocks, markup charts, class customizer, and adapter names follow the daisyUI homepage more closely. Counts stay honest.
+- The homepage adds the daisyUI-style stats, size scale, markup bars, class customizer, semantic color board, adapter marquee, and a live component stage. Counts come from the catalog.
+- Sort marks and dismiss controls use the shared arrow and close icons. A text arrow or multiplication sign is not the control.
+- Theme changes recolor component previews without painting the docs chrome the same color. Surface, muted, and status colors stay apart in every theme, so a control does not disappear into its background.
+- Search fields and comboboxes use the shared search and close icons. The clear control is an icon button, and the combobox text is no longer indented into an empty gap.
+- Calendar and date controls use the shared icon set instead of placeholder glyphs. The docs month starts open so the selected day and range are visible.
+- The homepage centers a lone call-to-action, and the footer names the GitHub profile, the repository, and the docs paths.
 - The docs theme menu sets direction and reduced motion on component previews. The page chrome stays English and left to right.
 - Grid column count follows the grid width, not the viewport. A narrow grid stacks on a wide page. It is not a masonry layout.
 - Notification follows the status color of its variant in every adapter. It stays on the page, and the close button appears only when a dismiss handler is passed. It is not a toast.
 - Docs previews for list, timeline, tree, table, chart, empty state, and page header show a finished sample instead of one lonely row. ResponsiveLayout stacks at 40rem of its own width, not 64rem of the viewport.
 - Docs previews sit on the theme background, so tracks, skeletons, and badges stay visible. Navbar menus stay open after the toggle, and a narrow layout shows its sidebar from its own width.
-- ToggleGroup is a joined single-choice control in every adapter. Arrow keys follow reading direction and skip disabled choices. It is not RadioGroup, and it is not published.
+- ToggleGroup is a joined single-choice control in every adapter. Arrow keys follow reading direction and skip disabled choices. It is not RadioGroup.
 - Carousel pictures fill the frame. The slide track is sized by the viewport, not by the image, so a photo is visible instead of an empty box.
-- NumberField is a numeric stepper in every adapter. The value snaps to the step, the buttons stop at the bounds, and a wheel event blurs the field. It is not published.
-- README leads with a working clone setup, the intended install commands, and a per-adapter quick start. Packages are still not published.
-- `@white-plumeria/angular` is an Angular 22 adapter for the same catalog. Native controls stay on the real element (`button wplButton`). Composites use `wpl-*` elements. It is not published to npm.
+- NumberField is a numeric stepper in every adapter. The value snaps to the step, the buttons stop at the bounds, and a wheel event blurs the field.
+- README leads with a working clone setup, the intended install commands, and a per-adapter quick start.
+- `@white-plumeria/angular` is an Angular 22 adapter for the same catalog. Native controls stay on the real element (`button wplButton`). Composites use `wpl-*` elements.
 - ContextMenu opens one submenu level from a right-click or Shift+F10. Escape closes that level before the menu.
 - DropdownMenu opens one submenu level. The inline-end arrow opens it, and Escape closes that level before the root menu.
 - RangeSlider selects a numeric start and end. A thumb stops at the other thumb instead of jumping under the pointer.
@@ -134,11 +146,9 @@
 - Button sizes `xs` and `xl`, appearances `soft` and `dash`, and status variants `success`, `warning`, and `info`
 - Steps, Carousel (image and content slider, distinct from the range Slider), PasswordField, OtpField, Rating, and Kbd
 - Carousel slides accept `src`, `alt`, and `caption`. The docs slider shows one picture at a time.
-- These are in the catalog and the React, Vue, and Svelte adapters. They are not published to npm.
+- These are in the catalog and the React, Vue, and Svelte adapters.
 
-## 0.1.0
-
-First implementation in this repository. Not published to npm.
+The first implementation in this repository, which is what this version carries.
 
 Shipped:
 
@@ -152,7 +162,5 @@ Shipped:
 
 Not shipped:
 
-- npm publish
 - a completed manual screen-reader audit
-- SSR/hydration tests
-- GitHub Pages deployment from this branch
+- SSR and hydration tests beyond the Marko server render

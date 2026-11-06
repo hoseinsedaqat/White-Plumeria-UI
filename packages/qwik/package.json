@@ -15,11 +15,20 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "qwik", "design-system", "accessible"],
+  "keywords": [
+    "white-plumeria",
+    "qwik",
+    "design-system",
+    "accessible"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "main": "./dist/index.qwik.mjs",
   "qwik": "./dist/index.qwik.mjs",
   "types": "./dist/index.d.ts",

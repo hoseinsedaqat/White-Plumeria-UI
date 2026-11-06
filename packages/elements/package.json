@@ -11,10 +11,22 @@
     "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
     "directory": "packages/elements"
   },
-  "bugs": { "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues" },
-  "keywords": ["white-plumeria", "custom-elements", "web-components"],
-  "publishConfig": { "access": "public" },
-  "files": ["dist", "README.md"],
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": [
+    "white-plumeria",
+    "custom-elements",
+    "web-components"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -35,10 +47,13 @@
     "@white-plumeria/styles": "workspace:*"
   },
   "peerDependenciesMeta": {
-    "@white-plumeria/styles": { "optional": true }
+    "@white-plumeria/styles": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "tsdown": "0.23.2",
     "typescript": "catalog:"
-  }
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/elements#readme"
 }

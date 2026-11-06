@@ -14,11 +14,19 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "ai", "design-system"],
+  "keywords": [
+    "white-plumeria",
+    "ai",
+    "design-system"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -39,5 +47,6 @@
   "devDependencies": {
     "tsdown": "0.23.2",
     "typescript": "catalog:"
-  }
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/ai#readme"
 }
