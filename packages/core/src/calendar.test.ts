@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gregorianToJalali, jalaliToGregorian, orderDateRange, orderDateTimeRange, parseIsoDate, parseTimeValue, toIsoDate } from './calendar.ts';
+import { gregorianToJalali, jalaliToGregorian, orderDateRange, orderDateTimeRange, parseIsoDate, parseTimeValue, toIsoDate, weekdayLabels } from './calendar.ts';
 
 describe('calendar conversion', () => {
   it('round-trips a Persian date through Gregorian parts', () => {
@@ -20,6 +20,17 @@ describe('calendar conversion', () => {
     expect(orderDateRange('2026-10-20', '2026-10-12')).toEqual({ start: '2026-10-12', end: '2026-10-20' });
     const parsed = parseIsoDate('2026-10-12');
     expect(parsed ? toIsoDate(parsed) : '').toBe('2026-10-12');
+  });
+
+  it('keeps every weekday heading inside its column', () => {
+    expect(weekdayLabels('en', 0)).toEqual(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+    expect(weekdayLabels('en', 1)[0]).toBe('Mon');
+    // A heading is one seventh of the calendar. The Persian short name is the
+    // whole word, so it used to be cut mid word; the narrow name fits.
+    const persian = weekdayLabels('fa', 6);
+    expect(persian).toEqual(['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']);
+    expect(new Set(persian).size).toBe(7);
+    for (const label of persian) expect([...label].length).toBeLessThanOrEqual(3);
   });
 
   it('orders a same-day time range and rejects an impossible clock time', () => {

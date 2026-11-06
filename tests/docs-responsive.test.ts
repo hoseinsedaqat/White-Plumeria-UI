@@ -56,6 +56,25 @@ describe('docs site on a phone', () => {
     expect(sheets['docs.css']).toContain('inset: var(--docs-nav-top, var(--docs-bar)) 0 0 0;');
   });
 
+  it('keeps the site name whole on the narrowest phones', () => {
+    expect(sheets['docs.css']).toMatch(
+      /@media \(max-width: 380px\) \{\s*\.docs-brand \.wpl-mark \{\s*display: none;/,
+    );
+  });
+
+  /**
+   * A demo stage is narrower than the window, so the stage holds the layout
+   * sidebar open for the example. On a phone there is no room for two
+   * columns, and the component already collapses itself.
+   */
+  it('only holds the layout demo open where two columns fit', () => {
+    expect(sheets['docs.css']).toMatch(
+      /@media \(min-width: 721px\) \{\s*\.docs-canvas > \.wpl-layout > \.wpl-sidebar,[\s\S]*?\{\s*display: flex;/,
+    );
+    expect(sheets['docs.css']).toContain('grid-template-columns: fit-content(14rem) minmax(0, 1fr);');
+    expect(sheets['docs.css']).toContain('grid-template-columns: fit-content(6.75rem) minmax(0, 1fr);');
+  });
+
   it('lets a control shrink instead of widening the page', () => {
     expect(sheets['docs.css']).toMatch(
       /\.docs-controls \.wpl-select,[\s\S]*?\{\s*width: 100%;\s*min-width: 0;/,
