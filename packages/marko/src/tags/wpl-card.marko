@@ -1,6 +1,6 @@
 import { cardClassName } from "@white-plumeria/core";
 import { oneOf } from "../emit.ts";
-export interface Input { title?: string; description?: string; titleAs?: "h1" | "h2" | "h3" | "h4"; content?: Marko.Body; }
+export interface Input { title?: string; description?: string; titleAs?: "h1" | "h2" | "h3" | "h4"; footer?: string | Marko.Body; content?: Marko.Body; }
 static const headings = ["h1", "h2", "h3", "h4"] as const;
 <const/heading=oneOf(input.titleAs, headings, "h2")>
 <section class=cardClassName()>
@@ -16,4 +16,10 @@ static const headings = ["h1", "h2", "h3", "h4"] as const;
     </header>
   </if>
   <if=input.content><div class="wpl-card-body"><${input.content}/></div></if>
+  <if=input.footer>
+    <div class="wpl-card-footer">
+      <if=(typeof input.footer === "string")>${input.footer}</if>
+      <else><${input.footer}/></else>
+    </div>
+  </if>
 </section>

@@ -17,7 +17,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Accordion (accordion): Disclosure stack, single or multiple.
   HTML: `<div class="wpl-accordion"><button class="wpl-accordion-trigger" aria-expanded="false">Fees</button></div>`
 - Alert (alert): Inline status message that is part of the page.
-  HTML: `<div class="wpl-alert wpl-alert-warning" role="status"><p class="wpl-alert-title">Review needed</p></div>`
+  HTML: `<div class="wpl-alert wpl-alert-warning" role="status"><p class="wpl-alert-title">Review needed</p><p class="wpl-alert-description">Two fields are incomplete.</p></div>`
 - Avatar (avatar): Image or initials, with an optional status dot.
   HTML: `<span class="wpl-avatar" role="img" aria-label="Laleh Karimi">LK</span>`
 - Badge (badge): Compact status label.
@@ -31,7 +31,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - Calendar (calendar): Month grid for Gregorian or Persian calendars.
   HTML: `<div class="wpl-calendar"><div class="wpl-calendar-grid" role="grid"></div></div>`
 - Card (card): Surface for a title, description, body, and actions.
-  HTML: `<section class="wpl-card"><h2 class="wpl-card-title">Analytics</h2><p class="wpl-card-description">Overview of recent activity</p></section>`
+  HTML: `<section class="wpl-card"><h2 class="wpl-card-title">Analytics</h2><p class="wpl-card-description">Overview of recent activity</p><div class="wpl-card-footer"><button class="wpl-btn wpl-btn-primary" type="button">Open</button></div></section>`
 - Carousel (carousel): Image and content slider with previous, next, captions, and slide tabs. This is not the range Slider.
   HTML: `<section class="wpl-carousel wpl-carousel-media" aria-roledescription="carousel" aria-label="Theme stills"><div class="wpl-carousel-viewport"><div class="wpl-carousel-track"><figure class="wpl-carousel-figure"><img class="wpl-carousel-image" src="/carousel/white.jpg" alt="White plumeria flowers on pale stone" /><figcaption class="wpl-carousel-caption"><strong>White</strong><span>The default palette.</span></figcaption></figure></div></div></section>`
 - Chart (chart): SVG line, area, or column graph for one series, with the same values in a table.
@@ -101,7 +101,7 @@ Colors come from the active theme. Set data-wpl-theme and data-wpl-scheme on an 
 - OtpField (otp-field): One-time-code field. It does not send or verify a code.
   HTML: `<div class="wpl-otp" role="group" aria-label="Verification code"><input class="wpl-input wpl-otp-cell" inputmode="numeric" maxlength="1" aria-label="Character 1 of 6" /></div>`
 - PageHeader (page-header): Title, description, and action row.
-  HTML: `<header class="wpl-page-header"><h1 class="wpl-page-title">Invoices</h1></header>`
+  HTML: `<header class="wpl-page-header"><div><h1 class="wpl-page-title">Invoices</h1><p class="wpl-page-description">Sample workspace</p></div><div class="wpl-cluster"><button class="wpl-btn wpl-btn-primary" type="button">New invoice</button></div></header>`
 - Pagination (pagination): Page controls with a current page.
   HTML: `<nav class="wpl-pagination" aria-label="Pagination"><button class="wpl-page" aria-current="page">1</button></nav>`
 - PasswordField (password-field): Password field with a visible label and a reveal toggle. It does not score strength.

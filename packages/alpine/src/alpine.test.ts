@@ -1,7 +1,7 @@
 import { formatDate, parseIsoDate, catalog, toIsoDate } from '@white-plumeria/core';
 import Alpine from 'alpinejs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Accordion, Alert, Avatar, Breadcrumb, Calendar, Card, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, SearchInput, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
+import { Accordion, Alert, Avatar, Breadcrumb, Calendar, Card, PageHeader, Combobox, CommandPalette, ChartContainer, DataTable, DatePicker, Table, DateRangePicker, Divider, DropdownMenu, EmptyState, FileUpload, FormField, Label, Link, List, Navbar, NavigationMenu, Notification, Pagination, ButtonGroup, OtpField, PasswordField, Popover, Progress, RadioGroup, RangeSlider, Rating, Skeleton, Slider, Spinner, SplitPane, Separator, StatCard, SearchInput, Switch, Tabs, Timeline, Tooltip, TreeView, whitePlumeria, pushToast, Button, WhitePlumeriaProvider, Carousel, Steps } from './index.ts';
 import type { Magic } from './runtime.ts';
 
 function magicFor(el: HTMLElement): Magic {
@@ -779,6 +779,44 @@ describe('Alpine adapter', () => {
     const danger = mount(Alert, { variant: 'danger' });
     expect(danger.querySelector('[role="alert"] .wpl-alert-title')?.textContent).toBe('Notice');
     expect(danger.querySelector('.wpl-alert-description')).toBeNull();
+  });
+
+  it('moves a marked child into the card footer and leaves the body alone', () => {
+    const el = document.createElement('div');
+    document.body.append(el);
+    const body = document.createElement('p');
+    body.textContent = 'Invoice 1044 is open.';
+    const footer = document.createElement('button');
+    footer.type = 'button';
+    footer.dataset.wplFooter = '';
+    footer.textContent = 'Pay';
+    el.append(body, footer);
+    const data = Card({ title: 'Invoice' } as never);
+    data.init?.call({ ...data, ...magicFor(el) });
+    expect(el.querySelector('.wpl-card-body')?.textContent).toBe('Invoice 1044 is open.');
+    expect(el.querySelector('.wpl-card-footer button')?.textContent).toBe('Pay');
+    expect(el.querySelector('.wpl-card-body button')).toBeNull();
+    const plain = mount(Card, { title: 'Invoice' });
+    expect(plain.querySelector('.wpl-card-footer')).toBeNull();
+  });
+
+  it('pairs the page title with an action cluster', () => {
+    const el = document.createElement('div');
+    document.body.append(el);
+    const action = document.createElement('button');
+    action.type = 'button';
+    action.textContent = 'New invoice';
+    el.append(action);
+    const data = PageHeader({ title: 'Invoices', description: 'Every invoice in this sample.' } as never);
+    data.init?.call({ ...data, ...magicFor(el) });
+    const header = el.querySelector('header.wpl-page-header');
+    expect(header?.firstElementChild?.querySelector('h1.wpl-page-title')?.textContent).toBe('Invoices');
+    expect(header?.firstElementChild?.querySelector('p.wpl-page-description')?.textContent).toBe(
+      'Every invoice in this sample.',
+    );
+    expect(header?.querySelector('.wpl-cluster button')?.textContent).toBe('New invoice');
+    const plain = mount(PageHeader, { title: 'Invoices' });
+    expect(plain.querySelector('.wpl-cluster')).toBeNull();
   });
 
   it('renders a card description without inventing a title', () => {

@@ -85,7 +85,12 @@ export function Card(config: Config = {}) {
     init(this: Magic) {
       const title = text(config.title);
       const description = text(config.description);
-      const body = [...this.$el.childNodes];
+      const nodes = [...this.$el.childNodes];
+      // A child marked data-wpl-footer becomes the card footer, the same marker
+      // style SplitPane uses. A plain string footer stays available too.
+      const marked = nodes.filter((node) => node instanceof Element && node.matches('[data-wpl-footer]'));
+      const body = nodes.filter((node) => !marked.includes(node));
+      const footer = text(config.footer);
       this.$el.replaceChildren(h('section', { className: 'wpl-card' }, [
         title || description
           ? h('header', { className: 'wpl-card-header' }, [
@@ -94,6 +99,11 @@ export function Card(config: Config = {}) {
             ])
           : null,
         body.length ? h('div', { className: 'wpl-card-body' }, body) : null,
+        marked.length
+          ? h('div', { className: 'wpl-card-footer' }, marked)
+          : footer
+            ? h('div', { className: 'wpl-card-footer', text: footer })
+            : null,
       ]));
     },
   };

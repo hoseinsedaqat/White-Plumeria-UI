@@ -135,9 +135,22 @@ export function NavigationMenu(config: Config = {}) {
 export function PageHeader(config: Config = {}) {
   return {
     init(this: Magic) {
+      const description = text(config.description);
+      // The header is a space-between row. Without this wrapper the heading and
+      // the description sit at opposite ends. Children stay as the action
+      // cluster, which is what the other adapters render.
+      const nodes = [...this.$el.childNodes];
+      const actions = text(config.actions);
       this.$el.replaceChildren(h('header', { className: 'wpl-page-header' }, [
-        h('h1', { className: 'wpl-page-title', text: text(config.title, 'Page') }),
-        text(config.description) ? h('p', { className: 'wpl-page-description', text: text(config.description) }) : null,
+        h('div', {}, [
+          h('h1', { className: 'wpl-page-title', text: text(config.title, 'Page') }),
+          description ? h('p', { className: 'wpl-page-description', text: description }) : null,
+        ]),
+        nodes.length
+          ? h('div', { className: 'wpl-cluster' }, nodes)
+          : actions
+            ? h('div', { className: 'wpl-cluster', text: actions })
+            : null,
       ]));
     },
   };
