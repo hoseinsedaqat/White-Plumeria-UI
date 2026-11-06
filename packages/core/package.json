@@ -15,11 +15,20 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "design-system", "accessibility", "headless"],
+  "keywords": [
+    "white-plumeria",
+    "design-system",
+    "accessibility",
+    "headless"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -4,7 +4,9 @@
   "description": "Framework-agnostic CSS for White Plumeria. No Tailwind required.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "author": "hoseinsedaqat",
   "repository": {
     "type": "git",
@@ -15,11 +17,20 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "css", "design-system", "rtl"],
+  "keywords": [
+    "white-plumeria",
+    "css",
+    "design-system",
+    "rtl"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["src", "README.md"],
+  "files": [
+    "LICENSE",
+    "README.md",
+    "src"
+  ],
   "exports": {
     ".": "./src/index.css",
     "./tokens": "./src/generated/tokens.css",

@@ -11,11 +11,25 @@
     "url": "git+https://github.com/hoseinsedaqat/White-Plumeria-UI.git",
     "directory": "packages/cli"
   },
-  "bugs": { "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues" },
-  "keywords": ["white-plumeria", "cli", "design-system"],
-  "publishConfig": { "access": "public" },
-  "files": ["dist", "README.md"],
-  "bin": { "wpl": "./dist/bin.js" },
+  "bugs": {
+    "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
+  },
+  "keywords": [
+    "white-plumeria",
+    "cli",
+    "design-system"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "bin": {
+    "wpl": "./dist/bin.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -37,5 +51,6 @@
     "@types/node": "22.20.5",
     "tsdown": "0.23.2",
     "typescript": "catalog:"
-  }
+  },
+  "homepage": "https://github.com/hoseinsedaqat/White-Plumeria-UI/tree/test/packages/cli#readme"
 }

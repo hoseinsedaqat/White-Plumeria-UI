@@ -15,11 +15,22 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "lit", "web-components", "design-system", "accessible"],
+  "keywords": [
+    "white-plumeria",
+    "lit",
+    "web-components",
+    "design-system",
+    "accessible"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "host.css", "README.md"],
+  "files": [
+    "dist",
+    "host.css",
+    "LICENSE",
+    "README.md"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

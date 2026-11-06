@@ -15,11 +15,21 @@
   "bugs": {
     "url": "https://github.com/hoseinsedaqat/White-Plumeria-UI/issues"
   },
-  "keywords": ["white-plumeria", "solid", "solidjs", "design-system", "accessible"],
+  "keywords": [
+    "white-plumeria",
+    "solid",
+    "solidjs",
+    "design-system",
+    "accessible"
+  ],
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
