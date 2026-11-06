@@ -131,13 +131,24 @@ export interface MonthGrid {
 }
 
 export function weekdayLabels(locale: Locale, weekStartsOn: number): string[] {
-  const formatter = new Intl.DateTimeFormat(intlLocale(locale), { weekday: 'short' });
   const sunday = new Date(2024, 0, 7);
-  return Array.from({ length: 7 }, (_, index) => {
+  const week = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(sunday);
     date.setDate(sunday.getDate() + ((weekStartsOn + index) % 7));
-    return formatter.format(date);
+    return date;
   });
+  const labels = (weekday: 'short' | 'narrow') => {
+    const formatter = new Intl.DateTimeFormat(intlLocale(locale), { weekday });
+    return week.map((date) => formatter.format(date));
+  };
+  const short = labels('short');
+  /**
+   * A weekday heading is one seventh of the calendar, so about three
+   * characters. English short names fit. The Persian short name is the whole
+   * word, which the heading used to cut mid word, so that locale takes the
+   * narrow name instead. Each day button still carries the full date.
+   */
+  return short.some((label) => [...label].length > 3) ? labels('narrow') : short;
 }
 
 export function buildMonthGrid(options: {

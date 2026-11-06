@@ -1027,14 +1027,14 @@ body {
 }
 
 .docs-tile-preview .wpl-layout {
-  grid-template-columns: 6.75rem minmax(0, 1fr);
+  grid-template-columns: fit-content(6.75rem) minmax(0, 1fr);
   min-block-size: 7.5rem;
 }
 
 .docs-tile-preview .wpl-layout > .wpl-sidebar {
-  display: flex;
   inline-size: auto;
   min-block-size: 0;
+  min-inline-size: 0;
   padding: 0.55rem;
 }
 
@@ -1099,12 +1099,19 @@ body {
 
 .docs-canvas > .wpl-layout,
 .docs-tile-preview > .wpl-layout {
-  grid-template-columns: minmax(7.5rem, 14rem) minmax(0, 1fr);
+  grid-template-columns: fit-content(14rem) minmax(0, 1fr);
 }
 
-.docs-canvas > .wpl-layout > .wpl-sidebar,
-.docs-tile-preview > .wpl-layout > .wpl-sidebar {
-  display: flex;
+/* A demo stage is narrower than the window, so the layout would hide its own
+   sidebar on a desktop canvas and the example would lose half its point. The
+   stage keeps the sidebar out only where there is room for two columns; on a
+   phone the component collapses on its own. */
+@media (min-width: 721px) {
+  .docs-canvas > .wpl-layout > .wpl-sidebar,
+  .docs-tile-preview > .wpl-layout > .wpl-sidebar,
+  .docs-tile-preview .wpl-layout > .wpl-sidebar {
+    display: flex;
+  }
 }
 
 .docs-code-wrap {
@@ -1445,5 +1452,23 @@ body {
   .docs-home h1,
   .docs-title {
     max-width: none;
+  }
+}
+
+/* On the narrowest phones the mark, the name, the theme pill, and the GitHub
+   link no longer share one row, and the name was the part that got cut. The
+   mark is decorative, so it steps aside and the name stays whole. */
+@media (max-width: 380px) {
+  .docs-brand .wpl-mark {
+    display: none;
+  }
+
+  .docs-brand {
+    font-size: 0.92rem;
+  }
+
+  .docs-top {
+    gap: 0.35rem;
+    padding-inline: 0.7rem;
   }
 }

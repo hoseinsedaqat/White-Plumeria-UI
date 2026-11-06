@@ -127,7 +127,15 @@
 
 .wpl-layout {
   display: grid;
-  grid-template-columns: minmax(9rem, 16rem) minmax(0, 1fr);
+  /**
+   * A container query styles the descendants of its container, never the
+   * container itself, so this grid cannot restate its own tracks when it
+   * narrows. A track with a fixed minimum keeps that width even when its
+   * only item is hidden, which left a dead column beside the main region.
+   * fit-content collapses to zero when the sidebar is out, and the sidebar
+   * carries its own minimum when it is in.
+   */
+  grid-template-columns: fit-content(16rem) minmax(0, 1fr);
   min-block-size: 12rem;
   container-type: inline-size;
   container-name: wpl-layout;
@@ -137,21 +145,36 @@
   background: var(--wpl-color-surface);
 }
 
+.wpl-layout > :first-child {
+  grid-column: 1;
+}
+
+.wpl-layout > .wpl-sidebar {
+  min-inline-size: min(9rem, 100%);
+}
+
 .wpl-layout-main {
+  grid-column: 2;
   min-inline-size: 0;
   padding: var(--wpl-space-5);
 }
 
 @container wpl-layout (max-width: 40rem) {
-  .wpl-layout {
-    grid-template-columns: 1fr;
-  }
-
   .wpl-layout > .wpl-sidebar {
     display: none;
     inline-size: auto;
     border-inline-end: 0;
     border-block-end: 1px solid var(--wpl-color-border);
+  }
+
+  .wpl-layout[data-open="true"] > :first-child {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .wpl-layout[data-open="true"] > .wpl-layout-main {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .wpl-layout[data-open="true"] > .wpl-sidebar {
