@@ -74,6 +74,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 .home-intro {
   display: flex;
   min-height: calc(100vh - var(--docs-bar) - 2.2rem);
+  min-height: calc(100dvh - var(--docs-bar) - 2.2rem);
   align-items: center;
   justify-content: center;
   padding: 2.5rem 1.25rem 2rem;
@@ -153,7 +154,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-ctas {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.55rem;
   width: 100%;
   margin-top: 2.4rem;
@@ -623,7 +624,7 @@ html[data-wpl-scheme="dark"] .docs-app[data-home="true"] .docs-top {
 
 .home-next {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   width: min(54rem, 100%);
   margin: 1.6rem auto 0;
@@ -890,7 +891,7 @@ html[data-wpl-scheme='dark'] .home-compare-card {
 .home-principles,
 .home-adapter-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.7rem;
   width: min(54rem, 100%);
   margin: 1.4rem auto 0;
@@ -1009,17 +1010,17 @@ html[data-wpl-scheme='dark'] .home-shared {
 @media (min-width: 720px) {
   .home-principles,
   .home-adapter-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1040px) {
   .home-principles {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .home-adapter-grid {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1184,6 +1185,9 @@ html[data-wpl-scheme='dark'] .home-shared {
 
 .home-spec {
   display: grid;
+  /* An auto track never shrinks under the five-column scale strip, so the card
+     grew past a phone screen. A zero minimum keeps the strip scrolling inside. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0;
   width: min(54rem, 100%);
   margin: 2.6rem auto 0;
@@ -1292,6 +1296,7 @@ html[data-wpl-scheme='dark'] .home-spec {
 
 .home-charts {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   width: min(54rem, 100%);
   margin: 2.2rem auto 0;
@@ -1401,6 +1406,7 @@ html[data-wpl-scheme='dark'] .home-chart {
 
 .home-semantic {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.35rem;
   width: min(54rem, 100%);
   margin: 2.4rem auto 0;
@@ -1444,6 +1450,7 @@ html[data-wpl-scheme='dark'] .home-chart {
 .home-morph {
   --home-morph-bg: color-mix(in srgb, var(--wpl-color-text) 6%, var(--wpl-color-surface));
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.9rem;
   width: min(54rem, 100%);
   margin: 2.2rem auto 0;
@@ -1539,6 +1546,7 @@ html[data-wpl-scheme='dark'] .home-morph {
 .home-catalog {
   --home-catalog-bg: color-mix(in srgb, var(--wpl-color-text) 6%, var(--wpl-color-surface));
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0;
   width: min(54rem, 100%);
   margin: 2.2rem auto 0;
@@ -1622,6 +1630,7 @@ html[data-wpl-scheme='dark'] .home-catalog {
 .home-pure {
   --home-pure-bg: color-mix(in srgb, var(--wpl-color-text) 6%, var(--wpl-color-surface));
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.9rem;
   width: min(54rem, 100%);
   margin: 2.2rem auto 0;
@@ -1706,7 +1715,7 @@ html[data-wpl-scheme='dark'] .home-pure {
   }
 
   .home-ctas {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .home-semantic-roles {
@@ -1924,6 +1933,15 @@ html[data-wpl-scheme='dark'] .home-pure {
   margin: 0 auto;
 }
 
+/* Below the two-column breakpoint the stage is one track. An auto track keeps
+   the width of its widest child, so the hero text, the install card, and the
+   window mock were pushed off a phone screen and clipped. */
+@media (max-width: 1099px) {
+  .home-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .home-stage .home-intro {
   min-height: 0;
   padding-top: 2.5rem;
@@ -2040,6 +2058,7 @@ html[data-wpl-scheme='dark'] .home-pure {
   gap: 0.85rem;
   align-items: stretch;
   max-height: calc(100vh - var(--docs-bar) - 1.6rem);
+  max-height: calc(100dvh - var(--docs-bar) - 1.6rem);
 }
 
 .home-theme-menu {
@@ -2252,7 +2271,7 @@ html[data-wpl-scheme='dark'] .home-pure {
   }
 
   .home-board {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .home-board-rail {

@@ -44,6 +44,7 @@ export function DocsApp() {
   const [themeOpen, setThemeOpen] = useState(false);
   const [narrow, setNarrow] = useState(false);
   const themeRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLElement>(null);
   const results = useMemo(() => (query.trim() ? searchComponents(query).slice(0, 8) : []), [query]);
   const componentSlug = path.match(/^\/components\/([a-z0-9-]+)$/)?.[1];
   const exampleId = path.match(/^\/examples\/([a-z0-9-]+)$/)?.[1];
@@ -64,6 +65,28 @@ export function DocsApp() {
     queryList.addEventListener('change', apply);
     return () => queryList.removeEventListener('change', apply);
   }, []);
+
+  // The drawer and the theme panel hang under the sticky bar. The banner above
+  // the bar scrolls away, so the bar moves. Publish where it ends while the
+  // drawer is open, or the panel covers the brand and the menu button.
+  useEffect(() => {
+    if (!navOpen) return;
+    const root = document.documentElement;
+    const sync = () => {
+      const bar = topRef.current;
+      if (!bar) return;
+      const bottom = Math.max(0, Math.round(bar.getBoundingClientRect().bottom));
+      root.style.setProperty('--docs-nav-top', `${bottom}px`);
+    };
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    return () => {
+      window.removeEventListener('scroll', sync);
+      window.removeEventListener('resize', sync);
+      root.style.removeProperty('--docs-nav-top');
+    };
+  }, [navOpen]);
 
   useEffect(() => {
     document.documentElement.lang = 'en';
@@ -126,7 +149,7 @@ export function DocsApp() {
         </span>
         <span aria-hidden="true">→</span>
       </A>
-      <header className="docs-top">
+      <header className="docs-top" ref={topRef}>
         <button
           type="button"
           className="wpl-icon-btn wpl-btn-ghost docs-menu-btn"
