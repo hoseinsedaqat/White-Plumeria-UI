@@ -1,6 +1,7 @@
 import { createDOM } from '@qwik.dev/core/testing';
 import { describe, expect, it } from 'vitest';
 import { Button } from './button';
+import { Card } from './display';
 import { DateRangePicker } from './calendar';
 import { Slider } from './form';
 import { DropdownMenu } from './menu';
@@ -27,6 +28,26 @@ const ToastProbe = component$(() => {
 });
 
 describe('Qwik adapter', () => {
+  it('gives a card a footer row only when it is asked for one', async () => {
+    const { render, screen } = await createDOM();
+    await render(
+      <WhitePlumeriaProvider>
+        <Card title="Invoice" footer={<button type="button">Pay</button>}>
+          Invoice 1044 is open.
+        </Card>
+        <Card title="Notes" footer="Due today" />
+        <Card title="Plain">No actions here.</Card>
+      </WhitePlumeriaProvider>,
+    );
+    const cards = [...screen.querySelectorAll('.wpl-card')];
+    expect(cards).toHaveLength(3);
+    expect(cards[0]?.querySelector('.wpl-card-footer button')?.textContent).toBe('Pay');
+    expect(cards[0]?.querySelector('.wpl-card-body')?.textContent).toContain('Invoice 1044 is open.');
+    expect(cards[0]?.querySelectorAll('.wpl-card-body button')).toHaveLength(0);
+    expect(cards[1]?.querySelector('.wpl-card-footer')?.textContent).toBe('Due today');
+    expect(cards[2]?.querySelectorAll('.wpl-card-footer')).toHaveLength(0);
+  });
+
   it('does not activate a loading button', async () => {
     let clicks = 0;
     const { render, screen, userEvent } = await createDOM();
