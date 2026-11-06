@@ -13,6 +13,7 @@ import {
   Label,
   List,
   Link,
+  PageHeader,
   Pagination,
   Carousel,
   Chart,
@@ -325,6 +326,33 @@ describe('Ember adapter', () => {
     await renderSettled();
     expect(host.querySelector('h2.wpl-empty-title')?.textContent).toBe('No invoices');
     expect(host.querySelector('p.wpl-empty-description')?.textContent).toBe('Create the first invoice.');
+  });
+
+  it('renders a card footer only when the component is given one', async () => {
+    const host = mount(Card, { title: 'Invoice', footer: 'Pay' });
+    await renderSettled();
+    expect(host.querySelector('.wpl-card-footer')?.textContent?.trim()).toBe('Pay');
+    const plain = mount(Card, { title: 'Invoice' });
+    await renderSettled();
+    expect(plain.querySelector('.wpl-card-footer')).toBeNull();
+  });
+
+  it('pairs the page title with an action cluster', async () => {
+    const host = mount(PageHeader, {
+      title: 'Invoices',
+      description: 'Every invoice in this sample.',
+      actions: 'New invoice',
+    });
+    await renderSettled();
+    const header = host.querySelector('header.wpl-page-header');
+    expect(header?.firstElementChild?.querySelector('h1.wpl-page-title')?.textContent).toBe('Invoices');
+    expect(header?.firstElementChild?.querySelector('p.wpl-page-description')?.textContent).toBe(
+      'Every invoice in this sample.',
+    );
+    expect(header?.querySelector('.wpl-cluster')?.textContent?.trim()).toBe('New invoice');
+    const plain = mount(PageHeader, { title: 'Invoices' });
+    await renderSettled();
+    expect(plain.querySelector('.wpl-cluster')).toBeNull();
   });
 
   it('renders a stat card with its hint class', async () => {

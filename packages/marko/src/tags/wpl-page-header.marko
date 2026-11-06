@@ -1,6 +1,16 @@
-export interface Input { title?: string; description?: string; content?: Marko.Body; }
+export interface Input { title?: string; description?: string; actions?: string | Marko.Body; content?: Marko.Body; }
 <header class="wpl-page-header">
-  <h1 class="wpl-page-title">${input.title || "Page"}</h1>
-  <if=input.description><p class="wpl-page-description">${input.description}</p></if>
-  <${input.content}/>
+  <div>
+    <h1 class="wpl-page-title">${input.title || "Page"}</h1>
+    <if=input.description><p class="wpl-page-description">${input.description}</p></if>
+  </div>
+  <if=(input.actions || input.content)>
+    <div class="wpl-cluster">
+      <if=input.actions>
+        <if=(typeof input.actions === "string")>${input.actions}</if>
+        <else><${input.actions}/></else>
+      </if>
+      <if=input.content><${input.content}/></if>
+    </div>
+  </if>
 </header>

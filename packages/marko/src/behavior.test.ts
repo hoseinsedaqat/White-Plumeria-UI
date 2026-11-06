@@ -18,6 +18,7 @@ import FileUpload from './tags/wpl-file-upload.marko';
 import Notification from './tags/wpl-notification.marko';
 import Provider from './tags/wpl-provider.marko';
 import Divider from './tags/wpl-divider.marko';
+import PageHeader from './tags/wpl-page-header.marko';
 import EmptyState from './tags/wpl-empty-state.marko';
 import List from './tags/wpl-list.marko';
 import StatCard from './tags/wpl-stat-card.marko';
@@ -925,6 +926,29 @@ describe('Marko adapter', () => {
     const danger = await render(Alert, { variant: 'danger' });
     expect(danger.container.querySelector('[role="alert"] .wpl-alert-title')?.textContent).toBe('Notice');
     expect(danger.container.querySelector('.wpl-alert-description')).toBeNull();
+  });
+
+  it('renders a card footer only when the tag is given one', async () => {
+    const view = await render(Card, { title: 'Invoice', footer: 'Pay' });
+    expect(view.container.querySelector('.wpl-card-footer')?.textContent?.trim()).toBe('Pay');
+    const plain = await render(Card, { title: 'Invoice' });
+    expect(plain.container.querySelector('.wpl-card-footer')).toBeNull();
+  });
+
+  it('pairs the page title with an action cluster', async () => {
+    const view = await render(PageHeader, {
+      title: 'Invoices',
+      description: 'Every invoice in this sample.',
+      actions: 'New invoice',
+    });
+    const header = view.container.querySelector('header.wpl-page-header');
+    expect(header?.firstElementChild?.querySelector('h1.wpl-page-title')?.textContent).toBe('Invoices');
+    expect(header?.firstElementChild?.querySelector('p.wpl-page-description')?.textContent).toBe(
+      'Every invoice in this sample.',
+    );
+    expect(header?.querySelector('.wpl-cluster')?.textContent?.trim()).toBe('New invoice');
+    const plain = await render(PageHeader, { title: 'Invoices' });
+    expect(plain.container.querySelector('.wpl-cluster')).toBeNull();
   });
 
   it('renders a card description without inventing a title', async () => {

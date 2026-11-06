@@ -20,12 +20,14 @@
     "limitations": [],
     "classes": [
       "wpl-alert",
+      "wpl-alert-title",
+      "wpl-alert-description",
       "wpl-alert-info",
       "wpl-alert-success",
       "wpl-alert-warning",
       "wpl-alert-danger"
     ],
-    "html": "<div class=\"wpl-alert wpl-alert-warning\" role=\"status\"><p class=\"wpl-alert-title\">Review needed</p></div>"
+    "html": "<div class=\"wpl-alert wpl-alert-warning\" role=\"status\"><p class=\"wpl-alert-title\">Review needed</p><p class=\"wpl-alert-description\">Two fields are incomplete.</p></div>"
   },
   {
     "name": "Avatar",
@@ -139,7 +141,7 @@
       "wpl-card-body",
       "wpl-card-footer"
     ],
-    "html": "<section class=\"wpl-card\"><h2 class=\"wpl-card-title\">Analytics</h2><p class=\"wpl-card-description\">Overview of recent activity</p></section>"
+    "html": "<section class=\"wpl-card\"><h2 class=\"wpl-card-title\">Analytics</h2><p class=\"wpl-card-description\">Overview of recent activity</p><div class=\"wpl-card-footer\"><button class=\"wpl-btn wpl-btn-primary\" type=\"button\">Open</button></div></section>"
   },
   {
     "name": "Carousel",
@@ -643,9 +645,10 @@
     "classes": [
       "wpl-page-header",
       "wpl-page-title",
-      "wpl-page-description"
+      "wpl-page-description",
+      "wpl-cluster"
     ],
-    "html": "<header class=\"wpl-page-header\"><h1 class=\"wpl-page-title\">Invoices</h1></header>"
+    "html": "<header class=\"wpl-page-header\"><div><h1 class=\"wpl-page-title\">Invoices</h1><p class=\"wpl-page-description\">Sample workspace</p></div><div class=\"wpl-cluster\"><button class=\"wpl-btn wpl-btn-primary\" type=\"button\">New invoice</button></div></header>"
   },
   {
     "name": "Pagination",

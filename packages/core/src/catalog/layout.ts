@@ -165,10 +165,16 @@ export const layoutCatalog: ComponentDoc[] = [
     summary: 'Title, description, and action row.',
     summaryFa: 'عنوان، توضیح و ردیف عمل.',
     tags: ['header', 'page'],
-    classes: ['wpl-page-header', 'wpl-page-title', 'wpl-page-description'],
+    classes: ['wpl-page-header', 'wpl-page-title', 'wpl-page-description', 'wpl-cluster'],
     props: [
       { name: 'title', type: 'string', description: 'Page title.', descriptionFa: 'عنوان صفحه.' },
       { name: 'description', type: 'string', description: 'Supporting text.', descriptionFa: 'متن پشتیبان.' },
+      {
+        name: 'actions',
+        type: 'content',
+        description: 'Buttons beside the title. They render in a wpl-cluster row, which wraps under the title on a narrow screen.',
+        descriptionFa: 'دکمه‌های کنار عنوان. در ردیف wpl-cluster می‌آیند و در صفحه باریک زیر عنوان می‌روند.',
+      },
     ],
     events: [],
     a11y: ['Title is h1.'],
@@ -179,7 +185,7 @@ export const layoutCatalog: ComponentDoc[] = [
       react: '<PageHeader title="Invoices" description="Sample workspace" />',
       vue: '<PageHeader title="Invoices" description="Sample workspace" />',
       svelte: '<PageHeader title="Invoices" description="Sample workspace" />',
-      html: '<header class="wpl-page-header"><h1 class="wpl-page-title">Invoices</h1></header>',
+      html: '<header class="wpl-page-header"><div><h1 class="wpl-page-title">Invoices</h1><p class="wpl-page-description">Sample workspace</p></div><div class="wpl-cluster"><button class="wpl-btn wpl-btn-primary" type="button">New invoice</button></div></header>',
     }),
   },
   {

@@ -201,6 +201,12 @@ export const catalog: ComponentDoc[] = [
       { name: 'title', type: 'string', description: 'Optional heading.', descriptionFa: 'عنوان اختیاری.' },
       { name: 'titleAs', type: '"h1" | "h2" | "h3" | "h4"', defaultValue: 'h2', description: 'Heading level for the title.', descriptionFa: 'سطح عنوان.' },
       { name: 'description', type: 'string', description: 'Optional supporting text.', descriptionFa: 'متن پشتیبان اختیاری.' },
+      {
+        name: 'footer',
+        type: 'content',
+        description: 'Action row under the body. React, Vue, Svelte, Solid, and Preact pass nodes, Angular, Ember, and Marko pass a string or a block, and Alpine marks a child with data-wpl-footer.',
+        descriptionFa: 'ردیف عمل زیر بدنه. در ری‌اکت، ویو، سوئلت، سالید و پری‌اکت گره، در انگولار، امبر و مارکو رشته یا بلوک، و در آلپاین فرزندی با data-wpl-footer.',
+      },
     ],
     events: [],
     a11y: ['Title renders as a heading level 2 by default. Pass titleAs to change it.'],
@@ -211,7 +217,7 @@ export const catalog: ComponentDoc[] = [
       react: '<Card title="Analytics" description="Overview of recent activity">Updated today</Card>',
       vue: '<Card title="Analytics" description="Overview of recent activity">Updated today</Card>',
       svelte: '<Card title="Analytics" description="Overview of recent activity">Updated today</Card>',
-      html: '<section class="wpl-card"><h2 class="wpl-card-title">Analytics</h2><p class="wpl-card-description">Overview of recent activity</p></section>',
+      html: '<section class="wpl-card"><h2 class="wpl-card-title">Analytics</h2><p class="wpl-card-description">Overview of recent activity</p><div class="wpl-card-footer"><button class="wpl-btn wpl-btn-primary" type="button">Open</button></div></section>',
     }),
   },
   {

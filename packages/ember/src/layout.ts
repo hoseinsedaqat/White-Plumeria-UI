@@ -102,7 +102,7 @@ export const NavigationMenu = glimmer(
 );
 
 export const PageHeader = glimmer(
-  `<header class="wpl-page-header"><h1 class="wpl-page-title">{{this.title}}</h1>{{#if @description}}<p class="wpl-page-description">{{@description}}</p>{{/if}}{{yield}}</header>`,
+  `<header class="wpl-page-header"><div><h1 class="wpl-page-title">{{this.title}}</h1>{{#if @description}}<p class="wpl-page-description">{{@description}}</p>{{/if}}</div>{{#if @actions}}<div class="wpl-cluster">{{@actions}}</div>{{else if (has-block)}}<div class="wpl-cluster">{{yield}}</div>{{/if}}</header>`,
   { getters: { title: (host) => str(host.args.title, 'Page') } },
 );
 

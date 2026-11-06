@@ -64,7 +64,7 @@ export const Avatar = glimmer(
 );
 
 export const Card = glimmer(
-  `<section class={{this.className}}>{{#if this.hasHeader}}<header class="wpl-card-header">{{#if @title}}{{#if (eq this.titleTag "h1")}}<h1 class="wpl-card-title">{{@title}}</h1>{{else}}{{#if (eq this.titleTag "h3")}}<h3 class="wpl-card-title">{{@title}}</h3>{{else}}{{#if (eq this.titleTag "h4")}}<h4 class="wpl-card-title">{{@title}}</h4>{{else}}<h2 class="wpl-card-title">{{@title}}</h2>{{/if}}{{/if}}{{/if}}{{/if}}{{#if @description}}<p class="wpl-card-description">{{@description}}</p>{{/if}}</header>{{/if}}{{yield}}</section>`,
+  `<section class={{this.className}}>{{#if this.hasHeader}}<header class="wpl-card-header">{{#if @title}}{{#if (eq this.titleTag "h1")}}<h1 class="wpl-card-title">{{@title}}</h1>{{else}}{{#if (eq this.titleTag "h3")}}<h3 class="wpl-card-title">{{@title}}</h3>{{else}}{{#if (eq this.titleTag "h4")}}<h4 class="wpl-card-title">{{@title}}</h4>{{else}}<h2 class="wpl-card-title">{{@title}}</h2>{{/if}}{{/if}}{{/if}}{{/if}}{{#if @description}}<p class="wpl-card-description">{{@description}}</p>{{/if}}</header>{{/if}}{{yield}}{{#if @footer}}<div class="wpl-card-footer">{{@footer}}</div>{{else if (has-block "footer")}}<div class="wpl-card-footer">{{yield to="footer"}}</div>{{/if}}</section>`,
   {
     getters: {
       className: (host) => cardClassName(str(host.args.className) || undefined),
